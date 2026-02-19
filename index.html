@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV — Adam Ferreira</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #1f2937;
+      background: white;
+      width: 100%;
+      max-width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: clamp(20px, 3vw, 34px) clamp(16px, 5vw, 48px) clamp(20px, 3vw, 32px) clamp(16px, 5vw, 48px);
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ========== HEADER ========== */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 26px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .photo-container {
+      width: clamp(56px, 10vw, 76px);
+      height: clamp(56px, 10vw, 76px);
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      transform: scale(1.35);
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: high-quality;
+    }
+
+    .header-name-block {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .name {
+      font-size: clamp(20px, 4vw, 28px);
+      line-height: 1.15;
+      color: #1a202c;
+      letter-spacing: -0.3px;
+    }
+
+    .name-first {
+      font-weight: 700;
+    }
+
+    .name-last {
+      font-weight: 300;
+    }
+
+    .subtitle {
+      font-size: clamp(10px, 1.5vw, 12px);
+      font-weight: 700;
+      color: #374151;
+      margin-top: 3px;
+    }
+
+    .location {
+      font-size: clamp(9px, 1.4vw, 10.5px);
+      color: #6b7280;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .flag {
+      width: 16px;
+      height: 12px;
+      border-radius: 2.5px;
+      overflow: hidden;
+      display: inline-flex;
+      flex-shrink: 0;
+      position: relative;
+      border: 0.8px solid #c5c8cc;
+    }
+
+    .flag-blue, .flag-white, .flag-red {
+      width: 33.33%;
+      height: 100%;
+    }
+
+    .flag-blue { background: #0055A4; }
+    .flag-white { background: #ffffff; }
+    .flag-red { background: #EF4135; }
+
+    /* ========== HEADER RIGHT ========== */
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+      padding-top: 8px;
+      font-size: clamp(9.5px, 1.4vw, 11px);
+      color: #374151;
+    }
+
+    .header-right a {
+      color: #374151;
+      text-decoration: none;
+    }
+
+    .linkedin-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 500;
+    }
+
+    .linkedin-icon {
+      width: 16px;
+      height: 16px;
+      background: #0a66c2;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .linkedin-icon svg {
+      width: 12px;
+      height: 12px;
+      fill: white;
+    }
+
+    .contact-item {
+      color: #374151;
+      font-weight: 400;
+    }
+
+    /* ========== SECTION TITLE ========== */
+    .section-title-wrapper {
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(10px, 1.5vw, 12px);
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 1.8px;
+      padding-bottom: 6px;
+    }
+
+    .section-line {
+      display: none;
+    }
+
+    /* ========== JOB ========== */
+    .job-header {
+      margin-bottom: 6px;
+    }
+
+    .job-title-line {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .job-title {
+      font-size: clamp(13px, 2.2vw, 16px);
+      font-weight: 800;
+      color: #1a202c;
+      letter-spacing: -0.2px;
+    }
+
+    .job-date {
+      font-size: clamp(9px, 1.4vw, 10.5px);
+      color: #9ca3af;
+      font-weight: 400;
+    }
+
+    .job-intro {
+      font-size: clamp(9px, 1.4vw, 10.5px);
+      color: #374151;
+      line-height: 1.6;
+      text-align: justify;
+      margin-bottom: 8px;
+    }
+
+    /* ========== SEPARATOR ========== */
+    .separator {
+      width: 48px;
+      height: 1px;
+      background: #d1d5db;
+      margin: 10px 0;
+    }
+
+    /* ========== SUB-SECTIONS ========== */
+    .sub-title {
+      font-size: clamp(11px, 1.6vw, 12.5px);
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 4px;
+    }
+
+    .sub-intro {
+      font-size: clamp(9px, 1.4vw, 10.5px);
+      color: #374151;
+      line-height: 1.6;
+      text-align: justify;
+      margin-bottom: 6px;
+    }
+
+    .bullets {
+      list-style: none;
+      margin-bottom: 10px;
+      padding-left: 0;
+    }
+
+    .bullets li {
+      font-size: clamp(9px, 1.4vw, 10.5px);
+      color: #374151;
+      line-height: 1.6;
+      text-align: justify;
+      margin-bottom: 3px;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .bullets li::before {
+      content: "\2022";
+      position: absolute;
+      left: 2px;
+      top: 0;
+      font-size: clamp(11px, 1.8vw, 14px);
+      color: #1a202c;
+      font-weight: 700;
+      line-height: 1.55;
+    }
+
+    .bullets li strong {
+      font-weight: 700;
+      color: #1a202c;
+    }
+
+    .stack {
+      font-size: clamp(9px, 1.4vw, 10.5px);
+      font-style: italic;
+      color: #1a202c;
+      font-weight: 400;
+      margin-bottom: 4px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media screen and (max-width: 600px) {
+      body {
+        min-height: auto;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .header-right {
+        align-items: flex-start;
+        padding-top: 0;
+      }
+
+      .job-title-line {
+        flex-direction: column;
+        gap: 2px;
+      }
+    }
+
+    /* ========== PRINT ========== */
+    @media print {
+      body {
+        padding: 32px 46px 28px 46px;
+        width: 100%;
+        min-height: auto;
+      }
+
+      .header { margin-bottom: 24px; }
+      .name { font-size: 27px; }
+      .subtitle { font-size: 11.5px; }
+      .location { font-size: 10px; }
+      .header-right { font-size: 10.5px; gap: 6px; }
+      .section-title { font-size: 11.5px; letter-spacing: 1.6px; padding-bottom: 6px; }
+      .section-title-wrapper { margin-bottom: 12px; }
+      .job-title { font-size: 15px; }
+      .job-date { font-size: 10px; }
+      .job-header { margin-bottom: 6px; }
+      .job-intro { font-size: 10px; line-height: 1.6; margin-bottom: 10px; }
+      .sub-title { font-size: 12px; margin-bottom: 4px; }
+      .sub-intro { font-size: 10px; line-height: 1.6; margin-bottom: 6px; }
+      .bullets { margin-bottom: 10px; }
+      .bullets li { font-size: 10px; line-height: 1.6; margin-bottom: 3px; }
+      .bullets li::before { font-size: 13px; }
+      .stack { font-size: 10px; margin-bottom: 4px; }
+      .separator { margin: 12px 0; }
+      .photo-container { width: 74px; height: 74px; }
+
+      .page-two {
+        padding-top: 48px;
+      }
+
+      .page-two .job-title { font-size: 16px; }
+      .page-two .job-date { font-size: 10.5px; }
+      .page-two .job-intro { font-size: 10.5px; line-height: 1.6; }
+      .page-two .stack { font-size: 10.5px; }
+      .page-two .section-title { font-size: 12px; }
+      .page-two .separator { margin: 14px 0; }
+      .page-two .section-title-wrapper { margin-top: 20px; margin-bottom: 12px; }
+      .page-two .job-header { margin-bottom: 6px; }
+
+      .header, .section-title-wrapper, .job-header, .sub-title, .stack {
+        break-inside: avoid;
+      }
+
+      .sub-title + .sub-intro {
+        break-before: avoid;
+      }
+
+      .page-break-after {
+        break-after: page;
+      }
+
+      .linkedin-icon {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <div class="header">
+    <div class="header-left">
+      <div class="photo-container"><img src="photo.jpg" alt="Adam Ferreira" class="photo"></div>
+      <div class="header-name-block">
+        <div class="name">
+          <span class="name-first">Adam</span> <span class="name-last">Ferreira</span>
+        </div>
+        <div class="subtitle">QA Automation Architect</div>
+        <div class="location">
+          <span class="flag"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span> Paris, France
+        </div>
+      </div>
+    </div>
+    <div class="header-right">
+      <a class="linkedin-item" href="https://linkedin.com/in/ad-ferreira" target="_blank">
+        <span class="linkedin-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" fill="white"/></svg>
+        </span>
+        ad-ferreira
+      </a>
+    </div>
+  </div>
+
+  <!-- ==================== EXP&Eacute;RIENCES ==================== -->
+  <div class="section-title-wrapper">
+    <div class="section-title">Exp&eacute;riences professionnelles</div>
+    <div class="section-line"></div>
+  </div>
+
+  <!-- JOB: Accor -->
+  <div class="job-header">
+    <div class="job-title-line">
+      <span class="job-title">QA Automation Architect &mdash; ACCOR (CAC40)</span>
+      <span class="job-date">Nov. 2024 - Aujourd'hui (Freelance)</span>
+    </div>
+  </div>
+
+  <p class="job-intro">
+    Initialement positionn&eacute; sur l'ex&eacute;cution et la maintenance des tests automatis&eacute;s, j'ai pris rapidement l'initiative de remettre &agrave; plat l'architecture des frameworks et des pipelines CI/CD, jusqu'&agrave; devenir le r&eacute;f&eacute;rent technique sur l'automatisation mobile iOS &amp; Android.
+  </p>
+
+  <div class="separator"></div>
+
+  <!-- Sub: Java/Appium -->
+  <div class="sub-title">Remise &agrave; niveau d'un framework Java/Appium legacy</div>
+  <p class="sub-intro">Reprise d'un framework de 4 ans en dette technique. Objectif : le rendre maintenable, performant et &agrave; l'&eacute;tat de l'art.</p>
+
+  <ul class="bullets">
+    <li><strong>Modernisation compl&egrave;te du socle technique :</strong> Java 25, Appium Java-Client 10, Java Records, SLF4J/Logback &mdash; migrations encha&icirc;n&eacute;es sans r&eacute;gression, refonte du syst&egrave;me de logging pour un debugging pr&eacute;cis par sc&eacute;nario de test</li>
+    <li><strong>Refactoring en profondeur :</strong> suppression du code mort, nettoyage des d&eacute;pendances &mdash; le framework p&egrave;se aujourd'hui la moiti&eacute; de sa taille initiale</li>
+    <li><strong>Stabilisation de l'ex&eacute;cution :</strong> FluentWait pattern, distribution automatique des tests sur un pool de devices BrowserStack diversifi&eacute; (OS, mod&egrave;les, tablettes, orientations portrait/paysage) &mdash; chaque sc&eacute;nario tourne sur un device diff&eacute;rent</li>
+    <li><strong>Exploitation avanc&eacute;e de BrowserStack :</strong> architecture du SDK en mode observability-only (le SDK instrumente les tests sans interf&eacute;rer avec la rotation custom des devices), activation de toutes les capabilities disponibles (network logs avec capture content, device logs, app profiling, video, geolocation, timezone), build naming dynamique int&eacute;grant plateforme/profil/tags Cucumber pour un suivi fin dans le dashboard &mdash; tirer le maximum de la plateforme au-del&agrave; de la simple ex&eacute;cution de tests</li>
+    <li><strong>Syst&egrave;me de cache BrowserStack :</strong> cache des apps (invalidation 24h, d&eacute;tection automatique DAILY/RELEASE) et cache des devices par plateforme &mdash; &eacute;vite les appels API r&eacute;p&eacute;t&eacute;s et acc&eacute;l&egrave;re l'initialisation des sessions</li>
+  </ul>
+
+  <div class="stack">Stack : Java 25 &middot; Maven &middot; Appium Java-Client 10 &middot; Selenium &middot; TestNG &middot; Cucumber &middot; BrowserStack &middot; Allure</div>
+
+  <div class="separator"></div>
+
+  <!-- Sub: CI/CD -->
+  <div class="sub-title">Refonte du pipeline CI/CD GitLab</div>
+  <p class="sub-intro">Pipeline existant de 3 ans, coupl&eacute; &agrave; un template partag&eacute;, sans quality gate, avec secrets expos&eacute;s en logs.</p>
+
+  <ul class="bullets">
+    <li><strong>Pipeline rendu autonome et auto-suffisant :</strong> suppression de la d&eacute;pendance au template externe, restructuration en 4 stages s&eacute;mantiques (setup &rarr; test &rarr; report &rarr; notify)</li>
+    <li><strong>Quality Gate automatis&eacute; avec seuil configurable :</strong> le pipeline casse si le taux de r&eacute;ussite est insuffisant</li>
+    <li><strong>Reporting intelligent :</strong> int&eacute;gration Xray/Jira conditionnelle (Release uniquement), cr&eacute;ation automatique de Test Plans par sprint</li>
+    <li><strong>Notifications Slack contextualis&eacute;es :</strong> r&eacute;sultats avec noms des tests en &eacute;chec, routage par p&eacute;rim&egrave;tre fonctionnel</li>
+    <li><strong>Migration vers image Docker officielle Maven/Java 25,</strong> cache Maven, -3 min par ex&eacute;cution</li>
+  </ul>
+
+  <div class="stack">Stack : GitLab CI/CD &middot; Xray/Jira &middot; Slack &middot; Shell</div>
+
+  <div class="separator"></div>
+
+  <!-- Sub: TypeScript/WebDriverIO -->
+  <div class="sub-title">Cr&eacute;ation from scratch d'un framework TypeScript/WebDriverIO</div>
+  <p class="sub-intro">Aucun framework TS n'existait chez Accor pour le mobile. Conception et d&eacute;veloppement int&eacute;gral d'une solution industrielle multi-plateforme, multi-locale, orient&eacute;e isolation compl&egrave;te des tests.</p>
+
+  <ul class="bullets">
+    <li><strong>Architecture isol&eacute;e par sc&eacute;nario :</strong> customisation de WebDriverIO pour reproduire le comportement TestNG &mdash; 1 sc&eacute;nario Gherkin = 1 session BrowserStack = 1 fresh install, via un syst&egrave;me de split automatique des features et reload de session</li>
+    <li><strong>Rotation atomique des devices :</strong> compteur partag&eacute; inter-workers avec lock fichier (proper-lockfile), garantissant un round-robin sans collision m&ecirc;me &agrave; 10+ workers parall&egrave;les</li>
+    <li><strong>Multi-locale natif :</strong> tags Cucumber (@locale, @language, @timezone) pars&eacute;s automatiquement, chaque sc&eacute;nario s'ex&eacute;cute dans sa locale cible avec device, timezone et langue d&eacute;di&eacute;s</li>
+    <li><strong>Page Object Model cross-platform :</strong> s&eacute;lecteurs Android (UiSelector) et iOS (XCUITest) unifi&eacute;s dans une m&ecirc;me classe, abstraction compl&egrave;te de la plateforme pour les step definitions</li>
+    <li><strong>Cache BrowserStack &amp; ex&eacute;cution parall&egrave;le :</strong> cache apps dual-build (daily/release, invalidation 24h) et cache devices par plateforme, ex&eacute;cution pilotable enti&egrave;rement par variables d'environnement</li>
+  </ul>
+
+  <div class="stack">Stack : TypeScript &middot; WebDriverIO 9 &middot; Appium 3 &middot; Cucumber &middot; BrowserStack &middot; Node.js</div>
+
+  <div class="separator page-break-after"></div>
+
+  <div class="page-two">
+  <!-- Previous experiences -->
+  <div class="job-header">
+    <div class="job-title-line">
+      <span class="job-title">Frontend Software Developer &mdash; Hexaly (Bouygues)</span>
+      <span class="job-date">Mars 2024 - Mai 2024</span>
+    </div>
+  </div>
+  <p class="job-intro">D&eacute;veloppement de fonctionnalit&eacute;s sur Hexaly Studio, un SaaS low-code React pour r&eacute;soudre des probl&egrave;mes d'optimisation complexes (planification de livraisons, gestion d'entrep&ocirc;ts logistiques).</p>
+
+  <div class="stack">Stack : React &middot; TypeScript &middot; JavaScript</div>
+
+  <div class="separator"></div>
+
+  <div class="job-header">
+    <div class="job-title-line">
+      <span class="job-title">D&eacute;veloppeur Full Stack &mdash; JMD Technologies (Freelance)</span>
+      <span class="job-date">Avr. 2023 - D&eacute;c. 2023</span>
+    </div>
+  </div>
+  <p class="job-intro">Maintenance Industrie, sp&eacute;cialiste du nettoyage industriel, a command&eacute; un SaaS de gestion de chantiers ainsi qu'une application mobile de badgeuse pour ses agents de nettoyage.</p>
+
+  <div class="stack">Stack : Angular &middot; Express.js &middot; Sequelize &middot; MySQL &middot; Flutter &middot; Riverpod</div>
+
+  <!-- ==================== FORMATION ==================== -->
+  <div class="section-title-wrapper" style="margin-top: 16px;">
+    <div class="section-title">Formation</div>
+  </div>
+
+  <div class="job-header">
+    <div class="job-title-line">
+      <span class="job-title">ESIEE Paris &mdash; Ing&eacute;nieur IMAC</span>
+      <span class="job-date">2020 - 2023</span>
+    </div>
+  </div>
+  <p class="job-intro">Seule formation d'ing&eacute;nieur publique en France alliant arts et sciences, accr&eacute;dit&eacute;e par la Commission des Titres d'Ing&eacute;nieur (CTI). Sp&eacute;cialisation Web &amp; Mobile &mdash; Universit&eacute; Gustave Eiffel.</p>
+
+  <!-- ==================== LANGUES ==================== -->
+  <div class="section-title-wrapper" style="margin-top: 16px;">
+    <div class="section-title">Langues</div>
+  </div>
+
+  <p class="job-intro"><strong>Fran&ccedil;ais</strong> &mdash; Langue maternelle &nbsp;&middot;&nbsp; <strong>Anglais</strong> &mdash; Professionnel avanc&eacute;, niveau C1 (TOEIC 975)</p>
+
+  <!-- ==================== CENTRES D'INTÉRÊT ==================== -->
+  <div class="section-title-wrapper" style="margin-top: 16px;">
+    <div class="section-title">Centres d'int&eacute;r&ecirc;t</div>
+  </div>
+
+  <p class="job-intro"><strong>Escalade &mdash; Haut niveau :</strong> 8a en voie, 7C en bloc.</p>
+  </div>
+
+</body>
+</html>
