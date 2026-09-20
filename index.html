@@ -131,7 +131,7 @@
       padding-top: 8px;
       font-size: clamp(9.5px, 1.4vw, 11px);
       color: #374151;
-    }
+      flex-shrink: 0; }
 
     .header-right a {
       color: #374151;
@@ -333,9 +333,7 @@
       .separator { margin: 12px 0; }
       .photo-container { width: 74px; height: 74px; }
 
-      .page-two {
-        padding-top: 48px;
-      }
+      .page-two {         padding-top: 0;         break-before: page;       }
 
       .page-two .job-title { font-size: 16px; }
       .page-two .job-date { font-size: 10.5px; }
@@ -376,7 +374,7 @@
           <span class="name-first">Adam</span> <span class="name-last">Ferreira</span>
         </div>
         <div class="subtitle">QA Automation Architect</div>
-        <div class="tagline">Je con&#231;ois ce qui rend une app mobile testable : framework et CI, donn&#233;es de test par API, testabilit&#233; pos&#233;e dans le code applicatif, outillage pour les &#233;quipes.</div>
+        <div class="tagline">Je con&ccedil;ois ce qui rend une app mobile testable : framework, CI, donn&eacute;es par API, testabilit&eacute; dans le code, outillage pour les &eacute;quipes.</div>
         <div class="location">
           <span class="flag"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span> Paris, France
         </div>
@@ -407,21 +405,21 @@
   </div>
 
   <p class="job-intro">
-    Pour un leader europ&#233;en des paris sportifs en ligne, automatisation des tests de la nouvelle g&#233;n&#233;ration de son app mobile iOS et Android, sur le p&#233;rim&#232;tre de la gamification des paris (d&#233;fis, missions, classements, jeux de r&#233;compense). Mission : construire l'automatisation en m&#234;me temps que l'app, dans un r&#233;f&#233;rentiel de tests commun au mobile et au web.
+    Leader europ&#233;en des paris sportifs en ligne. Automatisation des tests de la nouvelle g&#233;n&#233;ration de l'app mobile iOS et Android, sur la gamification des paris, dans un r&#233;f&#233;rentiel de tests commun au mobile et au web.
   </p>
 
   <div class="separator"></div>
 
   <div class="sub-title">Construire l'automatisation en m&#234;me temps que l'app</div>
-  <p class="sub-intro">Une app nouvelle, donc aucun test existant &#224; reprendre : j'ai pos&#233; les fondations pour que chaque fonctionnalit&#233; arrive testable, avec des jeux de donn&#233;es ma&#238;tris&#233;s et une couverture volontairement cibl&#233;e.</p>
+  <p class="sub-intro">Aucun test existant &#224; reprendre : j'ai pos&#233; les fondations pour que chaque fonctionnalit&#233; arrive testable.</p>
 
   <ul class="bullets">
-    <li><strong>Testabilit&#233; int&#233;gr&#233;e au code de l'app :</strong> j'ai fait entrer la QA dans le code applicatif en y posant moi-m&#234;me les identifiants de test, avec un guide et des r&#232;gles valid&#233;es avec les tech leads. R&#233;sultat : des s&#233;lecteurs stables, identiques sur iOS et Android, et des tests qui ne cassent plus &#224; chaque changement d'&#233;cran</li>
-    <li><strong>Animations interactives rendues testables :</strong> les animations du produit &#233;taient une bo&#238;te noire pour les tests. J'ai construit l'outil qui y injecte des identifiants sans passer par l'&#233;diteur du designer, l'ai valid&#233; contre le moteur de l'app, puis rendu lisible dans le format de l'&#233;diteur pour que l'&#233;quipe motion design reproduise le proc&#233;d&#233; elle-m&#234;me</li>
-    <li><strong>Jeux de donn&#233;es pilot&#233;s par API :</strong> paris plac&#233;s et r&#233;gl&#233;s par API avant chaque sc&#233;nario, donn&#233;es calqu&#233;es sur les vraies campagnes de production, un utilisateur de test isol&#233; par sc&#233;nario. L'interface n'est test&#233;e que l&#224; o&#249; elle apporte quelque chose : sc&#233;narios courts, r&#233;sultats stables</li>
-    <li><strong>Campagne de tests nocturne sur cinq march&#233;s r&#233;glement&#233;s :</strong> cha&#238;ne de pr&#233;requis, ex&#233;cution sur une flotte de devices r&#233;els, et un triage quotidien qui distingue bug produit, incident d'environnement et test instable, pour que l'&#233;quipe ne perde plus de temps sur les faux rouges</li>
-    <li><strong>Diagnostics jusqu'au moteur mobile :</strong> des &#233;checs &#171; inexplicables &#187; ramen&#233;s &#224; leur cause r&#233;elle, dans l'arbre d'accessibilit&#233; iOS ou la gestion des zones tactiles Android, document&#233;s et corrig&#233;s dans le framework plut&#244;t que contourn&#233;s dans les tests</li>
-    <li><strong>M&#233;thode et outillage partag&#233;s :</strong> plans de test par epic, tests de mise en production, r&#233;f&#233;rentiel commun mobile et web, et des assistants Claude Code de squad qui d&#233;rivent les page objects des maquettes et des tickets</li>
+    <li><strong>Testabilit&#233; dans le code de l'app :</strong> la QA pose elle-m&#234;me les identifiants de test, selon des r&#232;gles valid&#233;es avec les tech leads. S&#233;lecteurs stables, identiques sur iOS et Android</li>
+    <li><strong>Animations interactives testables :</strong> outil maison qui injecte des identifiants dans les animations sans l'&#233;diteur du designer, valid&#233; par le moteur de l'app, puis rendu lisible par l'&#233;quipe motion design</li>
+    <li><strong>Donn&#233;es de test par API :</strong> paris plac&#233;s et r&#233;gl&#233;s avant chaque sc&#233;nario, calqu&#233;s sur les campagnes de production. L'interface n'est test&#233;e que l&#224; o&#249; &#231;a compte</li>
+    <li><strong>Campagne nocturne sur cinq march&#233;s r&#233;glement&#233;s :</strong> triage quotidien qui s&#233;pare bug produit, incident d'environnement et test instable</li>
+    <li><strong>Diagnostics jusqu'au moteur mobile :</strong> &#233;checs &#171; inexplicables &#187; ramen&#233;s &#224; leur cause, dans l'accessibilit&#233; iOS ou les zones tactiles Android, et corrig&#233;s dans le framework</li>
+    <li><strong>M&#233;thode partag&#233;e :</strong> plans de test par epic, tests de mise en production, assistants Claude Code de squad qui d&#233;rivent les page objects des maquettes et des tickets</li>
   </ul>
 
   <div class="stack">Stack : Flutter &middot; CodeceptJS &middot; Appium &middot; Playwright &middot; Cucumber/Gherkin &middot; BrowserStack &middot; Rive &middot; Claude Code &middot; MCP Atlassian / Figma</div>
@@ -437,29 +435,29 @@
   </div>
 
   <p class="job-intro">
-    Pour les apps mobiles ALL Accor (iOS et Android, trois apps : fid&#233;lit&#233;, r&#233;servation, s&#233;jour), reprise d'un framework de tests de quatre ans et de sa cha&#238;ne d'int&#233;gration continue, jusqu'&#224; devenir le r&#233;f&#233;rent technique de l'automatisation mobile.
+    Apps mobiles ALL Accor, iOS et Android : fid&#233;lit&#233;, r&#233;servation, s&#233;jour. Reprise d'un framework de tests de quatre ans et de sa CI, jusqu'&#224; devenir le r&#233;f&#233;rent technique de l'automatisation mobile.
   </p>
 
   <div class="separator"></div>
 
   <div class="sub-title">Remettre un framework legacy &#224; l'&#233;tat de l'art, puis aller plus loin</div>
-  <p class="sub-intro">Arriv&#233; pour ex&#233;cuter et maintenir des tests, j'ai pris l'initiative de remettre &#224; plat le framework et le pipeline, puis d'ouvrir aux tests ce qu'ils ne savaient pas atteindre.</p>
+  <p class="sub-intro">Arriv&#233; pour maintenir des tests, j'ai remis &#224; plat le framework et le pipeline, puis ouvert aux tests ce qu'ils ne pouvaient pas atteindre.</p>
 
   <ul class="bullets">
-    <li><strong>Framework modernis&#233; sans interruption de service :</strong> migrations de Java et du client Appium encha&#238;n&#233;es sans r&#233;gression, code mort et d&#233;pendances retir&#233;s, logs lisibles par sc&#233;nario. Le framework p&#232;se la moiti&#233; de sa taille initiale et il est devenu le r&#233;f&#233;rentiel commun de l'&#233;quipe</li>
-    <li><strong>Ex&#233;cution stable sur une flotte de devices r&#233;els :</strong> chaque sc&#233;nario distribu&#233; sur un device diff&#233;rent (syst&#232;mes, mod&#232;les, tablettes, orientations), attentes fluides, cache des apps et des devices. Sessions plus rapides, &#233;checs reproductibles</li>
-    <li><strong>Pipeline CI rendu autonome :</strong> d&#233;pendance &#224; un template externe supprim&#233;e, quatre &#233;tapes lisibles, quality gate &#224; seuil qui casse le pipeline quand le taux de r&#233;ussite est insuffisant, r&#233;sultats pouss&#233;s dans Xray/Jira et notifi&#233;s sur Slack par p&#233;rim&#232;tre. Trois minutes gagn&#233;es par ex&#233;cution</li>
-    <li><strong>Ce que les tests ne pouvaient pas atteindre, rendu accessible :</strong> feature flags iOS et Android pilot&#233;s depuis les tests (dont l'entr&#233;e Travel Concierge, alors derri&#232;re flag), builds store et debug, distribution TestFlight et Firebase, webviews derri&#232;re le pare-feu d'entreprise via tunnel et proxy</li>
-    <li><strong>Bugs applicatifs diagnostiqu&#233;s pour les d&#233;veloppeurs :</strong> instabilit&#233; du login iOS qui faisait &#233;chouer un run sur cinq, erreurs de renouvellement de session, &#233;crans de consentement absents en test ; rapports construits sur des sessions compar&#233;es, corrig&#233;s en bin&#244;me avec le tech lead iOS</li>
-    <li><strong>Un second framework con&#231;u de z&#233;ro en TypeScript :</strong> un sc&#233;nario = une session = une installation propre, rotation des devices sans collision entre workers parall&#232;les, multi-locale par tags. Compar&#233; &#224; la stack Java pour &#233;clairer le choix de l'&#233;quipe</li>
-    <li><strong>Passation compl&#232;te :</strong> documentation exhaustive, relais assur&#233; jusqu'au dernier jour et correctifs encore pouss&#233;s apr&#232;s le d&#233;part</li>
+    <li><strong>Framework modernis&#233; sans r&#233;gression :</strong> migrations Java et Appium, code mort retir&#233;, logs par sc&#233;nario. Moiti&#233; de sa taille initiale, devenu le r&#233;f&#233;rentiel de l'&#233;quipe</li>
+    <li><strong>Ex&#233;cution stable sur devices r&#233;els :</strong> chaque sc&#233;nario sur un device diff&#233;rent, cache des apps et des devices. Sessions plus rapides, &#233;checs reproductibles</li>
+    <li><strong>Pipeline CI autonome :</strong> quality gate &#224; seuil, r&#233;sultats dans Xray/Jira, alertes Slack par p&#233;rim&#232;tre. Trois minutes gagn&#233;es par ex&#233;cution</li>
+    <li><strong>L'inaccessible rendu testable :</strong> feature flags iOS et Android pilot&#233;s depuis les tests (dont le Travel Concierge), builds store et debug, webviews derri&#232;re le pare-feu d'entreprise</li>
+    <li><strong>Bugs diagnostiqu&#233;s pour les d&#233;veloppeurs :</strong> login iOS qui faisait &#233;chouer un run sur cinq, sessions expir&#233;es, consentement absent. Corrig&#233;s en bin&#244;me avec le tech lead iOS</li>
+    <li><strong>Second framework TypeScript con&#231;u de z&#233;ro :</strong> un sc&#233;nario = une session = une installation propre, multi-locale, rotation des devices entre workers</li>
+    <li><strong>Passation compl&#232;te :</strong> documentation, relais jusqu'au dernier jour, correctifs pouss&#233;s apr&#232;s le d&#233;part</li>
   </ul>
 
   <div class="stack">Stack : Java 25 &middot; Maven &middot; Appium &middot; TestNG &middot; Cucumber &middot; BrowserStack &middot; GitLab CI &middot; Xray/Jira &middot; TypeScript &middot; WebDriverIO 9 &middot; Allure</div>
 
   <div class="separator"></div>
 
-  <div class="page-two">
+  
   <!-- Previous experiences -->
   <div class="job-header">
     <div class="job-title-line">
@@ -473,6 +471,7 @@
 
   <div class="separator"></div>
 
+  <div class="page-two">
   <div class="job-header">
     <div class="job-title-line">
       <span class="job-title">D&eacute;veloppeur Full Stack &mdash; JMD Technologies (Freelance)</span>
