@@ -370,9 +370,25 @@
     }
     :root[data-theme="dark"] { --bg: #0f1216; --body: #d4d8de; --strong: #f3f4f6; --text: #c3c9d2; --muted: #9aa3ae; --faint: #6b7280; --line: #2c323b; }
     html { background: var(--bg); }
-    .theme-toggle { margin-top: 2px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px;
-      font: inherit; font-size: 10.5px; padding: 3px 9px; cursor: pointer; line-height: 1.2; }
-    .theme-toggle:hover { color: var(--strong); border-color: var(--muted); }
+    /* ---- interrupteur jour / nuit ---- */
+    .theme-toggle { position: relative; width: 52px; height: 26px; margin-top: 4px; padding: 0; border-radius: 999px;
+      border: 1px solid var(--line); background: #eef0f3; cursor: pointer; display: inline-flex; align-items: center;
+      justify-content: space-between; -webkit-tap-highlight-color: transparent;
+      transition: background .25s ease, border-color .25s ease; }
+    .theme-toggle:hover { border-color: var(--muted); }
+    .theme-toggle:focus-visible { outline: 2px solid #0a66c2; outline-offset: 2px; }
+    .tt-icon { position: relative; z-index: 1; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+      color: var(--faint); transition: color .25s ease; }
+    .tt-icon svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .tt-sun { color: #f59e0b; }
+    .tt-knob { position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .28), 0 0 0 1px rgba(0, 0, 0, .04);
+      transition: transform .28s cubic-bezier(.4, 0, .2, 1), background .25s ease; }
+    :root[data-theme="dark"] .theme-toggle { background: #1c2230; border-color: #2c323b; }
+    :root[data-theme="dark"] .tt-knob { transform: translateX(26px); background: #0a66c2; box-shadow: 0 1px 4px rgba(0, 0, 0, .6); }
+    :root[data-theme="dark"] .tt-sun { color: var(--faint); }
+    :root[data-theme="dark"] .tt-moon { color: #f3f4f6; }
+    @media (prefers-reduced-motion: reduce) { .tt-knob, .theme-toggle, .tt-icon { transition: none; } }
     @media print {
       :root, :root[data-theme="dark"] { --bg: #ffffff; --body: #1f2937; --strong: #1a202c; --text: #374151; --muted: #6b7280; --faint: #9ca3af; --line: #d1d5db; }
       html, body { background: #ffffff !important; }
@@ -404,7 +420,11 @@
         </span>
         ad-ferreira
       </a>
-      <button class="theme-toggle" type="button" aria-label="Basculer le mode nuit">&#9790; Mode nuit</button>
+      <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Mode nuit" title="Passer en mode nuit">
+        <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
+        <span class="tt-icon tt-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+        <span class="tt-knob"></span>
+      </button>
     </div>
   </div>
 
@@ -532,17 +552,21 @@
     (function () {
       var root = document.documentElement, btn = document.querySelector('.theme-toggle');
       var mq = window.matchMedia('(prefers-color-scheme: dark)');
-      function current() { return root.dataset.theme || (mq.matches ? 'dark' : 'light'); }
-      function label() { btn.innerHTML = current() === 'dark' ? '&#9788; Mode jour' : '&#9790; Mode nuit'; }
-      try { var saved = localStorage.getItem('cv-theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
-      label();
+      var saved = null;
+      try { saved = localStorage.getItem('cv-theme'); } catch (e) {}
+      function apply(t) {
+        root.dataset.theme = t;
+        btn.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
+        btn.title = t === 'dark' ? 'Passer en mode jour' : 'Passer en mode nuit';
+      }
+      apply(saved || (mq.matches ? 'dark' : 'light'));
       btn.addEventListener('click', function () {
-        var next = current() === 'dark' ? 'light' : 'dark';
-        root.dataset.theme = next;
+        var next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        saved = next;
         try { localStorage.setItem('cv-theme', next); } catch (e) {}
-        label();
+        apply(next);
       });
-      mq.addEventListener('change', label);
+      mq.addEventListener('change', function (e) { if (!saved) apply(e.matches ? 'dark' : 'light'); });
     })();
   </script>
 </body>
