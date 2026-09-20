@@ -21,8 +21,8 @@
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: #1f2937;
-      background: white;
+      color: var(--body);
+      background: var(--bg);
       width: 100%;
       max-width: 210mm;
       min-height: 297mm;
@@ -73,7 +73,7 @@
     .name {
       font-size: clamp(20px, 4vw, 28px);
       line-height: 1.15;
-      color: #1a202c;
+      color: var(--strong);
       letter-spacing: -0.3px;
     }
 
@@ -88,14 +88,14 @@
     .subtitle {
       font-size: clamp(10px, 1.5vw, 12px);
       font-weight: 700;
-      color: #374151;
+      color: var(--text);
       margin-top: 3px;
     }
-    .tagline { font-size: clamp(9px, 1.4vw, 10px); color: #374151; margin-top: 5px; max-width: 540px; line-height: 1.45; }
+    .tagline { font-size: clamp(9px, 1.4vw, 10px); color: var(--text); margin-top: 5px; max-width: 540px; line-height: 1.45; }
 
     .location {
       font-size: clamp(9px, 1.4vw, 10.5px);
-      color: #6b7280;
+      color: var(--muted);
       margin-top: 5px;
       display: flex;
       align-items: center;
@@ -110,7 +110,7 @@
       display: inline-flex;
       flex-shrink: 0;
       position: relative;
-      border: 0.8px solid #c5c8cc;
+      border: 0.8px solid var(--line);
     }
 
     .flag-blue, .flag-white, .flag-red {
@@ -130,11 +130,11 @@
       gap: 6px;
       padding-top: 8px;
       font-size: clamp(9.5px, 1.4vw, 11px);
-      color: #374151;
+      color: var(--text);
       flex-shrink: 0; }
 
     .header-right a {
-      color: #374151;
+      color: var(--text);
       text-decoration: none;
     }
 
@@ -162,7 +162,7 @@
     }
 
     .contact-item {
-      color: #374151;
+      color: var(--text);
       font-weight: 400;
     }
 
@@ -174,7 +174,7 @@
     .section-title {
       font-size: clamp(10px, 1.5vw, 12px);
       font-weight: 700;
-      color: #6b7280;
+      color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 1.8px;
       padding-bottom: 6px;
@@ -199,19 +199,19 @@
     .job-title {
       font-size: clamp(13px, 2.2vw, 16px);
       font-weight: 800;
-      color: #1a202c;
+      color: var(--strong);
       letter-spacing: -0.2px;
     }
 
     .job-date {
       font-size: clamp(9px, 1.4vw, 10.5px);
-      color: #9ca3af;
+      color: var(--faint);
       font-weight: 400;
     }
 
     .job-intro {
       font-size: clamp(9px, 1.4vw, 10.5px);
-      color: #374151;
+      color: var(--text);
       line-height: 1.6;
       text-align: justify;
       margin-bottom: 8px;
@@ -221,7 +221,7 @@
     .separator {
       width: 48px;
       height: 1px;
-      background: #d1d5db;
+      background: var(--line);
       margin: 10px 0;
     }
 
@@ -229,13 +229,13 @@
     .sub-title {
       font-size: clamp(11px, 1.6vw, 12.5px);
       font-weight: 700;
-      color: #1a202c;
+      color: var(--strong);
       margin-bottom: 4px;
     }
 
     .sub-intro {
       font-size: clamp(9px, 1.4vw, 10.5px);
-      color: #374151;
+      color: var(--text);
       line-height: 1.6;
       text-align: justify;
       margin-bottom: 6px;
@@ -249,7 +249,7 @@
 
     .bullets li {
       font-size: clamp(9px, 1.4vw, 10.5px);
-      color: #374151;
+      color: var(--text);
       line-height: 1.6;
       text-align: justify;
       margin-bottom: 3px;
@@ -263,20 +263,20 @@
       left: 2px;
       top: 0;
       font-size: clamp(11px, 1.8vw, 14px);
-      color: #1a202c;
+      color: var(--strong);
       font-weight: 700;
       line-height: 1.55;
     }
 
     .bullets li strong {
       font-weight: 700;
-      color: #1a202c;
+      color: var(--strong);
     }
 
     .stack {
       font-size: clamp(9px, 1.4vw, 10.5px);
       font-style: italic;
-      color: #1a202c;
+      color: var(--strong);
       font-weight: 400;
       margin-bottom: 4px;
       text-decoration: underline;
@@ -361,6 +361,23 @@
         print-color-adjust: exact;
       }
     }
+
+    /* ========== MODE NUIT (suit le système, ou le bouton ☾/☀) — l'impression reste claire ========== */
+    :root { color-scheme: light dark;
+      --bg: #ffffff; --body: #1f2937; --strong: #1a202c; --text: #374151; --muted: #6b7280; --faint: #9ca3af; --line: #d1d5db; }
+    @media screen and (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) { --bg: #0f1216; --body: #d4d8de; --strong: #f3f4f6; --text: #c3c9d2; --muted: #9aa3ae; --faint: #6b7280; --line: #2c323b; }
+    }
+    :root[data-theme="dark"] { --bg: #0f1216; --body: #d4d8de; --strong: #f3f4f6; --text: #c3c9d2; --muted: #9aa3ae; --faint: #6b7280; --line: #2c323b; }
+    html { background: var(--bg); }
+    .theme-toggle { margin-top: 2px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px;
+      font: inherit; font-size: 10.5px; padding: 3px 9px; cursor: pointer; line-height: 1.2; }
+    .theme-toggle:hover { color: var(--strong); border-color: var(--muted); }
+    @media print {
+      :root, :root[data-theme="dark"] { --bg: #ffffff; --body: #1f2937; --strong: #1a202c; --text: #374151; --muted: #6b7280; --faint: #9ca3af; --line: #d1d5db; }
+      html, body { background: #ffffff !important; }
+      .theme-toggle { display: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -387,6 +404,7 @@
         </span>
         ad-ferreira
       </a>
+      <button class="theme-toggle" type="button" aria-label="Basculer le mode nuit">&#9790; Mode nuit</button>
     </div>
   </div>
 
@@ -510,5 +528,22 @@
   <p class="job-intro"><strong>Escalade &mdash; Haut niveau :</strong> 8a en voie, 7C en bloc.</p>
   </div>
 
+  <script>
+    (function () {
+      var root = document.documentElement, btn = document.querySelector('.theme-toggle');
+      var mq = window.matchMedia('(prefers-color-scheme: dark)');
+      function current() { return root.dataset.theme || (mq.matches ? 'dark' : 'light'); }
+      function label() { btn.innerHTML = current() === 'dark' ? '&#9788; Mode jour' : '&#9790; Mode nuit'; }
+      try { var saved = localStorage.getItem('cv-theme'); if (saved) root.dataset.theme = saved; } catch (e) {}
+      label();
+      btn.addEventListener('click', function () {
+        var next = current() === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try { localStorage.setItem('cv-theme', next); } catch (e) {}
+        label();
+      });
+      mq.addEventListener('change', label);
+    })();
+  </script>
 </body>
 </html>
