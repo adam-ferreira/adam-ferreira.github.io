@@ -42,7 +42,7 @@ async function setup(mark, THREE, loader, SVGLoader) {
   // épaisseur proportionnelle à la hauteur du dessin : un vrai objet, pas une feuille
   const vb = (svgText.match(/viewBox="([^"]+)"/) || [])[1];
   const svgH = vb ? parseFloat(vb.split(/[\s,]+/)[3]) : 100;
-  const depth = svgH * 0.22, bevel = svgH * 0.014;
+  const depth = svgH * 0.12, bevel = svgH * 0.012;
   data.paths.forEach((path, i) => {
     const base = path.userData.style.fill;
     if (!base || base === 'none') return;
@@ -85,13 +85,16 @@ async function setup(mark, THREE, loader, SVGLoader) {
   let dragging = false, last = null, t = Math.random() * 6, hover = false, moved = 0;
   const vel = { x: 0, y: 0 }; let releasedAt = -1e9;
   const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a)); // angle ramené dans [-π, π] : retour par le chemin le plus court
+  const LIM_X = 0.9, LIM_Y = 1.15; // ~50° et ~65° : au-delà, ça résiste comme un élastique
+  const soft = (a, lim) => (Math.abs(a) <= lim ? a : Math.sign(a) * (lim + (Math.abs(a) - lim) * 0.18));
+  const clampRot = () => { wrap.rotation.x = soft(wrap.rotation.x, LIM_X); wrap.rotation.y = soft(wrap.rotation.y, LIM_Y); };
   canvas.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY, t: performance.now() }; canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;
     const dx = e.clientX - last.x, dy = e.clientY - last.y;
     moved += Math.abs(dx) + Math.abs(dy);
-    wrap.rotation.y += dx * 0.022; wrap.rotation.x += dy * 0.022;
-    vel.x = dx * 0.022; vel.y = dy * 0.022;
+    wrap.rotation.y += dx * 0.018; wrap.rotation.x += dy * 0.018; clampRot();
+    vel.x = dx * 0.018; vel.y = dy * 0.018;
     last = { x: e.clientX, y: e.clientY, t: performance.now() };
     if (reduced()) renderer.render(scene, camera);
   });
@@ -112,14 +115,16 @@ async function setup(mark, THREE, loader, SVGLoader) {
     if (!dragging) {
       const sinceRelease = performance.now() - releasedAt;
       const spinning = Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002;
-      if (spinning || sinceRelease < 1200) {
-        wrap.rotation.y += vel.x; wrap.rotation.x += vel.y;   // sur son élan
-        vel.x *= 0.965; vel.y *= 0.965;
+      if (spinning || sinceRelease < 700) {
+        wrap.rotation.y += vel.x; wrap.rotation.x += vel.y; clampRot();   // sur son élan, freiné par la butée
+        if (Math.abs(wrap.rotation.y) >= LIM_Y) vel.x *= 0.6;
+        if (Math.abs(wrap.rotation.x) >= LIM_X) vel.y *= 0.6;
+        vel.x *= 0.93; vel.y *= 0.93;
       } else {
         t += 0.016;
-        const restY = hover ? 0.28 : Math.sin(t * 0.9) * 0.06, restX = hover ? -0.18 : Math.sin(t * 0.7) * 0.03;
-        wrap.rotation.y = norm(wrap.rotation.y) + (restY - norm(wrap.rotation.y)) * 0.045;   // se redresse doucement
-        wrap.rotation.x = norm(wrap.rotation.x) + (restX - norm(wrap.rotation.x)) * 0.045;
+        const restY = hover ? 0.16 : Math.sin(t * 0.9) * 0.05, restX = hover ? -0.1 : Math.sin(t * 0.7) * 0.025;
+        wrap.rotation.y = norm(wrap.rotation.y) + (restY - norm(wrap.rotation.y)) * 0.06;   // se redresse doucement
+        wrap.rotation.x = norm(wrap.rotation.x) + (restX - norm(wrap.rotation.x)) * 0.06;
       }
     }
     renderer.render(scene, camera);
