@@ -153,10 +153,11 @@
     if (reduced) { window.scrollTo(0, y); return; }
     var y0 = window.scrollY, t0 = performance.now();
     if (tween) cancelAnimationFrame(tween);
+    root.classList.add('is-moving');
     (function frame(now) {
       var u = Math.min(1, (now - t0) / ms);
       window.scrollTo(0, y0 + (y - y0) * ease(u));
-      if (u < 1) tween = requestAnimationFrame(frame); else { tween = null; locked = true; }
+      if (u < 1) tween = requestAnimationFrame(frame); else { tween = null; locked = true; settle(); }
     })(t0);
   }
   function currentIndex() {
@@ -203,5 +204,27 @@
       e.preventDefault();
       if (!tween) step(dir);
     });
+  }
+
+  // La page bouge (transition ou défilement libre) : les rendus 3D se figent (is-moving) pour laisser toute la place au mouvement.
+  var settleTimer = 0;
+  function settle() { clearTimeout(settleTimer); settleTimer = setTimeout(function () { if (!tween) root.classList.remove('is-moving'); }, 140); }
+  window.addEventListener('scroll', function () { root.classList.add('is-moving'); settle(); }, { passive: true });
+
+  // Compteur de fluidité, seulement avec ?fps dans l'adresse : images par seconde, et images perdues pendant chaque transition.
+  if (/[?&]fps\b/.test(location.search)) {
+    var meter = document.createElement('div');
+    meter.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;padding:8px 10px;border-radius:8px;background:rgba(0,0,0,.78);color:#fff;font:12px/1.5 ui-monospace,Menlo,monospace;white-space:pre;pointer-events:none';
+    document.body.appendChild(meter);
+    var frames = [], last = performance.now(), moveStats = null, lastMove = '—';
+    (function tick(now) {
+      var dt = now - last; last = now; frames.push(dt); if (frames.length > 120) frames.shift();
+      var moving = root.classList.contains('is-moving');
+      if (moving) { if (!moveStats) moveStats = { n: 0, slow: 0, worst: 0 }; moveStats.n++; if (dt > 20) moveStats.slow++; if (dt > moveStats.worst) moveStats.worst = dt; }
+      else if (moveStats) { lastMove = moveStats.n + ' images, ' + moveStats.slow + ' lentes (> 20 ms), pire ' + moveStats.worst.toFixed(1) + ' ms'; moveStats = null; }
+      var avg = frames.reduce(function (a, b) { return a + b; }, 0) / frames.length;
+      meter.textContent = 'FPS ' + (1000 / avg).toFixed(0) + '  (image moyenne ' + avg.toFixed(1) + ' ms)\ndernier mouvement : ' + lastMove;
+      requestAnimationFrame(tick);
+    })(last);
   }
 })();

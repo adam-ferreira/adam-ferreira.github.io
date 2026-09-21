@@ -267,9 +267,13 @@ async function start() {
   if (reduced() || freeze !== null) return;
   const t0 = performance.now();
   let frame = 0;
+  let lastDraw = 0;
   (function loop(now) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
+    if (document.documentElement.classList.contains('is-moving')) return;   // la page bouge : on laisse toute la place au mouvement
+    if (now - lastDraw < 15) return;   // 60 images/s suffisent, même sur un écran à 120 Hz
+    lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
     if (frame++ % 3 === 0) paint(t % CYCLE);   // l'écran des téléphones à 20 images/s : moins d'envois à la carte graphique
     if (!dragging) {
