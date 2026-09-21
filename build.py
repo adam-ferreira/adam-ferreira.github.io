@@ -101,7 +101,7 @@ def job_html(j: dict, last: bool = False, stack_label: str = "Stack :") -> str:
     num = f'        <span class="job-num label">{j["num"]}</span>\n' if j.get("num") else ""
     short = "" if j.get("bullets") else " job-short"
     data_num = f' data-num="{j["num"]}"' if j.get("num") else ""
-    out = [f'    <article class="job{short}"{data_num}>\n      <div class="job-side">\n      <div class="job-header"><div class="job-title-line">\n{num}'
+    out = [f'    <article class="job slide{short}"{data_num}>\n      <div class="job-side">\n      <div class="job-header"><div class="job-title-line">\n{num}'
            f'        <h3 class="job-title">{title}</h3>\n        <span class="job-date">{md(j["date"])}</span>\n      </div></div>\n']
     if j.get("intro"):
         out.append(f'      <p class="job-intro">{md(j["intro"])}</p>\n')
@@ -136,6 +136,7 @@ def render(d: dict) -> str:
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">{base_tag}
+  <script>if (matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches) document.documentElement.classList.add("stage")</script>
   <title>{md(d["meta"]["title"])}</title>
   <meta name="description" content="{html.escape(d["meta"]["description"])}">
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
@@ -179,7 +180,7 @@ def render(d: dict) -> str:
   </nav>
 
   <div class="page">
-  <header class="header">
+  <header class="header slide">
     <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
       <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="{ver("assets/portrait.webp")}" alt="{md(full_name)}" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
@@ -206,7 +207,7 @@ def render(d: dict) -> str:
 """]
     # écran de chapitre : le grand titre « Experience » et les compétences
     skills = "".join(f'      <div class="skills-row"><span class="skills-label">{md(row["label"])}</span>{chips(row["items"])}</div>\n' for row in d["skills"])
-    parts.append(section_open("experience", sec["experience"]).replace('    <div class="section-title-wrapper">', '    <div class="chapter">\n    <div class="section-title-wrapper">', 1))
+    parts.append(section_open("experience", sec["experience"]).replace('    <div class="section-title-wrapper">', '    <div class="chapter slide">\n    <div class="section-title-wrapper">', 1))
     parts.append(f'    <div class="skills" id="skills">\n{skills}    </div>\n    </div>\n')
     jobs = d["experience"]
     for i, j in enumerate(jobs):
@@ -219,7 +220,7 @@ def render(d: dict) -> str:
         parts.extend(f'    <p class="job-intro reading">{md(p)}</p>\n' for p in d["projects"])
         parts.append("  </section>\n\n")
 
-    parts.append('  <div class="facts">\n')
+    parts.append('  <div class="facts slide">\n')
     parts.append(section_open("education", sec["education"]))
     for e in d["education"]:
         parts.append(f'    <div class="job-header"><div class="job-title-line">\n      <h3 class="job-title">{md(e["title"])}</h3>\n'
@@ -234,7 +235,7 @@ def render(d: dict) -> str:
     parts.extend(f'    <p class="job-intro reading">{md(i)}</p>\n' for i in d["interests"])
     parts.append("  </section>\n  </div>\n  </main>\n  </div>\n\n")
 
-    parts.append(f"""  <footer class="site-footer">
+    parts.append(f"""  <footer class="site-footer slide">
     <a class="footer-statement" href="mailto:{html.escape(idn["contact"]["email"])}">{md(ui["footer_statement"])}</a>
     <div class="footer-grid label">
       <a class="nocase" href="mailto:{html.escape(idn["contact"]["email"])}">{md(idn["contact"]["email"])}</a>
