@@ -3,7 +3,7 @@
 // (identique au repos) suffit, et on épargne un rendu 3D au chargement de la page.
 // On l'attrape, on le lance, il continue sur son élan, puis reprend son léger balancement.
 // Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
-const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff7452';   // l'accent du site
+const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // l'accent du site
 const canvas = document.querySelector('.brand canvas.logo3d');
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;

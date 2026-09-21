@@ -18,8 +18,8 @@
   <link rel="alternate" hreflang="en" href="https://adam-ferreira.github.io/">
   <link rel="alternate" hreflang="fr" href="https://adam-ferreira.github.io/fr/">
   <link rel="alternate" hreflang="x-default" href="https://adam-ferreira.github.io/">
-  <link rel="icon" href="assets/logo.png?v=1beb1197" type="image/png">
-  <link rel="apple-touch-icon" href="assets/logo.png?v=1beb1197">
+  <link rel="icon" href="assets/logo.png?v=720e0702" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo.png?v=720e0702">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2?v=e6d8af18" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2?v=55993f11" crossorigin>
   <style>
@@ -52,10 +52,10 @@
   --muted: #5f6875;
   --line: #dde1e7;
   --chip: #eaedf1;
-  --accent: #ff7452;        /* LA couleur du site : page, téléphones 3D, logo AF 3D, curseur, portrait */
-  --accent-ink: #b8391a;    /* sa version foncée, pour du texte sur fond clair */
-  --accent-hi: #ffd7ca;     /* reflet (curseur, disque du portrait) */
-  --accent-deep: #c2401f;   /* ombre */
+  --accent: #ffb627;        /* LA couleur (mangue, choisie le 21/09/2026) du site : page, téléphones 3D, logo AF 3D, curseur, portrait */
+  --accent-ink: #976400;    /* sa version foncée, pour du texte sur fond clair */
+  --accent-hi: #ffebc3;     /* reflet (curseur, disque du portrait) */
+  --accent-deep: #b27f1b;   /* ombre */
   --topbar: rgba(246, 247, 249, 0.82);
   --mark-bg: #1d1f3b;
   --display: "Humane", "Bricolage Grotesque", system-ui, sans-serif;
@@ -65,12 +65,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-    --accent: #ff7452; --accent-ink: #ff8a6b; --accent-hi: #ffd7ca; --accent-deep: #c2401f; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+    --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-  --accent: #ff7452; --accent-ink: #ff8a6b; --accent-hi: #ffd7ca; --accent-deep: #c2401f; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+  --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
 }
 
 * { box-sizing: border-box; }
@@ -87,7 +87,7 @@ h1, h2, h3, h4, p, ul { margin: 0; }
 ul { padding: 0; list-style: none; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: #161b22; }   /* texte sombre : l'accent est clair */
 
 /* micro-étiquettes : mono, petites, espacées — les seules capitales de la page hors titres géants */
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
@@ -190,7 +190,7 @@ body.name-away .frame-status { opacity: 1; transform: none; }
   color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: -.005em;
   transition: border-color .2s ease, color .2s ease, transform .2s ease;
 }
-.contact-link svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.contact-link svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--accent-ink); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .contact-link:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
 
 .hero-foot {
@@ -378,13 +378,13 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 
   <nav class="topbar" aria-label="Navigation">
     <div class="brand" title="Adam Ferreira">
-      <img class="brand-img" src="assets/logo.png?v=1beb1197" alt="Adam Ferreira" width="46" height="46" decoding="async">
+      <img class="brand-img" src="assets/logo.png?v=720e0702" alt="Adam Ferreira" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
     <span class="frame-status label" aria-hidden="true">Adam Ferreira &middot; QA Automation Architect</span>
     <a class="lang-switch label" href="fr/" hreflang="fr" lang="fr" title="Version française" aria-label="Version française">FR</a>
-    <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=4be4cbb8">
-      <img src="assets/marks/linkedin.svg?v=4be4cbb8" alt="" width="40" height="40" decoding="async">
+    <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=b5b4242c">
+      <img src="assets/marks/linkedin.svg?v=b5b4242c" alt="" width="40" height="40" decoding="async">
     </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Switch to dark mode" data-title-light="Switch to dark mode" data-title-dark="Switch to light mode">
       <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
@@ -531,8 +531,8 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   </footer>
 
   <script src="assets/cv.js?v=d4990541"></script>
-  <script type="module" src="assets/hero3d.js?v=5677ad7c"></script>
-  <script type="module" src="assets/logo3d.js?v=eda74435"></script>
+  <script type="module" src="assets/hero3d.js?v=99eb6eae"></script>
+  <script type="module" src="assets/logo3d.js?v=55422e12"></script>
   <script type="module" src="assets/marks3d.js?v=d4abd908"></script>
 </body>
 </html>
