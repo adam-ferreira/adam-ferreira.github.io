@@ -11,7 +11,7 @@ Site : https://adam-ferreira.github.io/ · PDF : https://adam-ferreira.github.io
 | `assets/print.css` | Le style **impression** (`media="print"`) : l'A4 compact d'origine, deux pages. C'est lui qui fait le PDF. |
 | `assets/cv.js` | L'interrupteur jour / nuit (préférence mémorisée dans `localStorage`) et la barre du haut. |
 | `assets/logo3d.js` | Le logo 3D de l'en-tête (Three.js depuis jsDelivr, `assets/logo.glb` + `assets/cubemaps/`), chargé après la page, immobile sous « réduire les animations ». |
-| `assets/fonts/Humane.ttf` | La police du nom, reprise du portfolio. |
+| `assets/fonts/` | `Humane-name.woff2` (le nom, sous-ensemble de la police du portfolio) et `BricolageGrotesque-fr.woff2` (le texte, SIL OFL, sous-ensemble latin). Auto-hébergées : aucune origine tierce à l'écran. |
 | `build.py` | Assemble `index.html` depuis le JSON. Python standard, aucune dépendance. |
 | `index.html` | **Généré** — ne pas éditer à la main. |
 | `dist/cv-adam-ferreira.pdf` | **Généré** — la version imprimable, servie par GitHub Pages. |
