@@ -17,7 +17,7 @@
     "photo": "photo.jpg",
     "status_freelance": "Freelance",
     "status_mode": "sur site et télétravail",
-    "hero": "Développeur de formation. QA par choix.{{br}}Aujourd'hui chez {{betclic}}, hier chez {{accor}}",
+    "hero": "Aujourd'hui chez {{betclic}}, hier chez {{accor}}",
     "marks": {
       "betclic": {
         "type": "img",
