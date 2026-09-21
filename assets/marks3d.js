@@ -11,6 +11,11 @@ const marks = [...document.querySelectorAll('.mark[data-svg]')];
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isDark = () => document.documentElement.dataset.theme === 'dark';
+// suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
+const onDprChange = (cb) => {
+  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+  q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
+};
 
 function webglOk() {
   try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
@@ -34,7 +39,8 @@ async function setup(mark, THREE, loader, SVGLoader, RoundedBoxGeometry) {
   mark.appendChild(canvas);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  // rendu à deux fois la densité de l'écran puis réduit par le navigateur : des bords aussi fins que le SVG plat
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 4000);
@@ -115,21 +121,36 @@ async function setup(mark, THREE, loader, SVGLoader, RoundedBoxGeometry) {
   wrap.scale.set(1, -1, 1); // le repère SVG a l'axe y vers le bas
   scene.add(wrap);
 
+  let cw = 0, ch = 0;
   function fit() {
-    const w = mark.clientWidth, h = mark.clientHeight;
+    const r = mark.getBoundingClientRect(), w = r.width, h = r.height;
     if (!w || !h) return false;
-    const cw = Math.round(w * F), ch = Math.round(h * F);
+    cw = 2 * Math.round(w * F / 2); ch = 2 * Math.round(h * F / 2);
     canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));
     renderer.setSize(cw, ch, false);
     const u = vbH / h;   // unités SVG par pixel
     camera.left = -cw / 2 * u; camera.right = cw / 2 * u; camera.top = ch / 2 * u; camera.bottom = -ch / 2 * u;
     camera.updateProjectionMatrix();
+    snap(r);
     return true;
+  }
+  // un canvas posé entre deux pixels est rééchantillonné, donc flou : on le cale sur la grille de l'écran
+  function snap(r = mark.getBoundingClientRect()) {
+    const dpr = window.devicePixelRatio || 1;
+    const x = r.left + (r.width - cw) / 2, y = r.top + (r.height - ch) / 2;
+    canvas.style.left = (Math.round(x * dpr) / dpr - r.left) + 'px';
+    canvas.style.top = (Math.round(y * dpr) / dpr - r.top) + 'px';
   }
   // recalibrer dès que la marque change de taille (image arrivée tard, police chargée, fenêtre redimensionnée)
   const refit = () => { if (fit()) { renderer.render(scene, camera); mark.classList.add('is-3d'); } };
   refit();
   if ('ResizeObserver' in window) new ResizeObserver(refit).observe(mark); else window.addEventListener('resize', refit);
+  // la marque peut bouger sans changer de taille : fin de l'animation d'arrivée, polices chargées
+  mark.addEventListener('animationend', refit);
+  if (document.fonts) document.fonts.ready.then(refit);
+  window.addEventListener('resize', refit);
+  onDprChange(refit);
 
   // interaction, sur la marque elle-même (le canvas, plus grand, laisse passer la souris)
   let dragging = false, last = null, t = Math.random() * 6, hover = false, moved = 0;
