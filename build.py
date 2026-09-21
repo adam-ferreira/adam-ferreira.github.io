@@ -71,6 +71,8 @@ def job_html(j: dict, last: bool = False) -> str:
 def render(d: dict) -> str:
     idn, ui, sec = d["identity"], d["ui"], d["sections"]
     full_name = f'{idn["first_name"]} {idn["last_name"]}'
+    # la feuille écran est intégrée à la page : un aller-retour réseau de moins avant le premier affichage (mesuré : FCP mobile 2,9 s)
+    screen_css = (ROOT / "assets" / "cv.css").read_text(encoding="utf-8").replace('url("fonts/', 'url("assets/fonts/')
     nav_links = "".join(f'      <a href="{html.escape(n["href"])}">{md(n["label"])}</a>\n' for n in ui.get("nav", []))
     parts = [f"""<!DOCTYPE html>
 <html lang="{d["lang"]}">
@@ -95,7 +97,9 @@ def render(d: dict) -> str:
   <link rel="preload" as="style" href="{FONTS_URL}">
   <link rel="stylesheet" href="{FONTS_URL}" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="{FONTS_URL}"></noscript>
-  <link rel="stylesheet" href="assets/cv.css" media="screen">
+  <style media="screen">
+{screen_css}
+  </style>
   <link rel="stylesheet" href="assets/print.css" media="print">
   <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}}}}</script>
 </head>
@@ -115,7 +119,7 @@ def render(d: dict) -> str:
 
   <header class="header">
     <div class="header-left">
-      <div class="photo-container"><img src="{idn["photo"]}" alt="{md(full_name)}" class="photo" width="300" height="400"></div>
+      <div class="photo-container"><img src="{idn["photo"]}" alt="{md(full_name)}" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">{md(idn["first_name"])}</span> <span class="name-last">{md(idn["last_name"])}</span></h1>
         <p class="subtitle">{md(idn["headline"])}</p>

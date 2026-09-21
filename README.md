@@ -7,7 +7,7 @@ Site : https://adam-ferreira.github.io/ · PDF : https://adam-ferreira.github.io
 | Fichier | Rôle |
 |---|---|
 | `content/cv.fr.json` | **Tout le contenu** : identité, accroche, compétences, expériences (puces), projets, formation, langues. Texte UTF-8, `**gras**` pour les mises en avant. |
-| `assets/cv.css` | Le style **écran** (`media="screen"`) : colonne de lecture, Bricolage Grotesque, nom en Humane, étiquettes, mode nuit. |
+| `assets/cv.css` | Le style **écran** : colonne de lecture, Bricolage Grotesque, nom en Humane, étiquettes, mode nuit. **Intégré dans `index.html` par le build** (un aller-retour de moins au chargement) : on l'édite ici, jamais dans la page. |
 | `assets/print.css` | Le style **impression** (`media="print"`) : l'A4 compact d'origine, deux pages. C'est lui qui fait le PDF. |
 | `assets/cv.js` | L'interrupteur jour / nuit (préférence mémorisée dans `localStorage`) et la barre du haut. |
 | `assets/logo3d.js` | Le logo 3D de l'en-tête (Three.js depuis jsDelivr, `assets/logo.glb` + `assets/cubemaps/`), chargé après la page, immobile sous « réduire les animations ». |
