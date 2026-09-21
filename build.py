@@ -77,8 +77,9 @@ def section_open(sid: str, label: str) -> str:
 
 def job_html(j: dict, last: bool = False) -> str:
     title = md(j["role"]) + (f' &mdash; {md(j["client"])}' if j.get("client") else "")
-    out = [f'    <article class="job">\n      <div class="job-header"><div class="job-title-line">\n'
-           f'        <h3 class="job-title">{title}</h3>\n        <span class="job-date">{md(j["date"])}</span>\n      </div></div>\n']
+    num = f'        <span class="job-num label screen-only">{j["num"]}</span>\n' if j.get("num") else ""
+    out = [f'    <article class="job">\n      <div class="job-header"><div class="job-title-line">\n{num}'
+           f'        <h3 class="job-title">{title}</h3>\n        <span class="job-date">{md(j["date"])}</span>\n      </div></div>\n      <div class="job-body">\n']
     if j.get("intro"):
         out.append(f'      <p class="job-intro">{md(j["intro"])}</p>\n')
     if j.get("subtitle"):
@@ -92,7 +93,7 @@ def job_html(j: dict, last: bool = False) -> str:
         out.append(f'      <div class="stack"><span class="stack-label">Stack :</span> {chips(j["stack"])}</div>\n')
     if not last:
         out.append('      <div class="separator"></div>\n')
-    out.append("    </article>\n")
+    out.append("      </div>\n    </article>\n")
     return "".join(out)
 
 
@@ -136,6 +137,7 @@ def render(d: dict) -> str:
       <img class="brand-img" src="{ver("assets/logo.png")}" alt="{md(full_name)}" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
+    <span class="frame-status label" aria-hidden="true">{md(full_name)} &middot; {md(idn["headline"])}</span>
     <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="{ver("assets/marks/linkedin.svg")}">
       <img src="{ver("assets/marks/linkedin.svg")}" alt="" width="40" height="40" decoding="async">
     </a>
@@ -146,7 +148,9 @@ def render(d: dict) -> str:
     </button>
   </nav>
 
+  <div class="page">
   <header class="header">
+    <div class="hero-stage screen-only" aria-hidden="true"><canvas class="logo3d logo3d-hero"></canvas></div>
     <div class="header-left">
       <div class="photo-container"><img src="{ver(idn["photo"])}" alt="{md(full_name)}" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
@@ -165,6 +169,10 @@ def render(d: dict) -> str:
         {md(idn["linkedin"]["handle"])}
       </a>
     </div>
+    <div class="hero-foot screen-only">
+      <span class="label">{md(ui["updated"])}</span>
+      <span class="label scroll-hint">{md(ui["scroll_hint"])}</span>
+    </div>
   </header>
 
   <div class="skills" id="skills">
@@ -175,6 +183,8 @@ def render(d: dict) -> str:
 
     parts.append(section_open("experience", sec["experience"]))
     jobs = d["experience"]
+    for i, j in enumerate(jobs):
+        j["num"] = f"{i + 1:02d}"
     parts.extend(job_html(j, last=(i == len(jobs) - 1)) for i, j in enumerate(jobs))
     parts.append("  </section>\n\n")
 
@@ -183,6 +193,7 @@ def render(d: dict) -> str:
         parts.extend(f'    <p class="job-intro reading">{md(p)}</p>\n' for p in d["projects"])
         parts.append("  </section>\n\n")
 
+    parts.append('  <div class="facts">\n')
     parts.append(section_open("education", sec["education"]))
     for e in d["education"]:
         parts.append(f'    <div class="job-header"><div class="job-title-line">\n      <h3 class="job-title">{md(e["title"])}</h3>\n'
@@ -195,12 +206,15 @@ def render(d: dict) -> str:
 
     parts.append(section_open("interests", sec["interests"]))
     parts.extend(f'    <p class="job-intro reading">{md(i)}</p>\n' for i in d["interests"])
-    parts.append("  </section>\n  </main>\n\n")
+    parts.append("  </section>\n  </div>\n  </main>\n  </div>\n\n")
 
-    parts.append(f"""  <footer class="site-footer">
-    <a href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="{html.escape(idn["pdf"])}" download>{md(ui["pdf_label"])}</a>
-    <span>{md(ui["footer_note"])}</span>
+    parts.append(f"""  <footer class="site-footer screen-only">
+    <p class="footer-statement">{md(ui["footer_statement"])}</p>
+    <div class="footer-grid label">
+      <a href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">LinkedIn</a>
+      <span>{md(ui["footer_availability"])}<i class="dot" aria-hidden="true"></i></span>
+      <span>{md(ui["footer_note"])}</span>
+    </div>
   </footer>
 
   <script src="{ver("assets/cv.js")}"></script>

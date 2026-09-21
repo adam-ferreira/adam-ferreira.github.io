@@ -17,19 +17,18 @@
   <link rel="icon" href="assets/logo.png?v=1beb1197" type="image/png">
   <link rel="apple-touch-icon" href="assets/logo.png?v=1beb1197">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2?v=e6d8af18" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2?v=c79ef519" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2?v=55993f11" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" media="print">
   <style media="screen">
 /* ============================================================
-   CV — feuille ÉCRAN (media="screen"). L'impression utilise print.css.
-   Direction : une page de lecture, pas une feuille A4 à l'écran.
-   Signature : le nom en Humane (condensée, très grande) + le logo 3D orange.
-   Tout le reste est calme : une colonne de lecture, Bricolage Grotesque,
-   des étiquettes discrètes, aucune carte, aucune animation de section.
+   CV — feuille ÉCRAN (intégrée dans index.html par build.py). L'impression utilise print.css.
+   Direction (21/09/2026) : un cadre fixe aux quatre coins, une scène d'accueil plein écran avec le logo AF en 3D,
+   une déclaration typographique géante par section (Humane), des micro-étiquettes en mono, un pied de page inversé.
+   Le contenu reste une colonne de lecture calme en Bricolage Grotesque. Les marques 3D (Betclic, Accor, LinkedIn)
+   sont plates au repos et prennent du volume quand on les manipule.
    ============================================================ */
 
 @font-face {
-  /* Bricolage Grotesque (SIL OFL), variable, sous-ensemble latin + accents, auto-hébergée : aucune origine tierce au chargement */
   font-family: "Bricolage Grotesque";
   src: url("assets/fonts/BricolageGrotesque-fr.woff2?v=e6d8af18") format("woff2");
   font-weight: 300 800;
@@ -37,8 +36,7 @@
 }
 @font-face {
   font-family: "Humane";
-  /* sous-ensemble : les seules lettres du nom (3 Ko) ; le TTF complet reste en secours */
-  src: url("assets/fonts/Humane-name.woff2?v=c79ef519") format("woff2"), url("assets/fonts/Humane.ttf?v=2125f978") format("truetype");
+  src: url("assets/fonts/Humane-name.woff2?v=55993f11") format("woff2");   /* sous-ensemble : alphabet latin, accents français, ponctuation */
   font-weight: 400;
   font-display: swap;
 }
@@ -55,8 +53,9 @@
   --accent-ink: #b8391a;
   --topbar: rgba(246, 247, 249, 0.82);
   --mark-bg: #1d1f3b;
-  --display: "Humane", "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  --display: "Humane", "Bricolage Grotesque", system-ui, sans-serif;
   --sans: "Bricolage Grotesque", "Inter", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
@@ -70,7 +69,7 @@
 }
 
 * { box-sizing: border-box; }
-html { background: var(--paper); scroll-behavior: smooth; scroll-padding-top: 72px; }
+html { background: var(--paper); scroll-padding-top: 72px; }
 body {
   margin: 0;
   background: var(--paper);
@@ -84,29 +83,35 @@ ul { padding: 0; list-style: none; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 ::selection { background: var(--accent); color: #fff; }
+.print-only { display: none !important; }
 
-/* ---------- barre du haut ---------- */
+/* micro-étiquettes : mono, petites, espacées — les seules capitales de la page hors titres géants */
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+/* ---------- le cadre : barre du haut ---------- */
 .topbar {
-  position: sticky; top: 0; z-index: 10;
-  display: flex; align-items: center; gap: 20px;
-  height: 56px; padding: 0 clamp(16px, 4vw, 40px);
+  position: sticky; top: 0; z-index: 20;
+  display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 18px;
+  height: 60px; padding: 0 clamp(16px, 3vw, 36px);
   background: var(--topbar); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-  border-bottom: 1px solid transparent;
-  transition: border-color .2s ease;
+  border-bottom: 1px solid transparent; transition: border-color .2s ease;
 }
 .topbar.is-scrolled { border-bottom-color: var(--line); }
-.brand { position: relative; width: 46px; height: 46px; margin-right: auto; display: block; }
+.frame-status { justify-self: center; text-align: center; opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
+body.name-away .frame-status { opacity: 1; transform: none; }
+.brand { position: relative; width: 46px; height: 46px; display: block; }
 .brand-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .6s ease; }
 .brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
 .brand .logo3d.is-dragging { cursor: grabbing; }
 .brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
-.topbar-linkedin { position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
+.topbar-linkedin { grid-column: 3; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }
 .topbar-linkedin.is-3d img { opacity: 0; }
+@media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto; gap: 12px; } .frame-status { display: none; } }
 
 /* ---------- interrupteur jour / nuit ---------- */
 .theme-toggle {
-  position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px; flex: none;
+  grid-column: 4; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px; flex: none;
   border: 1px solid var(--line); background: var(--chip); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: space-between;
   -webkit-tap-highlight-color: transparent; transition: background .25s ease, border-color .25s ease;
@@ -124,89 +129,133 @@ a { color: inherit; }
 :root[data-theme="dark"] .tt-sun { color: var(--muted); }
 :root[data-theme="dark"] .tt-moon { color: #f3f4f6; }
 
-/* ---------- en-tête ---------- */
+/* ---------- la scène d'accueil : plein écran, le logo en grand ---------- */
 .header {
-  max-width: 1080px; margin: 0 auto;
-  padding: clamp(56px, 10vw, 128px) clamp(16px, 4vw, 40px) clamp(48px, 7vw, 88px);
-  display: block;
+  position: relative; overflow: hidden;
+  min-height: calc(100svh - 60px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40%); align-items: center;
+  max-width: 1400px; margin: 0 auto;
+  padding: clamp(48px, 8vh, 96px) clamp(16px, 3vw, 36px) 96px;
 }
-.print-only { display: none !important; }
-.header-left { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; align-items: start; }
-.photo-container {
-  width: 76px; height: 76px; border-radius: 50%; overflow: hidden; flex: none;
-  box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--line);
+.hero-stage { grid-column: 2; grid-row: 1; position: relative; justify-self: center; width: clamp(220px, 32vw, 520px); aspect-ratio: 1; }
+.hero-stage::before {
+  content: ""; position: absolute; inset: -22%; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 62%);
+  filter: blur(6px); opacity: 0; transition: opacity 1.2s ease .2s;
 }
+.hero-stage.is-lit::before { opacity: 1; }
+.hero-stage .logo3d { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.hero-stage .logo3d.is-dragging { cursor: grabbing; }
+.header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
+.photo-container { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--line); }
 .photo { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; transform: scale(1.35); display: block; }
 .header-name-block { display: flex; flex-direction: column; min-width: 0; }
 .name {
   font-family: var(--display); font-weight: 400;
-  font-size: clamp(64px, 13vw, 150px); line-height: .88; letter-spacing: .015em;
-  color: var(--ink); margin: -6px 0 14px; overflow-wrap: anywhere;
+  font-size: clamp(72px, 12.5vw, 200px); line-height: .86; letter-spacing: .012em;
+  color: var(--ink); margin: -8px 0 18px; overflow-wrap: anywhere;
 }
 .name-first, .name-last { font-weight: 400; }
-.subtitle { margin-top: 4px; font-size: clamp(19px, 2.2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
-/* la phrase d'accueil : une seule idée, les marques posées dedans comme des mots */
-.hero-line { margin-top: 18px; max-width: 32ch; font-size: clamp(20px, 2.4vw, 27px); line-height: 1.55; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
+.subtitle { margin-top: 4px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+.hero-line { margin-top: 18px; max-width: 30ch; font-size: clamp(20px, 2.3vw, 28px); line-height: 1.55; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
 .hero-line .w { display: inline-block; }
-.mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .18em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
-.mark-accor { height: 1.5em; vertical-align: -.32em; }
-.mark img { transition: opacity .5s ease; }
-:root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
-.mark .mark-3d { position: absolute; inset: -18% -14%; width: 128%; height: 136%; display: block; opacity: 0; transition: opacity .6s ease; cursor: grab; touch-action: none; }
-.mark.is-3d .mark-3d { opacity: 1; }
-.mark.is-3d img, .mark.is-3d .mark-text { opacity: 0; }
-.mark.is-3d:hover { transform: none; }
-.mark img { height: 100%; width: auto; display: block; border-radius: .18em; }
-.mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
-.mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
-.screen-only { }
-.location { margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 15px; color: var(--muted); }
+.location { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; font-size: 15px; color: var(--muted); }
 .flag { width: 16px; height: 12px; border-radius: 2.5px; overflow: hidden; display: inline-flex; flex: none; border: .8px solid var(--line); }
 .flag-blue, .flag-white, .flag-red { flex: 1; }
 .flag-blue { background: #0055a4; } .flag-white { background: #fff; } .flag-red { background: #ef4135; }
 .meta-item { position: relative; }
-.meta-item + .meta-item::before { content: ""; position: absolute; left: -9px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
-.linkedin-item {
-  display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px 8px 10px; border-radius: 999px;
-  border: 1px solid var(--line); background: transparent; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500;
+.meta-item + .meta-item { padding-left: 12px; }
+.meta-item + .meta-item::before { content: ""; position: absolute; left: 2px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
+.hero-foot {
+  position: absolute; left: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); bottom: 28px;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
 }
-.linkedin-item:hover { border-color: var(--muted); }
-.linkedin-icon { width: 18px; height: 18px; border-radius: 4px; background: #0a66c2; display: inline-flex; align-items: center; justify-content: center; }
-.linkedin-icon svg { width: 12px; height: 12px; }
+.scroll-hint { display: inline-flex; align-items: center; gap: 8px; transition: opacity .4s ease; }
+.scroll-hint::before { content: ""; width: 1px; height: 28px; background: var(--muted); animation: hint 1.6s ease-in-out infinite; }
+@keyframes hint { 0%, 100% { transform: scaleY(.4); transform-origin: top; opacity: .4; } 50% { transform: scaleY(1); opacity: 1; } }
+body.is-scrolled .scroll-hint { opacity: 0; }
 
-/* le logo 3D : dans la barre, par-dessus l'image fixe, seulement quand le script l'a rendu */
+/* les marques dans la phrase */
+.mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .18em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark-accor { height: 1.5em; vertical-align: -.32em; }
+.mark img { height: 100%; width: auto; display: block; border-radius: .18em; transition: opacity .5s ease; }
+:root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
+.mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
+.mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
+.mark .mark-3d { position: absolute; inset: -18% -14%; width: 128%; height: 136%; display: block; opacity: 0; transition: opacity .6s ease; cursor: grab; touch-action: none; }
+.mark.is-3d .mark-3d { opacity: 1; }
+.mark.is-3d img, .mark.is-3d .mark-text { opacity: 0; }
+.mark.is-3d:hover { transform: none; }
+
+/* le logo 3D n'existe que sur écran large avec souris ; ailleurs, l'image fixe */
 .logo3d { display: block; opacity: 0; transition: opacity .8s ease; }
 .logo3d.is-ready { opacity: 1; }
-@media (max-width: 860px), (hover: none), (pointer: coarse) { .logo3d { display: none; } }
-
+@media (max-width: 860px), (hover: none), (pointer: coarse) {
+  .logo3d { display: none; }
+  .hero-stage { display: none; }
+  .header { grid-template-columns: 1fr; min-height: auto; padding-bottom: 72px; }
+}
+@media (max-width: 860px), (hover: none), (pointer: coarse) { .header-left { grid-column: 1; } }
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
   .photo-container { width: 64px; height: 64px; }
   .name { font-size: clamp(64px, 20vw, 96px); }
+  .hero-foot { position: static; margin-top: 40px; }
 }
 
 /* ---------- compétences ---------- */
-.skills { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) clamp(48px, 7vw, 88px); display: grid; gap: 16px; }
+.skills { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) clamp(56px, 8vw, 112px); display: grid; gap: 16px; }
 .skills-row { display: grid; grid-template-columns: 170px 1fr; column-gap: 16px; align-items: start; }
 .skills-label { font-size: 15px; font-weight: 600; color: var(--ink); padding-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
 .chips li { display: inline-block; padding: 4px 11px; border-radius: 999px; background: var(--chip); font-size: 14px; line-height: 1.5; color: var(--text); white-space: nowrap; }
 @media (max-width: 560px) { .skills-row { grid-template-columns: 1fr; row-gap: 6px; } }
 
-/* ---------- contenu ---------- */
-main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px; }
-.section { padding-top: 72px; margin-top: 48px; border-top: 1px solid var(--line); }
-.section-title-wrapper { margin-bottom: 48px; }
-.section-title { font-size: clamp(26px, 3.4vw, 36px); font-weight: 700; letter-spacing: -.025em; color: var(--ink); }
+/* le contenu recouvre le pied de page, qui se dévoile en dessous à la fin */
+.page { position: relative; z-index: 1; background: var(--paper); }
+
+/* ---------- contenu : chaque section s'ouvre par un mot géant ---------- */
+main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120px; }
+.section { padding-top: 64px; margin-top: 40px; border-top: 1px solid var(--line); }
+.section-title-wrapper { margin-bottom: 64px; overflow: hidden; padding-top: .04em; }
+.section-title {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(64px, 13vw, 220px); line-height: .88; letter-spacing: .01em; color: var(--ink);
+  transform: translateY(105%); transition: transform .9s cubic-bezier(.2, .8, .2, 1);
+}
+.section-title.is-in { transform: none; }
 .section-line { display: none; }
 .reading { max-width: 720px; }
 
-.job { margin-bottom: 120px; }
+/* expériences : sur grand écran, l'en-tête reste accroché à gauche pendant qu'on lit le détail à droite */
+@media (min-width: 1100px) {
+  .job { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); column-gap: clamp(48px, 6vw, 112px); }
+  .job-header { position: sticky; top: 96px; align-self: start; margin-bottom: 0; }
+  .job-title-line { grid-template-columns: auto minmax(0, 1fr); }
+  .job-date { grid-column: 2; }
+  .job-body { padding-top: 22px; border-top: 1px solid var(--line); }
+  .job-body > .job-intro:first-child { margin-top: -6px; }
+}
+
+/* Formation, Langues, Intérêts : une rangée de trois, titres en Humane de taille moyenne */
+.facts { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 48px clamp(32px, 4vw, 64px); border-top: 1px solid var(--line); padding-top: 64px; }
+.facts .section { margin-top: 0; padding-top: 0; border-top: 0; }
+.facts .section-title-wrapper { margin-bottom: 20px; }
+.facts .section-title { font-size: clamp(48px, 5.4vw, 80px); }
+.facts .job-header { padding-top: 0; border-top: 0; margin-bottom: 8px; }
+.facts .job-title { font-size: 18px; }
+.facts .job-title-line { grid-template-columns: 1fr; }
+.facts .job-date { grid-column: 1; }
+.facts .job-intro { font-size: 16px; }
+
+.job { margin-bottom: 128px; }
 .job:last-child { margin-bottom: 8px; }
-.job-header { margin-bottom: 22px; }
-.job-title-line { display: flex; flex-direction: column; gap: 8px; }
-.job-title { font-size: clamp(21px, 2.6vw, 26px); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; color: var(--ink); }
-.job-date { font-size: 15px; color: var(--muted); }
+.job-header { margin-bottom: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
+.job-title-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; column-gap: 20px; row-gap: 8px; }
+.job-num { color: var(--accent-ink); }
+.job-title { font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; color: var(--ink); }
+.job-date { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+@media (max-width: 640px) { .job-title-line { grid-template-columns: auto 1fr; } .job-date { grid-column: 1 / -1; } }
 .job-intro, .sub-intro { max-width: 68ch; }
 .job-intro { margin-bottom: 14px; font-size: 18px; }
 .separator { display: none; }
@@ -221,39 +270,44 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
 .stack { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .stack-label { font-size: 14px; font-weight: 600; color: var(--muted); margin-right: 4px; }
 .stack .chips li { font-size: 13px; padding: 3px 10px; }
-
-/* formation, langues, intérêts : des paragraphes calmes */
 .section p.job-intro { margin-bottom: 0; }
 
-/* ---------- pied de page ---------- */
+/* ---------- pied de page : inversé, dévoilé sous le contenu ---------- */
 .site-footer {
-  max-width: 1080px; margin: 0 auto; padding: 32px clamp(16px, 4vw, 40px) 64px;
-  border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center;
-  font-size: 14px; color: var(--muted);
+  position: sticky; bottom: 0; z-index: 0;
+  background: var(--ink); color: var(--paper);
+  padding: clamp(64px, 10vh, 120px) clamp(16px, 3vw, 36px) 32px;
+  display: grid; gap: clamp(48px, 8vh, 96px);
 }
-.site-footer a { color: var(--text); }
+.footer-statement {
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(80px, 15vw, 280px); line-height: .86; letter-spacing: .01em;
+}
+.footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
+.footer-grid a { text-decoration: none; }
+.footer-grid a:hover { color: var(--accent); }
+.footer-grid .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 0 4px rgba(61, 220, 132, .18); }
 
-/* ---------- un seul moment de mouvement : le nom se pose au chargement ---------- */
+/* ---------- mouvement : une chorégraphie à l'arrivée, rien d'autre ---------- */
 @keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .name { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
 .subtitle, .location { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .12s both; }
 .hero-line .w { animation: settle .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.28s + var(--i) * 42ms); }
 @media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  .name, .subtitle, .location, .hero-line .w { animation: none; }
-  .mark { transition: none; }
-  .tt-knob, .theme-toggle, .logo3d, .topbar { transition: none; }
+  .name, .subtitle, .location, .hero-line .w, .scroll-hint::before { animation: none; }
+  .mark, .section-title, .logo3d, .topbar, .hero-stage::before { transition: none; }
+  .section-title { transform: none; }
 }
-
 @media (max-width: 640px) {
   .section { padding-top: 48px; margin-top: 32px; }
   .section-title-wrapper { margin-bottom: 32px; }
   .job { margin-bottom: 80px; }
   .bullets { gap: 24px; }
+  .site-footer { position: static; }
 }
 
   </style>
-  <link rel="stylesheet" href="assets/print.css?v=a20f38a3" media="print">
+  <link rel="stylesheet" href="assets/print.css?v=52492213" media="print">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body id="top">
@@ -263,6 +317,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
       <img class="brand-img" src="assets/logo.png?v=1beb1197" alt="Adam Ferreira" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
+    <span class="frame-status label" aria-hidden="true">Adam Ferreira &middot; QA Automation Architect</span>
     <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=4be4cbb8">
       <img src="assets/marks/linkedin.svg?v=4be4cbb8" alt="" width="40" height="40" decoding="async">
     </a>
@@ -273,7 +328,9 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
     </button>
   </nav>
 
+  <div class="page">
   <header class="header">
+    <div class="hero-stage screen-only" aria-hidden="true"><canvas class="logo3d logo3d-hero"></canvas></div>
     <div class="header-left">
       <div class="photo-container"><img src="photo.jpg?v=0ea69934" alt="Adam Ferreira" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
@@ -292,6 +349,10 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
         ad-ferreira
       </a>
     </div>
+    <div class="hero-foot screen-only">
+      <span class="label">Mis à jour en septembre 2026</span>
+      <span class="label scroll-hint">Défiler</span>
+    </div>
   </header>
 
   <div class="skills" id="skills">
@@ -305,9 +366,11 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
     <div class="section-title-wrapper"><h2 class="section-title" id="experience-title">Expériences professionnelles</h2></div>
     <article class="job">
       <div class="job-header"><div class="job-title-line">
+        <span class="job-num label screen-only">01</span>
         <h3 class="job-title">QA Automation Engineer (mobile Flutter) &mdash; BETCLIC</h3>
         <span class="job-date">Mars 2026 - Aujourd'hui (Freelance)</span>
       </div></div>
+      <div class="job-body">
       <p class="job-intro">Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests de la partie gamification : les missions et défis qui récompensent le joueur pour ses paris, les classements entre parieurs, les jeux de récompense qui en découlent et les boosts proposés au moment du pari. Le tout dans un repo de tests partagé entre le mobile et le web.</p>
       <div class="separator"></div>
       <h4 class="sub-title">Construire l'automatisation en même temps que l'app</h4>
@@ -322,12 +385,15 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
       </ul>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
       <div class="separator"></div>
+      </div>
     </article>
     <article class="job">
       <div class="job-header"><div class="job-title-line">
+        <span class="job-num label screen-only">02</span>
         <h3 class="job-title">QA Automation Architect &mdash; ACCOR (CAC40)</h3>
         <span class="job-date">Nov. 2024 - Mars 2026 (Freelance)</span>
       </div></div>
+      <div class="job-body">
       <p class="job-intro">Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés de quatre ans, en dette technique. Arrivé pour exécuter et maintenir des tests, j'en suis devenu le référent technique.</p>
       <div class="separator"></div>
       <h4 class="sub-title">Remettre un framework legacy à l'état de l'art, puis aller plus loin</h4>
@@ -341,26 +407,34 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
       </ul>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
       <div class="separator"></div>
+      </div>
     </article>
     <article class="job">
       <div class="job-header"><div class="job-title-line">
+        <span class="job-num label screen-only">03</span>
         <h3 class="job-title">Frontend Software Developer &mdash; Hexaly (Bouygues)</h3>
         <span class="job-date">Mars 2024 - Mai 2024</span>
       </div></div>
+      <div class="job-body">
       <p class="job-intro">Développement de fonctionnalités sur Hexaly Studio, un SaaS low-code React pour résoudre des problèmes d'optimisation complexes (planification de livraisons, gestion d'entrepôts logistiques).</p>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>React</li> <li>TypeScript</li> <li>JavaScript</li></ul></div>
       <div class="separator"></div>
+      </div>
     </article>
     <article class="job">
       <div class="job-header"><div class="job-title-line">
+        <span class="job-num label screen-only">04</span>
         <h3 class="job-title">Développeur Full Stack &mdash; JMD Technologies (Freelance)</h3>
         <span class="job-date">Avr. 2023 - Déc. 2023</span>
       </div></div>
+      <div class="job-body">
       <p class="job-intro">Maintenance Industrie, spécialiste du nettoyage industriel, a commandé un SaaS de gestion de chantiers ainsi qu'une application mobile de badgeuse pour ses agents de nettoyage.</p>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Angular</li> <li>Express.js</li> <li>Sequelize</li> <li>MySQL</li> <li>Flutter</li> <li>Riverpod</li></ul></div>
+      </div>
     </article>
   </section>
 
+  <div class="facts">
   <section class="section" id="education" aria-labelledby="education-title">
     <div class="section-title-wrapper"><h2 class="section-title" id="education-title">Formation</h2></div>
     <div class="job-header"><div class="job-title-line">
@@ -379,16 +453,21 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
     <div class="section-title-wrapper"><h2 class="section-title" id="interests-title">Centres d'intérêt</h2></div>
     <p class="job-intro reading"><strong>Escalade — Haut niveau :</strong> 8a en voie, 7C en bloc.</p>
   </section>
+  </div>
   </main>
+  </div>
 
-  <footer class="site-footer">
-    <a href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="dist/cv-adam-ferreira.pdf" download>Télécharger le PDF</a>
-    <span>Mis à jour en septembre 2026</span>
+  <footer class="site-footer screen-only">
+    <p class="footer-statement">On construit quelque chose ?</p>
+    <div class="footer-grid label">
+      <a href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">LinkedIn</a>
+      <span>Ouvert aux missions QA automation mobile<i class="dot" aria-hidden="true"></i></span>
+      <span>Paris — 2026</span>
+    </div>
   </footer>
 
-  <script src="assets/cv.js?v=4c6bffa2"></script>
-  <script type="module" src="assets/logo3d.js?v=bc9b3f7c"></script>
+  <script src="assets/cv.js?v=b6459893"></script>
+  <script type="module" src="assets/logo3d.js?v=ed7caeb3"></script>
   <script type="module" src="assets/marks3d.js?v=de89864a"></script>
 </body>
 </html>

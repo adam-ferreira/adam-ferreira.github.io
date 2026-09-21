@@ -17,7 +17,6 @@
     "photo": "photo.jpg",
     "status_freelance": "Freelance",
     "status_mode": "sur site et télétravail",
-    "pdf": "dist/cv-adam-ferreira.pdf",
     "hero": "Je rends testables les apps mobiles, chez {{betclic}} aujourd'hui et chez {{accor}} hier.",
     "marks": {
       "betclic": {
@@ -181,7 +180,10 @@
     "toggle_title_dark": "Passer en mode jour",
     "toggle_title_light": "Passer en mode nuit",
     "nav_aria": "Navigation",
-    "pdf_label": "Télécharger le PDF",
-    "footer_note": "Mis à jour en septembre 2026"
+    "footer_note": "Paris — 2026",
+    "scroll_hint": "Défiler",
+    "footer_statement": "On construit quelque chose ?",
+    "footer_availability": "Ouvert aux missions QA automation mobile",
+    "updated": "Mis à jour en septembre 2026"
   }
 }
