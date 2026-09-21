@@ -105,7 +105,7 @@
       "intro": "Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés lancé quatre ans plus tôt, en dette technique. Arrivé pour exécuter et maintenir les tests, j'en suis devenu le référent technique.",
       "subtitle": "Moderniser un framework existant",
       "bullets": [
-        "**Modernisation du framework.** Migrations de Java et du client Appium sans régression, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine.",
+        "**Modernisation du framework.** Migrations de Java et du client Appium, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine.",
         "**Un device par scénario.** Chaque scénario tourne sur un device différent de la device farm BrowserStack : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions.",
         "**Un pipeline CI réécrit.** L'ancien restait vert quel que soit le résultat et dépendait d'un template partagé avec d'autres projets. Le nouveau échoue quand le taux de réussite passe sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs.",
         "**Une couverture élargie.** Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise.",
