@@ -5,140 +5,156 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CV — Adam Ferreira</title>
   <meta name="description" content="CV d&#x27;Adam Ferreira, QA Automation Architect mobile (Appium, Flutter, iOS, Android).">
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="Adam Ferreira — QA Automation Architect">
+  <meta property="og:description" content="Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.">
+  <meta property="og:url" content="https://adam-ferreira.github.io/">
+  <meta property="og:image" content="https://adam-ferreira.github.io/photo.jpg">
+  <meta property="og:locale" content="fr_FR">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/cv.css">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600;700;800&display=swap"></noscript>
+  <link rel="stylesheet" href="assets/cv.css" media="screen">
+  <link rel="stylesheet" href="assets/print.css" media="print">
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
-<body>
+<body id="top">
 
-  <!-- ==================== HEADER ==================== -->
-  <div class="header">
+  <nav class="topbar" aria-label="Navigation">
+    <a class="topbar-name" href="#top">Adam Ferreira</a>
+    <div class="topbar-links">
+      <a href="#experience">Expériences</a>
+      <a href="#education">Formation</a>
+    </div>
+    <a class="pdf-link" href="dist/cv-adam-ferreira.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg><span class="pdf-label-long">Télécharger le PDF</span><span class="pdf-label-short">PDF</span></a>
+    <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Mode nuit" title="Passer en mode nuit">
+      <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
+      <span class="tt-icon tt-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+      <span class="tt-knob"></span>
+    </button>
+  </nav>
+
+  <header class="header">
     <div class="header-left">
-      <div class="photo-container"><img src="photo.jpg" alt="Adam Ferreira" class="photo"></div>
+      <div class="photo-container"><img src="photo.jpg" alt="Adam Ferreira" class="photo" width="300" height="400"></div>
       <div class="header-name-block">
-        <div class="name">
-          <span class="name-first">Adam</span> <span class="name-last">Ferreira</span>
-        </div>
-        <div class="subtitle">QA Automation Architect</div>
-        <div class="tagline">Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.</div>
-        <div class="location">
-          <span class="flag"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span> Paris, France &middot; Freelance · sur site et télétravail
-        </div>
+        <h1 class="name"><span class="name-first">Adam</span> <span class="name-last">Ferreira</span></h1>
+        <p class="subtitle">QA Automation Architect</p>
+        <p class="tagline">Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.</p>
+        <p class="location">
+          <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">Paris, France</span> <span class="meta-item">Freelance</span> <span class="meta-item">sur site et télétravail</span>
+        </p>
       </div>
     </div>
     <div class="header-right">
-      <a class="linkedin-item" href="https://linkedin.com/in/ad-ferreira" target="_blank">
+      <a class="linkedin-item" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">
         <span class="linkedin-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" fill="white"/></svg></span>
         ad-ferreira
       </a>
-      <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Mode nuit" title="Passer en mode nuit">
-        <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
-        <span class="tt-icon tt-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
-        <span class="tt-knob"></span>
-      </button>
+      <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
+  </header>
+
+  <div class="skills" id="skills">
+    <div class="skills-row"><span class="skills-label">Mobile</span><ul class="chips"><li>Appium</li> <li>Flutter</li> <li>iOS</li> <li>Android</li> <li>BrowserStack</li></ul></div>
+    <div class="skills-row"><span class="skills-label">Frameworks</span><ul class="chips"><li>Java / TestNG / Cucumber</li> <li>TypeScript / WebdriverIO</li> <li>CodeceptJS / Playwright</li> <li>Gherkin</li></ul></div>
+    <div class="skills-row"><span class="skills-label">Livraison &amp; outillage</span><ul class="chips"><li>GitLab CI</li> <li>Xray / Jira</li> <li>Allure</li> <li>mitmproxy</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
   </div>
 
-  <div class="skills">
-    <div class="skills-row"><span class="skills-label">Mobile</span><span>Appium &middot; Flutter &middot; iOS &middot; Android &middot; BrowserStack</span></div>
-    <div class="skills-row"><span class="skills-label">Frameworks</span><span>Java / TestNG / Cucumber &middot; TypeScript / WebdriverIO &middot; CodeceptJS / Playwright &middot; Gherkin</span></div>
-    <div class="skills-row"><span class="skills-label">Livraison &amp; outillage</span><span>GitLab CI &middot; Xray / Jira &middot; Allure &middot; mitmproxy &middot; Claude Code &middot; MCP Atlassian / Figma</span></div>
-  </div>
+  <main>
+  <section class="section" id="experience" aria-labelledby="experience-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="experience-title">Expériences professionnelles</h2></div>
+    <article class="job">
+      <div class="job-header"><div class="job-title-line">
+        <h3 class="job-title">QA Automation Engineer (mobile Flutter) &mdash; BETCLIC</h3>
+        <span class="job-date">Mars 2026 - Aujourd'hui (Freelance)</span>
+      </div></div>
+      <p class="job-intro">Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests de la partie gamification : les missions et défis qui récompensent le joueur pour ses paris, les classements entre parieurs, les jeux de récompense qui en découlent et les boosts proposés au moment du pari. Le tout dans un repo de tests partagé entre le mobile et le web.</p>
+      <div class="separator"></div>
+      <h4 class="sub-title">Construire l'automatisation en même temps que l'app</h4>
+      <p class="sub-intro">À mon arrivée, l'app était en construction, et le périmètre gamification avec elle. Le défi : automatiser au rythme des livraisons, sans ralentir les devs.</p>
+      <ul class="bullets">
+        <li><strong>Des test IDs posés directement dans le code de l'app.</strong> Sur mobile, un locator qui repère un écran par son texte casse à la première traduction ou au premier changement de maquette. J'ai été le premier QA auto de l'app à poser moi-même les semantics dans le code Flutter, selon des règles écrites avec les tech leads, plutôt que d'attendre les devs. Les mêmes locators servent sur iOS et Android, et ils survivent aux refontes d'écran.</li>
+        <li><strong>Les animations interactives, jusque-là impossibles à tester.</strong> Elles sont produites par l'équipe motion design dans un outil dédié, et les tests ne voyaient rien de ce qu'il y avait dedans. J'ai écrit un outil qui injecte les test IDs directement dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, puis produit une version que le designer ouvre dans son propre logiciel pour comprendre la manipulation et la refaire lui-même.</li>
+        <li><strong>Des données de test créées par API, pas à la main.</strong> Tester une mission de paris demande de vrais paris, placés puis réglés. Je les crée par API avant chaque scénario, à l'image des campagnes de production, sur un compte de test dédié. Le test ne passe par l'UI que pour ce qu'il vérifie vraiment : il est court, et il ne casse pas parce qu'un autre test a touché aux mêmes données.</li>
+        <li><strong>Une nightly sur cinq marchés réglementés.</strong> Chaque pays a ses règles, ses contenus et ses comptes. La nightly tourne sur chacun d'eux ; le matin, je triage les échecs en trois cas : bug produit, environnement en panne, test flaky. Seuls les premiers deviennent des tickets.</li>
+        <li><strong>Remonter jusqu'au moteur mobile quand un test échoue sans raison.</strong> Un bouton visible que le test ne pouvait pas taper, une tab bar qui disparaissait de l'arbre d'accessibilité iOS, la navbar système Android qui absorbait les taps : à chaque fois j'ai isolé la cause dans le comportement d'iOS, d'Android ou de Flutter, et corrigé dans le framework plutôt que de contourner dans les tests.</li>
+        <li><strong>Une méthode partagée avec la squad.</strong> Un test plan par feature, une suite de tests de release, et des skills Claude Code partagés qui génèrent les page objects à partir des maquettes Figma et des tickets Jira.</li>
+      </ul>
+      <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
+      <div class="separator"></div>
+    </article>
+    <article class="job">
+      <div class="job-header"><div class="job-title-line">
+        <h3 class="job-title">QA Automation Architect &mdash; ACCOR (CAC40)</h3>
+        <span class="job-date">Nov. 2024 - Mars 2026 (Freelance)</span>
+      </div></div>
+      <p class="job-intro">Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés de quatre ans, en dette technique. Arrivé pour exécuter et maintenir des tests, j'en suis devenu le référent technique.</p>
+      <div class="separator"></div>
+      <h4 class="sub-title">Remettre un framework legacy à l'état de l'art, puis aller plus loin</h4>
+      <ul class="bullets">
+        <li><strong>Moderniser le framework sans arrêter les tests.</strong> Migrations de Java et du client Appium enchaînées sans régression. J'en ai profité pour retirer le code mort et refaire les logs, lisibles scénario par scénario. Le framework a perdu la moitié de son poids.</li>
+        <li><strong>Un device différent pour chaque scénario.</strong> Les bugs propres à un modèle, à une tablette ou à un écran en paysage ne se voient pas quand tous les tests tournent sur le même téléphone. J'ai fait distribuer chaque scénario sur un device différent de la device farm BrowserStack : les échecs sont devenus reproductibles, et avec un cache des apps et des devices, les sessions démarrent plus vite.</li>
+        <li><strong>Un pipeline CI qui dit enfin si la release est bonne.</strong> Avant, il lançait les tests mais restait vert quoi qu'il arrive, et il reposait sur un template partagé avec d'autres projets, qu'on ne pouvait pas adapter. Je l'ai réécrit pour l'équipe : il passe au rouge dès que le taux de réussite descend sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs.</li>
+        <li><strong>Mettre à portée des tests ce qui leur échappait.</strong> Les features derrière un feature flag, les builds store, les distributions TestFlight et Firebase, et les webviews derrière le WAF de l'entreprise.</li>
+        <li><strong>Des bugs de l'app diagnostiqués pour les devs.</strong> Le login iOS faisait échouer un run sur cinq. J'ai comparé des sessions qui passaient et des sessions qui échouaient sur le même build, isolé la cause, et travaillé le fix en binôme avec le tech lead iOS. Même approche pour les sessions expirées et les écrans de consentement absents.</li>
+        <li><strong>Un second framework, en TypeScript, conçu de zéro.</strong> Il n'existait pas de framework TypeScript pour le mobile chez Accor. J'en ai construit un, multi-plateforme et multi-locale, et j'ai documenté la comparaison avec la stack Java.</li>
+      </ul>
+      <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
+      <div class="separator"></div>
+    </article>
+    <article class="job">
+      <div class="job-header"><div class="job-title-line">
+        <h3 class="job-title">Frontend Software Developer &mdash; Hexaly (Bouygues)</h3>
+        <span class="job-date">Mars 2024 - Mai 2024</span>
+      </div></div>
+      <p class="job-intro">Développement de fonctionnalités sur Hexaly Studio, un SaaS low-code React pour résoudre des problèmes d'optimisation complexes (planification de livraisons, gestion d'entrepôts logistiques).</p>
+      <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>React</li> <li>TypeScript</li> <li>JavaScript</li></ul></div>
+      <div class="separator"></div>
+    </article>
+    <article class="job">
+      <div class="job-header"><div class="job-title-line">
+        <h3 class="job-title">Développeur Full Stack &mdash; JMD Technologies (Freelance)</h3>
+        <span class="job-date">Avr. 2023 - Déc. 2023</span>
+      </div></div>
+      <p class="job-intro">Maintenance Industrie, spécialiste du nettoyage industriel, a commandé un SaaS de gestion de chantiers ainsi qu'une application mobile de badgeuse pour ses agents de nettoyage.</p>
+      <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Angular</li> <li>Express.js</li> <li>Sequelize</li> <li>MySQL</li> <li>Flutter</li> <li>Riverpod</li></ul></div>
+    </article>
+  </section>
 
-  <div class="section-title-wrapper">
-    <div class="section-title">Expériences professionnelles</div>
-    <div class="section-line"></div>
-  </div>
-
-  <!-- JOB: BETCLIC -->
-  <div class="job-header">
-    <div class="job-title-line">
-      <span class="job-title">QA Automation Engineer (mobile Flutter) &mdash; BETCLIC</span>
-      <span class="job-date">Mars 2026 - Aujourd'hui (Freelance)</span>
-    </div>
-  </div>
-  <p class="job-intro">Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests de la partie gamification : les missions et défis qui récompensent le joueur pour ses paris, les classements entre parieurs, les jeux de récompense qui en découlent et les boosts proposés au moment du pari. Le tout dans un repo de tests partagé entre le mobile et le web.</p>
-  <div class="separator"></div>
-  <div class="sub-title">Construire l'automatisation en même temps que l'app</div>
-  <p class="sub-intro">À mon arrivée, l'app était en construction, et le périmètre gamification avec elle. Le défi : automatiser au rythme des livraisons, sans ralentir les devs.</p>
-  <ul class="bullets">
-    <li><strong>Des test IDs posés directement dans le code de l'app.</strong> Sur mobile, un locator qui repère un écran par son texte casse à la première traduction ou au premier changement de maquette. J'ai été le premier QA auto de l'app à poser moi-même les semantics dans le code Flutter, selon des règles écrites avec les tech leads, plutôt que d'attendre les devs. Les mêmes locators servent sur iOS et Android, et ils survivent aux refontes d'écran.</li>
-    <li><strong>Les animations interactives, jusque-là impossibles à tester.</strong> Elles sont produites par l'équipe motion design dans un outil dédié, et les tests ne voyaient rien de ce qu'il y avait dedans. J'ai écrit un outil qui injecte les test IDs directement dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, puis produit une version que le designer ouvre dans son propre logiciel pour comprendre la manipulation et la refaire lui-même.</li>
-    <li><strong>Des données de test créées par API, pas à la main.</strong> Tester une mission de paris demande de vrais paris, placés puis réglés. Je les crée par API avant chaque scénario, à l'image des campagnes de production, sur un compte de test dédié. Le test ne passe par l'UI que pour ce qu'il vérifie vraiment : il est court, et il ne casse pas parce qu'un autre test a touché aux mêmes données.</li>
-    <li><strong>Une nightly sur cinq marchés réglementés.</strong> Chaque pays a ses règles, ses contenus et ses comptes. La nightly tourne sur chacun d'eux ; le matin, je triage les échecs en trois cas : bug produit, environnement en panne, test flaky. Seuls les premiers deviennent des tickets.</li>
-    <li><strong>Remonter jusqu'au moteur mobile quand un test échoue sans raison.</strong> Un bouton visible que le test ne pouvait pas taper, une tab bar qui disparaissait de l'arbre d'accessibilité iOS, la navbar système Android qui absorbait les taps : à chaque fois j'ai isolé la cause dans le comportement d'iOS, d'Android ou de Flutter, et corrigé dans le framework plutôt que de contourner dans les tests.</li>
-    <li><strong>Une méthode partagée avec la squad.</strong> Un test plan par feature, une suite de tests de release, et des skills Claude Code partagés qui génèrent les page objects à partir des maquettes Figma et des tickets Jira.</li>
-  </ul>
-  <div class="stack">Stack : Flutter &middot; CodeceptJS &middot; Appium &middot; Playwright &middot; Cucumber/Gherkin &middot; BrowserStack &middot; Rive &middot; Claude Code &middot; MCP Atlassian / Figma</div>
-  <div class="separator"></div>
-
-  <!-- JOB: ACCOR (CAC40) -->
-  <div class="job-header">
-    <div class="job-title-line">
-      <span class="job-title">QA Automation Architect &mdash; ACCOR (CAC40)</span>
-      <span class="job-date">Nov. 2024 - Mars 2026 (Freelance)</span>
-    </div>
-  </div>
-  <p class="job-intro">Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés de quatre ans, en dette technique. Arrivé pour exécuter et maintenir des tests, j'en suis devenu le référent technique.</p>
-  <div class="separator"></div>
-  <div class="sub-title">Remettre un framework legacy à l'état de l'art, puis aller plus loin</div>
-  <ul class="bullets">
-    <li><strong>Moderniser le framework sans arrêter les tests.</strong> Migrations de Java et du client Appium enchaînées sans régression. J'en ai profité pour retirer le code mort et refaire les logs, lisibles scénario par scénario. Le framework a perdu la moitié de son poids.</li>
-    <li><strong>Un device différent pour chaque scénario.</strong> Les bugs propres à un modèle, à une tablette ou à un écran en paysage ne se voient pas quand tous les tests tournent sur le même téléphone. J'ai fait distribuer chaque scénario sur un device différent de la device farm BrowserStack : les échecs sont devenus reproductibles, et avec un cache des apps et des devices, les sessions démarrent plus vite.</li>
-    <li><strong>Un pipeline CI qui dit enfin si la release est bonne.</strong> Avant, il lançait les tests mais restait vert quoi qu'il arrive, et il reposait sur un template partagé avec d'autres projets, qu'on ne pouvait pas adapter. Je l'ai réécrit pour l'équipe : il passe au rouge dès que le taux de réussite descend sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs.</li>
-    <li><strong>Mettre à portée des tests ce qui leur échappait.</strong> Les features derrière un feature flag, les builds store, les distributions TestFlight et Firebase, et les webviews derrière le WAF de l'entreprise.</li>
-    <li><strong>Des bugs de l'app diagnostiqués pour les devs.</strong> Le login iOS faisait échouer un run sur cinq. J'ai comparé des sessions qui passaient et des sessions qui échouaient sur le même build, isolé la cause, et travaillé le fix en binôme avec le tech lead iOS. Même approche pour les sessions expirées et les écrans de consentement absents.</li>
-    <li><strong>Un second framework, en TypeScript, conçu de zéro.</strong> Il n'existait pas de framework TypeScript pour le mobile chez Accor. J'en ai construit un, multi-plateforme et multi-locale, et j'ai documenté la comparaison avec la stack Java.</li>
-  </ul>
-  <div class="stack">Stack : Java 25 &middot; Maven &middot; Appium &middot; TestNG &middot; Cucumber &middot; BrowserStack &middot; GitLab CI &middot; Xray/Jira &middot; TypeScript &middot; WebDriverIO 9 &middot; Allure</div>
-  <div class="separator"></div>
-
-  <!-- JOB: Hexaly (Bouygues) -->
-  <div class="job-header">
-    <div class="job-title-line">
-      <span class="job-title">Frontend Software Developer &mdash; Hexaly (Bouygues)</span>
-      <span class="job-date">Mars 2024 - Mai 2024</span>
-    </div>
-  </div>
-  <p class="job-intro">Développement de fonctionnalités sur Hexaly Studio, un SaaS low-code React pour résoudre des problèmes d'optimisation complexes (planification de livraisons, gestion d'entrepôts logistiques).</p>
-  <div class="stack">Stack : React &middot; TypeScript &middot; JavaScript</div>
-  <div class="separator"></div>
-
-  <!-- JOB: JMD Technologies (Freelance) -->
-  <div class="job-header">
-    <div class="job-title-line">
-      <span class="job-title">Développeur Full Stack &mdash; JMD Technologies (Freelance)</span>
-      <span class="job-date">Avr. 2023 - Déc. 2023</span>
-    </div>
-  </div>
-  <p class="job-intro">Maintenance Industrie, spécialiste du nettoyage industriel, a commandé un SaaS de gestion de chantiers ainsi qu'une application mobile de badgeuse pour ses agents de nettoyage.</p>
-  <div class="stack">Stack : Angular &middot; Express.js &middot; Sequelize &middot; MySQL &middot; Flutter &middot; Riverpod</div>
-
-  <div class="section-title-wrapper" style="margin-top: 16px;">
-    <div class="section-title">Formation</div>
-  </div>
-
-  <div class="job-header">
-    <div class="job-title-line">
-      <span class="job-title">ESIEE Paris — Ingénieur IMAC</span>
+  <section class="section" id="education" aria-labelledby="education-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="education-title">Formation</h2></div>
+    <div class="job-header"><div class="job-title-line">
+      <h3 class="job-title">ESIEE Paris — Ingénieur IMAC</h3>
       <span class="job-date">2020 - 2023</span>
-    </div>
-  </div>
-  <p class="job-intro">Spécialisation web et mobile — Université Gustave Eiffel.</p>
+    </div></div>
+    <p class="job-intro reading">Spécialisation web et mobile — Université Gustave Eiffel.</p>
+  </section>
 
-  <div class="section-title-wrapper" style="margin-top: 16px;">
-    <div class="section-title">Langues</div>
-  </div>
+  <section class="section" id="languages" aria-labelledby="languages-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="languages-title">Langues</h2></div>
+    <p class="job-intro reading"><strong>Français</strong> &mdash; Langue maternelle &nbsp;&middot;&nbsp; <strong>Anglais</strong> &mdash; Professionnel avancé, niveau C1 (TOEIC 975)</p>
+  </section>
 
-  <p class="job-intro"><strong>Français</strong> &mdash; Langue maternelle &nbsp;&middot;&nbsp; <strong>Anglais</strong> &mdash; Professionnel avancé, niveau C1 (TOEIC 975)</p>
+  <section class="section" id="interests" aria-labelledby="interests-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="interests-title">Centres d'intérêt</h2></div>
+    <p class="job-intro reading"><strong>Escalade — Haut niveau :</strong> 8a en voie, 7C en bloc.</p>
+  </section>
+  </main>
 
-  <div class="section-title-wrapper" style="margin-top: 16px;">
-    <div class="section-title">Centres d'intérêt</div>
-  </div>
-
-  <p class="job-intro"><strong>Escalade — Haut niveau :</strong> 8a en voie, 7C en bloc.</p>
+  <footer class="site-footer">
+    <a href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="dist/cv-adam-ferreira.pdf" download>Télécharger le PDF</a>
+    <span>Mis à jour en septembre 2026</span>
+  </footer>
 
   <script src="assets/cv.js"></script>
+  <script type="module" src="assets/logo3d.js"></script>
 </body>
 </html>
