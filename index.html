@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CV — Adam Ferreira</title>
-  <meta name="description" content="Adam Ferreira&#x27;s CV: mobile QA Automation Architect (Appium, Flutter, iOS, Android).">
+  <meta name="description" content="Adam Ferreira&#x27;s CV: software engineer, mobile development and test automation (Flutter, Appium, iOS, Android).">
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
   <meta property="og:type" content="profile">
-  <meta property="og:title" content="Adam Ferreira — QA Automation Architect">
-  <meta property="og:description" content="I build what makes a mobile app testable: framework, CI, test data through APIs, test IDs in the code, tooling for the teams.">
+  <meta property="og:title" content="Adam Ferreira — Software Engineer · Mobile">
+  <meta property="og:description" content="I work on what makes a mobile app testable: framework, CI, test data through APIs, test IDs in the code, tooling for the teams.">
   <meta property="og:url" content="https://adam-ferreira.github.io/">
   <meta property="og:image" content="https://adam-ferreira.github.io/photo.jpg">
   <meta property="og:locale" content="en_US">
@@ -381,7 +381,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       <img class="brand-img" src="assets/logo.png?v=720e0702" alt="Adam Ferreira" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
-    <span class="frame-status label" aria-hidden="true">Adam Ferreira &middot; QA Automation Architect</span>
+    <span class="frame-status label" aria-hidden="true">Adam Ferreira &middot; Software Engineer · Mobile</span>
     <a class="lang-switch label" href="fr/" hreflang="fr" lang="fr" title="Version française" aria-label="Version française">FR</a>
     <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=b5b4242c">
       <img src="assets/marks/linkedin.svg?v=b5b4242c" alt="" width="40" height="40" decoding="async">
@@ -400,7 +400,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="assets/portrait.webp?v=74ec5f6d" alt="Adam Ferreira" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">Adam</span> <span class="name-last">Ferreira</span></h1>
-        <p class="subtitle">QA Automation Architect</p>
+        <p class="subtitle">Software Engineer · Mobile</p>
         <p class="hero-line" aria-label="Developer by training. QA by choice. Currently at Betclic, previously at Accor."><span class="w" style="--i:0">Developer</span> <span class="w" style="--i:1">by</span> <span class="w" style="--i:2">training.</span> <span class="w" style="--i:3">QA</span> <span class="w" style="--i:4">by</span> <span class="w" style="--i:5">choice.</span> <br> <span class="w" style="--i:6">Currently</span> <span class="w" style="--i:7">at</span> <span class="nowrap"><span class="w mark mark-betclic" style="--i:8" data-svg="assets/marks/betclic.svg?v=b44a3497"><img src="assets/marks/betclic.svg?v=b44a3497" alt="Betclic" width="600" height="205" decoding="async"></span><span class="w" style="--i:9">,</span></span> <span class="w" style="--i:10">previously</span> <span class="w" style="--i:11">at</span> <span class="nowrap"><span class="w mark mark-accor" style="--i:12" data-svg="assets/marks/accor.svg?v=9dc9a067" data-fill-dark="#eef1f5"><img src="assets/marks/accor.svg?v=9dc9a067" alt="Accor" width="377" height="327" decoding="async"></span><span class="w" style="--i:13">.</span></span></p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">Paris, France</span> <span class="meta-item">Freelance</span> <span class="meta-item">on-site and remote</span>
@@ -433,17 +433,17 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
         <span class="job-date">March 2026 - Present (Freelance)</span>
       </div></div>
       <div class="job-body">
-      <p class="job-intro">Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests for the gamification area: the missions and challenges that reward players for their bets, the leaderboards between bettors, the reward games that follow, and the boosts offered when placing a bet. All in a test repo shared between mobile and web.</p>
+      <p class="job-intro">Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests of the gamification features: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.</p>
       <div class="separator"></div>
       <h4 class="sub-title">Building the automation alongside the app</h4>
-      <p class="sub-intro">When I joined, the app was still being built, and the gamification scope with it. The challenge: automate at the pace of releases without slowing the developers down.</p>
+      <p class="sub-intro">When I joined, the app and its gamification features were still being built. The tests had to keep up with each release without slowing the developers down.</p>
       <ul class="bullets">
-        <li><strong>Test IDs placed directly in the app code.</strong> On mobile, a locator that finds a screen by its text breaks at the first translation or the first design change. I was the first QA automation engineer on the app to add the semantics myself in the Flutter code, following rules written with the tech leads, instead of waiting for the developers. The same locators work on iOS and Android, and they survive screen redesigns.</li>
-        <li><strong>Interactive animations, untestable until then.</strong> They are made by the motion design team in a dedicated tool, and the tests could not see anything inside them. I wrote a tool that injects the test IDs straight into the animation files, checked the result against the Flutter runtime, then produced a version the designer can open in their own software to understand the change and make it themselves.</li>
-        <li><strong>Test data created through APIs, not by hand.</strong> Testing a betting mission takes real bets, placed and then settled. I create them through APIs before each scenario, the same way production campaigns do, on a dedicated test account. The test only goes through the UI for what it actually checks: it stays short, and it doesn't break because another test touched the same data.</li>
-        <li><strong>A nightly run across five regulated markets.</strong> Each country has its own rules, content and accounts. The nightly runs on each of them; every morning I triage the failures into three buckets: product bug, broken environment, flaky test. Only the first become tickets.</li>
-        <li><strong>Going down to the mobile engine when a test fails for no reason.</strong> A visible button the test couldn't tap, a tab bar that vanished from the iOS accessibility tree, the Android system navigation bar swallowing taps: each time I traced the cause to how iOS, Android or Flutter behaves, and fixed it in the framework instead of working around it in the tests.</li>
-        <li><strong>A method shared with the squad.</strong> A test plan per feature, a release test suite, and shared Claude Code skills that generate page objects from Figma designs and Jira tickets.</li>
+        <li><strong>Test IDs in the app code.</strong> On mobile, a locator based on the displayed text breaks with each translation or design change. I add the Flutter semantics to the app code myself, following rules agreed with the tech leads. The same locators work on iOS and Android.</li>
+        <li><strong>Test IDs in the animations.</strong> The interactive animations are made by the motion design team in a dedicated tool, and the tests could not reach their content. I wrote a tool that adds test IDs to the animation files, checked the result with the Flutter runtime, and produced a version the designer can open in their own tool to apply the change themselves.</li>
+        <li><strong>Test data created through APIs.</strong> A betting mission needs bets that are placed and then settled. I create them through APIs before each scenario, on a dedicated test account. The UI is only used for what the test checks, so tests stay short and independent from each other.</li>
+        <li><strong>A nightly run on five regulated markets.</strong> Each country has its own rules, content and accounts. Every morning I sort the failures into product bugs, environment issues and flaky tests. Only product bugs become tickets.</li>
+        <li><strong>Failures investigated down to iOS, Android and Flutter.</strong> For example: a visible button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps. For each one, I found the cause in how the platform or Flutter behaves, and fixed it in the framework rather than working around it in the tests.</li>
+        <li><strong>Shared tooling with the squad.</strong> A test plan per feature, a release test suite, and Claude Code skills that generate page objects from Figma designs and Jira tickets.</li>
       </ul>
       <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
       <div class="separator"></div>
@@ -452,19 +452,19 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     <article class="job">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">02</span>
-        <h3 class="job-title">QA Automation Architect &mdash; ACCOR (CAC 40)</h3>
+        <h3 class="job-title">Mobile QA Automation Engineer &mdash; ACCOR (CAC 40)</h3>
         <span class="job-date">Nov. 2024 - March 2026 (Freelance)</span>
       </div></div>
       <div class="job-body">
-      <p class="job-intro">Accor tests its ALL mobile apps (loyalty, booking, stay) with a four-year-old automated test framework carrying technical debt. I joined to run and maintain tests, and became the framework's technical go-to person.</p>
+      <p class="job-intro">Accor tests its ALL mobile apps (loyalty, booking, stay) with an automated test framework started four years earlier, with technical debt. I joined to run and maintain the tests, and became the technical reference for the framework.</p>
       <div class="separator"></div>
-      <h4 class="sub-title">Bringing a legacy framework up to date, then going further</h4>
+      <h4 class="sub-title">Modernizing an existing framework</h4>
       <ul class="bullets">
-        <li><strong>Modernizing the framework without stopping the tests.</strong> Back-to-back Java and Appium client migrations with no regression. Along the way I removed dead code and rewrote the logs so they read scenario by scenario. The framework lost half its weight.</li>
-        <li><strong>A different device for each scenario.</strong> Bugs specific to one model, a tablet or a landscape screen don't show up when every test runs on the same phone. I had each scenario dispatched to a different device on the BrowserStack device farm: failures became reproducible, and with app and device caching, sessions start faster.</li>
-        <li><strong>A CI pipeline that finally tells you whether the release is good.</strong> Before, it ran the tests but stayed green no matter what, and it relied on a template shared with other projects that couldn't be adapted. I rewrote it for the team: it turns red as soon as the pass rate drops below a threshold, publishes the results to Jira and Xray, and alerts each team on Slack about its own failures.</li>
-        <li><strong>Bringing within the tests' reach what used to escape them.</strong> Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.</li>
-        <li><strong>A second framework, in TypeScript, built from scratch.</strong> There was no TypeScript framework for mobile at Accor. I built one, cross-platform and multi-locale, and documented how it compares with the Java stack.</li>
+        <li><strong>Framework modernization.</strong> Java and Appium client upgrades with no regression, dead code removed, logs rewritten to read scenario by scenario. The framework is now half its previous size.</li>
+        <li><strong>One device per scenario.</strong> Each scenario runs on a different device of the BrowserStack device farm, so bugs specific to a model, a tablet or an orientation show up and can be reproduced. Caching apps and devices shortened session start-up.</li>
+        <li><strong>A rewritten CI pipeline.</strong> The previous pipeline stayed green whatever the results and depended on a template shared with other projects. The new one fails when the pass rate drops below a threshold, publishes the results to Jira and Xray, and notifies each team on Slack of its own failures.</li>
+        <li><strong>Wider test coverage.</strong> Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.</li>
+        <li><strong>A second framework in TypeScript.</strong> Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack.</li>
       </ul>
       <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
       <div class="separator"></div>
@@ -512,7 +512,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 
   <section class="section" id="interests" aria-labelledby="interests-title">
     <div class="section-title-wrapper"><h2 class="section-title" id="interests-title">Interests</h2></div>
-    <p class="job-intro reading"><strong>Climbing — high level:</strong> 8a sport climbing, 7C bouldering.</p>
+    <p class="job-intro reading"><strong>Climbing:</strong> 8a sport, 7C bouldering.</p>
   </section>
   </div>
   </main>
