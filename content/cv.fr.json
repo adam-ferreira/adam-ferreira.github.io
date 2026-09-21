@@ -166,16 +166,6 @@
     "toggle_title_dark": "Passer en mode jour",
     "toggle_title_light": "Passer en mode nuit",
     "nav_aria": "Navigation",
-    "nav": [
-      {
-        "label": "Expériences",
-        "href": "#experience"
-      },
-      {
-        "label": "Formation",
-        "href": "#education"
-      }
-    ],
     "pdf_label": "Télécharger le PDF",
     "footer_note": "Mis à jour en septembre 2026"
   }
