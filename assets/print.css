@@ -407,3 +407,5 @@ main { display: block; }
 .section { display: block; }
 
 .screen-only { display: none !important; }
+
+.hero-stage, .hero-foot, .frame-status, .job-num, .footer-statement, .footer-grid { display: none !important; }
