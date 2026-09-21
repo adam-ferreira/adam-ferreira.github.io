@@ -49,7 +49,10 @@ def hero_html(idn: dict) -> str:
             mk = marks[m.group(1)]
             inner = (f'<img src="{html.escape(mk["src"])}" alt="{md(mk["alt"])}" loading="lazy">' if mk["type"] == "img"
                      else f'<span class="mark-text" role="img" aria-label="{md(mk["alt"])}">{md(mk["label"])}</span>')
-            out.append(f'<span class="w mark mark-{m.group(1)}" style="--i:{i}">{inner}</span>')
+            attrs = f' data-svg="{html.escape(mk["src"])}"' if mk["type"] == "img" else ""
+            if mk.get("fill_dark"):
+                attrs += f' data-fill-dark="{html.escape(mk["fill_dark"])}"'
+            out.append(f'<span class="w mark mark-{m.group(1)}" style="--i:{i}"{attrs}>{inner}</span>')
         else:
             out.append(f'<span class="w" style="--i:{i}">{md(tok)}</span>')
         i += 1
@@ -195,6 +198,7 @@ def render(d: dict) -> str:
 
   <script src="assets/cv.js"></script>
   <script type="module" src="assets/logo3d.js"></script>
+  <script type="module" src="assets/marks3d.js"></script>
 </body>
 </html>
 """)
