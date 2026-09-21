@@ -43,18 +43,22 @@ async function setup(mark, THREE, loader, SVGLoader) {
   const vb = (svgText.match(/viewBox="([^"]+)"/) || [])[1];
   const svgH = vb ? parseFloat(vb.split(/[\s,]+/)[3]) : 100;
   const depth = svgH * 0.14;
+  // la première couleur est la plaque (pleine épaisseur) ; une autre couleur = un relief fin gravé dessus (lettres, glyphe)
+  const baseColor = (data.paths.find((p) => p.userData.style.fill && p.userData.style.fill !== 'none') || { userData: { style: {} } }).userData.style.fill;
   data.paths.forEach((path, i) => {
     const base = path.userData.style.fill;
     if (!base || base === 'none') return;
+    const overlay = base.toLowerCase() !== String(baseColor).toLowerCase();
+    const thickness = overlay ? depth * 0.16 : depth;
     // face avant : la couleur exacte du SVG, sans éclairage → au repos, indiscernable du logo plat
     const cap = new THREE.MeshBasicMaterial({ color: new THREE.Color(base) });
     // tranches : éclairées et un peu plus sombres → le volume n'apparaît que quand on l'incline
     const side = new THREE.MeshStandardMaterial({ color: new THREE.Color(base).multiplyScalar(0.72), metalness: 0.1, roughness: 0.6 });
     cap.userData.base = side.userData.base = base;
     for (const shape of SVGLoader.createShapes(path)) {
-      const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 14 });
+      const geo = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false, curveSegments: 14 });
       const mesh = new THREE.Mesh(geo, [cap, side]);
-      mesh.position.z = i * depth * 0.5;
+      mesh.position.z = overlay ? depth - thickness * 0.35 : 0;   // gravé à fleur de la plaque
       group.add(mesh);
     }
   });
