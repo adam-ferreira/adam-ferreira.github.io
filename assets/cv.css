@@ -27,10 +27,10 @@
   --muted: #5f6875;
   --line: #dde1e7;
   --chip: #eaedf1;
-  --accent: #ff7452;        /* LA couleur du site : page, téléphones 3D, logo AF 3D, curseur, portrait */
-  --accent-ink: #b8391a;    /* sa version foncée, pour du texte sur fond clair */
-  --accent-hi: #ffd7ca;     /* reflet (curseur, disque du portrait) */
-  --accent-deep: #c2401f;   /* ombre */
+  --accent: #ffb627;        /* LA couleur (mangue, choisie le 21/09/2026) du site : page, téléphones 3D, logo AF 3D, curseur, portrait */
+  --accent-ink: #976400;    /* sa version foncée, pour du texte sur fond clair */
+  --accent-hi: #ffebc3;     /* reflet (curseur, disque du portrait) */
+  --accent-deep: #b27f1b;   /* ombre */
   --topbar: rgba(246, 247, 249, 0.82);
   --mark-bg: #1d1f3b;
   --display: "Humane", "Bricolage Grotesque", system-ui, sans-serif;
@@ -40,12 +40,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-    --accent: #ff7452; --accent-ink: #ff8a6b; --accent-hi: #ffd7ca; --accent-deep: #c2401f; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+    --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-  --accent: #ff7452; --accent-ink: #ff8a6b; --accent-hi: #ffd7ca; --accent-deep: #c2401f; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+  --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
 }
 
 * { box-sizing: border-box; }
@@ -62,7 +62,7 @@ h1, h2, h3, h4, p, ul { margin: 0; }
 ul { padding: 0; list-style: none; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
-::selection { background: var(--accent); color: #fff; }
+::selection { background: var(--accent); color: #161b22; }   /* texte sombre : l'accent est clair */
 
 /* micro-étiquettes : mono, petites, espacées — les seules capitales de la page hors titres géants */
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
@@ -165,7 +165,7 @@ body.name-away .frame-status { opacity: 1; transform: none; }
   color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: -.005em;
   transition: border-color .2s ease, color .2s ease, transform .2s ease;
 }
-.contact-link svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.contact-link svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--accent-ink); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
 .contact-link:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
 
 .hero-foot {
