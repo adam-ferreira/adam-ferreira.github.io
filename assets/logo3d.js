@@ -93,9 +93,12 @@ function mount(THREE, logo, shine) {
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
 
   if (reduced()) return;
-  (function loop() {
+  let lastDraw = 0;
+  (function loop(now) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
+    if (document.documentElement.classList.contains('is-moving') || now - lastDraw < 15) return;   // figé pendant les mouvements de page, 60 images/s au plus
+    lastDraw = now;
     if (paused) { paused = false; stopHint(0); nextHint = Math.max(nextHint, performance.now() + 1000 + ORDER * 1500); }
     if (!dragging) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || performance.now() - releasedAt < 700) {
@@ -117,7 +120,7 @@ function mount(THREE, logo, shine) {
       }
     }
     renderer.render(scene, camera);
-  })();
+  })(performance.now());
 }
 
 function boot() {
