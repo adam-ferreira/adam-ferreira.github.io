@@ -26,6 +26,13 @@ Site : https://adam-ferreira.github.io/ (anglais) · https://adam-ferreira.githu
 3. `git add -A && git commit && git push` → GitHub Pages publie en une à deux minutes.
 
 
+## Couleur d'accent
+
+Une seule couleur pilote tout : `--accent` (et ses dérivées `--accent-ink`, `--accent-hi`, `--accent-deep`) en tête de `assets/cv.css`.
+Les téléphones 3D, le logo AF en 3D et le curseur la lisent au chargement. Mangue `#FFB627` depuis le 21/09/2026.
+Trois choses ne suivent pas automatiquement si on la change : `assets/logo.png` (logo AF de la barre et icône d'onglet, recoloré),
+`assets/marks/linkedin.svg` (carré à la couleur d'accent, « in » à l'encre sombre) et le `:root` de `tools/linkedin-cover.html`.
+
 ## Règles de contenu
 
 - Une puce = point de départ, ce qui coinçait, ce que j'ai fait, ce que ça a changé. Première personne, mots du métier en anglais tels quels.
