@@ -23,12 +23,14 @@
       "betclic": {
         "type": "img",
         "src": "assets/marks/betclic.svg",
-        "alt": "Betclic"
+        "alt": "Betclic",
+        "fill_dark": null
       },
       "accor": {
-        "type": "text",
-        "label": "ACCOR",
-        "alt": "Accor"
+        "type": "img",
+        "src": "assets/marks/accor.svg",
+        "alt": "Accor",
+        "fill_dark": "#eef1f5"
       }
     }
   },
