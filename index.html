@@ -15,12 +15,9 @@
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Inter:wght@300;400;500;600;700;800&display=swap"></noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" media="print">
   <style media="screen">
 /* ============================================================
    CV — feuille ÉCRAN (media="screen"). L'impression utilise print.css.
@@ -30,6 +27,13 @@
    des étiquettes discrètes, aucune carte, aucune animation de section.
    ============================================================ */
 
+@font-face {
+  /* Bricolage Grotesque (SIL OFL), variable, sous-ensemble latin + accents, auto-hébergée : aucune origine tierce au chargement */
+  font-family: "Bricolage Grotesque";
+  src: url("assets/fonts/BricolageGrotesque-fr.woff2") format("woff2");
+  font-weight: 300 800;
+  font-display: swap;
+}
 @font-face {
   font-family: "Humane";
   /* sous-ensemble : les seules lettres du nom (3 Ko) ; le TTF complet reste en secours */
