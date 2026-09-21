@@ -189,6 +189,7 @@
     "scroll_hint": "Scroll",
     "footer_statement": "On construit quelque chose ?",
     "footer_availability": "Ouvert aux missions QA automation mobile",
-    "updated": "Mis à jour en septembre 2026"
+    "updated": "Mis à jour en septembre 2026",
+    "stack_label": "Stack :"
   }
 }
