@@ -244,7 +244,7 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 }
 
 /* ---------- compétences ---------- */
-.skills { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) clamp(56px, 8vw, 112px); display: grid; gap: 16px; }
+.skills { max-width: 980px; display: grid; gap: 16px; }
 .skills-row { display: grid; grid-template-columns: 170px 1fr; column-gap: 16px; align-items: start; }
 .skills-label { font-size: 15px; font-weight: 600; color: var(--ink); padding-top: 4px; }
 .chips { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -269,12 +269,94 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
 /* expériences : sur grand écran, l'en-tête reste accroché à gauche pendant qu'on lit le détail à droite */
 @media (min-width: 1100px) {
-  .job { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); column-gap: clamp(48px, 6vw, 112px); }
-  .job-header { position: sticky; top: 96px; align-self: start; margin-bottom: 0; }
+  .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(40px, 5vw, 96px); align-items: start; }
+  .job-side, .job-main { padding-top: 22px; border-top: 1px solid var(--line); }
+  .job-side .job-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
   .job-title-line { grid-template-columns: auto minmax(0, 1fr); }
   .job-date { grid-column: 2; }
-  .job-body { padding-top: 22px; border-top: 1px solid var(--line); }
-  .job-body > .job-intro:first-child { margin-top: -6px; }
+  .job-side .job-intro { font-size: 16px; line-height: 1.6; }
+  .job-side .sub-title { margin-top: 22px; font-size: 17px; }
+  .job-side .sub-intro { font-size: 15px; line-height: 1.6; }
+  .job-main .bullets { margin-top: 0; grid-template-columns: 1fr 1fr; gap: 20px 32px; }
+  .job-main .bullets li { font-size: 14.5px; line-height: 1.55; }
+  .job-main .bullets li strong { font-size: 15.5px; margin-bottom: 4px; }
+  .job-main .stack { margin-top: 22px; gap: 8px; }
+  /* expériences courtes (sans puces) : une colonne, un titre plus grand, et le numéro en filigrane */
+  .job-short { grid-template-columns: minmax(0, 1fr); max-width: 980px; position: relative; }
+  .job-short .job-main { padding-top: 0; border-top: 0; }
+  .job-short .job-title { font-size: clamp(30px, 3.2vw, 46px); }
+  .job-short .job-side .job-intro { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.5; max-width: 40ch; }
+  .job-short .job-num { font-size: 12px; }
+  .job-short::after {
+    content: attr(data-num); position: absolute; right: -32%; top: 50%; transform: translateY(-50%); pointer-events: none;
+    font-family: var(--display); font-size: clamp(220px, 30vw, 460px); line-height: .8; color: transparent;
+    -webkit-text-stroke: 1.5px var(--line); letter-spacing: .02em;
+  }
+}
+
+/* ---------- défilement par écrans (ordinateur) : chaque molette amène à l'écran suivant ----------
+   Accueil, chapitre « Experience » + compétences, une expérience par écran, Formation/Langues/Intérêts, pied de page.
+   Si un écran déborde (petit écran), le navigateur laisse défiler à l'intérieur avant de passer au suivant. */
+@media (min-width: 1100px) and (min-height: 680px) {
+  html { scroll-snap-type: y mandatory; scroll-padding-top: 60px; }
+  .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
+  /* le pied de page devient le dernier écran (il n'est plus « collé » sous le contenu : le calage ne sait pas viser un élément collé) */
+  footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: space-between; }
+  footer.site-footer .footer-statement, footer.site-footer .footer-grid { margin-top: auto; }   /* la phrase au centre, les contacts en bas */
+  .section { margin-top: 0; padding-top: 0; border-top: 0; }
+  .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
+  .chapter .section-title-wrapper { margin-bottom: 0; }
+  .job { align-content: center; margin-bottom: 0; padding: 24px 0; }
+  main { padding-right: 84px; }   /* place pour le repère de progression */
+  .job:last-child { margin-bottom: 0; }
+  .facts { align-content: center; margin-top: 0; padding-top: 0; border-top: 0; }
+}
+
+/* ---------- transitions entre écrans (grand écran, animations autorisées) ----------
+   1. Le passage : l'écran qui part recule et s'efface, le suivant monte ; piloté par le défilement lui-même (view timeline).
+   2. L'arrivée : le contenu d'un écran se pose en cascade quand il devient l'écran courant (classe is-active, cv.js).
+   3. Le repère : une colonne de traits à droite, avec un compteur (cv.js). */
+@media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
+  .job .job-header, .job .job-intro, .job .sub-title, .job .sub-intro, .job .bullets li, .job .stack,
+  .chapter .skills-row, .facts .section > * {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1);
+    transition-delay: calc(var(--d, 0) * 70ms);
+  }
+  .job.is-active .job-header, .job.is-active .job-intro, .job.is-active .sub-title, .job.is-active .sub-intro,
+  .job.is-active .bullets li, .job.is-active .stack, .chapter.is-active .skills-row, .facts.is-active .section > * { opacity: 1; transform: none; }
+  .job .job-intro { --d: 1; } .job .sub-title { --d: 2; } .job .sub-intro { --d: 3; }
+  .job .bullets li:nth-child(1) { --d: 3; } .job .bullets li:nth-child(2) { --d: 4; } .job .bullets li:nth-child(3) { --d: 5; }
+  .job .bullets li:nth-child(4) { --d: 6; } .job .bullets li:nth-child(5) { --d: 7; } .job .bullets li:nth-child(6) { --d: 8; }
+  .job .stack { --d: 9; }
+  .chapter .skills-row:nth-child(1) { --d: 2; } .chapter .skills-row:nth-child(2) { --d: 3; } .chapter .skills-row:nth-child(3) { --d: 4; }
+  .facts .section > :nth-child(2) { --d: 1; } .facts .section:nth-child(2) > * { --d: 2; } .facts .section:nth-child(3) > * { --d: 3; }
+}
+@supports (animation-timeline: view()) {
+  @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
+    /* l'écran lui-même ne bouge pas (sinon le calage vise une cible qui se déplace) : il porte une ligne de temps
+       nommée, et c'est son contenu qui s'anime au fil du défilement */
+    .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: 60px 0px; }
+    .header > *, .chapter > *, .job > *, .facts > *, .site-footer > * {
+      transform-origin: 50% 0%;
+      animation: panel-in linear backwards, panel-out linear forwards;
+      animation-timeline: --panel, --panel;
+      animation-range: entry-crossing 0% entry-crossing 100%, exit-crossing 0% exit-crossing 100%;
+    }
+  }
+}
+@keyframes panel-in { from { opacity: 0; transform: translateY(8vh) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes panel-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-5vh) scale(.92); } }
+
+.pager { display: none; }
+@media (min-width: 1100px) and (min-height: 680px) {
+  .pager { display: flex; flex-direction: column; align-items: flex-end; position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 15; }
+  .pager-count { margin-bottom: 12px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .pager-tick { display: block; width: 34px; height: 14px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }
+  .pager-tick::before { content: ""; display: block; margin-left: auto; width: 14px; height: 2px; border-radius: 1px; background: currentColor; opacity: .5; transition: width .35s ease, opacity .35s ease, background .35s ease; }
+  .pager-tick:hover::before { opacity: .9; }
+  .pager-tick.is-current::before { width: 32px; opacity: 1; background: var(--accent); }
+  .pager.is-inverted .pager-count { color: var(--paper); }   /* sur le pied de page inversé */
 }
 
 /* Formation, Langues, Intérêts : une rangée de trois, titres en Humane de taille moyenne */
@@ -426,26 +508,28 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     </div>
   </header>
 
-  <div class="skills" id="skills">
-    <div class="skills-row"><span class="skills-label">Mobile</span><ul class="chips"><li>Appium</li> <li>Flutter</li> <li>iOS</li> <li>Android</li> <li>BrowserStack</li></ul></div>
-    <div class="skills-row"><span class="skills-label">Frameworks</span><ul class="chips"><li>Java / TestNG / Cucumber</li> <li>TypeScript / WebdriverIO</li> <li>CodeceptJS / Playwright</li> <li>Gherkin</li></ul></div>
-    <div class="skills-row"><span class="skills-label">Livraison &amp; outillage</span><ul class="chips"><li>GitLab CI</li> <li>Xray / Jira</li> <li>Allure</li> <li>mitmproxy</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
-  </div>
-
   <main>
   <section class="section" id="experience" aria-labelledby="experience-title">
+    <div class="chapter">
     <div class="section-title-wrapper"><h2 class="section-title" id="experience-title">Expériences professionnelles</h2></div>
-    <article class="job">
+    <div class="skills" id="skills">
+      <div class="skills-row"><span class="skills-label">Mobile</span><ul class="chips"><li>Appium</li> <li>Flutter</li> <li>iOS</li> <li>Android</li> <li>BrowserStack</li></ul></div>
+      <div class="skills-row"><span class="skills-label">Frameworks</span><ul class="chips"><li>Java / TestNG / Cucumber</li> <li>TypeScript / WebdriverIO</li> <li>CodeceptJS / Playwright</li> <li>Gherkin</li></ul></div>
+      <div class="skills-row"><span class="skills-label">Livraison &amp; outillage</span><ul class="chips"><li>GitLab CI</li> <li>Xray / Jira</li> <li>Allure</li> <li>mitmproxy</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
+    </div>
+    </div>
+    <article class="job" data-num="01">
+      <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">01</span>
         <h3 class="job-title">QA Automation Engineer (mobile Flutter) &mdash; BETCLIC</h3>
         <span class="job-date">Mars 2026 - Aujourd'hui (Freelance)</span>
       </div></div>
-      <div class="job-body">
       <p class="job-intro">Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests des fonctionnalités de gamification : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.</p>
-      <div class="separator"></div>
       <h4 class="sub-title">Construire l'automatisation en même temps que l'app</h4>
       <p class="sub-intro">À mon arrivée, l'app et ses fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.</p>
+      </div>
+      <div class="job-main">
       <ul class="bullets">
         <li><strong>Des test IDs dans le code de l'app.</strong> Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads.</li>
         <li><strong>Des test IDs dans les animations.</strong> Les animations interactives sont produites par l'équipe motion design dans un outil dédié, et les tests n'avaient pas accès à leur contenu. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, et produit une version que le designer ouvre dans son propre outil pour refaire la modification lui-même.</li>
@@ -455,19 +539,19 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
         <li><strong>Un outillage partagé avec la squad.</strong> Un test plan par feature, une suite de tests de release, et des skills Claude Code qui génèrent les page objects à partir des maquettes Figma et des tickets Jira.</li>
       </ul>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
-      <div class="separator"></div>
       </div>
     </article>
-    <article class="job">
+    <article class="job" data-num="02">
+      <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">02</span>
         <h3 class="job-title">Mobile QA Automation Engineer &mdash; ACCOR (CAC40)</h3>
         <span class="job-date">Nov. 2024 - Mars 2026 (Freelance)</span>
       </div></div>
-      <div class="job-body">
       <p class="job-intro">Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés lancé quatre ans plus tôt, en dette technique. Arrivé pour exécuter et maintenir les tests, j'en suis devenu le référent technique.</p>
-      <div class="separator"></div>
       <h4 class="sub-title">Moderniser un framework existant</h4>
+      </div>
+      <div class="job-main">
       <ul class="bullets">
         <li><strong>Modernisation du framework.</strong> Migrations de Java et du client Appium, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine.</li>
         <li><strong>Un device par scénario.</strong> Chaque scénario tourne sur un device différent de la device farm BrowserStack : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions.</li>
@@ -476,29 +560,31 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
         <li><strong>Un second framework en TypeScript.</strong> Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java.</li>
       </ul>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
-      <div class="separator"></div>
       </div>
     </article>
-    <article class="job">
+    <article class="job job-short" data-num="03">
+      <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">03</span>
         <h3 class="job-title">Frontend Software Developer &mdash; Hexaly (Bouygues)</h3>
         <span class="job-date">Mars 2024 - Mai 2024</span>
       </div></div>
-      <div class="job-body">
       <p class="job-intro">Développement de fonctionnalités sur Hexaly Studio, un SaaS low-code React pour résoudre des problèmes d'optimisation complexes (planification de livraisons, gestion d'entrepôts logistiques).</p>
+      </div>
+      <div class="job-main">
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>React</li> <li>TypeScript</li> <li>JavaScript</li></ul></div>
-      <div class="separator"></div>
       </div>
     </article>
-    <article class="job">
+    <article class="job job-short" data-num="04">
+      <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">04</span>
         <h3 class="job-title">Développeur Full Stack &mdash; JMD Technologies (Freelance)</h3>
         <span class="job-date">Avr. 2023 - Déc. 2023</span>
       </div></div>
-      <div class="job-body">
       <p class="job-intro">Maintenance Industrie, spécialiste du nettoyage industriel, a commandé un SaaS de gestion de chantiers ainsi qu'une application mobile de badgeuse pour ses agents de nettoyage.</p>
+      </div>
+      <div class="job-main">
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Angular</li> <li>Express.js</li> <li>Sequelize</li> <li>MySQL</li> <li>Flutter</li> <li>Riverpod</li></ul></div>
       </div>
     </article>
@@ -538,7 +624,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     </div>
   </footer>
 
-  <script src="assets/cv.js?v=d4990541"></script>
+  <script src="assets/cv.js?v=94a1049f"></script>
   <script type="module" src="assets/hero3d.js?v=99eb6eae"></script>
   <script type="module" src="assets/logo3d.js?v=8318597f"></script>
   <script type="module" src="assets/marks3d.js?v=3212758e"></script>

@@ -55,8 +55,10 @@
   }
 
   // Défilement lissé (Lenis) : écran large avec souris seulement, après le chargement, jamais sous « réduire les animations ».
+  // … mais jamais là où le défilement se cale écran par écran (grand écran) : les deux se battraient.
   var wide = window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
-  if (wide && !reduced) {
+  var snapping = window.matchMedia('(min-width: 1100px) and (min-height: 680px)').matches;
+  if (wide && !snapping && !reduced) {
     window.addEventListener('load', function () {
       import('https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.mjs').then(function (m) {
         var Lenis = m.default || m.Lenis;
@@ -96,5 +98,45 @@
       cur.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0) rotate(' + a.toFixed(1) + 'deg) scale(' + (1 + s).toFixed(3) + ',' + (1 - s * 0.5).toFixed(3) + ') rotate(' + (-a).toFixed(1) + 'deg)';
       requestAnimationFrame(tick);
     }
+  }
+
+  // Écrans : l'écran courant est celui qui occupe la bande haute de la fenêtre (marche aussi pour un écran plus haut qu'elle).
+  // Il reçoit is-active (son contenu se pose en cascade, cv.css) ; le repère de droite suit et permet d'y aller en un clic.
+  var panels = [].slice.call(document.querySelectorAll('.header, .chapter, .job, .facts, .site-footer'));
+  if (panels.length && 'IntersectionObserver' in window) {
+    var fr = document.documentElement.lang === 'fr';
+    var labelOf = function (p) {
+      if (p.classList.contains('header')) return fr ? 'Accueil' : 'Home';
+      if (p.classList.contains('site-footer')) return 'Contact';
+      var h = p.querySelector('.section-title, .job-title');
+      var txt = h ? h.textContent.trim() : '';
+      if (p.classList.contains('job')) { var n = p.querySelector('.job-num'); var parts = txt.split('\u2014'); return (n ? n.textContent + ' ' : '') + (parts[1] || parts[0]).trim(); }
+      return txt;
+    };
+    var pager = document.createElement('nav');
+    pager.className = 'pager'; pager.setAttribute('aria-label', fr ? 'Écrans de la page' : 'Page sections');
+    var count = document.createElement('span'); count.className = 'pager-count label'; count.setAttribute('aria-hidden', 'true');
+    pager.appendChild(count);
+    var ticks = panels.map(function (p, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'pager-tick'; b.title = labelOf(p); b.setAttribute('aria-label', labelOf(p));
+      b.addEventListener('click', function () { p.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); });
+      pager.appendChild(b); return b;
+    });
+    document.body.appendChild(pager);
+    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+    var setCurrent = function (i) {
+      ticks.forEach(function (t, k) { t.classList.toggle('is-current', k === i); if (k === i) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current'); });
+      count.textContent = pad(i + 1) + ' / ' + pad(panels.length);
+      pager.classList.toggle('is-inverted', panels[i].classList.contains('site-footer'));
+    };
+    setCurrent(0);
+    var panelIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        en.target.classList.toggle('is-active', en.isIntersecting);
+        if (en.isIntersecting) setCurrent(panels.indexOf(en.target));
+      });
+    }, { rootMargin: '-10% 0px -35% 0px' });   // actif dès que son haut passe aux deux tiers de la fenêtre : le contenu arrive pendant la transition
+    panels.forEach(function (p) { panelIO.observe(p); });
   }
 })();
