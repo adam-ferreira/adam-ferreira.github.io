@@ -162,7 +162,7 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 /* le portrait détouré sort de son disque : la tête dépasse par le haut, les épaules restent dans le cercle */
 .portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; flex: none; }
 .portrait-disc { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 26%, var(--accent-hi), var(--accent) 56%, var(--accent-deep)); }
-.portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 0 0 0 round 0 0 64px 64px); }
+.portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 8px 8px 8px round 0 0 56px 56px); }   /* 8 px en retrait : un anneau d'accent reste visible autour */
 .header-name-block { display: flex; flex-direction: column; min-width: 0; }
 .name {
   font-family: var(--display); font-weight: 400;
@@ -231,7 +231,7 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
   .portrait { width: 84px; height: 84px; margin-top: 28px; }
-  .portrait-img { clip-path: inset(-60% 0 0 0 round 0 0 42px 42px); }
+  .portrait-img { clip-path: inset(-60% 5px 5px 5px round 0 0 37px 37px); }
   .name { font-size: clamp(64px, 20vw, 96px); }
   .hero-foot { position: static; margin-top: 40px; }
 }
@@ -398,7 +398,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   <header class="header">
     <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
-      <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="assets/portrait.webp?v=74ec5f6d" alt="Adam Ferreira" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
+      <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="assets/portrait.webp?v=caaf83e9" alt="Adam Ferreira" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">Adam</span> <span class="name-last">Ferreira</span></h1>
         <p class="subtitle">Software Engineer · Dev &amp; QA Automation</p>
