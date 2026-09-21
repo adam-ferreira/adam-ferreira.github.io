@@ -210,6 +210,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   (function loop() {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
+    if (document.documentElement.classList.contains('is-moving') && !dragging) return;   // figé pendant les mouvements de page
     if (paused) {   // retour sur l'onglet ou sur la marque : on redécale les gestes, sinon les trois partiraient ensemble
       paused = false; hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; dirty = true;
       nextHint = Math.max(nextHint, performance.now() + 1000 + order * 1500);
