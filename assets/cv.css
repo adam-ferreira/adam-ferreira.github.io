@@ -8,7 +8,8 @@
 
 @font-face {
   font-family: "Humane";
-  src: url("fonts/Humane.ttf") format("truetype");
+  /* sous-ensemble : les seules lettres du nom (3 Ko) ; le TTF complet reste en secours */
+  src: url("fonts/Humane-name.woff2") format("woff2"), url("fonts/Humane.ttf") format("truetype");
   font-weight: 400;
   font-display: swap;
 }
