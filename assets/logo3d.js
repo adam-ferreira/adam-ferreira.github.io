@@ -7,6 +7,11 @@ const ORANGE = 0xff7452;
 const canvas = document.querySelector('.brand canvas.logo3d');
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
+const onDprChange = (cb) => {
+  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+  q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
+};
 
 function webglOk() {
   try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
@@ -32,7 +37,7 @@ async function go() {
 
 function mount(THREE, logo) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));   // suréchantillonné : petit canvas, bords nets
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
@@ -44,6 +49,7 @@ function mount(THREE, logo) {
 
   function fit() {
     const w = canvas.clientWidth || 62, h = canvas.clientHeight || 62, half = 1.15;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));
     renderer.setSize(w, h, false);
     camera.left = -half * w / h; camera.right = half * w / h; camera.top = half; camera.bottom = -half;
     camera.updateProjectionMatrix();
@@ -67,6 +73,7 @@ function mount(THREE, logo) {
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
   window.addEventListener('pointermove', (e) => { target.x = (e.clientX / window.innerWidth - 0.5) * 2; target.y = (e.clientY / window.innerHeight - 0.5) * 2; }, { passive: true });
   window.addEventListener('resize', () => { fit(); renderer.render(scene, camera); });
+  onDprChange(() => { fit(); renderer.render(scene, camera); });
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
 
   if (reduced()) return;
