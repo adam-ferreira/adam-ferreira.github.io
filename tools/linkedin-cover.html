@@ -11,11 +11,12 @@
 <style>
   @font-face { font-family: "Humane"; src: url("assets/fonts/Humane-name.woff2") format("woff2"); }
   @font-face { font-family: "Bricolage Grotesque"; src: url("assets/fonts/BricolageGrotesque-fr.woff2") format("woff2"); font-weight: 300 800; }
+  :root { --accent: #ff7452; }   /* même accent que le site (assets/cv.css) : les téléphones le lisent aussi */
   html, body { margin: 0; background: #0e1116; }
   .cover {
     position: relative; width: 1584px; height: 396px; overflow: hidden; color: #eef1f5;
     background:
-      radial-gradient(560px 440px at 1300px 200px, rgba(255, 116, 82, .30), transparent 70%),
+      radial-gradient(560px 440px at 1300px 200px, color-mix(in srgb, var(--accent) 30%, transparent), transparent 70%),
       radial-gradient(900px 520px at 0 0, rgba(255, 255, 255, .04), transparent 60%),
       #0e1116;
     font-family: "Bricolage Grotesque", system-ui, sans-serif;
@@ -27,18 +28,18 @@
     -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 25%, #000 75%, transparent); mask-image: linear-gradient(90deg, transparent 0, #000 25%, #000 75%, transparent);
   }
   .logo { position: absolute; left: 48px; top: 40px; width: 60px; height: 60px; }
-  .statement { position: absolute; left: 400px; top: 40px; margin: 0; font-family: "Humane"; font-weight: 400; text-transform: uppercase; font-size: 160px; line-height: .86; letter-spacing: .01em; }
-  .statement em { font-style: normal; color: #ff7452; }
+  .statement { position: absolute; left: 400px; top: 56px; margin: 0; font-family: "Humane"; font-weight: 400; text-transform: uppercase; font-size: 240px; line-height: .86; letter-spacing: .01em; white-space: nowrap; }
+  .statement em { font-style: normal; color: var(--accent); }
   .meta { position: absolute; left: 404px; top: 334px; display: flex; gap: 30px; font: 500 14px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .16em; text-transform: uppercase; color: #8e97a3; }
   .meta b { font-weight: 500; color: #eef1f5; }
-  .meta .site { color: #ff7452; }
+  .meta .site { color: var(--accent); }
   canvas.hero3d { position: absolute; left: 1050px; top: -78px; width: 560px; height: 560px; display: block; }
 </style>
 </head>
 <body>
   <div class="cover">
     <img class="logo" src="assets/logo.png" alt="">
-    <p class="statement">Je rends testables<br>les apps <em>mobiles</em></p>
+    <p class="statement">Ship it. <em>Tested.</em></p>
     <div class="meta"><b>QA Automation Architect</b><span>Freelance</span><span class="site">adam-ferreira.github.io</span></div>
     <canvas class="hero3d" data-freeze="4.81"></canvas>
   </div>
