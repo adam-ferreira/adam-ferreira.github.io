@@ -272,6 +272,7 @@ async function start() {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
     if (document.documentElement.classList.contains('is-moving')) return;   // la page bouge : on laisse toute la place au mouvement
+    if (document.documentElement.classList.contains('stage') && document.documentElement.dataset.slide !== '0') return;   // mode scène : l'accueil n'est pas à l'écran
     if (now - lastDraw < 15) return;   // 60 images/s suffisent, même sur un écran à 120 Hz
     lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
