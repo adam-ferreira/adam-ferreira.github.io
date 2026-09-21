@@ -114,6 +114,14 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .topbar-linkedin { grid-column: 4; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }
 .topbar-linkedin.is-3d img { opacity: 0; }
+/* le « in » : noir en mode clair, blanc en mode nuit (le cube 3D suit la même règle, data-dark-map) */
+.topbar-linkedin .theme-dark { display: none; }
+:root[data-theme="dark"] .topbar-linkedin .theme-light { display: none; }
+:root[data-theme="dark"] .topbar-linkedin .theme-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .topbar-linkedin .theme-light { display: none; }
+  :root:not([data-theme]) .topbar-linkedin .theme-dark { display: block; }
+}
 @media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto auto; gap: 12px; } .frame-status { display: none; } }
 
 /* ---------- interrupteur jour / nuit ---------- */
@@ -222,7 +230,6 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 .logo3d { display: block; opacity: 0; transition: opacity .8s ease; }
 .logo3d.is-ready { opacity: 1; }
 @media (max-width: 860px), (hover: none), (pointer: coarse) {
-  .logo3d { display: none; }
   .hero-stage { display: none; }
   .header { grid-template-columns: 1fr; min-height: auto; padding-bottom: 72px; }
 }
@@ -383,8 +390,9 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     </div>
     <span class="frame-status label" aria-hidden="true">Adam Ferreira &middot; Software Engineer · Dev &amp; QA Automation</span>
     <a class="lang-switch label" href="fr/" hreflang="fr" lang="fr" title="Version française" aria-label="Version française">FR</a>
-    <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=b5b4242c">
-      <img src="assets/marks/linkedin.svg?v=b5b4242c" alt="" width="40" height="40" decoding="async">
+    <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=d9d2c6bd" data-dark-map='{"#000000":"#ffffff"}'>
+      <img class="theme-light" src="assets/marks/linkedin.svg?v=d9d2c6bd" alt="" width="40" height="40" decoding="async">
+      <img class="theme-dark" src="assets/marks/linkedin-dark.svg?v=d697d515" alt="" width="40" height="40" decoding="async">
     </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Dark mode" title="Switch to dark mode" data-title-light="Switch to dark mode" data-title-dark="Switch to light mode">
       <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
@@ -531,7 +539,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 
   <script src="assets/cv.js?v=d4990541"></script>
   <script type="module" src="assets/hero3d.js?v=99eb6eae"></script>
-  <script type="module" src="assets/logo3d.js?v=55422e12"></script>
-  <script type="module" src="assets/marks3d.js?v=8f930511"></script>
+  <script type="module" src="assets/logo3d.js?v=8318597f"></script>
+  <script type="module" src="assets/marks3d.js?v=3212758e"></script>
 </body>
 </html>
