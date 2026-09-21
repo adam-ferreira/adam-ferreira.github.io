@@ -121,8 +121,9 @@ def render(d: dict) -> str:
     jobs = d["experience"]
     parts.extend(job_html(j, last=(i == len(jobs) - 1)) + "\n" for i, j in enumerate(jobs))
 
-    parts.append(section_title(sec["projects"]) + "\n")
-    parts.extend(f'  <p class="job-intro">{md(p)}</p>\n\n' for p in d["projects"])
+    if d.get("projects"):
+        parts.append(section_title(sec["projects"]) + "\n")
+        parts.extend(f'  <p class="job-intro">{md(p)}</p>\n\n' for p in d["projects"])
 
     parts.append(section_title(sec["education"]) + "\n")
     for e in d["education"]:

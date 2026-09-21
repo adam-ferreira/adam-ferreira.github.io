@@ -132,9 +132,7 @@
       ]
     }
   ],
-  "projects": [
-    "**FLUIDE** — app de suivi nutrition et entraînement construite de bout en bout pour mon propre usage : API sur Cloudflare Workers et D1, app iOS avec HealthKit, synchronisation d'une balance connectée, développée avec Claude Code."
-  ],
+  "projects": [],
   "education": [
     {
       "title": "ESIEE Paris — Ingénieur IMAC",
