@@ -304,6 +304,9 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   font-family: var(--display); font-weight: 400; text-transform: uppercase;
   font-size: clamp(80px, 15vw, 280px); line-height: .86; letter-spacing: .01em;
 }
+/* le pied de page est accroché sous le contenu, donc « à l'écran » dès l'arrivée : sa phrase tient sur une ligne
+   quelle que soit la police, sinon l'arrivée d'Humane le fait bouger (mesuré : décalage 0,085) */
+@media (min-width: 641px) { .footer-statement { white-space: nowrap; } }
 .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
 .footer-grid a { text-decoration: none; }
 .footer-grid a:hover, .footer-statement:hover { color: var(--accent); }
