@@ -19,6 +19,7 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent
 SITE = "https://adam-ferreira.github.io/"
 THREE_VERSION = "0.170.0"
+LENIS_VERSION = "1.3.26"   # les deux versions servent à tools/build-vendor.sh, qui fabrique assets/vendor/
 # L'anglais est à la racine, le français sous /fr/. La page française porte <base href="../"> : elle partage
 # exactement les mêmes fichiers (assets, photo), et les scripts 3D trouvent leurs modèles sans rien changer.
 LANGS = {
@@ -158,7 +159,7 @@ def render(d: dict) -> str:
   <style>
 {screen_css}
   </style>
-  <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}}}}</script>
+  <script type="importmap">{{"imports":{{"three":"./{ver("assets/vendor/three.js")}","lenis":"./{ver("assets/vendor/lenis.js")}"}}}}</script>
 </head>
 <body id="top">
 
@@ -183,7 +184,7 @@ def render(d: dict) -> str:
   <header class="header slide">
     <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
-      <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="{ver("assets/portrait.webp")}" alt="{md(full_name)}" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
+      <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="{ver("assets/portrait-280.webp")}" srcset="{ver("assets/portrait-280.webp")} 280w, {ver("assets/portrait.webp")} 420w" sizes="(max-width: 560px) 84px, 128px" alt="{md(full_name)}" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">{md(idn["first_name"])}</span> <span class="name-last">{md(idn["last_name"])}</span></h1>
         <p class="subtitle">{md(idn["headline"])}</p>
