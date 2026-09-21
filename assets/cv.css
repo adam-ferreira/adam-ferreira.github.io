@@ -27,8 +27,10 @@
   --muted: #5f6875;
   --line: #dde1e7;
   --chip: #eaedf1;
-  --accent: #ff7452;
-  --accent-ink: #b8391a;
+  --accent: #ff7452;        /* LA couleur du site : page, téléphones 3D, logo AF 3D, curseur, portrait */
+  --accent-ink: #b8391a;    /* sa version foncée, pour du texte sur fond clair */
+  --accent-hi: #ffd7ca;     /* reflet (curseur, disque du portrait) */
+  --accent-deep: #c2401f;   /* ombre */
   --topbar: rgba(246, 247, 249, 0.82);
   --mark-bg: #1d1f3b;
   --display: "Humane", "Bricolage Grotesque", system-ui, sans-serif;
@@ -38,12 +40,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-    --accent: #ff7452; --accent-ink: #ff8a6b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+    --accent: #ff7452; --accent-ink: #ff8a6b; --accent-hi: #ffd7ca; --accent-deep: #c2401f; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-  --accent: #ff7452; --accent-ink: #ff8a6b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+  --accent: #ff7452; --accent-ink: #ff8a6b; --accent-hi: #ffd7ca; --accent-deep: #c2401f; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
 }
 
 * { box-sizing: border-box; }
@@ -131,8 +133,10 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .hero3d.is-ready { opacity: 1; transform: none; }
 .hero3d.is-dragging { cursor: grabbing; }
 .header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
-.photo-container { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--line); }
-.photo { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; transform: scale(1.35); display: block; }
+/* le portrait détouré sort de son disque : la tête dépasse par le haut, les épaules restent dans le cercle */
+.portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; flex: none; }
+.portrait-disc { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 26%, var(--accent-hi), var(--accent) 56%, var(--accent-deep)); }
+.portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 0 0 0 round 0 0 64px 64px); }
 .header-name-block { display: flex; flex-direction: column; min-width: 0; }
 .name {
   font-family: var(--display); font-weight: 400;
@@ -200,7 +204,8 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 @media (max-width: 860px), (hover: none), (pointer: coarse) { .header-left { grid-column: 1; } }
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
-  .photo-container { width: 64px; height: 64px; }
+  .portrait { width: 84px; height: 84px; margin-top: 28px; }
+  .portrait-img { clip-path: inset(-60% 0 0 0 round 0 0 42px 42px); }
   .name { font-size: clamp(64px, 20vw, 96px); }
   .hero-foot { position: static; margin-top: 40px; }
 }
@@ -297,7 +302,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
 /* ---------- mouvement : une chorégraphie à l'arrivée, rien d'autre ---------- */
 @keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.name { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
+.name, .portrait { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
 .subtitle, .location { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .12s both; }
 .contact { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .22s both; }
 .hero-line .w { animation: settle .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.28s + var(--i) * 42ms); }
@@ -325,13 +330,13 @@ html.has-cursor .cursor.is-out { opacity: 0; }
 }
 .cursor-ball::before, .cursor-ball::after { content: ""; position: absolute; inset: 0; border-radius: 50%; transition: opacity .3s ease; }
 .cursor-ball::before {
-  background: radial-gradient(circle at 32% 28%, #fff6f2 0 7%, #ffb49d 20%, #ff7452 50%, #c2401f 86%, #8f2a12 100%);
-  box-shadow: 0 3px 8px rgba(143, 42, 18, .35);
+  background: radial-gradient(circle at 32% 28%, #fff 0 7%, var(--accent-hi) 20%, var(--accent) 50%, var(--accent-deep) 86%, color-mix(in srgb, var(--accent-deep) 70%, #000) 100%);
+  box-shadow: 0 3px 8px color-mix(in srgb, var(--accent-deep) 40%, transparent);
 }
 .cursor-ball::after {
   opacity: 0;
-  background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .6) 0 9%, rgba(255, 116, 82, .10) 42%, rgba(255, 116, 82, .24) 100%);
-  box-shadow: inset 0 0 0 1.5px rgba(255, 116, 82, .8), inset -5px -7px 14px rgba(184, 57, 26, .22), 0 8px 20px rgba(0, 0, 0, .12);
+  background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .6) 0 9%, color-mix(in srgb, var(--accent) 10%, transparent) 42%, color-mix(in srgb, var(--accent) 24%, transparent) 100%);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 80%, transparent), inset -5px -7px 14px color-mix(in srgb, var(--accent-deep) 22%, transparent), 0 8px 20px rgba(0, 0, 0, .12);
   -webkit-backdrop-filter: blur(1.5px) saturate(1.4); backdrop-filter: blur(1.5px) saturate(1.4);
 }
 .cursor.is-hot .cursor-ball { width: 46px; height: 46px; }
