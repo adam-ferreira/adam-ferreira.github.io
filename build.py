@@ -165,8 +165,9 @@ def render(d: dict) -> str:
     </div>
     <span class="frame-status label" aria-hidden="true">{md(full_name)} &middot; {md(idn["headline"])}</span>
     <a class="lang-switch label" href="{other_href}" hreflang="{other}" lang="{other}" title="{LANGS[other]["name"]}" aria-label="{LANGS[other]["name"]}">{LANGS[other]["code"]}</a>
-    <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="{ver("assets/marks/linkedin.svg")}">
-      <img src="{ver("assets/marks/linkedin.svg")}" alt="" width="40" height="40" decoding="async">
+    <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="{ver("assets/marks/linkedin.svg")}" data-dark-map='{{"#000000":"#ffffff"}}'>
+      <img class="theme-light" src="{ver("assets/marks/linkedin.svg")}" alt="" width="40" height="40" decoding="async">
+      <img class="theme-dark" src="{ver("assets/marks/linkedin-dark.svg")}" alt="" width="40" height="40" decoding="async">
     </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="{md(ui["toggle_aria"])}" title="{md(ui["toggle_title_light"])}" data-title-light="{md(ui["toggle_title_light"])}" data-title-dark="{md(ui["toggle_title_dark"])}">
       <span class="tt-icon tt-sun">{SUN_SVG}</span>
