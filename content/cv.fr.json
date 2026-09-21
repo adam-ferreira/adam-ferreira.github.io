@@ -2,13 +2,13 @@
   "lang": "fr",
   "meta": {
     "title": "CV — Adam Ferreira",
-    "description": "CV d'Adam Ferreira, QA Automation Architect mobile (Appium, Flutter, iOS, Android)."
+    "description": "CV d'Adam Ferreira, ingénieur logiciel : développement et automatisation des tests mobiles (Flutter, Appium, iOS, Android)."
   },
   "identity": {
     "first_name": "Adam",
     "last_name": "Ferreira",
-    "headline": "QA Automation Architect",
-    "tagline": "Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.",
+    "headline": "Software Engineer · Mobile",
+    "tagline": "Je travaille sur ce qui rend une app mobile testable : framework, CI, données de test par API, test IDs dans le code, outillage pour les équipes.",
     "location": "Paris, France",
     "linkedin": {
       "handle": "ad-ferreira",
@@ -75,16 +75,16 @@
       "role": "QA Automation Engineer (mobile Flutter)",
       "client": "BETCLIC",
       "date": "Mars 2026 - Aujourd'hui (Freelance)",
-      "intro": "Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests de la partie gamification : les missions et défis qui récompensent le joueur pour ses paris, les classements entre parieurs, les jeux de récompense qui en découlent et les boosts proposés au moment du pari. Le tout dans un repo de tests partagé entre le mobile et le web.",
+      "intro": "Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests des fonctionnalités de gamification : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.",
       "subtitle": "Construire l'automatisation en même temps que l'app",
-      "subintro": "À mon arrivée, l'app était en construction, et le périmètre gamification avec elle. Le défi : automatiser au rythme des livraisons, sans ralentir les devs.",
+      "subintro": "À mon arrivée, l'app et ses fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.",
       "bullets": [
-        "**Des test IDs posés directement dans le code de l'app.** Sur mobile, un locator qui repère un écran par son texte casse à la première traduction ou au premier changement de maquette. J'ai été le premier QA auto de l'app à poser moi-même les semantics dans le code Flutter, selon des règles écrites avec les tech leads, plutôt que d'attendre les devs. Les mêmes locators servent sur iOS et Android, et ils survivent aux refontes d'écran.",
-        "**Les animations interactives, jusque-là impossibles à tester.** Elles sont produites par l'équipe motion design dans un outil dédié, et les tests ne voyaient rien de ce qu'il y avait dedans. J'ai écrit un outil qui injecte les test IDs directement dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, puis produit une version que le designer ouvre dans son propre logiciel pour comprendre la manipulation et la refaire lui-même.",
-        "**Des données de test créées par API, pas à la main.** Tester une mission de paris demande de vrais paris, placés puis réglés. Je les crée par API avant chaque scénario, à l'image des campagnes de production, sur un compte de test dédié. Le test ne passe par l'UI que pour ce qu'il vérifie vraiment : il est court, et il ne casse pas parce qu'un autre test a touché aux mêmes données.",
-        "**Une nightly sur cinq marchés réglementés.** Chaque pays a ses règles, ses contenus et ses comptes. La nightly tourne sur chacun d'eux ; le matin, je triage les échecs en trois cas : bug produit, environnement en panne, test flaky. Seuls les premiers deviennent des tickets.",
-        "**Remonter jusqu'au moteur mobile quand un test échoue sans raison.** Un bouton visible que le test ne pouvait pas taper, une tab bar qui disparaissait de l'arbre d'accessibilité iOS, la navbar système Android qui absorbait les taps : à chaque fois j'ai isolé la cause dans le comportement d'iOS, d'Android ou de Flutter, et corrigé dans le framework plutôt que de contourner dans les tests.",
-        "**Une méthode partagée avec la squad.** Un test plan par feature, une suite de tests de release, et des skills Claude Code partagés qui génèrent les page objects à partir des maquettes Figma et des tickets Jira."
+        "**Des test IDs dans le code de l'app.** Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads. Les mêmes locators servent sur iOS et Android.",
+        "**Des test IDs dans les animations.** Les animations interactives sont produites par l'équipe motion design dans un outil dédié, et les tests n'avaient pas accès à leur contenu. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, et produit une version que le designer ouvre dans son propre outil pour refaire la modification lui-même.",
+        "**Des données de test créées par API.** Une mission de paris demande des paris placés puis réglés. Je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie : les tests restent courts et indépendants les uns des autres.",
+        "**Une nightly sur cinq marchés réglementés.** Chaque pays a ses règles, ses contenus et ses comptes. Chaque matin, je trie les échecs : bug produit, environnement en panne ou test flaky. Seuls les bugs produit deviennent des tickets.",
+        "**Des échecs analysés jusqu'à iOS, Android et Flutter.** Par exemple : un bouton visible que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité iOS, la barre de navigation Android qui interceptait les taps. Pour chacun, j'ai trouvé la cause dans le comportement de la plateforme ou de Flutter, et corrigé le framework plutôt que de contourner dans les tests.",
+        "**Un outillage partagé avec la squad.** Un test plan par feature, une suite de tests de release, et des skills Claude Code qui génèrent les page objects à partir des maquettes Figma et des tickets Jira."
       ],
       "stack": [
         "Flutter",
@@ -99,17 +99,17 @@
       ]
     },
     {
-      "role": "QA Automation Architect",
+      "role": "Mobile QA Automation Engineer",
       "client": "ACCOR (CAC40)",
       "date": "Nov. 2024 - Mars 2026 (Freelance)",
-      "intro": "Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés de quatre ans, en dette technique. Arrivé pour exécuter et maintenir des tests, j'en suis devenu le référent technique.",
-      "subtitle": "Remettre un framework legacy à l'état de l'art, puis aller plus loin",
+      "intro": "Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés lancé quatre ans plus tôt, en dette technique. Arrivé pour exécuter et maintenir les tests, j'en suis devenu le référent technique.",
+      "subtitle": "Moderniser un framework existant",
       "bullets": [
-        "**Moderniser le framework sans arrêter les tests.** Migrations de Java et du client Appium enchaînées sans régression. J'en ai profité pour retirer le code mort et refaire les logs, lisibles scénario par scénario. Le framework a perdu la moitié de son poids.",
-        "**Un device différent pour chaque scénario.** Les bugs propres à un modèle, à une tablette ou à un écran en paysage ne se voient pas quand tous les tests tournent sur le même téléphone. J'ai fait distribuer chaque scénario sur un device différent de la device farm BrowserStack : les échecs sont devenus reproductibles, et avec un cache des apps et des devices, les sessions démarrent plus vite.",
-        "**Un pipeline CI qui dit enfin si la release est bonne.** Avant, il lançait les tests mais restait vert quoi qu'il arrive, et il reposait sur un template partagé avec d'autres projets, qu'on ne pouvait pas adapter. Je l'ai réécrit pour l'équipe : il passe au rouge dès que le taux de réussite descend sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs.",
-        "**Mettre à portée des tests ce qui leur échappait.** Les features derrière un feature flag, les builds store, les distributions TestFlight et Firebase, et les webviews derrière le WAF de l'entreprise.",
-        "**Un second framework, en TypeScript, conçu de zéro.** Il n'existait pas de framework TypeScript pour le mobile chez Accor. J'en ai construit un, multi-plateforme et multi-locale, et j'ai documenté la comparaison avec la stack Java."
+        "**Modernisation du framework.** Migrations de Java et du client Appium sans régression, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine.",
+        "**Un device par scénario.** Chaque scénario tourne sur un device différent de la device farm BrowserStack : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions.",
+        "**Un pipeline CI réécrit.** L'ancien restait vert quel que soit le résultat et dépendait d'un template partagé avec d'autres projets. Le nouveau échoue quand le taux de réussite passe sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs.",
+        "**Une couverture élargie.** Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise.",
+        "**Un second framework en TypeScript.** Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java."
       ],
       "stack": [
         "Java 25",
@@ -170,7 +170,7 @@
     }
   ],
   "interests": [
-    "**Escalade — Haut niveau :** 8a en voie, 7C en bloc."
+    "**Escalade :** 8a en voie, 7C en bloc."
   ],
   "sections": {
     "experience": "Expériences professionnelles",
