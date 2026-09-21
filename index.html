@@ -445,7 +445,7 @@
   </div>
 
   <p class="job-intro">
-    Betclic reconstruit son app mobile iOS et Android &#224; p&#233;rim&#232;tre fonctionnel constant. J'y automatise les tests de la gamification des paris (d&#233;fis, missions, classements, jeux de r&#233;compense), dans un repo de tests partag&#233; entre le mobile et le web.
+    Betclic reconstruit son app mobile iOS et Android &#224; p&#233;rim&#232;tre fonctionnel constant. J'y automatise les tests de la partie gamification : les missions et d&#233;fis qui r&#233;compensent le joueur pour ses paris, les classements entre parieurs, les jeux de r&#233;compense qui en d&#233;coulent et les boosts propos&#233;s au moment du pari. Le tout dans un repo de tests partag&#233; entre le mobile et le web.
   </p>
 
   <div class="separator"></div>
@@ -455,11 +455,11 @@
 
   <ul class="bullets">
     <li><strong>Des test IDs pos&#233;s directement dans le code de l'app.</strong> Sur mobile, un locator qui rep&#232;re un &#233;cran par son texte casse &#224; la premi&#232;re traduction ou au premier changement de maquette. Premier QA auto de l'app &#224; poser moi-m&#234;me les semantics dans le code Flutter, selon des r&#232;gles &#233;crites avec les tech leads, plut&#244;t que d'attendre les devs. Les m&#234;mes locators servent sur iOS et Android, et ils survivent aux refontes d'&#233;cran.</li>
-    <li><strong>Les animations interactives, jusque-l&#224; impossibles &#224; tester.</strong> Elles sont produites par l'&#233;quipe motion design dans un outil d&#233;di&#233;, et l'app ne voyait rien de ce qu'il y avait dedans. J'ai &#233;crit un outil qui injecte les test IDs directement dans les fichiers d'animation, v&#233;rifi&#233; le r&#233;sultat avec le runtime Flutter, puis produit une version que le designer ouvre dans son propre logiciel pour comprendre la manipulation et la refaire lui-m&#234;me.</li>
+    <li><strong>Les animations interactives, jusque-l&#224; impossibles &#224; tester.</strong> Elles sont produites par l'&#233;quipe motion design dans un outil d&#233;di&#233;, et les tests ne voyaient rien de ce qu'il y avait dedans. J'ai &#233;crit un outil qui injecte les test IDs directement dans les fichiers d'animation, v&#233;rifi&#233; le r&#233;sultat avec le runtime Flutter, puis produit une version que le designer ouvre dans son propre logiciel pour comprendre la manipulation et la refaire lui-m&#234;me.</li>
     <li><strong>Des donn&#233;es de test cr&#233;&#233;es par API, pas &#224; la main.</strong> Tester une mission de paris demande de vrais paris, plac&#233;s puis r&#233;gl&#233;s. Je les seed par API avant chaque sc&#233;nario, &#224; l'image des campagnes de production, sur un compte de test d&#233;di&#233;. Le test ne passe par l'UI que pour ce qu'il v&#233;rifie vraiment : il est court, et il ne casse pas parce qu'un autre test a touch&#233; aux m&#234;mes donn&#233;es.</li>
-    <li><strong>Une nightly sur cinq march&#233;s r&#233;glement&#233;s.</strong> Chaque pays a ses r&#232;gles, ses contenus et ses comptes. La nightly tourne sur chacun d'eux ; le matin, je triage les &#233;checs en trois cas : bug produit, environnement en panne, test flaky. C'est ce triage qui fait qu'un test rouge est pris au s&#233;rieux par l'&#233;quipe.</li>
+    <li><strong>Une nightly sur cinq march&#233;s r&#233;glement&#233;s.</strong> Chaque pays a ses r&#232;gles, ses contenus et ses comptes. La nightly tourne sur chacun d'eux ; le matin, je triage les &#233;checs en trois cas : bug produit, environnement en panne, test flaky. Seuls les premiers deviennent des tickets.</li>
     <li><strong>Remonter jusqu'au moteur mobile quand un test &#233;choue sans raison.</strong> Un bouton visible que le test ne pouvait pas taper, une tab bar qui disparaissait de l'arbre d'accessibilit&#233; iOS, la navbar syst&#232;me Android qui absorbait les taps : &#224; chaque fois j'ai isol&#233; la cause dans le comportement d'iOS, d'Android ou de Flutter, et corrig&#233; dans le framework plut&#244;t que de contourner dans les tests.</li>
-    <li><strong>Une m&#233;thode que la squad r&#233;utilise.</strong> Un test plan par feature, une suite de tests de release, et des skills Claude Code partag&#233;s qui g&#233;n&#232;rent les page objects &#224; partir des maquettes Figma et des tickets Jira.</li>
+    <li><strong>Une m&#233;thode partag&#233;e avec la squad.</strong> Un test plan par feature, une suite de tests de release, et des skills Claude Code partag&#233;s qui g&#233;n&#232;rent les page objects &#224; partir des maquettes Figma et des tickets Jira.</li>
   </ul>
 
   <div class="stack">Stack : Flutter &middot; CodeceptJS &middot; Appium &middot; Playwright &middot; Cucumber/Gherkin &middot; BrowserStack &middot; Rive &middot; Claude Code &middot; MCP Atlassian / Figma</div>
@@ -475,17 +475,17 @@
   </div>
 
   <p class="job-intro">
-    Accor teste ses apps mobiles ALL (fid&#233;lit&#233;, r&#233;servation, s&#233;jour) avec un framework de tests automatis&#233;s qui avait quatre ans et plus personne pour le faire &#233;voluer. Arriv&#233; pour ex&#233;cuter et maintenir des tests, j'en suis devenu le r&#233;f&#233;rent technique.
+    Accor teste ses apps mobiles ALL (fid&#233;lit&#233;, r&#233;servation, s&#233;jour) avec un framework de tests automatis&#233;s de quatre ans, en dette technique. Arriv&#233; pour ex&#233;cuter et maintenir des tests, j'en suis devenu le r&#233;f&#233;rent technique.
   </p>
 
   <div class="separator"></div>
 
   <div class="sub-title">Remettre un framework legacy &#224; l'&#233;tat de l'art, puis aller plus loin</div>
-  <p class="sub-intro">Le d&#233;fi : moderniser un outil dont d&#233;pendaient toutes les &#233;quipes, sans jamais interrompre les runs.</p>
+  <p class="sub-intro">Le d&#233;fi : moderniser un outil dont d&#233;pendaient toutes les &#233;quipes, sans r&#233;gression.</p>
 
   <ul class="bullets">
-    <li><strong>Moderniser le framework sans arr&#234;ter les tests.</strong> Migration de Java et du client Appium par &#233;tapes, chacune valid&#233;e par un run complet avant la suivante. J'en ai profit&#233; pour retirer le code mort et refaire les logs, lisibles sc&#233;nario par sc&#233;nario. Le framework a perdu la moiti&#233; de son poids et il est devenu le repo de r&#233;f&#233;rence de l'&#233;quipe.</li>
-    <li><strong>Un device diff&#233;rent pour chaque sc&#233;nario.</strong> Les tests tournaient tous sur le m&#234;me mod&#232;le de t&#233;l&#233;phone, et les bugs propres &#224; un mod&#232;le, &#224; une tablette ou &#224; un &#233;cran en paysage passaient inaper&#231;us. J'ai fait distribuer chaque sc&#233;nario sur un device diff&#233;rent de la device farm BrowserStack, avec un cache des apps et des devices pour ne pas payer l'initialisation &#224; chaque session. Les &#233;checs sont devenus reproductibles et les sessions plus rapides.</li>
+    <li><strong>Moderniser le framework sans arr&#234;ter les tests.</strong> Migrations de Java et du client Appium encha&#238;n&#233;es sans r&#233;gression. J'en ai profit&#233; pour retirer le code mort et refaire les logs, lisibles sc&#233;nario par sc&#233;nario. Le framework a perdu la moiti&#233; de son poids.</li>
+    <li><strong>Un device diff&#233;rent pour chaque sc&#233;nario.</strong> Les bugs propres &#224; un mod&#232;le, &#224; une tablette ou &#224; un &#233;cran en paysage ne se voient pas quand tous les tests tournent sur le m&#234;me t&#233;l&#233;phone. J'ai fait distribuer chaque sc&#233;nario sur un device diff&#233;rent de la device farm BrowserStack, avec un cache des apps et des devices pour ne pas payer l'initialisation &#224; chaque session. Les &#233;checs sont devenus reproductibles et les sessions plus rapides.</li>
     <li><strong>Un pipeline qui d&#233;cide tout seul.</strong> Il d&#233;pendait d'un template externe et n'avait aucune quality gate. Je l'ai rendu autonome, avec un seuil de r&#233;ussite en dessous duquel il casse, les r&#233;sultats envoy&#233;s dans Xray et Jira, et une alerte Slack par p&#233;rim&#232;tre. Trois minutes gagn&#233;es par run au passage.</li>
     <li><strong>Atteindre ce que les tests ne pouvaient pas atteindre.</strong> Les features derri&#232;re un feature flag, dont l'entr&#233;e du Travel Concierge, les builds store, les distributions TestFlight et Firebase, les webviews derri&#232;re le WAF de l'entreprise : j'ai ouvert chacun de ces acc&#232;s aux tests, avec la m&#233;thode propre &#224; chacun.</li>
     <li><strong>Des bugs de l'app diagnostiqu&#233;s pour les devs.</strong> Le login iOS faisait &#233;chouer un run sur cinq. J'ai compar&#233; des sessions qui passaient et des sessions qui &#233;chouaient sur le m&#234;me build, isol&#233; la cause, et travaill&#233; le fix en bin&#244;me avec le tech lead iOS. M&#234;me approche pour les sessions expir&#233;es et les &#233;crans de consentement absents.</li>
