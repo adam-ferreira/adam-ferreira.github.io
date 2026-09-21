@@ -9,6 +9,11 @@ const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matc
 const ORANGE = '#ff7452', GREEN = '#3ddc84', INK = '#161b22';
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
+// suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
+const onDprChange = (cb) => {
+  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+  q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
+};
 
 function webglOk() {
   try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
@@ -16,7 +21,7 @@ function webglOk() {
 }
 
 // ---------- l'écran : la maquette d'une app, dessinée une fois ; le test est redessiné par-dessus à chaque image ----------
-const SW = 480, SH = 1040;
+const SW = 480, SH = 1040, TS = 1.5;   // maquette en 480 × 1040, texture dessinée 1,5 fois plus fine
 const R = {
   card: { x: 24, y: 150, w: 432, h: 180, r: 22 },
   row1: { x: 24, y: 346, w: 432, h: 68, r: 16 },
@@ -39,8 +44,8 @@ const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 const mix = (a, b, m) => ({ x: a.x + (b.x - a.x) * m, y: a.y + (b.y - a.y) * m, w: a.w + (b.w - a.w) * m, h: a.h + (b.h - a.h) * m, r: a.r + (b.r - a.r) * m });
 
 function drawBase() {
-  const c = document.createElement('canvas'); c.width = SW; c.height = SH;
-  const g = c.getContext('2d');
+  const c = document.createElement('canvas'); c.width = SW * TS; c.height = SH * TS;
+  const g = c.getContext('2d'); g.scale(TS, TS);
   g.fillStyle = '#f4f6f9'; g.fillRect(0, 0, SW, SH);
   // barre d'état
   g.fillStyle = INK; g.font = `600 24px ${SANS}`; g.fillText('9:41', 44, 46);
@@ -85,7 +90,8 @@ function drawBase() {
 }
 
 function drawScreen(g, base, t) {
-  g.drawImage(base, 0, 0);
+  g.setTransform(TS, 0, 0, TS, 0, 0);
+  g.drawImage(base, 0, 0, SW, SH);
   const n = STEPS.length, stepsEnd = n * STEP, inSteps = t < stepsEnd;
   const k = inSteps ? Math.floor(t / STEP) : n - 1;
   const p = inSteps ? (t - k * STEP) / STEP : 1;
@@ -186,7 +192,6 @@ async function start() {
   if (!canvas || !wanted() || !webglOk()) return;
   const THREE = await import('three');
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
@@ -199,7 +204,7 @@ async function start() {
 
   // un seul écran pour les deux téléphones : c'est le même test, sur iOS et Android, au même instant
   const base = drawBase();
-  const sc = document.createElement('canvas'); sc.width = SW; sc.height = SH;
+  const sc = document.createElement('canvas'); sc.width = SW * TS; sc.height = SH * TS;
   const sg = sc.getContext('2d');
   const tex = new THREE.CanvasTexture(sc);
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
@@ -222,6 +227,7 @@ async function start() {
   function fit() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 1.5, 2));   // 1,5× sur écran standard, 2× sur Retina
     renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
   fit();
@@ -247,6 +253,7 @@ async function start() {
   window.addEventListener('pointermove', (e) => { target.x = (e.clientX / window.innerWidth - 0.5) * 2; target.y = (e.clientY / window.innerHeight - 0.5) * 2; }, { passive: true });
   const refit = () => { fit(); renderer.render(scene, camera); };
   if ('ResizeObserver' in window) new ResizeObserver(refit).observe(canvas); else window.addEventListener('resize', refit);
+  onDprChange(refit);
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
 
   if (reduced()) return;

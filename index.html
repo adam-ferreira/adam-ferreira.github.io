@@ -170,6 +170,17 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .meta-item { position: relative; }
 .meta-item + .meta-item { padding-left: 12px; }
 .meta-item + .meta-item::before { content: ""; position: absolute; left: 2px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
+/* coordonnées : deux boutons, l'e-mail et le téléphone */
+.contact { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 12px; }
+.contact-link {
+  display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: -.005em;
+  transition: border-color .2s ease, color .2s ease, transform .2s ease;
+}
+.contact-link svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.contact-link:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
+
 .hero-foot {
   position: absolute; left: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); bottom: 28px;
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
@@ -182,13 +193,13 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 /* les marques dans la phrase */
 .mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .18em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
 .mark-accor { height: 1.5em; vertical-align: -.32em; }
-.mark img { height: 100%; width: auto; display: block; border-radius: .18em; transition: opacity .5s ease; }
+.mark img { height: 100%; width: auto; display: block; transition: opacity .5s ease; }   /* coins nets, comme le vrai logo et sa version 3D */
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
 .mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
 /* le volume déborde largement de la marque (taille posée par le script) et passe au-dessus du texte ;
    la souris est captée par la marque elle-même, le canvas la laisse passer */
-.mark .mark-3d { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+.mark .mark-3d { position: absolute; left: 0; top: 0; display: block; pointer-events: none; opacity: 0; transition: opacity .6s ease; }   /* position posée par le script, calée sur la grille de pixels */
 .mark.is-3d { z-index: 6; cursor: grab; touch-action: none; }
 .mark.is-grabbed { cursor: grabbing; z-index: 30; }
 .mark.is-3d .mark-3d { opacity: 1; }
@@ -288,21 +299,24 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   display: grid; gap: clamp(48px, 8vh, 96px);
 }
 .footer-statement {
+  display: block; width: fit-content; color: inherit; text-decoration: none; transition: color .3s ease;
   font-family: var(--display); font-weight: 400; text-transform: uppercase;
   font-size: clamp(80px, 15vw, 280px); line-height: .86; letter-spacing: .01em;
 }
 .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
 .footer-grid a { text-decoration: none; }
-.footer-grid a:hover { color: var(--accent); }
+.footer-grid a:hover, .footer-statement:hover { color: var(--accent); }
+.footer-grid .nocase { text-transform: none; letter-spacing: .06em; }
 .footer-grid .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 0 4px rgba(61, 220, 132, .18); }
 
 /* ---------- mouvement : une chorégraphie à l'arrivée, rien d'autre ---------- */
 @keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .name { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
 .subtitle, .location { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .12s both; }
+.contact { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .22s both; }
 .hero-line .w { animation: settle .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.28s + var(--i) * 42ms); }
 @media (prefers-reduced-motion: reduce) {
-  .name, .subtitle, .location, .hero-line .w, .scroll-hint::before { animation: none; }
+  .name, .subtitle, .location, .contact, .hero-line .w, .scroll-hint::before { animation: none; }
   .mark, .section-title, .logo3d, .hero3d, .topbar, .hero-stage::before { transition: none; }
   .section-title { transform: none; }
 }
@@ -313,6 +327,33 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   .bullets { gap: 24px; }
   .site-footer { position: static; }
 }
+
+/* ---------- le curseur : une bille orange ombrée comme une sphère ; au survol d'un lien ou d'un objet 3D, une bulle de verre ----------
+   Posé par cv.js sur ordinateur avec souris seulement, jamais sous « réduire les animations » (le curseur natif reste alors). */
+.cursor { position: fixed; left: 0; top: 0; z-index: 9999; width: 0; height: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; will-change: transform; }
+html.has-cursor .cursor { opacity: 1; }
+html.has-cursor .cursor.is-out { opacity: 0; }
+.cursor-ball {
+  position: absolute; left: 0; top: 0; width: 14px; height: 14px; border-radius: 50%; transform: translate(-50%, -50%);
+  transition: width .35s cubic-bezier(.2, .8, .2, 1), height .35s cubic-bezier(.2, .8, .2, 1);
+}
+.cursor-ball::before, .cursor-ball::after { content: ""; position: absolute; inset: 0; border-radius: 50%; transition: opacity .3s ease; }
+.cursor-ball::before {
+  background: radial-gradient(circle at 32% 28%, #fff6f2 0 7%, #ffb49d 20%, #ff7452 50%, #c2401f 86%, #8f2a12 100%);
+  box-shadow: 0 3px 8px rgba(143, 42, 18, .35);
+}
+.cursor-ball::after {
+  opacity: 0;
+  background: radial-gradient(circle at 32% 26%, rgba(255, 255, 255, .6) 0 9%, rgba(255, 116, 82, .10) 42%, rgba(255, 116, 82, .24) 100%);
+  box-shadow: inset 0 0 0 1.5px rgba(255, 116, 82, .8), inset -5px -7px 14px rgba(184, 57, 26, .22), 0 8px 20px rgba(0, 0, 0, .12);
+  -webkit-backdrop-filter: blur(1.5px) saturate(1.4); backdrop-filter: blur(1.5px) saturate(1.4);
+}
+.cursor.is-hot .cursor-ball { width: 46px; height: 46px; }
+.cursor.is-hot .cursor-ball::before { opacity: 0; }
+.cursor.is-hot .cursor-ball::after { opacity: 1; }
+.cursor.is-down .cursor-ball { width: 10px; height: 10px; }
+.cursor.is-hot.is-down .cursor-ball { width: 38px; height: 38px; }
+html.has-cursor, html.has-cursor * { cursor: none !important; }
 
   </style>
   <link rel="stylesheet" href="assets/print.css?v=52492213" media="print">
@@ -348,6 +389,10 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
         <p class="tagline print-only">Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.</p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">Paris, France</span> <span class="meta-item">Freelance</span> <span class="meta-item">sur site et télétravail</span>
+        </p>
+        <p class="contact screen-only">
+          <a class="contact-link" href="mailto:adam.ferreira0@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg><span>adam.ferreira0@gmail.com</span></a>
+          <a class="contact-link" href="tel:+33651004696"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.6 4.2-2.2 1.4a11 11 0 0 0 6.5 6.5l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4Z"/></svg><span>+33 6 51 00 46 96</span></a>
         </p>
       </div>
     </div>
@@ -466,17 +511,19 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   </div>
 
   <footer class="site-footer screen-only">
-    <p class="footer-statement">On construit quelque chose ?</p>
+    <a class="footer-statement" href="mailto:adam.ferreira0@gmail.com">On construit quelque chose ?</a>
     <div class="footer-grid label">
+      <a class="nocase" href="mailto:adam.ferreira0@gmail.com">adam.ferreira0@gmail.com</a>
+      <a href="tel:+33651004696">+33 6 51 00 46 96</a>
       <a href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">LinkedIn</a>
       <span>Ouvert aux missions QA automation mobile<i class="dot" aria-hidden="true"></i></span>
       <span>Paris — 2026</span>
     </div>
   </footer>
 
-  <script src="assets/cv.js?v=b6459893"></script>
-  <script type="module" src="assets/hero3d.js?v=42a8f267"></script>
-  <script type="module" src="assets/logo3d.js?v=113e87d1"></script>
-  <script type="module" src="assets/marks3d.js?v=4f32fb78"></script>
+  <script src="assets/cv.js?v=26e829e4"></script>
+  <script type="module" src="assets/hero3d.js?v=1f86b3a7"></script>
+  <script type="module" src="assets/logo3d.js?v=b22106fe"></script>
+  <script type="module" src="assets/marks3d.js?v=d4abd908"></script>
 </body>
 </html>
