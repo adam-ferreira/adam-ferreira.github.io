@@ -3,7 +3,7 @@
 // (identique au repos) suffit, et on épargne un rendu 3D au chargement de la page.
 // On l'attrape, on le lance, il continue sur son élan, puis reprend son léger balancement.
 // Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
-const ORANGE = 0xff7452;
+const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ff7452';   // l'accent du site
 const canvas = document.querySelector('.brand canvas.logo3d');
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -30,7 +30,7 @@ async function go() {
     const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
     logo.position.sub(c);
     logo.scale.setScalar(1.8 / Math.max(s.x, s.y, s.z));
-    logo.traverse((n) => { if (n.isMesh) n.material = new THREE.MeshStandardMaterial({ color: ORANGE, metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 }); });
+    logo.traverse((n) => { if (n.isMesh) n.material = new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 }); });
     mount(THREE, logo);
   });
 }

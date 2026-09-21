@@ -6,7 +6,12 @@
 const canvas = document.querySelector('canvas.hero3d');
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const ORANGE = '#ff7452', GREEN = '#3ddc84', INK = '#161b22';
+// l'accent du site (--accent dans la feuille de style) : un seul réglage pour la page, les téléphones et le curseur
+const cssVar = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
+const ACC = cssVar('--accent', '#ff7452'), GREEN = '#3ddc84', INK = '#161b22';
+const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
+const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
+const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // vers le blanc
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
 // suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
@@ -54,9 +59,9 @@ function drawBase() {
   // en-tête
   rr(g, 24, 84, 176, 28, 9); g.fill();
   g.fillStyle = '#c9d0da'; rr(g, 24, 120, 112, 14, 7); g.fill();
-  g.fillStyle = '#ffd3c6'; g.beginPath(); g.arc(424, 108, 24, 0, Math.PI * 2); g.fill();
+  g.fillStyle = tint(ACC, 0.72); g.beginPath(); g.arc(424, 108, 24, 0, Math.PI * 2); g.fill();
   // carte mise en avant
-  const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, '#ff7452'); gr.addColorStop(1, '#ffab88');
+  const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, ACC); gr.addColorStop(1, tint(ACC, 0.35));
   g.fillStyle = gr; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
   g.save(); rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.clip();
   g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.arc(410, 214, 74, 0, Math.PI * 2); g.fill();
@@ -64,15 +69,15 @@ function drawBase() {
   g.fillStyle = '#fff'; rr(g, 48, 182, 210, 24, 9); g.fill();
   g.fillStyle = 'rgba(255,255,255,.72)'; rr(g, 48, 218, 150, 14, 7); g.fill();
   g.fillStyle = '#fff'; rr(g, 48, 272, 124, 38, 19); g.fill();
-  g.fillStyle = ORANGE; rr(g, 72, 285, 76, 12, 6); g.fill();
+  g.fillStyle = ACC; rr(g, 72, 285, 76, 12, 6); g.fill();
   // deux lignes de liste
   for (const r of [R.row1, R.row2]) {
     g.fillStyle = '#fff'; rr(g, r.x, r.y, r.w, r.h, r.r); g.fill();
     g.strokeStyle = '#e3e7ed'; g.lineWidth = 2; g.stroke();
-    g.fillStyle = '#ffe3da'; rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
+    g.fillStyle = tint(ACC, 0.82); rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
     g.fillStyle = '#1f2630'; rr(g, r.x + 74, r.y + 16, 190, 14, 7); g.fill();
     g.fillStyle = '#c9d0da'; rr(g, r.x + 74, r.y + 40, 128, 12, 6); g.fill();
-    g.fillStyle = '#ffd3c6'; rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
+    g.fillStyle = tint(ACC, 0.72); rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
   }
   // bouton principal
   g.fillStyle = INK; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
@@ -84,7 +89,7 @@ function drawBase() {
   g.fillStyle = '#232a33'; g.fillRect(40, 656, 400, 2);
   // barre d'onglets
   g.fillStyle = '#fff'; g.fillRect(0, 948, SW, 92); g.fillStyle = '#e3e7ed'; g.fillRect(0, 948, SW, 2);
-  [72, 180, 300, 408].forEach((x, i) => { g.fillStyle = i === 0 ? ORANGE : '#c9d0da'; rr(g, x - 18, 968, 36, 36, 10); g.fill(); });
+  [72, 180, 300, 408].forEach((x, i) => { g.fillStyle = i === 0 ? ACC : '#c9d0da'; rr(g, x - 18, 968, 36, 36, 10); g.fill(); });
   g.fillStyle = INK; rr(g, 170, 1022, 140, 6, 3); g.fill();
   return c;
 }
@@ -103,10 +108,10 @@ function drawScreen(g, base, t) {
   if (alpha > 0) {
     const r = mix(k > 0 ? STEPS[k - 1].rect : step.rect, step.rect, ease(Math.min(1, p / 0.35)));
     const ok = step.verb === 'assert' && p > 0.55;
-    const col = ok ? GREEN : ORANGE;
+    const col = ok ? GREEN : ACC;
     g.save(); g.globalAlpha = alpha;
     rr(g, r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6);
-    g.fillStyle = ok ? 'rgba(61,220,132,.12)' : 'rgba(255,116,82,.10)'; g.fill();
+    g.fillStyle = ok ? 'rgba(61,220,132,.12)' : rgba(ACC, 0.1); g.fill();
     g.lineWidth = 4; g.strokeStyle = col; g.stroke();
     g.font = `600 19px ${MONO}`;
     const lw = g.measureText(step.loc).width + 20, lx = Math.min(r.x - 6, SW - 8 - lw), ly = r.y - 6 - 34;
@@ -115,8 +120,8 @@ function drawScreen(g, base, t) {
     if (step.verb !== 'assert' && inSteps && p > 0.5 && p < 0.95) {
       const q = (p - 0.5) / 0.45;
       const cx = step.verb === 'swipe' ? r.x + r.w * (0.78 - 0.5 * ease(q)) : r.x + r.w / 2, cy = r.y + r.h / 2;
-      g.fillStyle = `rgba(255,116,82,${0.35 * (1 - q)})`; g.beginPath(); g.arc(cx, cy, 12 + q * 44, 0, Math.PI * 2); g.fill();
-      g.fillStyle = `rgba(255,116,82,${0.9 * (1 - q * 0.6)})`; g.beginPath(); g.arc(cx, cy, 11, 0, Math.PI * 2); g.fill();
+      g.fillStyle = rgba(ACC, 0.35 * (1 - q)); g.beginPath(); g.arc(cx, cy, 12 + q * 44, 0, Math.PI * 2); g.fill();
+      g.fillStyle = rgba(ACC, 0.9 * (1 - q * 0.6)); g.beginPath(); g.arc(cx, cy, 11, 0, Math.PI * 2); g.fill();
     }
     g.restore();
   }
@@ -133,7 +138,7 @@ function drawScreen(g, base, t) {
   g.globalAlpha = 1;
   if (inSteps && p <= 0.8) {
     const y = LOG_Y + k * LOG_DY;
-    g.fillStyle = (Math.floor(t * 4) % 2) ? ORANGE : '#6b7480'; g.fillText('▸', 46, y);
+    g.fillStyle = (Math.floor(t * 4) % 2) ? ACC : '#6b7480'; g.fillText('▸', 46, y);
     g.fillStyle = '#6b7480'; g.fillText(step.verb.padEnd(7) + step.loc, 74, y);
   }
   if (!inSteps) {
@@ -215,12 +220,12 @@ async function start() {
   paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
 
   const graphite = new THREE.MeshStandardMaterial({ color: 0x2b3038, metalness: 0.8, roughness: 0.28, envMap: env, envMapIntensity: 1.2 });
-  const orange = new THREE.MeshStandardMaterial({ color: 0xff7452, metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 });
+  const accent = new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 });
   const glass = new THREE.MeshStandardMaterial({ color: 0x07080a, metalness: 0.3, roughness: 0.15, envMap: env, envMapIntensity: 0.8 });
   const black = new THREE.MeshBasicMaterial({ color: 0x000000 });
   const screenMat = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
   const ios = buildPhone(THREE, { body: graphite, glass, black, screenMat, notch: 'island' });
-  const android = buildPhone(THREE, { body: orange, glass, black, screenMat, notch: 'hole' });
+  const android = buildPhone(THREE, { body: accent, glass, black, screenMat, notch: 'hole' });
   ios.position.set(-0.36, -0.07, 0.32); ios.rotation.set(0, 0.06, -0.02);
   android.position.set(0.46, 0.14, -0.34); android.rotation.set(0, -0.05, 0.035);
   const root = new THREE.Group(); root.add(android, ios); scene.add(root);

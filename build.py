@@ -62,6 +62,10 @@ def hero_html(idn: dict) -> str:
             spaced = True
             continue
         m = re.fullmatch(r"\{\{(\w+)\}\}", tok)
+        if m and m.group(1) == "br":   # {{br}} : retour à la ligne voulu dans la phrase
+            out.append("<br>")
+            spaced = True
+            continue
         if m and m.group(1) in marks:
             mk = marks[m.group(1)]
             inner = (f'<img src="{html.escape(ver(mk["src"]))}" alt="{md(mk["alt"])}" {svg_size(mk["src"])} decoding="async">' if mk["type"] == "img"
@@ -175,11 +179,11 @@ def render(d: dict) -> str:
   <header class="header">
     <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
-      <div class="photo-container"><img src="{ver(idn["photo"])}" alt="{md(full_name)}" class="photo" width="300" height="400" fetchpriority="high"></div>
+      <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="{ver("assets/portrait.webp")}" alt="{md(full_name)}" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">{md(idn["first_name"])}</span> <span class="name-last">{md(idn["last_name"])}</span></h1>
         <p class="subtitle">{md(idn["headline"])}</p>
-        <p class="hero-line" aria-label="{md(re.sub(r"\{\{(\w+)\}\}", lambda m: idn["marks"][m.group(1)]["alt"], idn["hero"]))}">{hero_html(idn)}</p>
+        <p class="hero-line" aria-label="{md(re.sub(r"\{\{(\w+)\}\}", lambda m: idn["marks"][m.group(1)]["alt"] if m.group(1) in idn["marks"] else " ", idn["hero"]))}">{hero_html(idn)}</p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">{md(idn["location"])}</span> <span class="meta-item">{md(idn["status_freelance"])}</span> <span class="meta-item">{md(idn["status_mode"])}</span>
         </p>
