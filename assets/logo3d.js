@@ -22,7 +22,7 @@ function webglOk() {
 let started = false;
 async function go() {
   if (started) return; started = true;
-  const [THREE, { GLTFLoader }] = await Promise.all([import('three'), import('three/addons/loaders/GLTFLoader.js')]);
+  const THREE = await import('three'), { GLTFLoader } = THREE;   // paquet du site (assets/vendor/three.js), chargeur compris
   const env = new THREE.CubeTextureLoader().setPath('assets/cubemaps/').load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']);
   env.colorSpace = THREE.SRGBColorSpace;
   new GLTFLoader().load('assets/logo.glb', (gltf) => {
@@ -95,7 +95,9 @@ function mount(THREE, logo, shine) {
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
 
   if (reduced()) return;
-  let lastDraw = 0;
+  // au repos il se balance de ~5°/s : d'une image à l'autre, moins d'un pixel. On ne le redessine que quand sa pose a bougé
+  // d'au moins 0,004 rad (~¼ de pixel au bord), ou pendant le geste d'invite (le reflet bouge même quand la pose change peu).
+  let lastDraw = 0, drawnX = NaN, drawnY = NaN;
   (function loop(now) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
@@ -123,7 +125,9 @@ function mount(THREE, logo, shine) {
         pivot.rotation.x = norm(pivot.rotation.x) + (rx - norm(pivot.rotation.x)) * ease;
       }
     }
-    renderer.render(scene, camera);
+    if (dragging || hintStart >= 0 || shine.a.value > 0 || !(Math.abs(pivot.rotation.x - drawnX) < 0.004 && Math.abs(pivot.rotation.y - drawnY) < 0.004)) {
+      renderer.render(scene, camera); drawnX = pivot.rotation.x; drawnY = pivot.rotation.y;
+    }
   })(performance.now());
 }
 
