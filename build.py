@@ -127,6 +127,7 @@ def render(d: dict) -> str:
     url = SITE + (here["dir"] + "/" if here["dir"] else "")
     base_tag = '\n  <base href="../">' if here["dir"] else ""
     other_href = LANGS[other]["dir"] + "/" if LANGS[other]["dir"] else "./"
+    self_href = here["dir"] + "/" if here["dir"] else "./"   # le logo de la barre recharge la page (en FR, <base> pointe à la racine)
     alternates = "".join(f'\n  <link rel="alternate" hreflang="{k}" href="{SITE}{v["dir"] + "/" if v["dir"] else ""}">' for k, v in LANGS.items())
     # la feuille écran est intégrée à la page : un aller-retour réseau de moins avant le premier affichage (mesuré : FCP mobile 2,9 s)
     screen_css = (ROOT / "assets" / "cv.css").read_text(encoding="utf-8").replace('url("fonts/', 'url("assets/fonts/')
@@ -162,11 +163,10 @@ def render(d: dict) -> str:
 <body id="top">
 
   <nav class="topbar" aria-label="{md(ui["nav_aria"])}">
-    <div class="brand" title="{md(full_name)}">
+    <a class="brand" href="{self_href}" title="{md(full_name)}">
       <img class="brand-img" src="{ver("assets/logo.png")}" alt="{md(full_name)}" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
-      <span class="brand-photo" aria-hidden="true"><img src="{ver("assets/portrait.webp")}" alt="" width="420" height="562" decoding="async"></span>
-    </div>
+    </a>
     <span class="frame-status label" aria-hidden="true">{md(full_name)} &middot; {md(idn["headline"])}</span>
     <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="{ver("assets/marks/linkedin.svg")}" data-dark-map='{{"#000000":"#ffffff"}}'>
       <img class="theme-light" src="{ver("assets/marks/linkedin.svg")}" alt="" width="40" height="40" decoding="async">
