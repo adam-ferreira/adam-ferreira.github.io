@@ -157,7 +157,8 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .name {
   font-family: var(--display); font-weight: 400;
   font-size: clamp(72px, 12.5vw, 200px); line-height: .86; letter-spacing: .012em;
-  color: var(--ink); margin: -8px 0 18px; overflow-wrap: anywhere;
+  color: var(--ink); margin: -8px 0 18px;
+  white-space: nowrap;   /* une ligne quelle que soit la police : si Humane arrive après le premier affichage, rien ne saute (mesuré : décalage 0,18) */
 }
 .name-first, .name-last { font-weight: 400; }
 .subtitle { margin-top: 4px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
