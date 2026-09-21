@@ -165,9 +165,9 @@ def render(d: dict) -> str:
     <div class="brand" title="{md(full_name)}">
       <img class="brand-img" src="{ver("assets/logo.png")}" alt="{md(full_name)}" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
+      <span class="brand-photo" aria-hidden="true"><img src="{ver("assets/portrait.webp")}" alt="" width="420" height="562" decoding="async"></span>
     </div>
     <span class="frame-status label" aria-hidden="true">{md(full_name)} &middot; {md(idn["headline"])}</span>
-    <a class="lang-switch label" href="{other_href}" hreflang="{other}" lang="{other}" title="{LANGS[other]["name"]}" aria-label="{LANGS[other]["name"]}">{LANGS[other]["code"]}</a>
     <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="{ver("assets/marks/linkedin.svg")}" data-dark-map='{{"#000000":"#ffffff"}}'>
       <img class="theme-light" src="{ver("assets/marks/linkedin.svg")}" alt="" width="40" height="40" decoding="async">
       <img class="theme-dark" src="{ver("assets/marks/linkedin-dark.svg")}" alt="" width="40" height="40" decoding="async">

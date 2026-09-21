@@ -98,6 +98,7 @@ function mount(THREE, logo, shine) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
     if (document.documentElement.classList.contains('is-moving') || now - lastDraw < 15) return;   // figé pendant les mouvements de page, 60 images/s au plus
+    if (document.body.classList.contains('is-scrolled')) { stopHint(0); return; }   // caché hors de l'accueil (la photo le remplace)
     lastDraw = now;
     if (paused) { paused = false; stopHint(0); nextHint = Math.max(nextHint, performance.now() + 1000 + ORDER * 1500); }
     if (!dragging) {
