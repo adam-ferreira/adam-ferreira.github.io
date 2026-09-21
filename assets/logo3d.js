@@ -69,7 +69,7 @@ function mount(THREE, logo, shine) {
   canvas.classList.add('is-ready');
 
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
-  let dragging = false, last = null, releasedAt = -1e9, idle = 0, visible = true, hover = false, paused = false;
+  let dragging = false, last = null, releasedAt = -1e9, idle = 0, visible = true, hover = false, paused = false, shown = false, moved = 0;
   const HINT_MS = 1500, HINT_A = 0.6, SWEEP = 0.9 + 0.6 * 0.9 + 0.3 * 1.6;
   let hintStart = -1, nextHint = performance.now() + 1500 + ORDER * 1500;
   const easeIO = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
@@ -77,16 +77,18 @@ function mount(THREE, logo, shine) {
   canvas.addEventListener('pointerenter', () => { hover = true; stopHint(3000); });
   canvas.addEventListener('pointerleave', () => { hover = false; });
   const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a));
-  canvas.addEventListener('pointerdown', (e) => { stopHint(8000); dragging = true; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('is-dragging'); e.preventDefault(); });
+  canvas.addEventListener('pointerdown', (e) => { stopHint(8000); dragging = true; moved = 0; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('is-dragging'); e.preventDefault(); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;
-    const dx = e.clientX - last.x, dy = e.clientY - last.y; last = { x: e.clientX, y: e.clientY };
+    const dx = e.clientX - last.x, dy = e.clientY - last.y; last = { x: e.clientX, y: e.clientY }; moved += Math.abs(dx) + Math.abs(dy);
     vel.x = dx * 0.02; vel.y = dy * 0.02;
     pivot.rotation.y += vel.x; pivot.rotation.x += vel.y;
     if (reduced()) renderer.render(scene, camera);
   });
   const release = (e) => { if (!dragging) return; dragging = false; releasedAt = performance.now(); canvas.classList.remove('is-dragging'); try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+  // un lancer n'est pas un clic : on ne recharge la page que si le logo n'a (presque) pas bougé sous le doigt
+  canvas.addEventListener('click', (e) => { if (moved > 6) { e.preventDefault(); e.stopPropagation(); } });
   window.addEventListener('pointermove', (e) => { target.x = (e.clientX / window.innerWidth - 0.5) * 2; target.y = (e.clientY / window.innerHeight - 0.5) * 2; }, { passive: true });
   window.addEventListener('resize', () => { fit(); renderer.render(scene, camera); });
   onDprChange(() => { fit(); renderer.render(scene, camera); });
@@ -98,7 +100,8 @@ function mount(THREE, logo, shine) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
     if (document.documentElement.classList.contains('is-moving') || now - lastDraw < 15) return;   // figé pendant les mouvements de page, 60 images/s au plus
-    if (document.body.classList.contains('is-scrolled')) { stopHint(0); return; }   // caché hors de l'accueil (la photo le remplace)
+    if (!document.body.classList.contains('is-scrolled')) { shown = false; return; }   // caché sur l'accueil : il n'apparaît qu'une fois qu'on l'a quitté
+    if (!shown) { shown = true; stopHint(0); nextHint = performance.now() + 1200; }   // à son apparition, un geste d'invite rapide montre qu'il est en 3D
     lastDraw = now;
     if (paused) { paused = false; stopHint(0); nextHint = Math.max(nextHint, performance.now() + 1000 + ORDER * 1500); }
     if (!dragging) {
