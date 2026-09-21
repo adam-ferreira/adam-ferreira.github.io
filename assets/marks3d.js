@@ -211,6 +211,8 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
     if (document.documentElement.classList.contains('is-moving') && !dragging) return;   // figé pendant les mouvements de page
+    const inSlide = mark.closest('.slide');
+    if (inSlide && document.documentElement.classList.contains('stage') && !inSlide.classList.contains('is-current')) { paused = true; return; }   // mode scène : écran caché
     if (paused) {   // retour sur l'onglet ou sur la marque : on redécale les gestes, sinon les trois partiraient ensemble
       paused = false; hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; dirty = true;
       nextHint = Math.max(nextHint, performance.now() + 1000 + order * 1500);
