@@ -32,6 +32,13 @@ DOWNLOAD_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M6 
 FONTS_URL = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"  # Inter : impression seulement
 
 
+def ver(rel: str) -> str:
+    """`assets/x.svg` → `assets/x.svg?v=1a2b3c4d` : l'adresse change avec le contenu, plus jamais de vieux fichier en cache."""
+    import hashlib
+    p = ROOT / rel
+    return f"{rel}?v={hashlib.sha1(p.read_bytes()).hexdigest()[:8]}" if p.exists() else rel
+
+
 def md(text: str) -> str:
     """Texte brut → HTML : échappement, puis **gras** → <strong>."""
     return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", html.escape(text, quote=False))
@@ -47,9 +54,9 @@ def hero_html(idn: dict) -> str:
         m = re.fullmatch(r"\{\{(\w+)\}\}", tok)
         if m and m.group(1) in marks:
             mk = marks[m.group(1)]
-            inner = (f'<img src="{html.escape(mk["src"])}" alt="{md(mk["alt"])}" loading="lazy">' if mk["type"] == "img"
+            inner = (f'<img src="{html.escape(ver(mk["src"]))}" alt="{md(mk["alt"])}" loading="lazy">' if mk["type"] == "img"
                      else f'<span class="mark-text" role="img" aria-label="{md(mk["alt"])}">{md(mk["label"])}</span>')
-            attrs = f' data-svg="{html.escape(mk["src"])}"' if mk["type"] == "img" else ""
+            attrs = f' data-svg="{html.escape(ver(mk["src"]))}"' if mk["type"] == "img" else ""
             if mk.get("fill_dark"):
                 attrs += f' data-fill-dark="{html.escape(mk["fill_dark"])}"'
             out.append(f'<span class="w mark mark-{m.group(1)}" style="--i:{i}"{attrs}>{inner}</span>')
@@ -94,6 +101,7 @@ def render(d: dict) -> str:
     full_name = f'{idn["first_name"]} {idn["last_name"]}'
     # la feuille écran est intégrée à la page : un aller-retour réseau de moins avant le premier affichage (mesuré : FCP mobile 2,9 s)
     screen_css = (ROOT / "assets" / "cv.css").read_text(encoding="utf-8").replace('url("fonts/', 'url("assets/fonts/')
+    screen_css = re.sub(r'url\("(assets/fonts/[^"]+)"\)', lambda m: f'url("{ver(m.group(1))}")', screen_css)
     parts = [f"""<!DOCTYPE html>
 <html lang="{d["lang"]}">
 <head>
@@ -110,26 +118,26 @@ def render(d: dict) -> str:
   <meta property="og:image" content="{SITE}{idn["photo"]}">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary">
-  <link rel="icon" href="assets/logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/logo.png">
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
+  <link rel="icon" href="{ver("assets/logo.png")}" type="image/png">
+  <link rel="apple-touch-icon" href="{ver("assets/logo.png")}">
+  <link rel="preload" as="font" type="font/woff2" href="{ver("assets/fonts/BricolageGrotesque-fr.woff2")}" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="{ver("assets/fonts/Humane-name.woff2")}" crossorigin>
   <link rel="stylesheet" href="{FONTS_URL}" media="print">
   <style media="screen">
 {screen_css}
   </style>
-  <link rel="stylesheet" href="assets/print.css" media="print">
+  <link rel="stylesheet" href="{ver("assets/print.css")}" media="print">
   <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}}}}</script>
 </head>
 <body id="top">
 
   <nav class="topbar" aria-label="{md(ui["nav_aria"])}">
     <div class="brand" title="{md(full_name)}">
-      <img class="brand-img" src="assets/logo.png" alt="{md(full_name)}" width="46" height="46" decoding="async">
+      <img class="brand-img" src="{ver("assets/logo.png")}" alt="{md(full_name)}" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
-    <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg">
-      <img src="assets/marks/linkedin.svg" alt="" width="40" height="40" decoding="async">
+    <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="{ver("assets/marks/linkedin.svg")}">
+      <img src="{ver("assets/marks/linkedin.svg")}" alt="" width="40" height="40" decoding="async">
     </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="{md(ui["toggle_aria"])}" title="{md(ui["toggle_title_light"])}">
       <span class="tt-icon tt-sun">{SUN_SVG}</span>
@@ -140,7 +148,7 @@ def render(d: dict) -> str:
 
   <header class="header">
     <div class="header-left">
-      <div class="photo-container"><img src="{idn["photo"]}" alt="{md(full_name)}" class="photo" width="300" height="400" fetchpriority="high"></div>
+      <div class="photo-container"><img src="{ver(idn["photo"])}" alt="{md(full_name)}" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">{md(idn["first_name"])}</span> <span class="name-last">{md(idn["last_name"])}</span></h1>
         <p class="subtitle">{md(idn["headline"])}</p>
@@ -195,9 +203,9 @@ def render(d: dict) -> str:
     <span>{md(ui["footer_note"])}</span>
   </footer>
 
-  <script src="assets/cv.js"></script>
-  <script type="module" src="assets/logo3d.js"></script>
-  <script type="module" src="assets/marks3d.js"></script>
+  <script src="{ver("assets/cv.js")}"></script>
+  <script type="module" src="{ver("assets/logo3d.js")}"></script>
+  <script type="module" src="{ver("assets/marks3d.js")}"></script>
 </body>
 </html>
 """)
