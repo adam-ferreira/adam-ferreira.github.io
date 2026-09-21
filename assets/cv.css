@@ -72,30 +72,13 @@ a { color: inherit; }
   transition: border-color .2s ease;
 }
 .topbar.is-scrolled { border-bottom-color: var(--line); }
-.topbar-name {
-  font-family: var(--display); font-size: 30px; line-height: 1; letter-spacing: .02em;
-  color: var(--ink); text-decoration: none; margin-right: auto; padding-top: 3px;
-}
-.topbar-links { display: flex; gap: 18px; }
-.topbar-links a { font-size: 15px; font-weight: 500; color: var(--text); text-decoration: none; }
-.topbar-links a:hover { color: var(--ink); }
-.pdf-link {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 14px; border-radius: 999px;
-  background: var(--ink); color: var(--paper); text-decoration: none;
-  font-size: 14px; font-weight: 600; white-space: nowrap;
-}
-.pdf-link svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.pdf-link:hover { background: var(--accent-ink); color: #fff; }
-@media (max-width: 640px) {
-  .topbar { gap: 12px; }
-  .topbar-links { display: none; }
-  .topbar-name { font-size: 26px; }
-  .pdf-link { padding: 7px 11px; }
-  .pdf-link .pdf-label-long { display: none; }
-}
-.pdf-label-short { display: none; }
-@media (max-width: 640px) { .pdf-label-short { display: inline; } }
+.brand { position: relative; width: 46px; height: 46px; margin-right: auto; display: block; }
+.brand-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .6s ease; }
+.brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
+.brand .logo3d.is-dragging { cursor: grabbing; }
+.brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
+.topbar-linkedin { padding: 6px 12px 6px 8px; font-size: 14px; }
+@media (max-width: 480px) { .topbar-linkedin { padding: 6px 8px; } .topbar-linkedin .linkedin-handle { display: none; } }
 
 /* ---------- interrupteur jour / nuit ---------- */
 .theme-toggle {
@@ -121,8 +104,9 @@ a { color: inherit; }
 .header {
   max-width: 1080px; margin: 0 auto;
   padding: clamp(40px, 8vw, 88px) clamp(16px, 4vw, 40px) clamp(32px, 5vw, 56px);
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(24px, 5vw, 64px); align-items: center;
+  display: block;
 }
+.print-only { display: none !important; }
 .header-left { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; align-items: start; }
 .photo-container {
   width: 76px; height: 76px; border-radius: 50%; overflow: hidden; flex: none;
@@ -144,7 +128,6 @@ a { color: inherit; }
 .flag-blue { background: #0055a4; } .flag-white { background: #fff; } .flag-red { background: #ef4135; }
 .meta-item { position: relative; }
 .meta-item + .meta-item::before { content: ""; position: absolute; left: -9px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
-.header-right { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .linkedin-item {
   display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px 8px 10px; border-radius: 999px;
   border: 1px solid var(--line); background: transparent; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500;
@@ -153,15 +136,11 @@ a { color: inherit; }
 .linkedin-icon { width: 18px; height: 18px; border-radius: 4px; background: #0a66c2; display: inline-flex; align-items: center; justify-content: center; }
 .linkedin-icon svg { width: 12px; height: 12px; }
 
-/* le logo 3D : présent seulement quand le script l'a rendu */
-.logo3d { width: clamp(150px, 20vw, 240px); height: clamp(150px, 20vw, 240px); display: block; opacity: 0; transition: opacity .8s ease; }
+/* le logo 3D : dans la barre, par-dessus l'image fixe, seulement quand le script l'a rendu */
+.logo3d { display: block; opacity: 0; transition: opacity .8s ease; }
 .logo3d.is-ready { opacity: 1; }
 @media (max-width: 860px), (hover: none), (pointer: coarse) { .logo3d { display: none; } }
 
-@media (max-width: 860px) {
-  .header { grid-template-columns: 1fr; row-gap: 24px; }
-  .header-right { flex-direction: row; justify-content: flex-start; align-items: center; }
-}
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
   .photo-container { width: 64px; height: 64px; }

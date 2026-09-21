@@ -14,7 +14,8 @@
   <meta property="og:image" content="https://adam-ferreira.github.io/photo.jpg">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary">
-  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" media="print">
@@ -93,30 +94,13 @@ a { color: inherit; }
   transition: border-color .2s ease;
 }
 .topbar.is-scrolled { border-bottom-color: var(--line); }
-.topbar-name {
-  font-family: var(--display); font-size: 30px; line-height: 1; letter-spacing: .02em;
-  color: var(--ink); text-decoration: none; margin-right: auto; padding-top: 3px;
-}
-.topbar-links { display: flex; gap: 18px; }
-.topbar-links a { font-size: 15px; font-weight: 500; color: var(--text); text-decoration: none; }
-.topbar-links a:hover { color: var(--ink); }
-.pdf-link {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 7px 14px; border-radius: 999px;
-  background: var(--ink); color: var(--paper); text-decoration: none;
-  font-size: 14px; font-weight: 600; white-space: nowrap;
-}
-.pdf-link svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.pdf-link:hover { background: var(--accent-ink); color: #fff; }
-@media (max-width: 640px) {
-  .topbar { gap: 12px; }
-  .topbar-links { display: none; }
-  .topbar-name { font-size: 26px; }
-  .pdf-link { padding: 7px 11px; }
-  .pdf-link .pdf-label-long { display: none; }
-}
-.pdf-label-short { display: none; }
-@media (max-width: 640px) { .pdf-label-short { display: inline; } }
+.brand { position: relative; width: 46px; height: 46px; margin-right: auto; display: block; }
+.brand-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .6s ease; }
+.brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
+.brand .logo3d.is-dragging { cursor: grabbing; }
+.brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
+.topbar-linkedin { padding: 6px 12px 6px 8px; font-size: 14px; }
+@media (max-width: 480px) { .topbar-linkedin { padding: 6px 8px; } .topbar-linkedin .linkedin-handle { display: none; } }
 
 /* ---------- interrupteur jour / nuit ---------- */
 .theme-toggle {
@@ -142,8 +126,9 @@ a { color: inherit; }
 .header {
   max-width: 1080px; margin: 0 auto;
   padding: clamp(40px, 8vw, 88px) clamp(16px, 4vw, 40px) clamp(32px, 5vw, 56px);
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(24px, 5vw, 64px); align-items: center;
+  display: block;
 }
+.print-only { display: none !important; }
 .header-left { display: grid; grid-template-columns: auto 1fr; column-gap: 20px; align-items: start; }
 .photo-container {
   width: 76px; height: 76px; border-radius: 50%; overflow: hidden; flex: none;
@@ -165,7 +150,6 @@ a { color: inherit; }
 .flag-blue { background: #0055a4; } .flag-white { background: #fff; } .flag-red { background: #ef4135; }
 .meta-item { position: relative; }
 .meta-item + .meta-item::before { content: ""; position: absolute; left: -9px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
-.header-right { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 .linkedin-item {
   display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px 8px 10px; border-radius: 999px;
   border: 1px solid var(--line); background: transparent; color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500;
@@ -174,15 +158,11 @@ a { color: inherit; }
 .linkedin-icon { width: 18px; height: 18px; border-radius: 4px; background: #0a66c2; display: inline-flex; align-items: center; justify-content: center; }
 .linkedin-icon svg { width: 12px; height: 12px; }
 
-/* le logo 3D : présent seulement quand le script l'a rendu */
-.logo3d { width: clamp(150px, 20vw, 240px); height: clamp(150px, 20vw, 240px); display: block; opacity: 0; transition: opacity .8s ease; }
+/* le logo 3D : dans la barre, par-dessus l'image fixe, seulement quand le script l'a rendu */
+.logo3d { display: block; opacity: 0; transition: opacity .8s ease; }
 .logo3d.is-ready { opacity: 1; }
 @media (max-width: 860px), (hover: none), (pointer: coarse) { .logo3d { display: none; } }
 
-@media (max-width: 860px) {
-  .header { grid-template-columns: 1fr; row-gap: 24px; }
-  .header-right { flex-direction: row; justify-content: flex-start; align-items: center; }
-}
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
   .photo-container { width: 64px; height: 64px; }
@@ -254,12 +234,14 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 64px
 <body id="top">
 
   <nav class="topbar" aria-label="Navigation">
-    <a class="topbar-name" href="#top">Adam Ferreira</a>
-    <div class="topbar-links">
-      <a href="#experience">Expériences</a>
-      <a href="#education">Formation</a>
+    <div class="brand" title="Adam Ferreira">
+      <img class="brand-img" src="assets/logo.png" alt="Adam Ferreira" width="46" height="46" decoding="async">
+      <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
-    <a class="pdf-link" href="dist/cv-adam-ferreira.pdf" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg><span class="pdf-label-long">Télécharger le PDF</span><span class="pdf-label-short">PDF</span></a>
+    <a class="linkedin-item topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">
+      <span class="linkedin-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" fill="white"/></svg></span>
+      <span class="linkedin-handle">ad-ferreira</span>
+    </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Mode nuit" title="Passer en mode nuit">
       <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
       <span class="tt-icon tt-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
@@ -279,12 +261,11 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 64px
         </p>
       </div>
     </div>
-    <div class="header-right">
+    <div class="header-right print-only">
       <a class="linkedin-item" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">
         <span class="linkedin-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z" fill="white"/></svg></span>
         ad-ferreira
       </a>
-      <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
   </header>
 
