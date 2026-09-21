@@ -103,8 +103,7 @@ def render(d: dict) -> str:
         <span class="linkedin-icon">{LINKEDIN_SVG}</span>
         {md(idn["linkedin"]["handle"])}
       </a>
-      <span class="print-email">{md(idn["email_print_only"])}</span>
-      <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="{md(ui["toggle_aria"])}" title="{md(ui["toggle_title_light"])}">
+{("      <span class=\"print-email\">" + md(idn["email_print_only"]) + "</span>\n") if idn.get("email_print_only") else ""}      <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="{md(ui["toggle_aria"])}" title="{md(ui["toggle_title_light"])}">
         <span class="tt-icon tt-sun">{SUN_SVG}</span>
         <span class="tt-icon tt-moon">{MOON_SVG}</span>
         <span class="tt-knob"></span>
