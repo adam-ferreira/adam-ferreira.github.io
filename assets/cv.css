@@ -7,6 +7,13 @@
    ============================================================ */
 
 @font-face {
+  /* Bricolage Grotesque (SIL OFL), variable, sous-ensemble latin + accents, auto-hébergée : aucune origine tierce au chargement */
+  font-family: "Bricolage Grotesque";
+  src: url("fonts/BricolageGrotesque-fr.woff2") format("woff2");
+  font-weight: 300 800;
+  font-display: swap;
+}
+@font-face {
   font-family: "Humane";
   /* sous-ensemble : les seules lettres du nom (3 Ko) ; le TTF complet reste en secours */
   src: url("fonts/Humane-name.woff2") format("woff2"), url("fonts/Humane.ttf") format("truetype");
