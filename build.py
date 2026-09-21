@@ -44,6 +44,14 @@ def md(text: str) -> str:
     return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", html.escape(text, quote=False))
 
 
+def svg_size(rel: str) -> str:
+    m = re.search(r'viewBox="([^"]+)"', (ROOT / rel).read_text(encoding="utf-8"))
+    if not m:
+        return ""
+    w, h = (round(float(x)) for x in m.group(1).replace(",", " ").split()[2:4])
+    return f'width="{w}" height="{h}"'
+
+
 def hero_html(idn: dict) -> str:
     """La phrase d'accueil, mot par mot (animation décalée), avec les marques {{nom}} insérées dedans."""
     marks = idn.get("marks", {})
@@ -54,7 +62,7 @@ def hero_html(idn: dict) -> str:
         m = re.fullmatch(r"\{\{(\w+)\}\}", tok)
         if m and m.group(1) in marks:
             mk = marks[m.group(1)]
-            inner = (f'<img src="{html.escape(ver(mk["src"]))}" alt="{md(mk["alt"])}" loading="lazy">' if mk["type"] == "img"
+            inner = (f'<img src="{html.escape(ver(mk["src"]))}" alt="{md(mk["alt"])}" {svg_size(mk["src"])} decoding="async">' if mk["type"] == "img"
                      else f'<span class="mark-text" role="img" aria-label="{md(mk["alt"])}">{md(mk["label"])}</span>')
             attrs = f' data-svg="{html.escape(ver(mk["src"]))}"' if mk["type"] == "img" else ""
             if mk.get("fill_dark"):
@@ -128,7 +136,7 @@ def render(d: dict) -> str:
 {screen_css}
   </style>
   <link rel="stylesheet" href="{ver("assets/print.css")}" media="print">
-  <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}}}}</script>
+  <script type="importmap">{{"imports":{{"three":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@{THREE_VERSION}/examples/jsm/"}}}}</script>
 </head>
 <body id="top">
 
@@ -150,7 +158,7 @@ def render(d: dict) -> str:
 
   <div class="page">
   <header class="header">
-    <div class="hero-stage screen-only" aria-hidden="true"><canvas class="logo3d logo3d-hero"></canvas></div>
+    <div class="hero-stage screen-only" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
       <div class="photo-container"><img src="{ver(idn["photo"])}" alt="{md(full_name)}" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
@@ -218,6 +226,7 @@ def render(d: dict) -> str:
   </footer>
 
   <script src="{ver("assets/cv.js")}"></script>
+  <script type="module" src="{ver("assets/hero3d.js")}"></script>
   <script type="module" src="{ver("assets/logo3d.js")}"></script>
   <script type="module" src="{ver("assets/marks3d.js")}"></script>
 </body>
