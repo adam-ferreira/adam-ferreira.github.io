@@ -120,7 +120,7 @@
     var ticks = panels.map(function (p, i) {
       var b = document.createElement('button');
       b.type = 'button'; b.className = 'pager-tick'; b.title = labelOf(p); b.setAttribute('aria-label', labelOf(p));
-      b.addEventListener('click', function () { p.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); });
+      b.addEventListener('click', function () { goTo(i); });
       pager.appendChild(b); return b;
     });
     document.body.appendChild(pager);
@@ -138,5 +138,70 @@
       });
     }, { rootMargin: '-10% 0px -35% 0px' });   // actif dès que son haut passe aux deux tiers de la fenêtre : le contenu arrive pendant la transition
     panels.forEach(function (p) { panelIO.observe(p); });
+  }
+
+  // ---------- transitions entre écrans, conduites à la main (grand écran) ----------
+  // Un geste (molette, trackpad, flèches, Page suivante, Espace) = un mouvement unique d'environ une seconde vers l'écran
+  // suivant, avec une courbe douce. L'élan résiduel du trackpad est ignoré jusqu'au geste suivant. Un écran plus haut que
+  // la fenêtre se fait d'abord défiler jusqu'en bas. Le calage natif du navigateur saccadait avec l'élan : on s'en passe.
+  var snapMQ = window.matchMedia('(min-width: 1100px) and (min-height: 680px)');
+  var BAR = 60, tween = null, locked = false, lastWheel = 0, lastDelta = 0;
+  var topOf = function (el) { return el.getBoundingClientRect().top + window.scrollY; };
+  var ease = function (u) { return u < 0.5 ? 8 * u * u * u * u : 1 - Math.pow(-2 * u + 2, 4) / 2; };   // easeInOutQuart
+  function scrollToY(y, ms) {
+    y = Math.max(0, Math.min(y, document.documentElement.scrollHeight - window.innerHeight));
+    if (reduced) { window.scrollTo(0, y); return; }
+    var y0 = window.scrollY, t0 = performance.now();
+    if (tween) cancelAnimationFrame(tween);
+    (function frame(now) {
+      var u = Math.min(1, (now - t0) / ms);
+      window.scrollTo(0, y0 + (y - y0) * ease(u));
+      if (u < 1) tween = requestAnimationFrame(frame); else { tween = null; locked = true; }
+    })(t0);
+  }
+  function currentIndex() {
+    var y = window.scrollY + BAR + 4, k = 0;
+    for (var n = 0; n < panels.length; n++) if (topOf(panels[n]) <= y) k = n;
+    return k;
+  }
+  function goTo(n) {
+    if (!panels.length) return;
+    n = Math.max(0, Math.min(panels.length - 1, n));
+    if (!snapMQ.matches) { panels[n].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); return; }
+    scrollToY(topOf(panels[n]) - BAR, 1000);
+  }
+  function step(dir) {
+    var i = currentIndex(), p = panels[i], top = topOf(p), bottom = top + p.offsetHeight;
+    var viewTop = window.scrollY + BAR, viewBottom = window.scrollY + window.innerHeight, page = window.innerHeight - BAR;
+    if (dir > 0 && bottom > viewBottom + 2) return scrollToY(Math.min(window.scrollY + page * 0.85, bottom - window.innerHeight), 600);
+    if (dir < 0 && top < viewTop - 2) return scrollToY(Math.max(window.scrollY - page * 0.85, top - BAR), 600);
+    if (i + dir < 0 || i + dir >= panels.length) return;
+    goTo(i + dir);
+  }
+  if (panels.length) {
+    window.addEventListener('wheel', function (e) {
+      if (!snapMQ.matches || e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;   // zoom au pincement, défilement horizontal : on laisse faire
+      e.preventDefault();
+      var now = performance.now(), d = e.deltaY;
+      var fresh = now - lastWheel > 180 || Math.abs(d) > Math.abs(lastDelta) * 1.5 + 6;   // nouveau geste, pas l'élan du précédent
+      lastWheel = now; lastDelta = d;
+      if (tween || Math.abs(d) < 3) return;
+      if (locked && !fresh) return;
+      locked = false;
+      step(d > 0 ? 1 : -1);
+    }, { passive: false });
+    window.addEventListener('keydown', function (e) {
+      if (!snapMQ.matches || e.altKey || e.ctrlKey || e.metaKey) return;
+      var tag = (document.activeElement && document.activeElement.tagName) || '';
+      if (/INPUT|TEXTAREA|SELECT/.test(tag)) return;
+      var k = e.key, dir = 0;
+      if (k === 'ArrowDown' || k === 'PageDown' || (k === ' ' && !e.shiftKey)) dir = 1;
+      else if (k === 'ArrowUp' || k === 'PageUp' || (k === ' ' && e.shiftKey)) dir = -1;
+      else if (k === 'Home') { e.preventDefault(); return goTo(0); }
+      else if (k === 'End') { e.preventDefault(); return goTo(panels.length - 1); }
+      if (!dir) return;
+      e.preventDefault();
+      if (!tween) step(dir);
+    });
   }
 })();
