@@ -49,7 +49,7 @@ async function setup(mark, THREE, loader, SVGLoader) {
     const base = path.userData.style.fill;
     if (!base || base === 'none') return;
     const overlay = base.toLowerCase() !== String(baseColor).toLowerCase();
-    const thickness = overlay ? depth * 0.16 : depth;
+    const thickness = overlay ? depth * 0.55 : depth;   // les reliefs ressortent nettement…
     // face avant : la couleur exacte du SVG, sans éclairage → au repos, indiscernable du logo plat
     const cap = new THREE.MeshBasicMaterial({ color: new THREE.Color(base) });
     // tranches : éclairées et un peu plus sombres → le volume n'apparaît que quand on l'incline
@@ -58,7 +58,7 @@ async function setup(mark, THREE, loader, SVGLoader) {
     for (const shape of SVGLoader.createShapes(path)) {
       const geo = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false, curveSegments: 14 });
       const mesh = new THREE.Mesh(geo, [cap, side]);
-      mesh.position.z = overlay ? depth - thickness * 0.35 : 0;   // gravé à fleur de la plaque
+      mesh.position.z = overlay ? depth - thickness * 0.12 : 0;   // …mais restent ancrés dans la plaque, jamais en l'air
       group.add(mesh);
     }
   });
