@@ -210,7 +210,9 @@ async function start() {
   const tex = new THREE.CanvasTexture(sc);
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   const paint = (t) => { drawScreen(sg, base, t); tex.needsUpdate = true; };
-  paint(reduced() ? CYCLE - 0.01 : 0);
+  // data-freeze="secondes" : une image fixe du test à cet instant, sans boucle (export de la bannière LinkedIn)
+  const freeze = canvas.dataset.freeze !== undefined ? parseFloat(canvas.dataset.freeze) : null;
+  paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
 
   const graphite = new THREE.MeshStandardMaterial({ color: 0x2b3038, metalness: 0.8, roughness: 0.28, envMap: env, envMapIntensity: 1.2 });
   const orange = new THREE.MeshStandardMaterial({ color: 0xff7452, metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 });
@@ -257,7 +259,7 @@ async function start() {
   onDprChange(refit);
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
 
-  if (reduced()) return;
+  if (reduced() || freeze !== null) return;
   const t0 = performance.now();
   let frame = 0;
   (function loop(now) {

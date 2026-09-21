@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<!-- Bannière LinkedIn (1584 × 396) faite avec les éléments du site : la scène des téléphones figée, le logo AF, Humane.
+     Export : python3 -m http.server à la racine du dépôt, puis Chrome headless en --window-size=1584,396
+     --force-device-scale-factor=2 (voir README). La photo de profil LinkedIn recouvre le coin bas gauche : rien d'important là. -->
+<base href="../">
+<title>Bannière LinkedIn</title>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+  @font-face { font-family: "Humane"; src: url("assets/fonts/Humane-name.woff2") format("woff2"); }
+  @font-face { font-family: "Bricolage Grotesque"; src: url("assets/fonts/BricolageGrotesque-fr.woff2") format("woff2"); font-weight: 300 800; }
+  html, body { margin: 0; background: #0e1116; }
+  .cover {
+    position: relative; width: 1584px; height: 396px; overflow: hidden; color: #eef1f5;
+    background:
+      radial-gradient(560px 440px at 1300px 200px, rgba(255, 116, 82, .30), transparent 70%),
+      radial-gradient(900px 520px at 0 0, rgba(255, 255, 255, .04), transparent 60%),
+      #0e1116;
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  }
+  .cover::before {   /* une grille très fine, qui s'efface vers les bords */
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 25%, #000 75%, transparent); mask-image: linear-gradient(90deg, transparent 0, #000 25%, #000 75%, transparent);
+  }
+  .logo { position: absolute; left: 48px; top: 40px; width: 60px; height: 60px; }
+  .statement { position: absolute; left: 400px; top: 40px; margin: 0; font-family: "Humane"; font-weight: 400; text-transform: uppercase; font-size: 160px; line-height: .86; letter-spacing: .01em; }
+  .statement em { font-style: normal; color: #ff7452; }
+  .meta { position: absolute; left: 404px; top: 334px; display: flex; gap: 30px; font: 500 14px ui-monospace, "SF Mono", Menlo, monospace; letter-spacing: .16em; text-transform: uppercase; color: #8e97a3; }
+  .meta b { font-weight: 500; color: #eef1f5; }
+  .meta .site { color: #ff7452; }
+  canvas.hero3d { position: absolute; left: 1050px; top: -78px; width: 560px; height: 560px; display: block; }
+</style>
+</head>
+<body>
+  <div class="cover">
+    <img class="logo" src="assets/logo.png" alt="">
+    <p class="statement">Je rends testables<br>les apps <em>mobiles</em></p>
+    <div class="meta"><b>QA Automation Architect</b><span>Freelance</span><span class="site">adam-ferreira.github.io</span></div>
+    <canvas class="hero3d" data-freeze="4.81"></canvas>
+  </div>
+  <script type="module" src="assets/hero3d.js"></script>
+</body>
+</html>
