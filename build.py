@@ -91,7 +91,7 @@ def render(d: dict) -> str:
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload" as="font" type="font/ttf" href="assets/fonts/Humane.ttf" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
   <link rel="preload" as="style" href="{FONTS_URL}">
   <link rel="stylesheet" href="{FONTS_URL}" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="{FONTS_URL}"></noscript>
