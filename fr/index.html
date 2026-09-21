@@ -105,22 +105,14 @@ a { color: inherit; }
 .topbar.is-scrolled { border-bottom-color: var(--line); }
 .frame-status { justify-self: center; text-align: center; opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
 body.name-away .frame-status { opacity: 1; transform: none; }
-.brand { position: relative; width: 46px; height: 46px; display: block; }
+.brand { position: relative; width: 46px; height: 46px; display: block; border-radius: 10px; }
 .brand-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .6s ease; }
 .brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
 .brand .logo3d.is-dragging { cursor: grabbing; }
 .brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
-/* dès qu'on a quitté l'accueil, le logo AF cède la place à la photo de l'accueil, dans un petit rond d'accent */
-.brand-photo {
-  position: absolute; left: 1px; top: 1px; width: 44px; height: 44px; border-radius: 50%; overflow: hidden; pointer-events: none;
-  background: radial-gradient(circle at 32% 26%, var(--accent-hi), var(--accent) 56%, var(--accent-deep));
-  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3.5px var(--accent);
-  opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1);
-}
-.brand-photo img { position: absolute; left: 51%; top: 0; width: 100%; height: auto; max-width: none; transform: translateX(-50%); }
-.brand .brand-img, .brand .logo3d { transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1); }
-body.is-scrolled .brand-photo { opacity: 1; transform: none; }
-body.is-scrolled .brand .brand-img, body.is-scrolled .brand .logo3d { opacity: 0 !important; transform: scale(.6); pointer-events: none; }
+/* rien en haut à gauche sur l'accueil (le nom y est déjà en grand) ; dès qu'on l'a quitté, le logo AF 3D apparaît, et un clic recharge la page */
+.brand { visibility: hidden; opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .55s; }
+body.is-scrolled .brand { visibility: visible; opacity: 1; transform: none; transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
 /* sélecteur de langue : le code de l'autre langue, en mono, comme les étiquettes du cadre */
 .topbar-linkedin { grid-column: 3; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }
@@ -534,11 +526,10 @@ html.stage .slide.is-current .section-title { transform: none; }
 <body id="top">
 
   <nav class="topbar" aria-label="Navigation">
-    <div class="brand" title="Adam Ferreira">
+    <a class="brand" href="fr/" title="Adam Ferreira">
       <img class="brand-img" src="assets/logo.png?v=720e0702" alt="Adam Ferreira" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
-      <span class="brand-photo" aria-hidden="true"><img src="assets/portrait.webp?v=c46d2f2e" alt="" width="420" height="562" decoding="async"></span>
-    </div>
+    </a>
     <span class="frame-status label" aria-hidden="true">Adam Ferreira &middot; Software Engineer · Dev &amp; QA Automation</span>
     <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=d9d2c6bd" data-dark-map='{"#000000":"#ffffff"}'>
       <img class="theme-light" src="assets/marks/linkedin.svg?v=d9d2c6bd" alt="" width="40" height="40" decoding="async">
@@ -685,9 +676,9 @@ html.stage .slide.is-current .section-title { transform: none; }
     </div>
   </footer>
 
-  <script src="assets/cv.js?v=f5efa48f"></script>
+  <script src="assets/cv.js?v=35f53ae7"></script>
   <script type="module" src="assets/hero3d.js?v=10057f5f"></script>
-  <script type="module" src="assets/logo3d.js?v=6eb4f3d6"></script>
+  <script type="module" src="assets/logo3d.js?v=a77fdfd8"></script>
   <script type="module" src="assets/marks3d.js?v=a81880e6"></script>
 </body>
 </html>
