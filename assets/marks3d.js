@@ -78,7 +78,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   };
   const group = new THREE.Group();
   const depth = cube ? vbW : vbH * 0.14;
-  shine.w.value = vbW * 0.08 + vbH * 0.1;
+  shine.w.value = vbW * 0.1 + vbH * 0.12;
   const sweep = vbW / 2 + 0.6 * vbH / 2 + shine.w.value * 1.6;   // de hors champ à gauche à hors champ à droite   // un cube a la profondeur de sa largeur ; les autres, une vraie épaisseur d'objet
   const relief = (path, thickness) => {
     const [cap, side] = mats(path.userData.style.fill);
@@ -177,7 +177,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   mark.addEventListener('pointerdown', (e) => {
     if (e.button !== 0 || !mark.classList.contains('is-3d')) return;
     dragging = true; moved = 0; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY };
-    hintStart = -1; shine.a.value = 0; nextHint = performance.now() + 12000;
+    hintStart = -1; shine.a.value = 0; nextHint = performance.now() + 8000;
     mark.setPointerCapture(e.pointerId); mark.classList.add('is-grabbed'); e.preventDefault();
   });
   mark.addEventListener('pointermove', (e) => {
@@ -197,8 +197,8 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   let visible = true, dirty = true, lastX = NaN, lastY = NaN, paused = false;
   // geste d'invite : de temps en temps, la marque s'incline un peu et un reflet la balaie, pour montrer qu'elle est en volume.
   // Décalé d'une marque à l'autre, jamais pendant une interaction.
-  const HINT_MS = 1700, HINT_A = cube ? 0.5 : 0.32;
-  let hintStart = -1, nextHint = performance.now() + 2600 + order * 1500;
+  const HINT_MS = 1500, HINT_A = cube ? 0.7 : 0.42;
+  let hintStart = -1, nextHint = performance.now() + 1500 + order * 1500;
   const easeIO = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(mark);
   new MutationObserver(() => { recolor(); renderer.render(scene, camera); })
@@ -210,7 +210,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
     if (!visible || document.hidden) { paused = true; return; }
     if (paused) {   // retour sur l'onglet ou sur la marque : on redécale les gestes, sinon les trois partiraient ensemble
       paused = false; hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; dirty = true;
-      nextHint = Math.max(nextHint, performance.now() + 1500 + order * 1500);
+      nextHint = Math.max(nextHint, performance.now() + 1000 + order * 1500);
     }
     if (!dragging) {
       const spinning = Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002;
@@ -224,10 +224,10 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
         if (hintStart < 0) { hintStart = now; mark.dataset.hint = '1'; }   // marqueur du geste en cours (utile au test)
         const u = Math.min(1, (now - hintStart) / HINT_MS), sw = Math.sin(Math.PI * u);
         wrap.rotation.y = HINT_A * sw; wrap.rotation.x = -HINT_A * 0.35 * sw;
-        shine.t.value = -sweep + 2 * sweep * easeIO(u); shine.a.value = 0.55 * sw; dirty = true;
-        if (u >= 1) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; wrap.rotation.set(0, 0, 0); nextHint = now + 8000 + Math.random() * 4000; }
+        shine.t.value = -sweep + 2 * sweep * easeIO(u); shine.a.value = 0.75 * sw; dirty = true;
+        if (u >= 1) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; wrap.rotation.set(0, 0, 0); nextHint = now + 4500 + Math.random() * 1500; }
       } else {
-        if (hintStart >= 0) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; dirty = true; nextHint = performance.now() + 6000; }   // survol pendant le geste : on l'arrête
+        if (hintStart >= 0) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; dirty = true; nextHint = performance.now() + 3000; }   // survol pendant le geste : on l'arrête
         t += 0.016;
         const restY = hover ? 0.22 : 0, restX = hover ? -0.14 : 0;   // au repos : exactement à plat, comme le logo 2D
         const ey = restY - norm(wrap.rotation.y), ex = restX - norm(wrap.rotation.x);
