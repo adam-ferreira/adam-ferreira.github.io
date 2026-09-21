@@ -1,5 +1,5 @@
 /* ============================================================
-   CV — feuille ÉCRAN (intégrée dans index.html par build.py). L'impression utilise print.css.
+   CV — la feuille de style (intégrée dans chaque page par build.py). Pas de version imprimable depuis le 21/09/2026.
    Direction (21/09/2026) : un cadre fixe aux quatre coins, une scène d'accueil plein écran avec le logo AF en 3D,
    une déclaration typographique géante par section (Humane), des micro-étiquettes en mono, un pied de page inversé.
    Le contenu reste une colonne de lecture calme en Bricolage Grotesque. Les marques 3D (Betclic, Accor, LinkedIn)
@@ -61,7 +61,6 @@ ul { padding: 0; list-style: none; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 ::selection { background: var(--accent); color: #fff; }
-.print-only { display: none !important; }
 
 /* micro-étiquettes : mono, petites, espacées — les seules capitales de la page hors titres géants */
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
@@ -69,7 +68,7 @@ a { color: inherit; }
 /* ---------- le cadre : barre du haut ---------- */
 .topbar {
   position: sticky; top: 0; z-index: 20;
-  display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 18px;
+  display: grid; grid-template-columns: auto 1fr auto auto auto; align-items: center; gap: 18px;
   height: 60px; padding: 0 clamp(16px, 3vw, 36px);
   background: var(--topbar); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent; transition: border-color .2s ease;
@@ -82,14 +81,17 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
 .brand .logo3d.is-dragging { cursor: grabbing; }
 .brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
-.topbar-linkedin { grid-column: 3; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
+/* sélecteur de langue : le code de l'autre langue, en mono, comme les étiquettes du cadre */
+.lang-switch { grid-column: 3; padding: 6px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink); text-decoration: none; letter-spacing: .12em; transition: border-color .2s ease, color .2s ease; }
+.lang-switch:hover { border-color: var(--accent); color: var(--accent-ink); }
+.topbar-linkedin { grid-column: 4; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }
 .topbar-linkedin.is-3d img { opacity: 0; }
-@media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto; gap: 12px; } .frame-status { display: none; } }
+@media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto auto; gap: 12px; } .frame-status { display: none; } }
 
 /* ---------- interrupteur jour / nuit ---------- */
 .theme-toggle {
-  grid-column: 4; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px; flex: none;
+  grid-column: 5; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px; flex: none;
   border: 1px solid var(--line); background: var(--chip); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: space-between;
   -webkit-tap-highlight-color: transparent; transition: background .25s ease, border-color .25s ease;
@@ -142,6 +144,8 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .subtitle { margin-top: 4px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
 .hero-line { margin-top: 18px; max-width: 30ch; font-size: clamp(20px, 2.3vw, 28px); line-height: 1.55; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
 .hero-line .w { display: inline-block; }
+.hero-line .nowrap { white-space: nowrap; }
+.hero-line .nowrap > .mark { margin-right: .04em; }   /* ponctuation collée au logo : pas de marge avant la virgule */
 .location { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; font-size: 15px; color: var(--muted); }
 .flag { width: 16px; height: 12px; border-radius: 2.5px; overflow: hidden; display: inline-flex; flex: none; border: .8px solid var(--line); }
 .flag-blue, .flag-white, .flag-red { flex: 1; }
