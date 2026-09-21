@@ -55,6 +55,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   const [vbX, vbY, vbW, vbH] = vb;
   const cube = mark.classList.contains('mark-linkedin');
   const darkFill = mark.dataset.fillDark;
+  const darkMap = mark.dataset.darkMap ? JSON.parse(mark.dataset.darkMap) : {};
   const fills = data.paths.map((p) => p.userData.style.fill).filter((f) => f && f !== 'none');
   const baseColor = String(fills[0]).toLowerCase();
   // face avant : la couleur exacte du SVG, sans éclairage → au repos, indiscernable du logo plat ;
@@ -122,8 +123,9 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
     const ms = [].concat(m.material);
     const cap = ms.find((x) => x.isMeshBasicMaterial), side = ms.find((x) => x.isMeshStandardMaterial);
     if (!cap || !side) return;
-    const b = cap.userData.base;
-    const c = isDark() && darkFill && b.toLowerCase() !== '#ffffff' ? darkFill : b;
+    const b = cap.userData.base, lb = b.toLowerCase();
+    // en mode nuit : couleur précise remplacée si la marque en donne une (data-dark-map), sinon règle générale data-fill-dark
+    const c = !isDark() ? b : (darkMap[lb] || (darkFill && lb !== '#ffffff' ? darkFill : b));
     cap.color.set(c); side.color.set(c).multiplyScalar(0.72);
   });
   recolor();

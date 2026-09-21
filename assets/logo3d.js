@@ -1,11 +1,12 @@
-// Le logo 3D d'Adam (assets/logo.glb), dans la barre en haut à gauche. Écrans larges avec souris uniquement.
-// Chargé à la demande : au survol du logo, ou dès que la scène d'accueil a quitté l'écran. Jusque-là, l'image fixe
-// (identique au repos) suffit, et on épargne un rendu 3D au chargement de la page.
-// On l'attrape, on le lance, il continue sur son élan, puis reprend son léger balancement.
+// Le logo 3D d'Adam (assets/logo.glb), dans la barre en haut à gauche.
+// Même activation que les marques : après le chargement sur ordinateur ; sur téléphone, au premier geste (toucher,
+// défilement) ou 5 s après la page. Il se balance doucement et suit un peu la souris ; de temps en temps il fait le même
+// geste d'invite que les marques (inclinaison + reflet), en dernier de la série. On l'attrape, on le lance, il continue sur son élan.
 // Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
 const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // l'accent du site
 const canvas = document.querySelector('.brand canvas.logo3d');
-const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
+const desktop = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
+const ORDER = 3;   // dans la série des gestes d'invite : après LinkedIn, Betclic et Accor
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
 const onDprChange = (cb) => {
@@ -30,12 +31,21 @@ async function go() {
     const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
     logo.position.sub(c);
     logo.scale.setScalar(1.8 / Math.max(s.x, s.y, s.z));
-    logo.traverse((n) => { if (n.isMesh) n.material = new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 }); });
-    mount(THREE, logo);
+    // reflet : la même bande de lumière que sur les marques
+    const shine = { t: { value: -1e5 }, w: { value: 0.3 }, a: { value: 0 } };
+    const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 });
+    mat.onBeforeCompile = (sh) => {
+      sh.uniforms.uShineT = shine.t; sh.uniforms.uShineW = shine.w; sh.uniforms.uShineA = shine.a;
+      sh.vertexShader = 'varying vec2 vShine;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vShine = mvPosition.xy;');
+      sh.fragmentShader = 'uniform float uShineT, uShineW, uShineA;\nvarying vec2 vShine;\n' + sh.fragmentShader.replace('#include <opaque_fragment>',
+        '#include <opaque_fragment>\n  float sd = (vShine.x + vShine.y * 0.6) - uShineT;\n  gl_FragColor.rgb += vec3(1.0) * exp(-sd * sd / (uShineW * uShineW)) * uShineA;');
+    };
+    logo.traverse((n) => { if (n.isMesh) n.material = mat; });
+    mount(THREE, logo, shine);
   });
 }
 
-function mount(THREE, logo) {
+function mount(THREE, logo, shine) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));   // suréchantillonné : petit canvas, bords nets
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -59,9 +69,15 @@ function mount(THREE, logo) {
   canvas.classList.add('is-ready');
 
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
-  let dragging = false, last = null, releasedAt = -1e9, idle = 0, visible = true;
+  let dragging = false, last = null, releasedAt = -1e9, idle = 0, visible = true, hover = false, paused = false;
+  const HINT_MS = 1500, HINT_A = 0.6, SWEEP = 0.9 + 0.6 * 0.9 + 0.3 * 1.6;
+  let hintStart = -1, nextHint = performance.now() + 1500 + ORDER * 1500;
+  const easeIO = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
+  const stopHint = (delay) => { if (hintStart >= 0) { hintStart = -1; delete canvas.dataset.hint; shine.a.value = 0; } nextHint = Math.max(nextHint, performance.now() + delay); };
+  canvas.addEventListener('pointerenter', () => { hover = true; stopHint(3000); });
+  canvas.addEventListener('pointerleave', () => { hover = false; });
   const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a));
-  canvas.addEventListener('pointerdown', (e) => { dragging = true; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('is-dragging'); e.preventDefault(); });
+  canvas.addEventListener('pointerdown', (e) => { stopHint(8000); dragging = true; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('is-dragging'); e.preventDefault(); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;
     const dx = e.clientX - last.x, dy = e.clientY - last.y; last = { x: e.clientX, y: e.clientY };
@@ -79,28 +95,39 @@ function mount(THREE, logo) {
   if (reduced()) return;
   (function loop() {
     requestAnimationFrame(loop);
-    if (!visible || document.hidden) return;
+    if (!visible || document.hidden) { paused = true; return; }
+    if (paused) { paused = false; stopHint(0); nextHint = Math.max(nextHint, performance.now() + 1000 + ORDER * 1500); }
     if (!dragging) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || performance.now() - releasedAt < 700) {
         pivot.rotation.y += vel.x; pivot.rotation.x += vel.y; vel.x *= 0.94; vel.y *= 0.94;   // sur son élan
       } else {
+        const now = performance.now();
+        if (!hover && hintStart < 0 && now >= nextHint) { hintStart = now; canvas.dataset.hint = '1'; }   // marqueur du geste (utile au test)
+        let hy = 0, hx = 0, ease = 0.045;
+        if (hintStart >= 0) {   // geste d'invite : il s'incline et un reflet le balaie
+          const u = Math.min(1, (now - hintStart) / HINT_MS), sw = Math.sin(Math.PI * u);
+          hy = HINT_A * sw; hx = -HINT_A * 0.35 * sw; ease = 0.3;
+          shine.t.value = -SWEEP + 2 * SWEEP * easeIO(u); shine.a.value = 0.75 * sw;
+          if (u >= 1) { hintStart = -1; delete canvas.dataset.hint; shine.a.value = 0; nextHint = now + 4500 + Math.random() * 1500; }
+        }
         idle += 0.016;
-        const ry = Math.sin(idle * 0.8) * 0.12 + target.x * 0.25, rx = Math.sin(idle * 0.6) * 0.05 + target.y * 0.15;
-        pivot.rotation.y = norm(pivot.rotation.y) + (ry - norm(pivot.rotation.y)) * 0.045;   // se redresse doucement
-        pivot.rotation.x = norm(pivot.rotation.x) + (rx - norm(pivot.rotation.x)) * 0.045;
+        const ry = Math.sin(idle * 0.8) * 0.12 + target.x * 0.25 + hy, rx = Math.sin(idle * 0.6) * 0.05 + target.y * 0.15 + hx;
+        pivot.rotation.y = norm(pivot.rotation.y) + (ry - norm(pivot.rotation.y)) * ease;   // se redresse doucement
+        pivot.rotation.x = norm(pivot.rotation.x) + (rx - norm(pivot.rotation.x)) * ease;
       }
     }
     renderer.render(scene, camera);
   })();
 }
 
-function start() {
-  if (!canvas || !wanted() || !webglOk()) return;
-  canvas.closest('.brand').addEventListener('pointerenter', go, { once: true });
-  const stage = document.querySelector('.hero-stage');
-  if (!stage || getComputedStyle(stage).display === 'none' || !('IntersectionObserver' in window)) return go();
-  new IntersectionObserver((en, obs) => { if (!en[0].isIntersecting) { obs.disconnect(); go(); } }).observe(stage);
+function boot() {
+  if (!canvas || !webglOk()) return;
+  if (desktop()) return ('requestIdleCallback' in window) ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 300);
+  let done = false;
+  const EVENTS = ['touchstart', 'pointerdown', 'scroll'];
+  const g = () => { if (done) return; done = true; EVENTS.forEach((e) => window.removeEventListener(e, g)); go(); };
+  EVENTS.forEach((e) => window.addEventListener(e, g, { passive: true }));
+  setTimeout(g, 5000);
 }
-
-if (document.readyState === 'complete') start();
-else window.addEventListener('load', () => { ('requestIdleCallback' in window) ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300); });
+if (document.readyState === 'complete') boot();
+else window.addEventListener('load', boot);
