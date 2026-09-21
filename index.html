@@ -14,10 +14,10 @@
   <meta property="og:image" content="https://adam-ferreira.github.io/photo.jpg">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary">
-  <link rel="icon" href="assets/logo.png" type="image/png">
-  <link rel="apple-touch-icon" href="assets/logo.png">
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2" crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
+  <link rel="icon" href="assets/logo.png?v=1beb1197" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo.png?v=1beb1197">
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2?v=e6d8af18" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2?v=c79ef519" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" media="print">
   <style media="screen">
 /* ============================================================
@@ -31,14 +31,14 @@
 @font-face {
   /* Bricolage Grotesque (SIL OFL), variable, sous-ensemble latin + accents, auto-hébergée : aucune origine tierce au chargement */
   font-family: "Bricolage Grotesque";
-  src: url("assets/fonts/BricolageGrotesque-fr.woff2") format("woff2");
+  src: url("assets/fonts/BricolageGrotesque-fr.woff2?v=e6d8af18") format("woff2");
   font-weight: 300 800;
   font-display: swap;
 }
 @font-face {
   font-family: "Humane";
   /* sous-ensemble : les seules lettres du nom (3 Ko) ; le TTF complet reste en secours */
-  src: url("assets/fonts/Humane-name.woff2") format("woff2"), url("assets/fonts/Humane.ttf") format("truetype");
+  src: url("assets/fonts/Humane-name.woff2?v=c79ef519") format("woff2"), url("assets/fonts/Humane.ttf?v=2125f978") format("truetype");
   font-weight: 400;
   font-display: swap;
 }
@@ -253,18 +253,18 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
 }
 
   </style>
-  <link rel="stylesheet" href="assets/print.css" media="print">
+  <link rel="stylesheet" href="assets/print.css?v=a20f38a3" media="print">
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body id="top">
 
   <nav class="topbar" aria-label="Navigation">
     <div class="brand" title="Adam Ferreira">
-      <img class="brand-img" src="assets/logo.png" alt="Adam Ferreira" width="46" height="46" decoding="async">
+      <img class="brand-img" src="assets/logo.png?v=1beb1197" alt="Adam Ferreira" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
-    <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg">
-      <img src="assets/marks/linkedin.svg" alt="" width="40" height="40" decoding="async">
+    <a class="mark mark-linkedin topbar-linkedin" href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg?v=4be4cbb8">
+      <img src="assets/marks/linkedin.svg?v=4be4cbb8" alt="" width="40" height="40" decoding="async">
     </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="Mode nuit" title="Passer en mode nuit">
       <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
@@ -275,11 +275,11 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
 
   <header class="header">
     <div class="header-left">
-      <div class="photo-container"><img src="photo.jpg" alt="Adam Ferreira" class="photo" width="300" height="400" fetchpriority="high"></div>
+      <div class="photo-container"><img src="photo.jpg?v=0ea69934" alt="Adam Ferreira" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">Adam</span> <span class="name-last">Ferreira</span></h1>
         <p class="subtitle">QA Automation Architect</p>
-        <p class="hero-line screen-only" aria-label="Je rends testables les apps mobiles, chez Betclic aujourd'hui et chez Accor hier."><span class="w" style="--i:0">Je</span> <span class="w" style="--i:1">rends</span> <span class="w" style="--i:2">testables</span> <span class="w" style="--i:3">les</span> <span class="w" style="--i:4">apps</span> <span class="w" style="--i:5">mobiles,</span> <span class="w" style="--i:6">chez</span> <span class="w mark mark-betclic" style="--i:7" data-svg="assets/marks/betclic.svg"><img src="assets/marks/betclic.svg" alt="Betclic" loading="lazy"></span> <span class="w" style="--i:8">aujourd'hui</span> <span class="w" style="--i:9">et</span> <span class="w" style="--i:10">chez</span> <span class="w mark mark-accor" style="--i:11" data-svg="assets/marks/accor.svg" data-fill-dark="#eef1f5"><img src="assets/marks/accor.svg" alt="Accor" loading="lazy"></span> <span class="w" style="--i:12">hier.</span></p>
+        <p class="hero-line screen-only" aria-label="Je rends testables les apps mobiles, chez Betclic aujourd'hui et chez Accor hier."><span class="w" style="--i:0">Je</span> <span class="w" style="--i:1">rends</span> <span class="w" style="--i:2">testables</span> <span class="w" style="--i:3">les</span> <span class="w" style="--i:4">apps</span> <span class="w" style="--i:5">mobiles,</span> <span class="w" style="--i:6">chez</span> <span class="w mark mark-betclic" style="--i:7" data-svg="assets/marks/betclic.svg?v=b44a3497"><img src="assets/marks/betclic.svg?v=b44a3497" alt="Betclic" loading="lazy"></span> <span class="w" style="--i:8">aujourd'hui</span> <span class="w" style="--i:9">et</span> <span class="w" style="--i:10">chez</span> <span class="w mark mark-accor" style="--i:11" data-svg="assets/marks/accor.svg?v=9dc9a067" data-fill-dark="#eef1f5"><img src="assets/marks/accor.svg?v=9dc9a067" alt="Accor" loading="lazy"></span> <span class="w" style="--i:12">hier.</span></p>
         <p class="tagline print-only">Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.</p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">Paris, France</span> <span class="meta-item">Freelance</span> <span class="meta-item">sur site et télétravail</span>
@@ -387,8 +387,8 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 96px
     <span>Mis à jour en septembre 2026</span>
   </footer>
 
-  <script src="assets/cv.js"></script>
-  <script type="module" src="assets/logo3d.js"></script>
-  <script type="module" src="assets/marks3d.js"></script>
+  <script src="assets/cv.js?v=4c6bffa2"></script>
+  <script type="module" src="assets/logo3d.js?v=2d860d27"></script>
+  <script type="module" src="assets/marks3d.js?v=16e71ace"></script>
 </body>
 </html>
