@@ -10,13 +10,14 @@
     "headline": "QA Automation Architect",
     "tagline": "Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.",
     "location": "Paris, France",
-    "status": "Freelance · sur site et télétravail",
     "linkedin": {
       "handle": "ad-ferreira",
       "url": "https://linkedin.com/in/ad-ferreira"
     },
-    "email_print_only": "",
-    "photo": "photo.jpg"
+    "photo": "photo.jpg",
+    "status_freelance": "Freelance",
+    "status_mode": "sur site et télétravail",
+    "pdf": "dist/cv-adam-ferreira.pdf"
   },
   "skills": [
     {
@@ -163,6 +164,19 @@
   "ui": {
     "toggle_aria": "Mode nuit",
     "toggle_title_dark": "Passer en mode jour",
-    "toggle_title_light": "Passer en mode nuit"
+    "toggle_title_light": "Passer en mode nuit",
+    "nav_aria": "Navigation",
+    "nav": [
+      {
+        "label": "Expériences",
+        "href": "#experience"
+      },
+      {
+        "label": "Formation",
+        "href": "#education"
+      }
+    ],
+    "pdf_label": "Télécharger le PDF",
+    "footer_note": "Mis à jour en septembre 2026"
   }
 }
