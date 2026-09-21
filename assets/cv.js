@@ -10,7 +10,7 @@
     root.dataset.theme = t;
     if (!btn) return;
     btn.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
-    btn.title = t === 'dark' ? 'Passer en mode jour' : 'Passer en mode nuit';
+    btn.title = t === 'dark' ? (btn.dataset.titleDark || 'Switch to light mode') : (btn.dataset.titleLight || 'Switch to dark mode');
   }
   apply(saved || (mq.matches ? 'dark' : 'light'));
   if (btn) {
