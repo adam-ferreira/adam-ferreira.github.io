@@ -125,7 +125,14 @@ a { color: inherit; }
 /* la phrase d'accueil : une seule idée, les marques posées dedans comme des mots */
 .hero-line { margin-top: 12px; max-width: 34ch; font-size: clamp(20px, 2.4vw, 27px); line-height: 1.35; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
 .hero-line .w { display: inline-block; }
-.mark { display: inline-flex; align-items: center; height: 1.12em; vertical-align: -.16em; margin: 0 .04em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .06em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark-accor { height: 1.5em; vertical-align: -.32em; }
+.mark img { transition: opacity .5s ease; }
+:root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
+.mark .mark-3d { position: absolute; inset: -18% -14%; width: 128%; height: 136%; display: block; opacity: 0; transition: opacity .6s ease; cursor: grab; touch-action: none; }
+.mark.is-3d .mark-3d { opacity: 1; }
+.mark.is-3d img, .mark.is-3d .mark-text { opacity: 0; }
+.mark.is-3d:hover { transform: none; }
 .mark img { height: 100%; width: auto; display: block; border-radius: .18em; }
 .mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }

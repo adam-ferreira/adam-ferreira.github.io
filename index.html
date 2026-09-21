@@ -147,7 +147,14 @@ a { color: inherit; }
 /* la phrase d'accueil : une seule idée, les marques posées dedans comme des mots */
 .hero-line { margin-top: 12px; max-width: 34ch; font-size: clamp(20px, 2.4vw, 27px); line-height: 1.35; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
 .hero-line .w { display: inline-block; }
-.mark { display: inline-flex; align-items: center; height: 1.12em; vertical-align: -.16em; margin: 0 .04em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .06em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark-accor { height: 1.5em; vertical-align: -.32em; }
+.mark img { transition: opacity .5s ease; }
+:root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
+.mark .mark-3d { position: absolute; inset: -18% -14%; width: 128%; height: 136%; display: block; opacity: 0; transition: opacity .6s ease; cursor: grab; touch-action: none; }
+.mark.is-3d .mark-3d { opacity: 1; }
+.mark.is-3d img, .mark.is-3d .mark-text { opacity: 0; }
+.mark.is-3d:hover { transform: none; }
 .mark img { height: 100%; width: auto; display: block; border-radius: .18em; }
 .mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
@@ -265,7 +272,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 64px
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">Adam</span> <span class="name-last">Ferreira</span></h1>
         <p class="subtitle">QA Automation Architect</p>
-        <p class="hero-line screen-only" aria-label="Je rends testables les apps mobiles, chez Betclic aujourd'hui et chez Accor hier."><span class="w" style="--i:0">Je</span> <span class="w" style="--i:1">rends</span> <span class="w" style="--i:2">testables</span> <span class="w" style="--i:3">les</span> <span class="w" style="--i:4">apps</span> <span class="w" style="--i:5">mobiles,</span> <span class="w" style="--i:6">chez</span> <span class="w mark mark-betclic" style="--i:7"><img src="assets/marks/betclic.svg" alt="Betclic" loading="lazy"></span> <span class="w" style="--i:8">aujourd'hui</span> <span class="w" style="--i:9">et</span> <span class="w" style="--i:10">chez</span> <span class="w mark mark-accor" style="--i:11"><span class="mark-text" role="img" aria-label="Accor">ACCOR</span></span> <span class="w" style="--i:12">hier.</span></p>
+        <p class="hero-line screen-only" aria-label="Je rends testables les apps mobiles, chez Betclic aujourd'hui et chez Accor hier."><span class="w" style="--i:0">Je</span> <span class="w" style="--i:1">rends</span> <span class="w" style="--i:2">testables</span> <span class="w" style="--i:3">les</span> <span class="w" style="--i:4">apps</span> <span class="w" style="--i:5">mobiles,</span> <span class="w" style="--i:6">chez</span> <span class="w mark mark-betclic" style="--i:7" data-svg="assets/marks/betclic.svg"><img src="assets/marks/betclic.svg" alt="Betclic" loading="lazy"></span> <span class="w" style="--i:8">aujourd'hui</span> <span class="w" style="--i:9">et</span> <span class="w" style="--i:10">chez</span> <span class="w mark mark-accor" style="--i:11" data-svg="assets/marks/accor.svg" data-fill-dark="#eef1f5"><img src="assets/marks/accor.svg" alt="Accor" loading="lazy"></span> <span class="w" style="--i:12">hier.</span></p>
         <p class="tagline print-only">Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.</p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">Paris, France</span> <span class="meta-item">Freelance</span> <span class="meta-item">sur site et télétravail</span>
@@ -375,5 +382,6 @@ main { max-width: 1080px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px) 64px
 
   <script src="assets/cv.js"></script>
   <script type="module" src="assets/logo3d.js"></script>
+  <script type="module" src="assets/marks3d.js"></script>
 </body>
 </html>
