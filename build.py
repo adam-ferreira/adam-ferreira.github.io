@@ -37,6 +37,25 @@ def md(text: str) -> str:
     return re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", html.escape(text, quote=False))
 
 
+def hero_html(idn: dict) -> str:
+    """La phrase d'accueil, mot par mot (animation décalée), avec les marques {{nom}} insérées dedans."""
+    marks = idn.get("marks", {})
+    out, i = [], 0
+    for tok in re.split(r"(\{\{\w+\}\}|\s+)", idn["hero"]):
+        if not tok or tok.isspace():
+            continue
+        m = re.fullmatch(r"\{\{(\w+)\}\}", tok)
+        if m and m.group(1) in marks:
+            mk = marks[m.group(1)]
+            inner = (f'<img src="{html.escape(mk["src"])}" alt="{md(mk["alt"])}" loading="lazy">' if mk["type"] == "img"
+                     else f'<span class="mark-text" role="img" aria-label="{md(mk["alt"])}">{md(mk["label"])}</span>')
+            out.append(f'<span class="w mark mark-{m.group(1)}" style="--i:{i}">{inner}</span>')
+        else:
+            out.append(f'<span class="w" style="--i:{i}">{md(tok)}</span>')
+        i += 1
+    return " ".join(out)
+
+
 def chips(items) -> str:
     return '<ul class="chips">' + " ".join(f"<li>{md(i)}</li>" for i in items) + "</ul>"
 
@@ -123,7 +142,8 @@ def render(d: dict) -> str:
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">{md(idn["first_name"])}</span> <span class="name-last">{md(idn["last_name"])}</span></h1>
         <p class="subtitle">{md(idn["headline"])}</p>
-        <p class="tagline">{md(idn["tagline"])}</p>
+        <p class="hero-line screen-only" aria-label="{md(re.sub(r"\{\{(\w+)\}\}", lambda m: idn["marks"][m.group(1)]["alt"], idn["hero"]))}">{hero_html(idn)}</p>
+        <p class="tagline print-only">{md(idn["tagline"])}</p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">{md(idn["location"])}</span> <span class="meta-item">{md(idn["status_freelance"])}</span> <span class="meta-item">{md(idn["status_mode"])}</span>
         </p>

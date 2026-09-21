@@ -17,7 +17,20 @@
     "photo": "photo.jpg",
     "status_freelance": "Freelance",
     "status_mode": "sur site et télétravail",
-    "pdf": "dist/cv-adam-ferreira.pdf"
+    "pdf": "dist/cv-adam-ferreira.pdf",
+    "hero": "Je rends testables les apps mobiles, chez {{betclic}} aujourd'hui et chez {{accor}} hier.",
+    "marks": {
+      "betclic": {
+        "type": "img",
+        "src": "assets/marks/betclic.svg",
+        "alt": "Betclic"
+      },
+      "accor": {
+        "type": "text",
+        "label": "ACCOR",
+        "alt": "Accor"
+      }
+    }
   },
   "skills": [
     {
