@@ -71,7 +71,7 @@
 * { box-sizing: border-box; }
 html { background: var(--paper); scroll-padding-top: 72px; }
 body {
-  margin: 0;
+  margin: 0; overflow-x: clip;   /* jamais de défilement horizontal (clip ne casse pas les éléments accrochés, contrairement à hidden) */
   background: var(--paper);
   color: var(--text);
   font: 400 17px/1.68 var(--sans);
@@ -294,7 +294,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
 /* ---------- pied de page : inversé, dévoilé sous le contenu ---------- */
 .site-footer {
-  position: sticky; bottom: 0; z-index: 0;
+  position: sticky; bottom: 0; z-index: 0; overflow: clip;   /* la phrase en police de secours, plus large, ne doit jamais faire déborder la page */
   background: var(--ink); color: var(--paper);
   padding: clamp(64px, 10vh, 120px) clamp(16px, 3vw, 36px) 32px;
   display: grid; gap: clamp(48px, 8vh, 96px);
