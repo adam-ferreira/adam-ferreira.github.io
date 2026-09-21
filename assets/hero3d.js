@@ -150,6 +150,17 @@ function drawScreen(g, base, t) {
   }
 }
 
+// Ce qui change à l'écran à l'instant t : null pendant un mouvement (cadre qui glisse, onde du tap, apparition d'une ligne),
+// sinon une clé de l'état fixe (étape, validation, curseur qui clignote). Même clé ⇒ même image : inutile de la redessiner.
+function screenKey(t) {
+  t = ((t % CYCLE) + CYCLE) % CYCLE;
+  const n = STEPS.length, stepsEnd = n * STEP;
+  if (t >= stepsEnd) return t - stepsEnd < 0.5 ? null : 'summary';
+  const k = Math.floor(t / STEP), p = (t - k * STEP) / STEP, tap = STEPS[k].verb !== 'assert';
+  if ((k === 0 && p < 0.2) || (k > 0 && p < 0.35) || (tap && p > 0.5 && p < 0.95) || (p > 0.8 && p < 0.92)) return null;
+  return k + '|' + (!tap && p > 0.55) + '|' + (p > 0.8) + '|' + (p <= 0.8 ? Math.floor(t * 4) % 2 : '-');
+}
+
 // ---------- les téléphones ----------
 function roundedRect(THREE, w, h, r) {
   const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
@@ -266,7 +277,7 @@ async function start() {
 
   if (reduced() || freeze !== null) return;
   const t0 = performance.now();
-  let frame = 0;
+  let frame = 0, lastKey;
   let lastDraw = 0;
   (function loop(now) {
     requestAnimationFrame(loop);
@@ -276,7 +287,11 @@ async function start() {
     if (now - lastDraw < 15) return;   // 60 images/s suffisent, même sur un écran à 120 Hz
     lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
-    if (frame++ % 3 === 0) paint(t % CYCLE);   // l'écran des téléphones à 20 images/s : moins d'envois à la carte graphique
+    if (frame++ % 3 === 0) {   // l'écran des téléphones à 20 images/s au plus, et seulement quand il change : ~40 % d'envois en moins à la carte graphique
+      const key = screenKey(t);
+      if (key === null || key !== lastKey) paint(t % CYCLE);
+      lastKey = key;
+    }
     if (!dragging) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt < 600) {
         root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;
