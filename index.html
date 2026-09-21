@@ -137,15 +137,19 @@ body.name-away .frame-status { opacity: 1; transform: none; }
   max-width: 1400px; margin: 0 auto;
   padding: clamp(48px, 8vh, 96px) clamp(16px, 3vw, 36px) 96px;
 }
-.hero-stage { grid-column: 2; grid-row: 1; position: relative; justify-self: center; width: clamp(220px, 32vw, 520px); aspect-ratio: 1; }
+.hero-stage { grid-column: 2; grid-row: 1; position: relative; justify-self: center; width: clamp(260px, 34vw, 560px); aspect-ratio: 1; }
 .hero-stage::before {
   content: ""; position: absolute; inset: -22%; border-radius: 50%;
   background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 62%);
   filter: blur(6px); opacity: 0; transition: opacity 1.2s ease .2s;
 }
 .hero-stage.is-lit::before { opacity: 1; }
-.hero-stage .logo3d { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
-.hero-stage .logo3d.is-dragging { cursor: grabbing; }
+.hero3d {
+  position: absolute; inset: -8%; width: 116%; height: 116%; display: block; cursor: grab; touch-action: none;
+  opacity: 0; transform: translateY(22px); transition: opacity 1s ease, transform 1.3s cubic-bezier(.2, .7, .2, 1);
+}
+.hero3d.is-ready { opacity: 1; transform: none; }
+.hero3d.is-dragging { cursor: grabbing; }
 .header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
 .photo-container { width: 84px; height: 84px; border-radius: 50%; overflow: hidden; flex: none; box-shadow: 0 0 0 3px var(--paper), 0 0 0 4px var(--line); }
 .photo { width: 100%; height: 100%; object-fit: cover; object-position: center 20%; transform: scale(1.35); display: block; }
@@ -182,7 +186,11 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
 .mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
-.mark .mark-3d { position: absolute; inset: -18% -14%; width: 128%; height: 136%; display: block; opacity: 0; transition: opacity .6s ease; cursor: grab; touch-action: none; }
+/* le volume déborde largement de la marque (taille posée par le script) et passe au-dessus du texte ;
+   la souris est captée par la marque elle-même, le canvas la laisse passer */
+.mark .mark-3d { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: block; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+.mark.is-3d { z-index: 6; cursor: grab; touch-action: none; }
+.mark.is-grabbed { cursor: grabbing; z-index: 30; }
 .mark.is-3d .mark-3d { opacity: 1; }
 .mark.is-3d img, .mark.is-3d .mark-text { opacity: 0; }
 .mark.is-3d:hover { transform: none; }
@@ -295,7 +303,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 .hero-line .w { animation: settle .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.28s + var(--i) * 42ms); }
 @media (prefers-reduced-motion: reduce) {
   .name, .subtitle, .location, .hero-line .w, .scroll-hint::before { animation: none; }
-  .mark, .section-title, .logo3d, .topbar, .hero-stage::before { transition: none; }
+  .mark, .section-title, .logo3d, .hero3d, .topbar, .hero-stage::before { transition: none; }
   .section-title { transform: none; }
 }
 @media (max-width: 640px) {
@@ -308,7 +316,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
   </style>
   <link rel="stylesheet" href="assets/print.css?v=52492213" media="print">
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
 <body id="top">
 
@@ -330,13 +338,13 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
   <div class="page">
   <header class="header">
-    <div class="hero-stage screen-only" aria-hidden="true"><canvas class="logo3d logo3d-hero"></canvas></div>
+    <div class="hero-stage screen-only" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
       <div class="photo-container"><img src="photo.jpg?v=0ea69934" alt="Adam Ferreira" class="photo" width="300" height="400" fetchpriority="high"></div>
       <div class="header-name-block">
         <h1 class="name"><span class="name-first">Adam</span> <span class="name-last">Ferreira</span></h1>
         <p class="subtitle">QA Automation Architect</p>
-        <p class="hero-line screen-only" aria-label="Je rends testables les apps mobiles, chez Betclic aujourd'hui et chez Accor hier."><span class="w" style="--i:0">Je</span> <span class="w" style="--i:1">rends</span> <span class="w" style="--i:2">testables</span> <span class="w" style="--i:3">les</span> <span class="w" style="--i:4">apps</span> <span class="w" style="--i:5">mobiles,</span> <span class="w" style="--i:6">chez</span> <span class="w mark mark-betclic" style="--i:7" data-svg="assets/marks/betclic.svg?v=b44a3497"><img src="assets/marks/betclic.svg?v=b44a3497" alt="Betclic" loading="lazy"></span> <span class="w" style="--i:8">aujourd'hui</span> <span class="w" style="--i:9">et</span> <span class="w" style="--i:10">chez</span> <span class="w mark mark-accor" style="--i:11" data-svg="assets/marks/accor.svg?v=9dc9a067" data-fill-dark="#eef1f5"><img src="assets/marks/accor.svg?v=9dc9a067" alt="Accor" loading="lazy"></span> <span class="w" style="--i:12">hier.</span></p>
+        <p class="hero-line screen-only" aria-label="Je rends testables les apps mobiles, chez Betclic aujourd'hui et chez Accor hier."><span class="w" style="--i:0">Je</span> <span class="w" style="--i:1">rends</span> <span class="w" style="--i:2">testables</span> <span class="w" style="--i:3">les</span> <span class="w" style="--i:4">apps</span> <span class="w" style="--i:5">mobiles,</span> <span class="w" style="--i:6">chez</span> <span class="w mark mark-betclic" style="--i:7" data-svg="assets/marks/betclic.svg?v=b44a3497"><img src="assets/marks/betclic.svg?v=b44a3497" alt="Betclic" width="600" height="205" decoding="async"></span> <span class="w" style="--i:8">aujourd'hui</span> <span class="w" style="--i:9">et</span> <span class="w" style="--i:10">chez</span> <span class="w mark mark-accor" style="--i:11" data-svg="assets/marks/accor.svg?v=9dc9a067" data-fill-dark="#eef1f5"><img src="assets/marks/accor.svg?v=9dc9a067" alt="Accor" width="377" height="327" decoding="async"></span> <span class="w" style="--i:12">hier.</span></p>
         <p class="tagline print-only">Je conçois ce qui rend une app mobile testable : framework, CI, données par API, test IDs dans le code, outillage pour les équipes.</p>
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">Paris, France</span> <span class="meta-item">Freelance</span> <span class="meta-item">sur site et télétravail</span>
@@ -467,7 +475,8 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   </footer>
 
   <script src="assets/cv.js?v=b6459893"></script>
-  <script type="module" src="assets/logo3d.js?v=ed7caeb3"></script>
-  <script type="module" src="assets/marks3d.js?v=de89864a"></script>
+  <script type="module" src="assets/hero3d.js?v=42a8f267"></script>
+  <script type="module" src="assets/logo3d.js?v=113e87d1"></script>
+  <script type="module" src="assets/marks3d.js?v=4f32fb78"></script>
 </body>
 </html>

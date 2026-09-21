@@ -1,6 +1,12 @@
-// Les marques de la phrase d'accueil (Betclic, Accor) en volume : chaque SVG est extrudé avec Three.js.
+// Les marques en volume : Betclic et Accor dans la phrase d'accueil, LinkedIn dans la barre. Three.js extrude chaque SVG.
 // Écran large avec souris uniquement, après le chargement de la page ; ailleurs, le SVG plat reste affiché.
-// Prise en main : cliquer-glisser fait tourner la marque, qui revient d'elle-même de face au relâcher.
+// · Au repos, le volume se superpose au pixel près au SVG plat : une unité SVG = hauteur de la marque / hauteur du viewBox.
+// · Le canvas déborde largement de la marque (F fois sa taille) et passe au-dessus du texte : en rotation,
+//   la marque n'est jamais coupée par les bords d'une boîte.
+// · On l'attrape sur la marque elle-même, on la lance, elle file sur son élan, puis se remet droite toute seule.
+// · LinkedIn est un cube : le carré bleu devient un vrai volume, avec le « in » en relief devant et derrière,
+//   et on peut le faire tourner dans tous les sens.
+const F = 2.6;
 const marks = [...document.querySelectorAll('.mark[data-svg]')];
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -12,12 +18,14 @@ function webglOk() {
 
 async function start() {
   if (!marks.length || !wanted() || !webglOk()) return;
-  const [THREE, { SVGLoader }] = await Promise.all([import('three'), import('three/addons/loaders/SVGLoader.js')]);
+  const [THREE, { SVGLoader }, { RoundedBoxGeometry }] = await Promise.all([
+    import('three'), import('three/addons/loaders/SVGLoader.js'), import('three/addons/geometries/RoundedBoxGeometry.js'),
+  ]);
   const loader = new SVGLoader();
-  for (const mark of marks) setup(mark, THREE, loader, SVGLoader);
+  for (const mark of marks) setup(mark, THREE, loader, SVGLoader, RoundedBoxGeometry);
 }
 
-async function setup(mark, THREE, loader, SVGLoader) {
+async function setup(mark, THREE, loader, SVGLoader, RoundedBoxGeometry) {
   const svgText = await fetch(mark.dataset.svg).then((r) => r.text()).catch(() => null);
   if (!svgText) return;
   const canvas = document.createElement('canvas');
@@ -29,91 +37,129 @@ async function setup(mark, THREE, loader, SVGLoader) {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
-  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 2000);
-  camera.position.set(0, 0, 400); camera.lookAt(0, 0, 0); // loin devant : l'extrusion ne doit jamais couper le plan proche
+  const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 4000);
+  camera.position.set(0, 0, 1500); camera.lookAt(0, 0, 0); // loin devant : l'extrusion ne coupe jamais le plan proche
   scene.add(new THREE.AmbientLight(0xffffff, 2.2));
   const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(-250, 350, 500); scene.add(key);
   const rim = new THREE.DirectionalLight(0xffffff, 0.6); rim.position.set(300, -200, 400); scene.add(rim);
 
-  // SVG → formes → volumes. Chaque chemin garde sa couleur ; le chemin suivant est posé un peu devant le précédent.
   const data = loader.parse(svgText);
-  const group = new THREE.Group();
+  const vb = ((svgText.match(/viewBox="([^"]+)"/) || [])[1] || '0 0 100 100').split(/[\s,]+/).map(parseFloat);
+  const [vbX, vbY, vbW, vbH] = vb;
+  const cube = mark.classList.contains('mark-linkedin');
   const darkFill = mark.dataset.fillDark;
-  // épaisseur proportionnelle à la hauteur du dessin : un vrai objet, pas une feuille
-  const vb = (svgText.match(/viewBox="([^"]+)"/) || [])[1];
-  const svgH = vb ? parseFloat(vb.split(/[\s,]+/)[3]) : 100;
-  const depth = svgH * 0.14;
-  // la première couleur est la plaque (pleine épaisseur) ; une autre couleur = un relief fin gravé dessus (lettres, glyphe)
-  const baseColor = (data.paths.find((p) => p.userData.style.fill && p.userData.style.fill !== 'none') || { userData: { style: {} } }).userData.style.fill;
-  data.paths.forEach((path, i) => {
-    const base = path.userData.style.fill;
-    if (!base || base === 'none') return;
-    const overlay = base.toLowerCase() !== String(baseColor).toLowerCase();
-    const thickness = overlay ? depth * 0.55 : depth;   // les reliefs ressortent nettement…
-    // face avant : la couleur exacte du SVG, sans éclairage → au repos, indiscernable du logo plat
-    const cap = new THREE.MeshBasicMaterial({ color: new THREE.Color(base) });
-    // tranches : éclairées et un peu plus sombres → le volume n'apparaît que quand on l'incline
-    const side = new THREE.MeshStandardMaterial({ color: new THREE.Color(base).multiplyScalar(0.72), metalness: 0.1, roughness: 0.6 });
-    cap.userData.base = side.userData.base = base;
+  const fills = data.paths.map((p) => p.userData.style.fill).filter((f) => f && f !== 'none');
+  const baseColor = String(fills[0]).toLowerCase();
+  // face avant : la couleur exacte du SVG, sans éclairage → au repos, indiscernable du logo plat ;
+  // tranches : éclairées et un peu plus sombres → le volume n'apparaît que quand on l'incline
+  const mats = (c) => {
+    const cap = new THREE.MeshBasicMaterial({ color: new THREE.Color(c) });
+    const side = new THREE.MeshStandardMaterial({ color: new THREE.Color(c).multiplyScalar(0.72), metalness: 0.1, roughness: 0.6 });
+    cap.userData.base = side.userData.base = c;
+    return [cap, side];
+  };
+  const group = new THREE.Group();
+  const depth = cube ? vbW : vbH * 0.14;   // un cube a la profondeur de sa largeur ; les autres, une vraie épaisseur d'objet
+  const relief = (path, thickness) => {
+    const [cap, side] = mats(path.userData.style.fill);
+    const g = new THREE.Group();
     for (const shape of SVGLoader.createShapes(path)) {
-      const geo = new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false, curveSegments: 14 });
-      const mesh = new THREE.Mesh(geo, [cap, side]);
-      mesh.position.z = overlay ? depth - thickness * 0.12 : 0;   // …mais restent ancrés dans la plaque, jamais en l'air
-      group.add(mesh);
+      const m = new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth: thickness, bevelEnabled: false, curveSegments: 14 }), [cap, side]);
+      m.position.z = depth - thickness * 0.12;   // ancré dans la face avant, jamais en l'air
+      g.add(m);
     }
-  });
+    return g;
+  };
+
+  if (cube) {
+    const [cap, side] = mats(baseColor);
+    // groupes de faces d'une boîte : +x, -x, +y, -y, +z (avant), -z (arrière)
+    const box = new THREE.Mesh(new RoundedBoxGeometry(vbW, vbH, depth, 5, Math.min(vbW, vbH) * 0.11), [side, side, side, side, cap, cap]);
+    box.position.set(vbX + vbW / 2, vbY + vbH / 2, depth / 2);
+    group.add(box);
+    const front = new THREE.Group();
+    data.paths.forEach((p) => { const f = p.userData.style.fill; if (f && f !== 'none' && f.toLowerCase() !== baseColor) front.add(relief(p, vbH * 0.07)); });
+    group.add(front);
+    // le « in » du dos : la même face tournée d'un demi-tour autour de l'axe vertical du cube, lisible de derrière
+    const back = front.clone();
+    back.rotation.y = Math.PI; back.position.set(2 * (vbX + vbW / 2), 0, depth);
+    group.add(back);
+  } else {
+    // la première couleur est la plaque, pleine épaisseur ; une autre couleur = un relief gravé dessus (lettres, glyphe)
+    data.paths.forEach((p) => {
+      const f = p.userData.style.fill;
+      if (!f || f === 'none') return;
+      if (f.toLowerCase() === baseColor) {
+        const [cap, side] = mats(f);
+        for (const shape of SVGLoader.createShapes(p)) group.add(new THREE.Mesh(new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 14 }), [cap, side]));
+      } else group.add(relief(p, depth * 0.55));
+    });
+  }
+
   // en mode nuit, les faces sombres prennent la couleur claire indiquée (le blanc reste blanc)
   const recolor = () => group.traverse((m) => {
     if (!m.isMesh) return;
-    const [cap, side] = m.material;
+    const ms = [].concat(m.material);
+    const cap = ms.find((x) => x.isMeshBasicMaterial), side = ms.find((x) => x.isMeshStandardMaterial);
+    if (!cap || !side) return;
     const b = cap.userData.base;
     const c = isDark() && darkFill && b.toLowerCase() !== '#ffffff' ? darkFill : b;
     cap.color.set(c); side.color.set(c).multiplyScalar(0.72);
   });
   recolor();
-  const box = new THREE.Box3().setFromObject(group);
-  const size = box.getSize(new THREE.Vector3()), center = box.getCenter(new THREE.Vector3());
+
+  // pivot au centre du volume ; le centre du viewBox tombe au centre du canvas, lui-même centré sur la marque
+  group.position.set(-(vbX + vbW / 2), -(vbY + vbH / 2), -depth / 2);
   const wrap = new THREE.Group();
-  group.position.set(-center.x, -center.y, -center.z);
   wrap.add(group);
   wrap.scale.set(1, -1, 1); // le repère SVG a l'axe y vers le bas
   scene.add(wrap);
 
   function fit() {
-    const w = mark.clientWidth || 60, h = mark.clientHeight || 24;
-    renderer.setSize(w, h, false);
-    const aspect = w / h, halfH = size.y * 0.58, halfW = halfH * aspect;
-    camera.left = -halfW; camera.right = halfW; camera.top = halfH; camera.bottom = -halfH;
+    const w = mark.clientWidth, h = mark.clientHeight;
+    if (!w || !h) return false;
+    const cw = Math.round(w * F), ch = Math.round(h * F);
+    canvas.style.width = cw + 'px'; canvas.style.height = ch + 'px';
+    renderer.setSize(cw, ch, false);
+    const u = vbH / h;   // unités SVG par pixel
+    camera.left = -cw / 2 * u; camera.right = cw / 2 * u; camera.top = ch / 2 * u; camera.bottom = -ch / 2 * u;
     camera.updateProjectionMatrix();
+    return true;
   }
-  fit();
-  renderer.render(scene, camera);
-  mark.classList.add('is-3d');
+  // recalibrer dès que la marque change de taille (image arrivée tard, police chargée, fenêtre redimensionnée)
+  const refit = () => { if (fit()) { renderer.render(scene, camera); mark.classList.add('is-3d'); } };
+  refit();
+  if ('ResizeObserver' in window) new ResizeObserver(refit).observe(mark); else window.addEventListener('resize', refit);
 
-  // interaction : on l'attrape, on le lance, il continue sur son élan, puis il se remet droit tout seul
+  // interaction, sur la marque elle-même (le canvas, plus grand, laisse passer la souris)
   let dragging = false, last = null, t = Math.random() * 6, hover = false, moved = 0;
   const vel = { x: 0, y: 0 }; let releasedAt = -1e9;
   const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a)); // angle ramené dans [-π, π] : retour par le chemin le plus court
-  const LIM_X = 0.9, LIM_Y = 1.15; // ~50° et ~65° : au-delà, ça résiste comme un élastique
+  const LIM_X = cube ? Infinity : 0.9, LIM_Y = cube ? Infinity : 1.15; // ~50° et ~65° pour les logos plats ; le cube tourne librement
   const soft = (a, lim) => (Math.abs(a) <= lim ? a : Math.sign(a) * (lim + (Math.abs(a) - lim) * 0.18));
   const clampRot = () => { wrap.rotation.x = soft(wrap.rotation.x, LIM_X); wrap.rotation.y = soft(wrap.rotation.y, LIM_Y); };
-  canvas.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY, t: performance.now() }; canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
-  canvas.addEventListener('pointermove', (e) => {
+  const gain = cube ? 0.03 : 0.018;
+  mark.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0 || !mark.classList.contains('is-3d')) return;
+    dragging = true; moved = 0; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY };
+    mark.setPointerCapture(e.pointerId); mark.classList.add('is-grabbed'); e.preventDefault();
+  });
+  mark.addEventListener('pointermove', (e) => {
     if (!dragging) return;
     const dx = e.clientX - last.x, dy = e.clientY - last.y;
     moved += Math.abs(dx) + Math.abs(dy);
-    wrap.rotation.y += dx * 0.018; wrap.rotation.x += dy * 0.018; clampRot();
-    vel.x = dx * 0.018; vel.y = dy * 0.018;
-    last = { x: e.clientX, y: e.clientY, t: performance.now() };
+    vel.x = dx * gain; vel.y = dy * gain;
+    wrap.rotation.y += vel.x; wrap.rotation.x += vel.y; clampRot();
+    last = { x: e.clientX, y: e.clientY };
     if (reduced()) renderer.render(scene, camera);
   });
-  const release = (e) => { if (!dragging) return; dragging = false; releasedAt = performance.now(); try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
-  canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+  const release = (e) => { if (!dragging) return; dragging = false; releasedAt = performance.now(); mark.classList.remove('is-grabbed'); try { mark.releasePointerCapture(e.pointerId); } catch (_) {} };
+  mark.addEventListener('pointerup', release); mark.addEventListener('pointercancel', release);
   mark.addEventListener('click', (e) => { if (moved > 4) { e.preventDefault(); moved = 0; } }); // un glisser n'est pas un clic
-  canvas.addEventListener('pointerenter', () => { hover = true; }); canvas.addEventListener('pointerleave', () => { hover = false; });
+  mark.addEventListener('pointerenter', () => { hover = true; }); mark.addEventListener('pointerleave', () => { hover = false; });
 
-  let visible = true;
-  if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
+  let visible = true, dirty = true, lastX = NaN, lastY = NaN;
+  if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(mark);
   new MutationObserver(() => { recolor(); renderer.render(scene, camera); })
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
@@ -122,23 +168,25 @@ async function setup(mark, THREE, loader, SVGLoader) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
     if (!dragging) {
-      const sinceRelease = performance.now() - releasedAt;
       const spinning = Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002;
-      if (spinning || sinceRelease < 700) {
+      if (spinning || performance.now() - releasedAt < 700) {
         wrap.rotation.y += vel.x; wrap.rotation.x += vel.y; clampRot();   // sur son élan, freiné par la butée
         if (Math.abs(wrap.rotation.y) >= LIM_Y) vel.x *= 0.6;
         if (Math.abs(wrap.rotation.x) >= LIM_X) vel.y *= 0.6;
-        vel.x *= 0.93; vel.y *= 0.93;
+        vel.x *= cube ? 0.95 : 0.93; vel.y *= cube ? 0.95 : 0.93;
       } else {
         t += 0.016;
         const restY = hover ? 0.22 : 0, restX = hover ? -0.14 : 0;   // au repos : exactement à plat, comme le logo 2D
-        wrap.rotation.y = norm(wrap.rotation.y) + (restY - norm(wrap.rotation.y)) * 0.06;   // se redresse doucement
-        wrap.rotation.x = norm(wrap.rotation.x) + (restX - norm(wrap.rotation.x)) * 0.06;
+        const ey = restY - norm(wrap.rotation.y), ex = restX - norm(wrap.rotation.x);
+        wrap.rotation.y = Math.abs(ey) < 1e-4 ? restY : norm(wrap.rotation.y) + ey * 0.06;   // se redresse doucement
+        wrap.rotation.x = Math.abs(ex) < 1e-4 ? restX : norm(wrap.rotation.x) + ex * 0.06;
       }
     }
-    renderer.render(scene, camera);
+    // on ne redessine que ce qui bouge
+    if (dirty || wrap.rotation.x !== lastX || wrap.rotation.y !== lastY) {
+      renderer.render(scene, camera); lastX = wrap.rotation.x; lastY = wrap.rotation.y; dirty = false;
+    }
   })();
-  window.addEventListener('resize', () => { fit(); renderer.render(scene, camera); });
 }
 
 if (document.readyState === 'complete') start();
