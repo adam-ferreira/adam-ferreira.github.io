@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <base href="../">
+  <script>if (matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches) document.documentElement.classList.add("stage")</script>
   <title>CV — Adam Ferreira</title>
   <meta name="description" content="CV d&#x27;Adam Ferreira, ingénieur logiciel : développement et automatisation des tests mobiles (Flutter, Appium, iOS, Android).">
   <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
@@ -470,6 +471,50 @@ html.has-cursor .cursor.is-out { opacity: 0; }
 .cursor.is-hot.is-down .cursor-ball { width: 38px; height: 38px; }
 html.has-cursor, html.has-cursor * { cursor: none !important; }
 
+/* ============================================================
+   MODE « SCÈNE » (ordinateur : ≥ 1100 × 680, souris) — html.stage, posé dès le <head>
+   La page ne défile plus. Chaque écran (.slide) est fixe sous la barre ; cv.js choisit l'écran courant, et le passage
+   se fait par transform/opacity en CSS, donc par la carte graphique. En avançant : l'écran suivant monte par-dessus,
+   l'actuel recule et s'efface. En revenant : l'écran courant redescend (is-leaving) et révèle le précédent.
+   ============================================================ */
+:root { --stage-ease: cubic-bezier(.76, 0, .24, 1); --stage-gutter: max(36px, calc((100vw - 1400px) / 2 + 36px)); }
+html.stage, html.stage body { height: 100%; overflow: hidden; }
+html.stage .page { position: static; z-index: auto; }
+html.stage main { padding: 0; }
+html.stage .slide {
+  position: fixed; left: 0; right: 0; top: 60px; bottom: 0; z-index: 1;
+  width: auto; max-width: none; height: auto; min-height: 0; margin: 0; border: 0;
+  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  padding-left: var(--stage-gutter); padding-right: calc(var(--stage-gutter) + 68px);
+  background: var(--paper);
+  visibility: hidden; transform: translate3d(0, 100%, 0);
+  transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease), visibility 0s linear 1s;
+  will-change: transform, opacity; backface-visibility: hidden;
+}
+html.stage .slide.is-current { visibility: visible; transform: none; opacity: 1; z-index: 3; transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease), visibility 0s; }
+html.stage .slide.is-before { transform: translate3d(0, -8vh, 0) scale(.92); opacity: 0; }
+html.stage .slide.is-after { transform: translate3d(0, 100%, 0); }
+html.stage .slide.is-leaving { z-index: 4; visibility: visible; }
+html.stage.stage-init .slide { transition: none !important; }
+html.stage .slide:focus { outline: none; }
+
+/* mise en page de chaque écran dans sa scène */
+html.stage .header.slide { display: grid; align-items: center; padding-top: 32px; padding-bottom: 96px; }
+html.stage .hero-foot { left: var(--stage-gutter); right: calc(var(--stage-gutter) + 68px); }
+html.stage .chapter.slide { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
+html.stage .job.slide { align-content: center; padding-top: 24px; padding-bottom: 24px; }
+html.stage .job-short::after { right: calc(var(--stage-gutter) + 68px); }   /* le numéro en filigrane reste dans la zone de contenu */
+html.stage .facts.slide { align-content: center; padding-top: 0; }
+html.stage footer.slide { display: flex; flex-direction: column; background: var(--ink); padding-top: clamp(48px, 8vh, 96px); padding-bottom: 32px; }
+html.stage footer.slide .footer-statement, html.stage footer.slide .footer-grid { margin-top: auto; }
+
+/* plus de défilement : les animations pilotées par le défilement ne servent plus, les titres se dévoilent à l'arrivée */
+html.stage .slide > * { animation: none !important; }
+html.stage .slide .section-title { transform: translateY(105%); transition: transform .9s cubic-bezier(.2, .8, .2, 1) .35s; }
+html.stage .slide.is-current .section-title { transform: none; }
+@media (prefers-reduced-motion: reduce) { html.stage .slide, html.stage .slide .section-title { transition: none !important; } }
+
+
   </style>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 </head>
@@ -494,7 +539,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   </nav>
 
   <div class="page">
-  <header class="header">
+  <header class="header slide">
     <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
     <div class="header-left">
       <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src="assets/portrait.webp?v=c46d2f2e" alt="Adam Ferreira" class="portrait-img" width="420" height="562" fetchpriority="high"></div>
@@ -519,7 +564,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
 
   <main>
   <section class="section" id="experience" aria-labelledby="experience-title">
-    <div class="chapter">
+    <div class="chapter slide">
     <div class="section-title-wrapper"><h2 class="section-title" id="experience-title">Expériences professionnelles</h2></div>
     <div class="skills" id="skills">
       <div class="skills-row"><span class="skills-label">Mobile</span><ul class="chips"><li>Appium</li> <li>Flutter</li> <li>iOS</li> <li>Android</li> <li>BrowserStack</li></ul></div>
@@ -527,7 +572,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       <div class="skills-row"><span class="skills-label">Livraison &amp; outillage</span><ul class="chips"><li>GitLab CI</li> <li>Xray / Jira</li> <li>Allure</li> <li>mitmproxy</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
     </div>
     </div>
-    <article class="job" data-num="01">
+    <article class="job slide" data-num="01">
       <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">01</span>
@@ -550,7 +595,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       </div>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
     </article>
-    <article class="job" data-num="02">
+    <article class="job slide" data-num="02">
       <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">02</span>
@@ -571,7 +616,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       </div>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
     </article>
-    <article class="job job-short" data-num="03">
+    <article class="job slide job-short" data-num="03">
       <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">03</span>
@@ -582,7 +627,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       </div>
       <div class="stack"><span class="stack-label">Stack :</span> <ul class="chips"><li>React</li> <li>TypeScript</li> <li>JavaScript</li></ul></div>
     </article>
-    <article class="job job-short" data-num="04">
+    <article class="job slide job-short" data-num="04">
       <div class="job-side">
       <div class="job-header"><div class="job-title-line">
         <span class="job-num label">04</span>
@@ -595,7 +640,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     </article>
   </section>
 
-  <div class="facts">
+  <div class="facts slide">
   <section class="section" id="education" aria-labelledby="education-title">
     <div class="section-title-wrapper"><h2 class="section-title" id="education-title">Formation</h2></div>
     <div class="job-header"><div class="job-title-line">
@@ -618,7 +663,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
   </main>
   </div>
 
-  <footer class="site-footer">
+  <footer class="site-footer slide">
     <a class="footer-statement" href="mailto:adam.ferreira0@gmail.com">On construit quelque chose ?</a>
     <div class="footer-grid label">
       <a class="nocase" href="mailto:adam.ferreira0@gmail.com">adam.ferreira0@gmail.com</a>
@@ -627,9 +672,9 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     </div>
   </footer>
 
-  <script src="assets/cv.js?v=71196007"></script>
-  <script type="module" src="assets/hero3d.js?v=8c9af73c"></script>
+  <script src="assets/cv.js?v=a0e23639"></script>
+  <script type="module" src="assets/hero3d.js?v=10057f5f"></script>
   <script type="module" src="assets/logo3d.js?v=2555f4ff"></script>
-  <script type="module" src="assets/marks3d.js?v=e55f3413"></script>
+  <script type="module" src="assets/marks3d.js?v=a81880e6"></script>
 </body>
 </html>

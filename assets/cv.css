@@ -443,3 +443,47 @@ html.has-cursor .cursor.is-out { opacity: 0; }
 .cursor.is-down .cursor-ball { width: 10px; height: 10px; }
 .cursor.is-hot.is-down .cursor-ball { width: 38px; height: 38px; }
 html.has-cursor, html.has-cursor * { cursor: none !important; }
+
+/* ============================================================
+   MODE « SCÈNE » (ordinateur : ≥ 1100 × 680, souris) — html.stage, posé dès le <head>
+   La page ne défile plus. Chaque écran (.slide) est fixe sous la barre ; cv.js choisit l'écran courant, et le passage
+   se fait par transform/opacity en CSS, donc par la carte graphique. En avançant : l'écran suivant monte par-dessus,
+   l'actuel recule et s'efface. En revenant : l'écran courant redescend (is-leaving) et révèle le précédent.
+   ============================================================ */
+:root { --stage-ease: cubic-bezier(.76, 0, .24, 1); --stage-gutter: max(36px, calc((100vw - 1400px) / 2 + 36px)); }
+html.stage, html.stage body { height: 100%; overflow: hidden; }
+html.stage .page { position: static; z-index: auto; }
+html.stage main { padding: 0; }
+html.stage .slide {
+  position: fixed; left: 0; right: 0; top: 60px; bottom: 0; z-index: 1;
+  width: auto; max-width: none; height: auto; min-height: 0; margin: 0; border: 0;
+  overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  padding-left: var(--stage-gutter); padding-right: calc(var(--stage-gutter) + 68px);
+  background: var(--paper);
+  visibility: hidden; transform: translate3d(0, 100%, 0);
+  transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease), visibility 0s linear 1s;
+  will-change: transform, opacity; backface-visibility: hidden;
+}
+html.stage .slide.is-current { visibility: visible; transform: none; opacity: 1; z-index: 3; transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease), visibility 0s; }
+html.stage .slide.is-before { transform: translate3d(0, -8vh, 0) scale(.92); opacity: 0; }
+html.stage .slide.is-after { transform: translate3d(0, 100%, 0); }
+html.stage .slide.is-leaving { z-index: 4; visibility: visible; }
+html.stage.stage-init .slide { transition: none !important; }
+html.stage .slide:focus { outline: none; }
+
+/* mise en page de chaque écran dans sa scène */
+html.stage .header.slide { display: grid; align-items: center; padding-top: 32px; padding-bottom: 96px; }
+html.stage .hero-foot { left: var(--stage-gutter); right: calc(var(--stage-gutter) + 68px); }
+html.stage .chapter.slide { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
+html.stage .job.slide { align-content: center; padding-top: 24px; padding-bottom: 24px; }
+html.stage .job-short::after { right: calc(var(--stage-gutter) + 68px); }   /* le numéro en filigrane reste dans la zone de contenu */
+html.stage .facts.slide { align-content: center; padding-top: 0; }
+html.stage footer.slide { display: flex; flex-direction: column; background: var(--ink); padding-top: clamp(48px, 8vh, 96px); padding-bottom: 32px; }
+html.stage footer.slide .footer-statement, html.stage footer.slide .footer-grid { margin-top: auto; }
+
+/* plus de défilement : les animations pilotées par le défilement ne servent plus, les titres se dévoilent à l'arrivée */
+html.stage .slide > * { animation: none !important; }
+html.stage .slide .section-title { transform: translateY(105%); transition: transform .9s cubic-bezier(.2, .8, .2, 1) .35s; }
+html.stage .slide.is-current .section-title { transform: none; }
+@media (prefers-reduced-motion: reduce) { html.stage .slide, html.stage .slide .section-title { transition: none !important; } }
+
