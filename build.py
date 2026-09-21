@@ -95,7 +95,7 @@ def section_open(sid: str, label: str) -> str:
 
 
 def job_html(j: dict, last: bool = False, stack_label: str = "Stack :") -> str:
-    """Une expérience. À gauche (job-side) : numéro, titre, date, introduction, défi. À droite (job-main) : puces, stack.
+    """Une expérience. À gauche (job-side) : numéro, titre, date, introduction, défi, puis la stack. À droite (job-main) : puces.
     Sur grand écran, chaque expérience remplit un écran ; ailleurs, les deux blocs s'enchaînent dans cet ordre."""
     title = md(j["role"]) + (f' &mdash; {md(j["client"])}' if j.get("client") else "")
     num = f'        <span class="job-num label">{j["num"]}</span>\n' if j.get("num") else ""
@@ -109,12 +109,12 @@ def job_html(j: dict, last: bool = False, stack_label: str = "Stack :") -> str:
         out.append(f'      <h4 class="sub-title">{md(j["subtitle"])}</h4>\n')
         if j.get("subintro"):
             out.append(f'      <p class="sub-intro">{md(j["subintro"])}</p>\n')
-    out.append('      </div>\n      <div class="job-main">\n')
+    out.append('      </div>\n')
     if j.get("bullets"):
-        out.append('      <ul class="bullets">\n' + "".join(f"        <li>{md(bl)}</li>\n" for bl in j["bullets"]) + "      </ul>\n")
+        out.append('      <div class="job-main">\n      <ul class="bullets">\n' + "".join(f"        <li>{md(bl)}</li>\n" for bl in j["bullets"]) + "      </ul>\n      </div>\n")
     if j.get("stack"):
         out.append(f'      <div class="stack"><span class="stack-label">{md(stack_label)}</span> {chips(j["stack"])}</div>\n')
-    out.append("      </div>\n    </article>\n")
+    out.append("    </article>\n")
     return "".join(out)
 
 
@@ -239,9 +239,7 @@ def render(d: dict) -> str:
     <div class="footer-grid label">
       <a class="nocase" href="mailto:{html.escape(idn["contact"]["email"])}">{md(idn["contact"]["email"])}</a>
       <a href="tel:{html.escape(idn["contact"]["phone_href"])}">{md(idn["contact"]["phone"])}</a>
-      <a href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">LinkedIn</a>
       <span>{md(ui["footer_availability"])}<i class="dot" aria-hidden="true"></i></span>
-      <span>{md(ui["footer_note"])}</span>
     </div>
   </footer>
 

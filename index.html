@@ -268,7 +268,8 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
 /* expériences : sur grand écran, l'en-tête reste accroché à gauche pendant qu'on lit le détail à droite */
 @media (min-width: 1100px) {
-  .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(40px, 5vw, 96px); align-items: start; }
+  .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
+  .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
   .job-side, .job-main { padding-top: 22px; border-top: 1px solid var(--line); }
   .job-side .job-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
   .job-title-line { grid-template-columns: auto minmax(0, 1fr); }
@@ -276,13 +277,12 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   .job-side .job-intro { font-size: 16px; line-height: 1.6; }
   .job-side .sub-title { margin-top: 22px; font-size: 17px; }
   .job-side .sub-intro { font-size: 15px; line-height: 1.6; }
-  .job-main .bullets { margin-top: 0; grid-template-columns: 1fr 1fr; gap: 20px 32px; }
-  .job-main .bullets li { font-size: 14.5px; line-height: 1.55; }
+  .job-main .bullets { margin-top: 0; display: block; columns: 2; column-gap: 32px; }   /* deux colonnes équilibrées, sans trous sous les puces courtes */
+  .job-main .bullets li { font-size: 14.5px; line-height: 1.55; break-inside: avoid; margin-bottom: 20px; }
   .job-main .bullets li strong { font-size: 15.5px; margin-bottom: 4px; }
-  .job-main .stack { margin-top: 22px; gap: 8px; }
+  .job > .stack { gap: 8px; }
   /* expériences courtes (sans puces) : une colonne, un titre plus grand, et le numéro en filigrane */
-  .job-short { grid-template-columns: minmax(0, 1fr); max-width: 980px; position: relative; }
-  .job-short .job-main { padding-top: 0; border-top: 0; }
+  .job-short { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "stack"; grid-template-rows: auto auto; max-width: 980px; position: relative; }
   .job-short .job-title { font-size: clamp(30px, 3.2vw, 46px); }
   .job-short .job-side .job-intro { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.5; max-width: 40ch; }
   .job-short .job-num { font-size: 12px; }
@@ -293,11 +293,20 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   }
 }
 
+@media (min-width: 1100px) and (max-height: 860px) {
+  .job-side .job-intro { font-size: 15px; line-height: 1.55; }
+  .job-side .sub-intro { font-size: 14px; }
+  .job-main .bullets li { font-size: 13.5px; line-height: 1.5; margin-bottom: 16px; }
+  .job-main .bullets li strong { font-size: 14.5px; }
+  .job-title { font-size: 24px; }
+}
+
 /* ---------- défilement par écrans (ordinateur) : chaque molette amène à l'écran suivant ----------
    Accueil, chapitre « Experience » + compétences, une expérience par écran, Formation/Langues/Intérêts, pied de page.
    Si un écran déborde (petit écran), le navigateur laisse défiler à l'intérieur avant de passer au suivant. */
 @media (min-width: 1100px) and (min-height: 680px) {
-  html { scroll-snap-type: y mandatory; scroll-padding-top: 60px; }
+  html { scroll-padding-top: 60px; }   /* transitions conduites par cv.js (le calage natif saccadait avec l'élan du trackpad) */
+  .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
   .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
   /* le pied de page devient le dernier écran (il n'est plus « collé » sous le contenu : le calage ne sait pas viser un élément collé) */
   footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: space-between; }
@@ -537,8 +546,8 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
         <li><strong>Failures investigated down to iOS, Android and Flutter.</strong> For example: a visible button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps. For each one, I found the cause in how the platform or Flutter behaves, and fixed it in the framework rather than working around it in the tests.</li>
         <li><strong>Shared tooling with the squad.</strong> A test plan per feature, a release test suite, and Claude Code skills that generate page objects from Figma designs and Jira tickets.</li>
       </ul>
-      <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
       </div>
+      <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Flutter</li> <li>CodeceptJS</li> <li>Appium</li> <li>Playwright</li> <li>Cucumber/Gherkin</li> <li>BrowserStack</li> <li>Rive</li> <li>Claude Code</li> <li>MCP Atlassian / Figma</li></ul></div>
     </article>
     <article class="job" data-num="02">
       <div class="job-side">
@@ -558,8 +567,8 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
         <li><strong>Wider test coverage.</strong> Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.</li>
         <li><strong>A second framework in TypeScript.</strong> Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack.</li>
       </ul>
-      <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
       </div>
+      <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Java 25</li> <li>Maven</li> <li>Appium</li> <li>TestNG</li> <li>Cucumber</li> <li>BrowserStack</li> <li>GitLab CI</li> <li>Xray/Jira</li> <li>TypeScript</li> <li>WebDriverIO 9</li> <li>Allure</li></ul></div>
     </article>
     <article class="job job-short" data-num="03">
       <div class="job-side">
@@ -570,9 +579,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       </div></div>
       <p class="job-intro">Built features for Hexaly Studio, a low-code React SaaS for solving complex optimization problems (delivery planning, warehouse management).</p>
       </div>
-      <div class="job-main">
       <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>React</li> <li>TypeScript</li> <li>JavaScript</li></ul></div>
-      </div>
     </article>
     <article class="job job-short" data-num="04">
       <div class="job-side">
@@ -583,9 +590,7 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
       </div></div>
       <p class="job-intro">Maintenance Industrie, an industrial cleaning specialist, commissioned a SaaS to manage its cleaning sites, along with a mobile time-clock app for its cleaning staff.</p>
       </div>
-      <div class="job-main">
       <div class="stack"><span class="stack-label">Stack:</span> <ul class="chips"><li>Angular</li> <li>Express.js</li> <li>Sequelize</li> <li>MySQL</li> <li>Flutter</li> <li>Riverpod</li></ul></div>
-      </div>
     </article>
   </section>
 
@@ -617,14 +622,12 @@ html.has-cursor, html.has-cursor * { cursor: none !important; }
     <div class="footer-grid label">
       <a class="nocase" href="mailto:adam.ferreira0@gmail.com">adam.ferreira0@gmail.com</a>
       <a href="tel:+33651004696">+33 6 51 00 46 96</a>
-      <a href="https://linkedin.com/in/ad-ferreira" target="_blank" rel="noopener">LinkedIn</a>
       <span>Available for mobile QA automation work<i class="dot" aria-hidden="true"></i></span>
-      <span>Paris — 2026</span>
     </div>
   </footer>
 
-  <script src="assets/cv.js?v=94a1049f"></script>
-  <script type="module" src="assets/hero3d.js?v=99eb6eae"></script>
+  <script src="assets/cv.js?v=62da44ee"></script>
+  <script type="module" src="assets/hero3d.js?v=be90fabf"></script>
   <script type="module" src="assets/logo3d.js?v=8318597f"></script>
   <script type="module" src="assets/marks3d.js?v=3212758e"></script>
 </body>
