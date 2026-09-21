@@ -8,7 +8,7 @@ const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) an
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // l'accent du site (--accent dans la feuille de style) : un seul réglage pour la page, les téléphones et le curseur
 const cssVar = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
-const ACC = cssVar('--accent', '#ff7452'), GREEN = '#3ddc84', INK = '#161b22';
+const ACC = cssVar('--accent', '#ffb627'), GREEN = '#3ddc84', INK = '#161b22';
 const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
 const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // vers le blanc
