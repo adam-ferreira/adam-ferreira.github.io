@@ -1,21 +1,21 @@
 // Le logo 3D d'Adam (assets/logo.glb) dans l'en-tête.
 // Chargé après la page, seulement si WebGL est là. Sous « réduire les animations », une image fixe : pas de rotation.
 // Repris du portfolio (caméra orthographique, matière orange, environnement cubemap, suivi de la souris amorti).
-import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
+// Écrans larges avec souris uniquement : sur mobile, Three.js coûterait plus qu'il n'apporte (mesuré : +1,5 s de calcul).
 const ORANGE = 0xff7452;
 const canvas = document.querySelector('canvas.logo3d');
+const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 
 function webglOk() {
   try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
   catch (e) { return false; }
 }
 
-function start() {
-  if (!canvas || !webglOk()) return;
+async function start() {
+  if (!canvas || !wanted() || !webglOk()) return;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   canvas.classList.add('is-loading');
+  const [THREE, { GLTFLoader }] = await Promise.all([import('three'), import('three/addons/loaders/GLTFLoader.js')]);
 
   const size = () => ({ w: canvas.clientWidth || 200, h: canvas.clientHeight || 200 });
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });

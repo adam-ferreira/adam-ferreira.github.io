@@ -148,12 +148,11 @@ a { color: inherit; }
 /* le logo 3D : présent seulement quand le script l'a rendu */
 .logo3d { width: clamp(150px, 20vw, 240px); height: clamp(150px, 20vw, 240px); display: block; opacity: 0; transition: opacity .8s ease; }
 .logo3d.is-ready { opacity: 1; }
-.logo3d:not(.is-ready):not(.is-loading) { display: none; }
+@media (max-width: 860px), (hover: none), (pointer: coarse) { .logo3d { display: none; } }
 
 @media (max-width: 860px) {
   .header { grid-template-columns: 1fr; row-gap: 24px; }
-  .header-right { flex-direction: row; justify-content: space-between; align-items: center; }
-  .logo3d { width: 140px; height: 140px; }
+  .header-right { flex-direction: row; justify-content: flex-start; align-items: center; }
 }
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
