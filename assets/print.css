@@ -405,3 +405,5 @@ p { margin: 0; }
 .flag { margin-right: 4px; }
 main { display: block; }
 .section { display: block; }
+
+.screen-only { display: none !important; }
