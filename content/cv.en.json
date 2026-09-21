@@ -79,7 +79,7 @@
       "subtitle": "Building the automation alongside the app",
       "subintro": "When I joined, the app and its gamification features were still being built. The tests had to keep up with each release without slowing the developers down.",
       "bullets": [
-        "**Test IDs in the app code.** On mobile, a locator based on the displayed text breaks with each translation or design change. I add the Flutter semantics to the app code myself, following rules agreed with the tech leads. The same locators work on iOS and Android.",
+        "**Test IDs in the app code.** On mobile, a locator based on the displayed text breaks with each translation or design change. I add the Flutter semantics to the app code myself, following rules agreed with the tech leads.",
         "**Test IDs in the animations.** The interactive animations are made by the motion design team in a dedicated tool, and the tests could not reach their content. I wrote a tool that adds test IDs to the animation files, checked the result with the Flutter runtime, and produced a version the designer can open in their own tool to apply the change themselves.",
         "**Test data created through APIs.** A betting mission needs bets that are placed and then settled. I create them through APIs before each scenario, on a dedicated test account. The UI is only used for what the test checks, so tests stay short and independent from each other.",
         "**A nightly run on five regulated markets.** Each country has its own rules, content and accounts. Every morning I sort the failures into product bugs, environment issues and flaky tests. Only product bugs become tickets.",

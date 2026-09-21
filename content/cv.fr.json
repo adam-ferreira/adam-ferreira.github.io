@@ -79,7 +79,7 @@
       "subtitle": "Construire l'automatisation en même temps que l'app",
       "subintro": "À mon arrivée, l'app et ses fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.",
       "bullets": [
-        "**Des test IDs dans le code de l'app.** Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads. Les mêmes locators servent sur iOS et Android.",
+        "**Des test IDs dans le code de l'app.** Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads.",
         "**Des test IDs dans les animations.** Les animations interactives sont produites par l'équipe motion design dans un outil dédié, et les tests n'avaient pas accès à leur contenu. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, et produit une version que le designer ouvre dans son propre outil pour refaire la modification lui-même.",
         "**Des données de test créées par API.** Une mission de paris demande des paris placés puis réglés. Je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie : les tests restent courts et indépendants les uns des autres.",
         "**Une nightly sur cinq marchés réglementés.** Chaque pays a ses règles, ses contenus et ses comptes. Chaque matin, je trie les échecs : bug produit, environnement en panne ou test flaky. Seuls les bugs produit deviennent des tickets.",
