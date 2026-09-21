@@ -271,7 +271,7 @@ async function start() {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
     const t = Math.max(0, (now - t0) / 1000);
-    if ((frame++ & 1) === 0) paint(t % CYCLE);   // l'écran à 30 images/s suffit
+    if (frame++ % 3 === 0) paint(t % CYCLE);   // l'écran des téléphones à 20 images/s : moins d'envois à la carte graphique
     if (!dragging) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt < 600) {
         root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;

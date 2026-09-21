@@ -243,7 +243,8 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 
 /* expériences : sur grand écran, l'en-tête reste accroché à gauche pendant qu'on lit le détail à droite */
 @media (min-width: 1100px) {
-  .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(40px, 5vw, 96px); align-items: start; }
+  .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
+  .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
   .job-side, .job-main { padding-top: 22px; border-top: 1px solid var(--line); }
   .job-side .job-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
   .job-title-line { grid-template-columns: auto minmax(0, 1fr); }
@@ -251,13 +252,12 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   .job-side .job-intro { font-size: 16px; line-height: 1.6; }
   .job-side .sub-title { margin-top: 22px; font-size: 17px; }
   .job-side .sub-intro { font-size: 15px; line-height: 1.6; }
-  .job-main .bullets { margin-top: 0; grid-template-columns: 1fr 1fr; gap: 20px 32px; }
-  .job-main .bullets li { font-size: 14.5px; line-height: 1.55; }
+  .job-main .bullets { margin-top: 0; display: block; columns: 2; column-gap: 32px; }   /* deux colonnes équilibrées, sans trous sous les puces courtes */
+  .job-main .bullets li { font-size: 14.5px; line-height: 1.55; break-inside: avoid; margin-bottom: 20px; }
   .job-main .bullets li strong { font-size: 15.5px; margin-bottom: 4px; }
-  .job-main .stack { margin-top: 22px; gap: 8px; }
+  .job > .stack { gap: 8px; }
   /* expériences courtes (sans puces) : une colonne, un titre plus grand, et le numéro en filigrane */
-  .job-short { grid-template-columns: minmax(0, 1fr); max-width: 980px; position: relative; }
-  .job-short .job-main { padding-top: 0; border-top: 0; }
+  .job-short { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "stack"; grid-template-rows: auto auto; max-width: 980px; position: relative; }
   .job-short .job-title { font-size: clamp(30px, 3.2vw, 46px); }
   .job-short .job-side .job-intro { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.5; max-width: 40ch; }
   .job-short .job-num { font-size: 12px; }
@@ -268,11 +268,20 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
   }
 }
 
+@media (min-width: 1100px) and (max-height: 860px) {
+  .job-side .job-intro { font-size: 15px; line-height: 1.55; }
+  .job-side .sub-intro { font-size: 14px; }
+  .job-main .bullets li { font-size: 13.5px; line-height: 1.5; margin-bottom: 16px; }
+  .job-main .bullets li strong { font-size: 14.5px; }
+  .job-title { font-size: 24px; }
+}
+
 /* ---------- défilement par écrans (ordinateur) : chaque molette amène à l'écran suivant ----------
    Accueil, chapitre « Experience » + compétences, une expérience par écran, Formation/Langues/Intérêts, pied de page.
    Si un écran déborde (petit écran), le navigateur laisse défiler à l'intérieur avant de passer au suivant. */
 @media (min-width: 1100px) and (min-height: 680px) {
-  html { scroll-snap-type: y mandatory; scroll-padding-top: 60px; }
+  html { scroll-padding-top: 60px; }   /* transitions conduites par cv.js (le calage natif saccadait avec l'élan du trackpad) */
+  .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
   .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
   /* le pied de page devient le dernier écran (il n'est plus « collé » sous le contenu : le calage ne sait pas viser un élément collé) */
   footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: space-between; }
