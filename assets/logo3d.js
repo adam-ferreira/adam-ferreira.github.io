@@ -35,7 +35,9 @@ async function start() {
     .load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']);
   env.colorSpace = THREE.SRGBColorSpace;
 
-  let logo = null, target = { x: 0, y: 0 }, idle = 0, raf = 0, visible = true;
+  let logo = null, target = { x: 0, y: 0 }, raf = 0, visible = true;
+  // cliquer-glisser : rotation libre ; au relâcher, inertie qui s'amortit, puis retour à la rotation lente
+  let dragging = false, last = null, vel = { x: 0, y: 0 };
 
   function fit() {
     const { w, h } = size();
@@ -62,18 +64,36 @@ async function start() {
     renderer.render(scene, camera);
     canvas.classList.remove('is-loading');
     canvas.classList.add('is-ready');
-    if (!reduced) loop();
+    loop();
   }, undefined, () => { canvas.classList.remove('is-loading'); });
 
   function loop() {
     raf = requestAnimationFrame(loop);
     if (!logo || !visible || document.hidden) return;
-    idle += 0.004;
-    const wantX = target.y * 0.35, wantY = target.x * 0.6 + Math.sin(idle) * 0.25;
-    logo.rotation.x += (wantX - logo.rotation.x) * 0.06;
-    logo.rotation.y += (wantY - logo.rotation.y) * 0.06;
+    if (dragging) { renderer.render(scene, camera); return; }
+    if (Math.abs(vel.x) > 0.0004 || Math.abs(vel.y) > 0.0004) {
+      logo.rotation.y += vel.x; logo.rotation.x += vel.y;
+      vel.x *= 0.94; vel.y *= 0.94;
+    } else if (!reduced) {
+      logo.rotation.y += 0.004 + target.x * 0.006;
+      logo.rotation.x += (target.y * 0.3 - logo.rotation.x) * 0.02;
+    } else { return; }
     renderer.render(scene, camera);
   }
+  canvas.addEventListener('pointerdown', (e) => {
+    dragging = true; last = { x: e.clientX, y: e.clientY }; vel = { x: 0, y: 0 };
+    canvas.setPointerCapture(e.pointerId); canvas.classList.add('is-dragging'); e.preventDefault();
+  });
+  canvas.addEventListener('pointermove', (e) => {
+    if (!dragging || !logo) return;
+    const dx = e.clientX - last.x, dy = e.clientY - last.y; last = { x: e.clientX, y: e.clientY };
+    vel = { x: dx * 0.012, y: dy * 0.012 };
+    logo.rotation.y += vel.x; logo.rotation.x += vel.y;
+    if (reduced) renderer.render(scene, camera);
+  });
+  const release = (e) => { if (!dragging) return; dragging = false; canvas.classList.remove('is-dragging'); try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
+  canvas.addEventListener('pointerup', release);
+  canvas.addEventListener('pointercancel', release);
 
   window.addEventListener('pointermove', (e) => {
     target.x = (e.clientX / window.innerWidth - 0.5) * 2;

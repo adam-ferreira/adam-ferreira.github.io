@@ -72,7 +72,6 @@ def render(d: dict) -> str:
     full_name = f'{idn["first_name"]} {idn["last_name"]}'
     # la feuille écran est intégrée à la page : un aller-retour réseau de moins avant le premier affichage (mesuré : FCP mobile 2,9 s)
     screen_css = (ROOT / "assets" / "cv.css").read_text(encoding="utf-8").replace('url("fonts/', 'url("assets/fonts/')
-    nav_links = "".join(f'      <a href="{html.escape(n["href"])}">{md(n["label"])}</a>\n' for n in ui.get("nav", []))
     parts = [f"""<!DOCTYPE html>
 <html lang="{d["lang"]}">
 <head>
@@ -89,7 +88,8 @@ def render(d: dict) -> str:
   <meta property="og:image" content="{SITE}{idn["photo"]}">
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary">
-  <link rel="icon" href="assets/favicon.png" type="image/png">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
   <link rel="stylesheet" href="{FONTS_URL}" media="print">
@@ -102,10 +102,14 @@ def render(d: dict) -> str:
 <body id="top">
 
   <nav class="topbar" aria-label="{md(ui["nav_aria"])}">
-    <a class="topbar-name" href="#top">{md(full_name)}</a>
-    <div class="topbar-links">
-{nav_links}    </div>
-    <a class="pdf-link" href="{html.escape(idn["pdf"])}" download>{DOWNLOAD_SVG}<span class="pdf-label-long">{md(ui["pdf_label"])}</span><span class="pdf-label-short">PDF</span></a>
+    <div class="brand" title="{md(full_name)}">
+      <img class="brand-img" src="assets/logo.png" alt="{md(full_name)}" width="46" height="46" decoding="async">
+      <canvas class="logo3d" aria-hidden="true"></canvas>
+    </div>
+    <a class="linkedin-item topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">
+      <span class="linkedin-icon">{LINKEDIN_SVG}</span>
+      <span class="linkedin-handle">{md(idn["linkedin"]["handle"])}</span>
+    </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="{md(ui["toggle_aria"])}" title="{md(ui["toggle_title_light"])}">
       <span class="tt-icon tt-sun">{SUN_SVG}</span>
       <span class="tt-icon tt-moon">{MOON_SVG}</span>
@@ -125,12 +129,11 @@ def render(d: dict) -> str:
         </p>
       </div>
     </div>
-    <div class="header-right">
+    <div class="header-right print-only">
       <a class="linkedin-item" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">
         <span class="linkedin-icon">{LINKEDIN_SVG}</span>
         {md(idn["linkedin"]["handle"])}
       </a>
-      <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
   </header>
 
