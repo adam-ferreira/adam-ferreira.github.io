@@ -169,6 +169,10 @@ def render(d: dict) -> str:
         <p class="location">
           <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">{md(idn["location"])}</span> <span class="meta-item">{md(idn["status_freelance"])}</span> <span class="meta-item">{md(idn["status_mode"])}</span>
         </p>
+        <p class="contact screen-only">
+          <a class="contact-link" href="mailto:{html.escape(idn["contact"]["email"])}"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg><span>{md(idn["contact"]["email"])}</span></a>
+          <a class="contact-link" href="tel:{html.escape(idn["contact"]["phone_href"])}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3.5l1.6 4.2-2.2 1.4a11 11 0 0 0 6.5 6.5l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4Z"/></svg><span>{md(idn["contact"]["phone"])}</span></a>
+        </p>
       </div>
     </div>
     <div class="header-right print-only">
@@ -217,8 +221,10 @@ def render(d: dict) -> str:
     parts.append("  </section>\n  </div>\n  </main>\n  </div>\n\n")
 
     parts.append(f"""  <footer class="site-footer screen-only">
-    <p class="footer-statement">{md(ui["footer_statement"])}</p>
+    <a class="footer-statement" href="mailto:{html.escape(idn["contact"]["email"])}">{md(ui["footer_statement"])}</a>
     <div class="footer-grid label">
+      <a class="nocase" href="mailto:{html.escape(idn["contact"]["email"])}">{md(idn["contact"]["email"])}</a>
+      <a href="tel:{html.escape(idn["contact"]["phone_href"])}">{md(idn["contact"]["phone"])}</a>
       <a href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">LinkedIn</a>
       <span>{md(ui["footer_availability"])}<i class="dot" aria-hidden="true"></i></span>
       <span>{md(ui["footer_note"])}</span>

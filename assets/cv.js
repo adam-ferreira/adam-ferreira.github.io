@@ -66,4 +66,35 @@
       }).catch(function () {});
     });
   }
+
+  // Curseur : une bille orange ombrée comme une sphère, qui suit la souris avec un léger retard et s'étire dans le sens
+  // du mouvement comme un objet physique ; au survol d'un lien ou d'un objet 3D, elle gonfle en bulle de verre.
+  // Ordinateur avec souris seulement, jamais sous « réduire les animations » : le curseur natif reste alors.
+  if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced) {
+    var cur = document.createElement('div');
+    cur.className = 'cursor'; cur.setAttribute('aria-hidden', 'true');
+    cur.innerHTML = '<span class="cursor-ball"></span>';
+    document.body.appendChild(cur);
+    var HOT = 'a, button, [role="switch"], .mark.is-3d, .hero3d, .brand';
+    var mx = 0, my = 0, cx = 0, cy = 0, shown = false, hot = false;
+    window.addEventListener('pointermove', function (e) {
+      if (e.pointerType && e.pointerType !== 'mouse') return;
+      mx = e.clientX; my = e.clientY;
+      if (!shown) { shown = true; cx = mx; cy = my; root.classList.add('has-cursor'); tick(); }
+      var h = !!(e.target && e.target.closest && e.target.closest(HOT));
+      if (h !== hot) { hot = h; cur.classList.toggle('is-hot', hot); }
+    }, { passive: true });
+    document.addEventListener('pointerdown', function () { cur.classList.add('is-down'); });
+    document.addEventListener('pointerup', function () { cur.classList.remove('is-down'); });
+    document.addEventListener('mouseleave', function () { cur.classList.add('is-out'); });
+    document.addEventListener('mouseenter', function () { cur.classList.remove('is-out'); });
+    function tick() {
+      var nx = cx + (mx - cx) * 0.35, ny = cy + (my - cy) * 0.35;
+      var vx = nx - cx, vy = ny - cy; cx = nx; cy = ny;
+      var s = Math.min(Math.sqrt(vx * vx + vy * vy) / 40, 0.4), a = Math.atan2(vy, vx) * 57.2958;
+      // étirement le long du mouvement, sans faire tourner la lumière de la bille (rotation puis rotation inverse)
+      cur.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0) rotate(' + a.toFixed(1) + 'deg) scale(' + (1 + s).toFixed(3) + ',' + (1 - s * 0.5).toFixed(3) + ') rotate(' + (-a).toFixed(1) + 'deg)';
+      requestAnimationFrame(tick);
+    }
+  }
 })();
