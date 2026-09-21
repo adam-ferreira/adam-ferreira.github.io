@@ -29,8 +29,7 @@ SUN_SVG = ('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" 
            'M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>')
 MOON_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>'
 DOWNLOAD_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg>'
-FONTS_URL = ("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800"
-             "&family=Inter:wght@300;400;500;600;700;800&display=swap")
+FONTS_URL = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"  # Inter : impression seulement
 
 
 def md(text: str) -> str:
@@ -91,12 +90,9 @@ def render(d: dict) -> str:
   <meta property="og:locale" content="fr_FR">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="assets/favicon.png" type="image/png">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="assets/fonts/BricolageGrotesque-fr.woff2" crossorigin>
   <link rel="preload" as="font" type="font/woff2" href="assets/fonts/Humane-name.woff2" crossorigin>
-  <link rel="preload" as="style" href="{FONTS_URL}">
-  <link rel="stylesheet" href="{FONTS_URL}" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="{FONTS_URL}"></noscript>
+  <link rel="stylesheet" href="{FONTS_URL}" media="print">
   <style media="screen">
 {screen_css}
   </style>
