@@ -39,16 +39,19 @@ async function setup(mark, THREE, loader, SVGLoader) {
   const data = loader.parse(svgText);
   const group = new THREE.Group();
   const darkFill = mark.dataset.fillDark;
+  // épaisseur proportionnelle à la hauteur du dessin : un vrai objet, pas une feuille
+  const vb = (svgText.match(/viewBox="([^"]+)"/) || [])[1];
+  const svgH = vb ? parseFloat(vb.split(/[\s,]+/)[3]) : 100;
+  const depth = svgH * 0.22, bevel = svgH * 0.014;
   data.paths.forEach((path, i) => {
     const base = path.userData.style.fill;
     if (!base || base === 'none') return;
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(base), metalness: 0.15, roughness: 0.55 });
     mat.userData.base = base;
-    const depth = 14;
     for (const shape of SVGLoader.createShapes(path)) {
-      const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: 1.2, bevelSize: 1.2, bevelSegments: 2, curveSegments: 6 });
+      const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3, curveSegments: 8 });
       const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.z = i * 2.5;
+      mesh.position.z = i * depth * 0.18;
       group.add(mesh);
     }
   });
@@ -78,19 +81,21 @@ async function setup(mark, THREE, loader, SVGLoader) {
   renderer.render(scene, camera);
   mark.classList.add('is-3d');
 
-  // interaction : rotation libre au glisser, retour de face au relâcher, léger balancement au repos
+  // interaction : on l'attrape, on le lance, il continue sur son élan, puis il se remet droit tout seul
   let dragging = false, last = null, t = Math.random() * 6, hover = false, moved = 0;
-  const target = { x: 0, y: 0 };
-  canvas.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
+  const vel = { x: 0, y: 0 }; let releasedAt = -1e9;
+  const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a)); // angle ramené dans [-π, π] : retour par le chemin le plus court
+  canvas.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY, t: performance.now() }; canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;
-    moved += Math.abs(e.clientX - last.x) + Math.abs(e.clientY - last.y);
-    wrap.rotation.y += (e.clientX - last.x) * 0.014;
-    wrap.rotation.x += (e.clientY - last.y) * 0.014;
-    last = { x: e.clientX, y: e.clientY };
+    const dx = e.clientX - last.x, dy = e.clientY - last.y;
+    moved += Math.abs(dx) + Math.abs(dy);
+    wrap.rotation.y += dx * 0.022; wrap.rotation.x += dy * 0.022;
+    vel.x = dx * 0.022; vel.y = dy * 0.022;
+    last = { x: e.clientX, y: e.clientY, t: performance.now() };
     if (reduced()) renderer.render(scene, camera);
   });
-  const release = (e) => { if (!dragging) return; dragging = false; try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
+  const release = (e) => { if (!dragging) return; dragging = false; releasedAt = performance.now(); try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
   mark.addEventListener('click', (e) => { if (moved > 4) { e.preventDefault(); moved = 0; } }); // un glisser n'est pas un clic
   canvas.addEventListener('pointerenter', () => { hover = true; }); canvas.addEventListener('pointerleave', () => { hover = false; });
@@ -105,10 +110,17 @@ async function setup(mark, THREE, loader, SVGLoader) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
     if (!dragging) {
-      t += 0.016;
-      const restY = hover ? 0.28 : Math.sin(t * 0.9) * 0.06, restX = hover ? -0.18 : Math.sin(t * 0.7) * 0.03;
-      wrap.rotation.y += (restY - wrap.rotation.y) * 0.08;
-      wrap.rotation.x += (restX - wrap.rotation.x) * 0.08;
+      const sinceRelease = performance.now() - releasedAt;
+      const spinning = Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002;
+      if (spinning || sinceRelease < 1200) {
+        wrap.rotation.y += vel.x; wrap.rotation.x += vel.y;   // sur son élan
+        vel.x *= 0.965; vel.y *= 0.965;
+      } else {
+        t += 0.016;
+        const restY = hover ? 0.28 : Math.sin(t * 0.9) * 0.06, restX = hover ? -0.18 : Math.sin(t * 0.7) * 0.03;
+        wrap.rotation.y = norm(wrap.rotation.y) + (restY - norm(wrap.rotation.y)) * 0.045;   // se redresse doucement
+        wrap.rotation.x = norm(wrap.rotation.x) + (restX - norm(wrap.rotation.x)) * 0.045;
+      }
     }
     renderer.render(scene, camera);
   })();
