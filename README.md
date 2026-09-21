@@ -13,7 +13,7 @@ Site : https://adam-ferreira.github.io/ (anglais) · https://adam-ferreira.githu
 | `assets/marks3d.js` | Betclic, Accor et LinkedIn (en cube) en volume. Rendu 2,6 fois plus grand que la marque et au-dessus du texte ; au repos, calé au pixel près sur le SVG plat ; recalibré dès que la taille change. |
 | `assets/logo3d.js` | Le logo AF de la barre (`assets/logo.glb` + `assets/cubemaps/`), chargé au survol ou quand l'accueil a quitté l'écran. |
 | `assets/fonts/` | `Humane-name.woff2` (nom et titres : alphabet latin, accents français, ponctuation — à régénérer avec `pyftsubset` si un titre ajoute un caractère) et `BricolageGrotesque-fr.woff2` (le texte, SIL OFL, sous-ensemble latin). Auto-hébergées : aucune origine tierce à l'écran. |
-| `tools/linkedin-cover.html` | La bannière LinkedIn (1584 × 396) : la scène des téléphones figée (`data-freeze`), le logo AF, Humane. Export : serveur local à la racine, puis Chrome headless `--window-size=1584,396 --force-device-scale-factor=2 --screenshot`. La photo de profil recouvre le coin bas gauche. |
+| `tools/linkedin-cover.html` | La bannière LinkedIn (1584 × 396) : la scène des téléphones figée (`data-freeze`), « Ship it. Tested it. » en Humane, sans logo. Export : serveur local à la racine, puis Chrome headless `--window-size=1584,396 --force-device-scale-factor=2 --screenshot`. La photo de profil recouvre le coin bas gauche. |
 | `build.py` | Assemble `index.html` depuis le JSON. Python standard, aucune dépendance. |
 | `index.html`, `fr/index.html` | **Générés** — ne pas éditer à la main. La page française porte `<base href="../">` et partage les mêmes fichiers. |
 
