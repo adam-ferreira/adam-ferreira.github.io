@@ -95,23 +95,25 @@ def section_open(sid: str, label: str) -> str:
 
 
 def job_html(j: dict, last: bool = False, stack_label: str = "Stack :") -> str:
+    """Une expérience. À gauche (job-side) : numéro, titre, date, introduction, défi. À droite (job-main) : puces, stack.
+    Sur grand écran, chaque expérience remplit un écran ; ailleurs, les deux blocs s'enchaînent dans cet ordre."""
     title = md(j["role"]) + (f' &mdash; {md(j["client"])}' if j.get("client") else "")
     num = f'        <span class="job-num label">{j["num"]}</span>\n' if j.get("num") else ""
-    out = [f'    <article class="job">\n      <div class="job-header"><div class="job-title-line">\n{num}'
-           f'        <h3 class="job-title">{title}</h3>\n        <span class="job-date">{md(j["date"])}</span>\n      </div></div>\n      <div class="job-body">\n']
+    short = "" if j.get("bullets") else " job-short"
+    data_num = f' data-num="{j["num"]}"' if j.get("num") else ""
+    out = [f'    <article class="job{short}"{data_num}>\n      <div class="job-side">\n      <div class="job-header"><div class="job-title-line">\n{num}'
+           f'        <h3 class="job-title">{title}</h3>\n        <span class="job-date">{md(j["date"])}</span>\n      </div></div>\n']
     if j.get("intro"):
         out.append(f'      <p class="job-intro">{md(j["intro"])}</p>\n')
     if j.get("subtitle"):
-        out.append('      <div class="separator"></div>\n')
         out.append(f'      <h4 class="sub-title">{md(j["subtitle"])}</h4>\n')
         if j.get("subintro"):
             out.append(f'      <p class="sub-intro">{md(j["subintro"])}</p>\n')
+    out.append('      </div>\n      <div class="job-main">\n')
     if j.get("bullets"):
-        out.append('      <ul class="bullets">\n' + "".join(f"        <li>{md(b)}</li>\n" for b in j["bullets"]) + "      </ul>\n")
+        out.append('      <ul class="bullets">\n' + "".join(f"        <li>{md(bl)}</li>\n" for bl in j["bullets"]) + "      </ul>\n")
     if j.get("stack"):
         out.append(f'      <div class="stack"><span class="stack-label">{md(stack_label)}</span> {chips(j["stack"])}</div>\n')
-    if not last:
-        out.append('      <div class="separator"></div>\n')
     out.append("      </div>\n    </article>\n")
     return "".join(out)
 
@@ -200,13 +202,12 @@ def render(d: dict) -> str:
     </div>
   </header>
 
-  <div class="skills" id="skills">
+  <main>
 """]
-    for row in d["skills"]:
-        parts.append(f'    <div class="skills-row"><span class="skills-label">{md(row["label"])}</span>{chips(row["items"])}</div>\n')
-    parts.append("  </div>\n\n  <main>\n")
-
-    parts.append(section_open("experience", sec["experience"]))
+    # écran de chapitre : le grand titre « Experience » et les compétences
+    skills = "".join(f'      <div class="skills-row"><span class="skills-label">{md(row["label"])}</span>{chips(row["items"])}</div>\n' for row in d["skills"])
+    parts.append(section_open("experience", sec["experience"]).replace('    <div class="section-title-wrapper">', '    <div class="chapter">\n    <div class="section-title-wrapper">', 1))
+    parts.append(f'    <div class="skills" id="skills">\n{skills}    </div>\n    </div>\n')
     jobs = d["experience"]
     for i, j in enumerate(jobs):
         j["num"] = f"{i + 1:02d}"
