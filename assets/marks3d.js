@@ -31,9 +31,9 @@ async function setup(mark, THREE, loader, SVGLoader) {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 2000);
   camera.position.set(0, 0, 400); camera.lookAt(0, 0, 0); // loin devant : l'extrusion ne doit jamais couper le plan proche
-  scene.add(new THREE.AmbientLight(0xffffff, 1.6));
-  const key = new THREE.DirectionalLight(0xffffff, 1.1); key.position.set(200, 300, 600); scene.add(key);
-  const rim = new THREE.DirectionalLight(0xffffff, 0.5); rim.position.set(-300, -200, 400); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff, 2.2));
+  const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(-250, 350, 500); scene.add(key);
+  const rim = new THREE.DirectionalLight(0xffffff, 0.6); rim.position.set(300, -200, 400); scene.add(rim);
 
   // SVG → formes → volumes. Chaque chemin garde sa couleur ; le chemin suivant est posé un peu devant le précédent.
   const data = loader.parse(svgText);
@@ -42,24 +42,29 @@ async function setup(mark, THREE, loader, SVGLoader) {
   // épaisseur proportionnelle à la hauteur du dessin : un vrai objet, pas une feuille
   const vb = (svgText.match(/viewBox="([^"]+)"/) || [])[1];
   const svgH = vb ? parseFloat(vb.split(/[\s,]+/)[3]) : 100;
-  const depth = svgH * 0.12, bevel = svgH * 0.012;
+  const depth = svgH * 0.14;
   data.paths.forEach((path, i) => {
     const base = path.userData.style.fill;
     if (!base || base === 'none') return;
-    const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(base), metalness: 0.15, roughness: 0.55 });
-    mat.userData.base = base;
+    // face avant : la couleur exacte du SVG, sans éclairage → au repos, indiscernable du logo plat
+    const cap = new THREE.MeshBasicMaterial({ color: new THREE.Color(base) });
+    // tranches : éclairées et un peu plus sombres → le volume n'apparaît que quand on l'incline
+    const side = new THREE.MeshStandardMaterial({ color: new THREE.Color(base).multiplyScalar(0.72), metalness: 0.1, roughness: 0.6 });
+    cap.userData.base = side.userData.base = base;
     for (const shape of SVGLoader.createShapes(path)) {
-      const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel, bevelSegments: 3, curveSegments: 8 });
-      const mesh = new THREE.Mesh(geo, mat);
-      mesh.position.z = i * depth * 0.18;
+      const geo = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: false, curveSegments: 14 });
+      const mesh = new THREE.Mesh(geo, [cap, side]);
+      mesh.position.z = i * depth * 0.5;
       group.add(mesh);
     }
   });
   // en mode nuit, les faces sombres prennent la couleur claire indiquée (le blanc reste blanc)
   const recolor = () => group.traverse((m) => {
     if (!m.isMesh) return;
-    const b = m.material.userData.base;
-    m.material.color.set(isDark() && darkFill && b.toLowerCase() !== '#ffffff' ? darkFill : b);
+    const [cap, side] = m.material;
+    const b = cap.userData.base;
+    const c = isDark() && darkFill && b.toLowerCase() !== '#ffffff' ? darkFill : b;
+    cap.color.set(c); side.color.set(c).multiplyScalar(0.72);
   });
   recolor();
   const box = new THREE.Box3().setFromObject(group);
@@ -122,7 +127,7 @@ async function setup(mark, THREE, loader, SVGLoader) {
         vel.x *= 0.93; vel.y *= 0.93;
       } else {
         t += 0.016;
-        const restY = hover ? 0.16 : Math.sin(t * 0.9) * 0.05, restX = hover ? -0.1 : Math.sin(t * 0.7) * 0.025;
+        const restY = hover ? 0.22 : 0, restX = hover ? -0.14 : 0;   // au repos : exactement à plat, comme le logo 2D
         wrap.rotation.y = norm(wrap.rotation.y) + (restY - norm(wrap.rotation.y)) * 0.06;   // se redresse doucement
         wrap.rotation.x = norm(wrap.rotation.x) + (restX - norm(wrap.rotation.x)) * 0.06;
       }
