@@ -90,6 +90,7 @@ function drawBase() {
 }
 
 function drawScreen(g, base, t) {
+  t = ((t % CYCLE) + CYCLE) % CYCLE;   // l'horodatage de la première image peut précéder le départ : jamais de temps négatif
   g.setTransform(TS, 0, 0, TS, 0, 0);
   g.drawImage(base, 0, 0, SW, SH);
   const n = STEPS.length, stepsEnd = n * STEP, inSteps = t < stepsEnd;
@@ -262,7 +263,7 @@ async function start() {
   (function loop(now) {
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
-    const t = (now - t0) / 1000;
+    const t = Math.max(0, (now - t0) / 1000);
     if ((frame++ & 1) === 0) paint(t % CYCLE);   // l'écran à 30 images/s suffit
     if (!dragging) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt < 600) {
