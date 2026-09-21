@@ -128,9 +128,8 @@ def render(d: dict) -> str:
       <img class="brand-img" src="assets/logo.png" alt="{md(full_name)}" width="46" height="46" decoding="async">
       <canvas class="logo3d" aria-hidden="true"></canvas>
     </div>
-    <a class="linkedin-item topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener">
-      <span class="linkedin-icon">{LINKEDIN_SVG}</span>
-      <span class="linkedin-handle">{md(idn["linkedin"]["handle"])}</span>
+    <a class="mark mark-linkedin topbar-linkedin" href="{html.escape(idn["linkedin"]["url"])}" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg="assets/marks/linkedin.svg">
+      <img src="assets/marks/linkedin.svg" alt="" width="40" height="40" decoding="async">
     </a>
     <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="{md(ui["toggle_aria"])}" title="{md(ui["toggle_title_light"])}">
       <span class="tt-icon tt-sun">{SUN_SVG}</span>

@@ -79,11 +79,12 @@ async function setup(mark, THREE, loader, SVGLoader) {
   mark.classList.add('is-3d');
 
   // interaction : rotation libre au glisser, retour de face au relâcher, léger balancement au repos
-  let dragging = false, last = null, t = Math.random() * 6, hover = false;
+  let dragging = false, last = null, t = Math.random() * 6, hover = false, moved = 0;
   const target = { x: 0, y: 0 };
-  canvas.addEventListener('pointerdown', (e) => { dragging = true; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
+  canvas.addEventListener('pointerdown', (e) => { dragging = true; moved = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); e.preventDefault(); });
   canvas.addEventListener('pointermove', (e) => {
     if (!dragging) return;
+    moved += Math.abs(e.clientX - last.x) + Math.abs(e.clientY - last.y);
     wrap.rotation.y += (e.clientX - last.x) * 0.014;
     wrap.rotation.x += (e.clientY - last.y) * 0.014;
     last = { x: e.clientX, y: e.clientY };
@@ -91,6 +92,7 @@ async function setup(mark, THREE, loader, SVGLoader) {
   });
   const release = (e) => { if (!dragging) return; dragging = false; try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
+  mark.addEventListener('click', (e) => { if (moved > 4) { e.preventDefault(); moved = 0; } }); // un glisser n'est pas un clic
   canvas.addEventListener('pointerenter', () => { hover = true; }); canvas.addEventListener('pointerleave', () => { hover = false; });
 
   let visible = true;
