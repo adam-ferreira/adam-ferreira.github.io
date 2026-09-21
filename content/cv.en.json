@@ -1,0 +1,195 @@
+{
+  "lang": "en",
+  "meta": {
+    "title": "CV — Adam Ferreira",
+    "description": "Adam Ferreira's CV: mobile QA Automation Architect (Appium, Flutter, iOS, Android)."
+  },
+  "identity": {
+    "first_name": "Adam",
+    "last_name": "Ferreira",
+    "headline": "QA Automation Architect",
+    "tagline": "I build what makes a mobile app testable: framework, CI, test data through APIs, test IDs in the code, tooling for the teams.",
+    "location": "Paris, France",
+    "linkedin": {
+      "handle": "ad-ferreira",
+      "url": "https://linkedin.com/in/ad-ferreira"
+    },
+    "photo": "photo.jpg",
+    "status_freelance": "Freelance",
+    "status_mode": "on-site and remote",
+    "hero": "I make mobile apps testable, currently at {{betclic}}, previously at {{accor}}.",
+    "marks": {
+      "betclic": {
+        "type": "img",
+        "src": "assets/marks/betclic.svg",
+        "alt": "Betclic",
+        "fill_dark": null
+      },
+      "accor": {
+        "type": "img",
+        "src": "assets/marks/accor.svg",
+        "alt": "Accor",
+        "fill_dark": "#eef1f5"
+      }
+    },
+    "contact": {
+      "email": "adam.ferreira0@gmail.com",
+      "phone": "+33 6 51 00 46 96",
+      "phone_href": "+33651004696"
+    }
+  },
+  "skills": [
+    {
+      "label": "Mobile",
+      "items": [
+        "Appium",
+        "Flutter",
+        "iOS",
+        "Android",
+        "BrowserStack"
+      ]
+    },
+    {
+      "label": "Frameworks",
+      "items": [
+        "Java / TestNG / Cucumber",
+        "TypeScript / WebdriverIO",
+        "CodeceptJS / Playwright",
+        "Gherkin"
+      ]
+    },
+    {
+      "label": "Delivery & tooling",
+      "items": [
+        "GitLab CI",
+        "Xray / Jira",
+        "Allure",
+        "mitmproxy",
+        "Claude Code",
+        "MCP Atlassian / Figma"
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": "QA Automation Engineer (Flutter mobile)",
+      "client": "BETCLIC",
+      "date": "March 2026 - Present (Freelance)",
+      "intro": "Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests for the gamification area: the missions and challenges that reward players for their bets, the leaderboards between bettors, the reward games that follow, and the boosts offered when placing a bet. All in a test repo shared between mobile and web.",
+      "subtitle": "Building the automation alongside the app",
+      "subintro": "When I joined, the app was still being built, and the gamification scope with it. The challenge: automate at the pace of releases without slowing the developers down.",
+      "bullets": [
+        "**Test IDs placed directly in the app code.** On mobile, a locator that finds a screen by its text breaks at the first translation or the first design change. I was the first QA automation engineer on the app to add the semantics myself in the Flutter code, following rules written with the tech leads, instead of waiting for the developers. The same locators work on iOS and Android, and they survive screen redesigns.",
+        "**Interactive animations, untestable until then.** They are made by the motion design team in a dedicated tool, and the tests could not see anything inside them. I wrote a tool that injects the test IDs straight into the animation files, checked the result against the Flutter runtime, then produced a version the designer can open in their own software to understand the change and make it themselves.",
+        "**Test data created through APIs, not by hand.** Testing a betting mission takes real bets, placed and then settled. I create them through APIs before each scenario, the same way production campaigns do, on a dedicated test account. The test only goes through the UI for what it actually checks: it stays short, and it doesn't break because another test touched the same data.",
+        "**A nightly run across five regulated markets.** Each country has its own rules, content and accounts. The nightly runs on each of them; every morning I triage the failures into three buckets: product bug, broken environment, flaky test. Only the first become tickets.",
+        "**Going down to the mobile engine when a test fails for no reason.** A visible button the test couldn't tap, a tab bar that vanished from the iOS accessibility tree, the Android system navigation bar swallowing taps: each time I traced the cause to how iOS, Android or Flutter behaves, and fixed it in the framework instead of working around it in the tests.",
+        "**A method shared with the squad.** A test plan per feature, a release test suite, and shared Claude Code skills that generate page objects from Figma designs and Jira tickets."
+      ],
+      "stack": [
+        "Flutter",
+        "CodeceptJS",
+        "Appium",
+        "Playwright",
+        "Cucumber/Gherkin",
+        "BrowserStack",
+        "Rive",
+        "Claude Code",
+        "MCP Atlassian / Figma"
+      ]
+    },
+    {
+      "role": "QA Automation Architect",
+      "client": "ACCOR (CAC 40)",
+      "date": "Nov. 2024 - March 2026 (Freelance)",
+      "intro": "Accor tests its ALL mobile apps (loyalty, booking, stay) with a four-year-old automated test framework carrying technical debt. I joined to run and maintain tests, and became the framework's technical go-to person.",
+      "subtitle": "Bringing a legacy framework up to date, then going further",
+      "bullets": [
+        "**Modernizing the framework without stopping the tests.** Back-to-back Java and Appium client migrations with no regression. Along the way I removed dead code and rewrote the logs so they read scenario by scenario. The framework lost half its weight.",
+        "**A different device for each scenario.** Bugs specific to one model, a tablet or a landscape screen don't show up when every test runs on the same phone. I had each scenario dispatched to a different device on the BrowserStack device farm: failures became reproducible, and with app and device caching, sessions start faster.",
+        "**A CI pipeline that finally tells you whether the release is good.** Before, it ran the tests but stayed green no matter what, and it relied on a template shared with other projects that couldn't be adapted. I rewrote it for the team: it turns red as soon as the pass rate drops below a threshold, publishes the results to Jira and Xray, and alerts each team on Slack about its own failures.",
+        "**Bringing within the tests' reach what used to escape them.** Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.",
+        "**App bugs diagnosed for the developers.** The iOS login made one run in five fail. I compared passing and failing sessions on the same build, isolated the cause, and worked on the fix together with the iOS tech lead. Same approach for expired sessions and missing consent screens.",
+        "**A second framework, in TypeScript, built from scratch.** There was no TypeScript framework for mobile at Accor. I built one, cross-platform and multi-locale, and documented how it compares with the Java stack."
+      ],
+      "stack": [
+        "Java 25",
+        "Maven",
+        "Appium",
+        "TestNG",
+        "Cucumber",
+        "BrowserStack",
+        "GitLab CI",
+        "Xray/Jira",
+        "TypeScript",
+        "WebDriverIO 9",
+        "Allure"
+      ]
+    },
+    {
+      "role": "Frontend Software Developer",
+      "client": "Hexaly (Bouygues)",
+      "date": "March 2024 - May 2024",
+      "intro": "Built features for Hexaly Studio, a low-code React SaaS for solving complex optimization problems (delivery planning, warehouse management).",
+      "stack": [
+        "React",
+        "TypeScript",
+        "JavaScript"
+      ]
+    },
+    {
+      "role": "Full Stack Developer",
+      "client": "JMD Technologies (Freelance)",
+      "date": "Apr. 2023 - Dec. 2023",
+      "intro": "Maintenance Industrie, an industrial cleaning specialist, commissioned a SaaS to manage its cleaning sites, along with a mobile time-clock app for its cleaning staff.",
+      "stack": [
+        "Angular",
+        "Express.js",
+        "Sequelize",
+        "MySQL",
+        "Flutter",
+        "Riverpod"
+      ]
+    }
+  ],
+  "projects": [],
+  "education": [
+    {
+      "title": "ESIEE Paris — IMAC engineering degree",
+      "date": "2020 - 2023",
+      "text": "Web and mobile specialization — Université Gustave Eiffel."
+    }
+  ],
+  "languages": [
+    {
+      "name": "French",
+      "level": "Native"
+    },
+    {
+      "name": "English",
+      "level": "Full professional proficiency, C1 (TOEIC 975)"
+    }
+  ],
+  "interests": [
+    "**Climbing — high level:** 8a sport climbing, 7C bouldering."
+  ],
+  "sections": {
+    "experience": "Experience",
+    "projects": "Personal projects",
+    "education": "Education",
+    "languages": "Languages",
+    "interests": "Interests"
+  },
+  "ui": {
+    "toggle_aria": "Dark mode",
+    "toggle_title_dark": "Switch to light mode",
+    "toggle_title_light": "Switch to dark mode",
+    "nav_aria": "Navigation",
+    "footer_note": "Paris — 2026",
+    "scroll_hint": "Scroll",
+    "footer_statement": "Let's build something.",
+    "footer_availability": "Available for mobile QA automation work",
+    "updated": "Updated September 2026",
+    "stack_label": "Stack:"
+  }
+}
