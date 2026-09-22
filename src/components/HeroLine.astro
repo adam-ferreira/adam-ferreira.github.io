@@ -1,0 +1,16 @@
+---
+// La phrase d'accueil (« Currently at {{betclic}}, previously at {{accor}} »), mot par mot. Les groupes sont séparés par
+// un espace écrit explicitement : Astro n'en met pas entre des éléments produits en boucle, et les mots sont en ligne.
+// Un groupe de plusieurs mots (une marque et sa virgule) reste insécable. Style : Hero.css (.hero-line).
+import HeroWord from './HeroWord.astro';
+import { heroGroups, heroLabel } from '../lib/text';
+import type { Cv } from '../lib/types';
+interface Props { hero: string; marks: Cv['identity']['marks'] }
+const { hero, marks } = Astro.props;
+const groups = heroGroups(hero, marks);
+---
+<p class="hero-line" aria-label={heroLabel(hero, marks)}>{groups.map((g, k) => (
+  <Fragment>{k > 0 && ' '}{g === 'br'
+    ? <br>
+    : g.length > 1 ? <span class="nowrap">{g.map((p) => <HeroWord p={p} marks={marks} />)}</span> : <HeroWord p={g[0]} marks={marks} />}</Fragment>
+))}</p>

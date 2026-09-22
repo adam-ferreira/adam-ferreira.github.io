@@ -1,0 +1,38 @@
+---
+// Le contenu du <head> : le script qui prépare l'affichage, le titre et la description, l'aperçu de partage
+// (Open Graph), les langues (canonique, hreflang), l'icône, le préchargement des deux polices. Le style et les scripts
+// de la page, Astro les ajoute lui-même.
+import logoUrl from '../assets/logo.png?url';
+import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
+import humaneUrl from '../assets/fonts/Humane-name.woff2?url';
+import { pathOf, LOCALE, type Lang } from '../lib/i18n';
+import type { Cv } from '../lib/types';
+interface Props { lang: Lang; d: Cv; fullName: string }
+const { lang, d, fullName } = Astro.props;
+const idn = d.identity;
+const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
+const url = new URL(pathOf(lang), site).href;
+---
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- avant tout affichage : « js » (le contenu à dévoiler peut partir masqué) et, sur ordinateur à la souris, le mode scène -->
+<script is:inline>document.documentElement.classList.add("js");if (matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches) document.documentElement.classList.add("stage")</script>
+<title>{d.meta.title}</title>
+<meta name="description" content={d.meta.description}>
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
+<meta property="og:type" content="profile">
+<meta property="og:title" content={`${fullName} — ${idn.headline}`}>
+<meta property="og:description" content={idn.tagline}>
+<meta property="og:url" content={url}>
+<meta property="og:image" content={new URL(idn.photo, site).href}>
+<meta property="og:locale" content={LOCALE[lang]}>
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href={url}>
+<link rel="alternate" hreflang="en" href={new URL(pathOf('en'), site).href}>
+<link rel="alternate" hreflang="fr" href={new URL(pathOf('fr'), site).href}>
+<link rel="alternate" hreflang="x-default" href={site}>
+<link rel="icon" href={logoUrl} type="image/png">
+<link rel="apple-touch-icon" href={logoUrl}>
+<link rel="preload" as="font" type="font/woff2" href={bricolageUrl} crossorigin>
+<link rel="preload" as="font" type="font/woff2" href={humaneUrl} crossorigin>

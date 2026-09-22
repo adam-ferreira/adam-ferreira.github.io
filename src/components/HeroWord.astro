@@ -1,0 +1,15 @@
+---
+// Un mot de la phrase d'accueil (HeroLine) : du texte, ou une marque. --i règle son tour d'arrivée (Hero.css).
+import Mark from './Mark.astro';
+import { md, type HeroPiece } from '../lib/text';
+import { markAsset } from '../lib/assets';
+import type { Cv } from '../lib/types';
+interface Props { p: HeroPiece; marks: Cv['identity']['marks'] }
+const { p, marks } = Astro.props;
+const style = `--i:${p.i}`;
+const mk = 'mark' in p ? marks[p.mark] : undefined;
+const a = mk ? markAsset(mk.src) : undefined;
+---
+{'mark' in p && mk && a
+  ? <Mark name={p.mark} svg={a.url} class="w" style={style} fillDark={mk.fill_dark}><img src={a.url} alt={mk.alt} width={a.width} height={a.height} decoding="async"></Mark>
+  : <span class="w" style={style} set:html={md('text' in p ? p.text : '')} />}

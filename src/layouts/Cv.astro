@@ -2,54 +2,25 @@
 // La page du CV, pour une langue. Anglais à la racine (src/pages/index.astro), français sous /fr/.
 import { getEntry } from 'astro:content';
 import '../styles/index.css';   // tout le style, dans l'ordre de la cascade
+import Head from '../components/Head.astro';
 import Topbar from '../components/Topbar.astro';
 import Hero from '../components/Hero.astro';
 import Experience from '../components/Experience.astro';
 import Facts from '../components/Facts.astro';
 import Footer from '../components/Footer.astro';
-import logoUrl from '../assets/logo.png?url';
-import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
-import humaneUrl from '../assets/fonts/Humane-name.woff2?url';
-import { esc } from '../lib/text';
+import { pathOf, type Lang } from '../lib/i18n';
 
-interface Props { lang: 'en' | 'fr' }
+interface Props { lang: Lang }
 const { lang } = Astro.props;
 const entry = await getEntry('cv', lang);
 if (!entry) throw new Error(`Contenu manquant : src/content/cv/${lang}.json`);
 const d = entry.data;
-const idn = d.identity;
-const fullName = `${idn.first_name} ${idn.last_name}`;
-const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
-const LOCALE = { en: 'en_US', fr: 'fr_FR' } as const;
-const pathOf = (l: 'en' | 'fr') => (l === 'en' ? '/' : '/fr/');
-const url = new URL(pathOf(lang), site).href;
+const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- avant tout affichage : « js » (le contenu à dévoiler peut partir masqué) et, sur ordinateur à la souris, le mode scène -->
-  <script is:inline>document.documentElement.classList.add("js");if (matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches) document.documentElement.classList.add("stage")</script>
-  <title>{d.meta.title}</title>
-  <meta name="description" content={d.meta.description}>
-  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
-  <meta property="og:type" content="profile">
-  <meta property="og:title" content={`${fullName} — ${idn.headline}`}>
-  <meta property="og:description" content={idn.tagline}>
-  <meta property="og:url" content={url}>
-  <meta property="og:image" content={new URL(idn.photo, site).href}>
-  <meta property="og:locale" content={LOCALE[lang]}>
-  <meta name="twitter:card" content="summary">
-  <link rel="canonical" href={url}>
-  <link rel="alternate" hreflang="en" href={new URL(pathOf('en'), site).href}>
-  <link rel="alternate" hreflang="fr" href={new URL(pathOf('fr'), site).href}>
-  <link rel="alternate" hreflang="x-default" href={site}>
-  <link rel="icon" href={logoUrl} type="image/png">
-  <link rel="apple-touch-icon" href={logoUrl}>
-  <link rel="preload" as="font" type="font/woff2" href={bricolageUrl} crossorigin>
-  <link rel="preload" as="font" type="font/woff2" href={humaneUrl} crossorigin>
+  <Head lang={lang} d={d} fullName={fullName} />
 </head>
 <body id="top">
 
@@ -69,9 +40,9 @@ const url = new URL(pathOf(lang), site).href;
   <script>
     // Tous les scripts de la page, dans un seul fichier : mesuré le 22/09/2026, 2 fichiers au chargement (13,1 ko) contre
     // 6 (14,3 ko, certains en cascade) quand chaque composant déclare les siens. L'ordre est celui d'exécution.
-    import '../scripts/ui/theme.js';        // Topbar : mode jour / nuit
+    import '../components/ThemeToggle.js';  // l'interrupteur jour / nuit
     import '../scripts/ui/navigation.js';   // la page : repère, mode scène, défilement
-    import '../scripts/ui/brand.js';        // Topbar : le logo recharge la page
+    import '../components/Topbar.js';       // la barre : le logo recharge la page
     import '../scripts/ui/cursor.js';       // la page : curseur
     import '../scripts/ui/fps.js';          // la page : ?fps
     import '../scripts/3d/hero.js';         // Hero : les téléphones (Three.js chargé à la demande)
