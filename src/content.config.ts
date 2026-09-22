@@ -43,6 +43,7 @@ const cv = defineCollection({
     ui: z.object({
       toggle_aria: text, toggle_title_dark: text, toggle_title_light: text, nav_aria: text,
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
+      pager_aria: text, home_label: text, contact_label: text,   // the progress indicator, built by src/scripts/ui/pager.js
       updated: z.string().includes('{date}', { message: 'ui.updated must contain {date} (date of the last content change)' }),
       skip_link: text,   // "skip to content" link, visible only when focused with the keyboard
       not_found: z.object({ title: text, text: text, home: text }).strict(),   // the 404 page

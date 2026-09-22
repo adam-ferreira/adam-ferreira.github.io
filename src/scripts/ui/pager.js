@@ -4,19 +4,12 @@
 // current, and stage.js replaces the way a tick navigates.
 import { REDUCED_MOTION, matches } from '../media.js';
 
-const root = document.documentElement;
-const fr = root.lang === 'fr';
 export const slides = [...document.querySelectorAll('.slide')];
 export const bar = document.querySelector('.topbar');
 
-const labelOf = (p) => {
-  if (p.classList.contains('header')) return fr ? 'Accueil' : 'Home';
-  if (p.classList.contains('site-footer')) return 'Contact';
-  const h = p.querySelector('.section-title, .entry-title');
-  const txt = h ? h.textContent.trim() : '';
-  if (p.classList.contains('job')) { const n = p.querySelector('.entry-num'); const parts = txt.split('—'); return (n ? n.textContent + ' ' : '') + (parts[1] || parts[0]).trim(); }
-  return txt;
-};
+// the names come from the page, which gets them from the content files (data-label on each screen, data-pager-label on
+// the body): no text written in this file, in either language
+const labelOf = (p) => p.dataset.label ?? '';
 const pad = (n) => (n < 10 ? '0' : '') + n;
 
 let pager = null, ticks = [], count = null;
@@ -33,7 +26,7 @@ export function setCurrent(i) {
 
 if (slides.length) {
   pager = document.createElement('nav');
-  pager.className = 'pager'; pager.setAttribute('aria-label', fr ? 'Écrans de la page' : 'Page sections');
+  pager.className = 'pager'; pager.setAttribute('aria-label', document.body.dataset.pagerLabel ?? '');
   count = document.createElement('span'); count.className = 'pager-count label'; count.setAttribute('aria-hidden', 'true');
   pager.appendChild(count);
   ticks = slides.map((p, i) => {
