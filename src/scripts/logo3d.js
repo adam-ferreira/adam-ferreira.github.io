@@ -1,8 +1,10 @@
-// Le logo 3D d'Adam (assets/logo.glb), dans la barre en haut à gauche.
+// Le logo 3D d'Adam (src/assets/logo.glb), dans la barre en haut à gauche.
 // Même activation que les marques : après le chargement sur ordinateur ; sur téléphone, au premier geste (toucher,
 // défilement) ou 5 s après la page. Il se balance doucement et suit un peu la souris ; de temps en temps il fait le même
 // geste d'invite que les marques (inclinaison + reflet), en dernier de la série. On l'attrape, on le lance, il continue sur son élan.
 // Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
+import { CUBEMAP } from './env.js';
+import LOGO_GLB from '../assets/logo.glb?url';
 const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // l'accent du site
 const canvas = document.querySelector('.brand canvas.logo3d');
 const desktop = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
@@ -22,10 +24,10 @@ function webglOk() {
 let started = false;
 async function go() {
   if (started) return; started = true;
-  const THREE = await import('three'), { GLTFLoader } = THREE;   // paquet du site (assets/vendor/three.js), chargeur compris
-  const env = new THREE.CubeTextureLoader().setPath('assets/cubemaps/').load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']);
+  const THREE = await import('./three-lite.js'), { GLTFLoader } = THREE;   // Three.js réduit, chargeur de modèles compris
+  const env = new THREE.CubeTextureLoader().load(CUBEMAP);
   env.colorSpace = THREE.SRGBColorSpace;
-  new GLTFLoader().load('assets/logo.glb', (gltf) => {
+  new GLTFLoader().load(LOGO_GLB, (gltf) => {
     const logo = gltf.scene;
     const box = new THREE.Box3().setFromObject(logo);
     const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());

@@ -1,0 +1,21 @@
+---
+// Le chapitre « Experience » : un écran pour le grand titre et les compétences, puis un écran par expérience.
+import Job from './Job.astro';
+import { md, chips } from '../lib/text';
+const { d } = Astro.props;
+---
+<section class="section" id="experience" aria-labelledby="experience-title">
+  <div class="chapter slide">
+    <div class="section-title-wrapper"><h2 class="section-title" id="experience-title" set:html={md(d.sections.experience)} /></div>
+    <div class="skills" id="skills">
+      {d.skills.map((row) => <div class="skills-row"><span class="skills-label" set:html={md(row.label)} /><Fragment set:html={chips(row.items)} /></div>)}
+    </div>
+  </div>
+  {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} />)}
+</section>
+{d.projects && d.projects.length > 0 && (
+  <section class="section" id="projects" aria-labelledby="projects-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="projects-title" set:html={md(d.sections.projects)} /></div>
+    {d.projects.map((p) => <p class="job-intro reading" set:html={md(p)} />)}
+  </section>
+)}

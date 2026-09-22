@@ -3,6 +3,7 @@
 // vérifie, et chaque étape validée s'ajoute au journal du test en bas de l'écran.
 // Écrans larges avec souris uniquement, après le chargement. On attrape la scène et on la fait tourner ; relâchée,
 // elle reprend son balancement. Sous « réduire les animations » : l'image finale du test, sans boucle.
+import { CUBEMAP } from './env.js';
 const canvas = document.querySelector('canvas.hero3d');
 const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -207,7 +208,7 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
 
 async function start() {
   if (!canvas || !wanted() || !webglOk()) return;
-  const THREE = await import('three');
+  const THREE = await import('./three-lite.js');   // Three.js réduit à ce que le site utilise, chargé à la demande
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
@@ -216,7 +217,7 @@ async function start() {
   scene.add(new THREE.AmbientLight(0xffffff, 0.9));
   const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3, 4, 5); scene.add(key);
   const rim = new THREE.DirectionalLight(0xffd9cc, 1.0); rim.position.set(-4, -1, 2); scene.add(rim);
-  const env = new THREE.CubeTextureLoader().setPath('assets/cubemaps/').load(['px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png']);
+  const env = new THREE.CubeTextureLoader().load(CUBEMAP);
   env.colorSpace = THREE.SRGBColorSpace;
 
   // un seul écran pour les deux téléphones : c'est le même test, sur iOS et Android, au même instant
