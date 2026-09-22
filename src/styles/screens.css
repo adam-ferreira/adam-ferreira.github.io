@@ -13,10 +13,9 @@
   .section { margin-top: 0; padding-top: 0; border-top: 0; }
   .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
   .chapter .section-title-wrapper { margin-bottom: 0; }
-  .job { align-content: center; margin-bottom: 0; padding: 24px 0; }
+  .job { align-content: center; padding: 24px 0; }   /* marges entre écrans : Job.css (elles doivent passer après ses règles de base) */
   main { padding-right: 84px; }   /* place pour le repère de progression */
-  .job:last-child { margin-bottom: 0; }
-  .facts { align-content: center; margin-top: 0; padding-top: 0; border-top: 0; }
+  .facts { align-content: center; }   /* marges et filet : Facts.css */
 }
 
 /* ---------- transitions entre écrans (grand écran, animations autorisées) ----------
