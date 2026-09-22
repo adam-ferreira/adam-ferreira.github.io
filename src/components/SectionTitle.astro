@@ -2,7 +2,7 @@
 // Giant section title (Humane). The wrapper clips the title, which slides up into view when it arrives (SectionTitle.css).
 // Rendered by Section.astro, which also passes the id the section points at (aria-labelledby).
 import { md } from '../lib/text';
-interface Props { id: string; label: string }   // id: the id of the title itself
-const { id, label } = Astro.props;
+interface Props { id: string; label: string; class?: string }   // id: the id of the title itself
+const { id, label, class: extra } = Astro.props;
 ---
-<div class="section-title-wrapper"><h2 class="section-title" id={id} set:html={md(label)} /></div>
+<div class:list={['section-title-wrapper', extra]}><h2 class="section-title" id={id} set:html={md(label)} /></div>

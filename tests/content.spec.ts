@@ -52,7 +52,7 @@ test('without JavaScript, experiences and titles are visible', async ({ browser 
   const page = await ctx.newPage();
   await page.goto('/');
   const hidden = await page.evaluate(() =>
-    [...document.querySelectorAll('.entry-header, .job-intro, .prose, .bullets li, .section-title')]
+    [...document.querySelectorAll('.reveal, .section-title')]
       .filter((el) => { const s = getComputedStyle(el); return s.opacity !== '1' || (s.transform !== 'none' && s.transform !== 'matrix(1, 0, 0, 1, 0, 0)'); })
       .map((el) => el.textContent!.trim().slice(0, 40)));
   expect(hidden).toEqual([]);
