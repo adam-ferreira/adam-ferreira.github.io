@@ -131,7 +131,8 @@ test('stage mode: the experiences with a demo keep a column for the 3D phones', 
   const demos = d.experience.filter((j: { demo?: string }) => j.demo).map((j: { demo: string }) => j.demo);
   expect(await page.locator('.job-demo .job-device').evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.demo))).toEqual(demos);
   const cols = await page.locator('.job-demo .bullets').first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length);
-  expect(cols).toBe(1);
+  expect(cols).toBe(2);
+  await expect(page.locator('.job-demo > .entry-header')).toHaveCount(demos.length);   // the header as a banner over the text
   await expect(page.locator('canvas.hero3d')).toBeHidden();
   await expect(page.locator('canvas.devices3d')).toHaveCSS('pointer-events', 'none');
 });
