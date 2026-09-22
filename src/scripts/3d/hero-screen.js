@@ -3,10 +3,8 @@
 // asserts, and each passed step is appended to the test log at the bottom of the screen.
 // Nothing 3D here: a 2D canvas, used as the texture of both phones.
 
-const cssVar = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
-/** The site's accent (--accent in the stylesheet): a single setting for the page, the phones and the cursor. */
-export const ACC = cssVar('--accent', '#ffb627');
-const GREEN = '#3ddc84', INK = '#161b22';
+import { accent } from './common.js';
+const ACC = accent(), GREEN = '#3ddc84', INK = '#161b22';
 const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
 const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // towards white
