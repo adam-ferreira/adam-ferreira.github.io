@@ -44,7 +44,7 @@
     /* the screen itself does not move (otherwise snapping aims at a moving target): it carries a named timeline,
        and it is its content that animates as you scroll */
     .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: var(--topbar-h) 0px; }
-    .header > *, .chapter > *, .job > *, .facts > *, .site-footer > * {
+    .header > *, .chapter > *, .job > *, .facts > *, .site-footer > :not(.footer3d) {
       transform-origin: 50% 0%;
       animation: panel-in linear backwards, panel-out linear forwards;
       animation-timeline: --panel, --panel;
