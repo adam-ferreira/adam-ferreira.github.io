@@ -30,16 +30,13 @@
   --sans: "Bricolage Grotesque", "Inter", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
+/* The dark palette (the accent and its highlight and shadow do not change). It applies to a dark system when the light
+   theme is not chosen — also without JavaScript — and whenever the dark theme is chosen. CSS cannot put a media query and
+   an attribute selector in one selector list, hence two identical blocks: tests/content.spec.ts checks they stay equal. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-    --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8);
-  }
+  :root:not([data-theme="light"]) { --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028; --accent-ink: #ffb627; --topbar: rgba(14, 17, 22, 0.8); }
 }
-:root[data-theme="dark"] {
-  --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-  --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8);
-}
+:root[data-theme="dark"] { --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028; --accent-ink: #ffb627; --topbar: rgba(14, 17, 22, 0.8); }
 
 * { box-sizing: border-box; }
 html { background: var(--paper); scroll-padding-top: 72px; }
