@@ -1,0 +1,33 @@
+# Refaire les captures de référence Linux de la comparaison visuelle (tests/visual.spec.ts-snapshots/*-linux.png).
+# À lancer à la main (onglet Actions, ou : gh workflow run visual-baselines.yml) après un changement d'apparence voulu,
+# ou si l'image Ubuntu des machines GitHub change le rendu des polices. Les captures sont rendues en artefact, à committer.
+name: Captures de référence (Linux)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  baselines:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Refaire les captures
+        run: npx playwright test visual --update-snapshots=all
+        env:
+          VISUAL_IN_CI: '1'
+      - uses: actions/upload-artifact@v7
+        with:
+          name: captures-linux
+          path: tests/visual.spec.ts-snapshots/*-linux.png
+          retention-days: 7
