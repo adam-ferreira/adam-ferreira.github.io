@@ -58,3 +58,11 @@ test('without JavaScript, experiences and titles are visible', async ({ browser 
   expect(hidden).toEqual([]);
   await ctx.close();
 });
+
+test('top bar: the LinkedIn mark is a 40 × 40 square, filled by its image', async ({ page }) => {
+  await page.goto('/');
+  const box = await page.locator('.topbar-linkedin').boundingBox();
+  const img = await page.locator('.topbar-linkedin img.theme-light').boundingBox();
+  expect([box?.width, box?.height]).toEqual([40, 40]);
+  expect(img).toEqual(box);
+});
