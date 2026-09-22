@@ -4,7 +4,7 @@
 .section-title {
   font-family: var(--display); font-weight: 400; text-transform: uppercase;
   font-size: clamp(64px, 13vw, 220px); line-height: .88; letter-spacing: .01em; color: var(--ink);
-  transition: transform .9s cubic-bezier(.2, .8, .2, 1);
+  transition: transform .9s var(--ease-out-strong);
 }
 /* hidden so that src/scripts/ui/scroll.js (or stage.css) can reveal it — only when JavaScript runs: without it, the title stays readable */
 html.js .section-title:not(.is-in) { transform: translateY(105%); }

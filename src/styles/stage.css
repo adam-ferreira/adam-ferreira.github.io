@@ -7,6 +7,7 @@
    ============================================================ */
 :root {
   --stage-duration: 1s;   /* src/scripts/ui/stage.js reads it: it must know when a move is over */
+  --pager-room: 68px;     /* right margin kept for the progress indicator (screens.css keeps 84px without a gutter) */
   --stage-ease: cubic-bezier(.76, 0, .24, 1);
   --stage-gutter: max(36px, calc((100vw - 1400px) / 2 + 36px));
 }
@@ -14,10 +15,10 @@ html.stage, html.stage body { height: 100%; overflow: hidden; }
 html.stage .page { position: static; z-index: auto; }
 html.stage main { padding: 0; }
 html.stage .slide {
-  position: fixed; left: 0; right: 0; top: 60px; bottom: 0; z-index: 1;
+  position: fixed; left: 0; right: 0; top: var(--topbar-h); bottom: 0; z-index: 1;
   width: auto; max-width: none; height: auto; min-height: 0; margin: 0; border: 0;
   overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
-  padding-left: var(--stage-gutter); padding-right: calc(var(--stage-gutter) + 68px);
+  padding-left: var(--stage-gutter); padding-right: calc(var(--stage-gutter) + var(--pager-room));
   background: var(--paper);
   transform: translate3d(0, 100%, 0);
   transition: transform var(--stage-duration) var(--stage-ease), opacity var(--stage-duration) var(--stage-ease);
@@ -39,13 +40,13 @@ html.stage .slide:focus { outline: none; }
 /* layout of each screen in its scene (the chapter, the experiences and the footer are already laid out by screens.css,
    whose large-screen rules always apply in stage mode) */
 html.stage .header.slide { display: grid; align-items: center; padding-top: 32px; padding-bottom: 96px; }
-html.stage .hero-foot { left: var(--stage-gutter); right: calc(var(--stage-gutter) + 68px); }
-html.stage .job-short::after { right: calc(var(--stage-gutter) + 68px); }   /* the watermark number stays inside the content area */
+html.stage .hero-foot { left: var(--stage-gutter); right: calc(var(--stage-gutter) + var(--pager-room)); }
+html.stage .job-short::after { right: calc(var(--stage-gutter) + var(--pager-room)); }   /* the watermark number stays inside the content area */
 html.stage .facts.slide { align-content: center; padding-top: 0; }
 html.stage footer.slide { display: flex; flex-direction: column; background: var(--ink); padding-top: clamp(48px, 8vh, 96px); padding-bottom: 32px; }
 
 /* no more scrolling: the scroll-driven animations are no longer used, the titles are revealed on arrival */
 html.stage .slide > * { animation: none !important; }
-html.stage .slide .section-title { transform: translateY(105%); transition: transform .9s cubic-bezier(.2, .8, .2, 1) .35s; }
+html.stage .slide .section-title { transform: translateY(105%); transition: transform .9s var(--ease-out-strong) .35s; }
 html.stage .slide.is-current .section-title { transform: none; }
 @media (prefers-reduced-motion: reduce) { html.stage .slide, html.stage .slide .section-title { transition: none !important; } }

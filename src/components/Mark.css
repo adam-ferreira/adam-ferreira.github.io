@@ -1,7 +1,7 @@
 /* A brand mark (Mark.astro): Betclic, Accor in the welcome sentence; LinkedIn in the top bar. The image, then its 3D volume
    (src/scripts/3d/marks.js). The sizing below only applies in the sentence: the top-bar mark keeps its own box (Topbar.css). */
 
-.mark { position: relative; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark { position: relative; transition: transform .35s var(--ease-out); }
 .mark img { display: block; transition: opacity .5s ease; }   /* sharp corners, like the real logo and its 3D version */
 /* the marks in the sentence: the height of a line of text */
 .hero-line .mark { height: 1.2em; vertical-align: -.2em; margin: 0 .18em; }
