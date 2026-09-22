@@ -4,7 +4,9 @@
 @media (min-width: 1100px) {
   .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
   .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
-  .job-side .entry-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
+  .job-side .entry-header, .job > .entry-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
+  .job-demo { grid-template-areas: "head head" "side main" "stack main"; }
+  .job > .entry-header { grid-area: head; margin-bottom: 28px; }
   .entry-date { grid-column: 2; }
   .job-side .job-intro { font-size: 16px; line-height: 1.6; }
   .job-side .sub-title { margin-top: 22px; font-size: 17px; }
@@ -31,10 +33,15 @@
 html.stage .device-anchor { display: block; cursor: grab; }
 html.stage .device-anchor.is-dragging { cursor: grabbing; }
 html.stage .job-demo {
-  grid-template-columns: minmax(0, 4fr) minmax(0, 4.4fr) minmax(0, 3.6fr);
-  grid-template-areas: "side main device" "stack main device"; grid-template-rows: auto 1fr;   /* the stack right under the text, not pushed down */
+  grid-template-columns: minmax(0, 3fr) minmax(0, 6.2fr) minmax(0, 2.8fr);
+  grid-template-areas: "head head device" "side main device" "stack main device"; grid-template-rows: auto auto 1fr;
+  align-content: center;   /* the whole block centred on the screen */
 }
-html.stage .job-demo .job-main .bullets { grid-template-columns: 1fr; gap: 22px; }
+html.stage .job-demo > .entry-header .entry-title { font-size: clamp(26px, 2.2vw, 34px); }
+html.stage .job-demo > .entry-header { margin-bottom: 10px; }
+html.stage .job-demo .job-main .bullets { row-gap: 14px; }
+html.stage .job-demo .job-main .bullets li { line-height: 1.5; }
+html.stage .job-demo .job-main .bullets li::before { margin-bottom: 7px; }
 html.stage .job-device { grid-area: device; position: sticky; top: 24px; align-self: start; width: 100%; height: calc(100svh - var(--topbar-h) - 48px); }   /* the whole visible height: the phones stay centred while the text scrolls */
 html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter) + var(--pager-room)); top: 50%; transform: translateY(-50%); width: clamp(260px, 30vw, 500px); aspect-ratio: 1; }
 
