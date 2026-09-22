@@ -6,7 +6,6 @@
 .mark-accor { height: 1.5em; vertical-align: -.32em; }
 .mark img { height: 100%; width: auto; display: block; transition: opacity .5s ease; }   /* coins nets, comme le vrai logo et sa version 3D */
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
-.mark-text { display: inline-flex; align-items: center; height: 100%; line-height: 1; padding: 0 .45em; border-radius: .18em; background: var(--mark-bg); color: #fff; font-size: .6em; font-weight: 800; letter-spacing: .1em; }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
 /* le volume déborde largement de la marque (taille posée par le script) et passe au-dessus du texte ;
    la souris est captée par la marque elle-même, le canvas la laisse passer */
@@ -14,6 +13,6 @@
 .mark.is-3d { z-index: 6; cursor: grab; touch-action: none; }
 .mark.is-grabbed { cursor: grabbing; z-index: 30; }
 .mark.is-3d .mark-3d { opacity: 1; }
-.mark.is-3d img, .mark.is-3d .mark-text { opacity: 0; }
+.mark.is-3d img { opacity: 0; }
 .mark.is-3d:hover { transform: none; }
 @media (prefers-reduced-motion: reduce) { .mark { transition: none; } }
