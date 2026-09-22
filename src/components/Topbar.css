@@ -31,7 +31,7 @@ html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: no
   :root:not([data-theme]) .topbar-linkedin .theme-light { display: none; }
   :root:not([data-theme]) .topbar-linkedin .theme-dark { display: block; }
 }
-@media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto; gap: 12px; } .frame-status { display: none; } }
+@media (max-width: 640px) { .topbar { gap: 12px; } .frame-status { display: none; } }
 
 
 /* the 3D logo fades in once it is ready (computer: after load; phone: first gesture); until then, or without WebGL, the image */

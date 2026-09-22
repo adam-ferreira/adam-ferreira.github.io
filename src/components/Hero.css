@@ -23,7 +23,7 @@
 .hero3d.is-dragging { cursor: grabbing; }
 .header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
 /* the cut-out portrait comes out of its disc: the head overflows at the top, the shoulders stay inside the circle */
-.portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; flex: none; }
+.portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; }
 .portrait-disc { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 26%, var(--accent-hi), var(--accent) 56%, var(--accent-deep)); }
 .portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 8px 8px 8px round 0 0 56px 56px); }   /* inset by 8 px: an accent ring stays visible around it */
 .header-name-block { display: flex; flex-direction: column; min-width: 0; }
@@ -33,7 +33,6 @@
   color: var(--ink); margin: -8px 0 18px;
   white-space: nowrap;   /* one line whatever the font: if Humane arrives after the first paint, nothing jumps (measured: shift 0.18) */
 }
-.name-first, .name-last { font-weight: 400; }
 .subtitle { margin-top: 4px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
 .hero-line { margin-top: 18px; max-width: 30ch; font-size: clamp(20px, 2.3vw, 28px); line-height: 1.55; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
 .hero-line .w { display: inline-block; }
@@ -69,8 +68,8 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 @media (max-width: 860px), (hover: none), (pointer: coarse) {
   .hero-stage { display: none; }
   .header { grid-template-columns: 1fr; min-height: auto; padding-bottom: 72px; }
+  .header-left { grid-column: 1; }
 }
-@media (max-width: 860px), (hover: none), (pointer: coarse) { .header-left { grid-column: 1; } }
 @media (max-width: 560px) {
   .header-left { grid-template-columns: 1fr; row-gap: 14px; }
   .portrait { width: 84px; height: 84px; margin-top: 28px; }
