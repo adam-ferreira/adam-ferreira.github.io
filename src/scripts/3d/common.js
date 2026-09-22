@@ -1,8 +1,9 @@
 // Helpers shared by the three 3D scenes: the phones (hero.js), the AF logo (logo.js) and the marks (marks.js).
+import { DESKTOP, REDUCED_MOTION, matches } from '../media.js';
 
 /** A computer with a mouse and a wide enough window: where the 3D starts without waiting for a gesture. */
-export const desktop = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
-export const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+export const desktop = () => matches(DESKTOP);
+export const reduced = () => matches(REDUCED_MOTION);
 
 export function webglOk() {
   try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
