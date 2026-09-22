@@ -1,0 +1,7 @@
+/* Chapitre « Experience » : les compétences, sous le grand titre. */
+
+/* ---------- compétences ---------- */
+.skills { max-width: 980px; display: grid; gap: 16px; }
+.skills-row { display: grid; grid-template-columns: 170px 1fr; column-gap: 16px; align-items: start; }
+.skills-label { font-size: 15px; font-weight: 600; color: var(--ink); padding-top: 4px; }
+@media (max-width: 560px) { .skills-row { grid-template-columns: 1fr; row-gap: 6px; } }

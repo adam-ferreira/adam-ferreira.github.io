@@ -1,6 +1,11 @@
 ---
+// La barre du haut : logo AF (3D, visible hors de l'accueil ; un clic recharge la page), nom qui s'y range, LinkedIn,
+// interrupteur jour / nuit. Style : Topbar.css.
+// Scripts : src/scripts/ui/theme.js, ui/brand.js, 3d/logo.js — chargés par la page (Cv.astro) dans un seul fichier.
 import logoUrl from '../assets/logo.png?url';
 import { markAsset } from '../lib/assets';
+import type { Cv } from '../lib/types';
+interface Props { d: Cv; fullName: string; home: string }   // home : adresse de la page dans sa langue (/ ou /fr/)
 const { d, fullName, home } = Astro.props;
 const idn = d.identity, ui = d.ui;
 const li = markAsset('assets/marks/linkedin.svg'), liDark = markAsset('assets/marks/linkedin-dark.svg');
@@ -21,3 +26,4 @@ const li = markAsset('assets/marks/linkedin.svg'), liDark = markAsset('assets/ma
     <span class="tt-knob"></span>
   </button>
 </nav>
+
