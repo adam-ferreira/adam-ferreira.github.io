@@ -3,9 +3,8 @@
 // passed step is appended to the test log at the bottom of the screen.
 // Wide screens with a mouse only, after load. You can grab the scene and spin it; once released, it goes back to
 // swaying. Under "reduce motion": the final frame of the test, without a loop.
-import { CUBEMAP } from './env.js';
-import { desktop, reduced, webglOk, onDprChange, watchContextLoss } from './common.js';
-import { SW, SH, TS, CYCLE, ACC, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
+import { desktop, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
+import { SW, SH, TS, CYCLE, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
 const canvas = document.querySelector('canvas.hero3d');
 
 // ---------- the phones ----------
@@ -65,8 +64,7 @@ async function start() {
   scene.add(new THREE.AmbientLight(0xffffff, 0.9));
   const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(3, 4, 5); scene.add(key);
   const rim = new THREE.DirectionalLight(0xffd9cc, 1.0); rim.position.set(-4, -1, 2); scene.add(rim);
-  const env = new THREE.CubeTextureLoader().load(CUBEMAP);
-  env.colorSpace = THREE.SRGBColorSpace;
+  const env = loadEnv(THREE);
 
   // a single screen for both phones: it is the same test, on iOS and Android, at the same moment
   const base = drawBase();
@@ -80,7 +78,7 @@ async function start() {
   paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
 
   const graphite = new THREE.MeshStandardMaterial({ color: 0x2b3038, metalness: 0.8, roughness: 0.28, envMap: env, envMapIntensity: 1.2 });
-  const accent = new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 });
+  const accent = accentMaterial(THREE, env);
   const glass = new THREE.MeshStandardMaterial({ color: 0x07080a, metalness: 0.3, roughness: 0.15, envMap: env, envMapIntensity: 0.8 });
   const black = new THREE.MeshBasicMaterial({ color: 0x000000 });
   const screenMat = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
@@ -95,7 +93,7 @@ async function start() {
   function fit() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 1.5, 2));   // 1.5× on a standard screen, 2× on Retina
+    setPixelRatio(renderer, 1.5, 2);   // 1.5× on a standard screen, 2× on Retina
     renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
   fit();
@@ -105,24 +103,21 @@ async function start() {
 
   // interaction: grab the scene, throw it, it spins on its momentum, then goes back to swaying
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
-  let dragging = false, last = null, releasedAt = -1e9, visible = true;
-  const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a));
   const clampX = (a) => Math.max(-0.9, Math.min(0.9, a));
-  canvas.addEventListener('pointerdown', (e) => { dragging = true; vel.x = vel.y = 0; last = { x: e.clientX, y: e.clientY }; canvas.setPointerCapture(e.pointerId); canvas.classList.add('is-dragging'); e.preventDefault(); });
-  canvas.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    const dx = e.clientX - last.x, dy = e.clientY - last.y; last = { x: e.clientX, y: e.clientY };
-    vel.x = dx * 0.008; vel.y = dy * 0.006;
-    root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y);
-    if (reduced()) renderer.render(scene, camera);
+  const grab = makeGrabbable(canvas, {
+    cls: 'is-dragging',
+    onGrab: () => { vel.x = vel.y = 0; },
+    onDrag: (dx, dy) => {
+      vel.x = dx * 0.008; vel.y = dy * 0.006;
+      root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y);
+      if (reduced()) renderer.render(scene, camera);
+    },
   });
-  const release = (e) => { if (!dragging) return; dragging = false; releasedAt = performance.now(); canvas.classList.remove('is-dragging'); try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
-  canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
   window.addEventListener('pointermove', (e) => { target.x = (e.clientX / window.innerWidth - 0.5) * 2; target.y = (e.clientY / window.innerHeight - 0.5) * 2; }, { passive: true });
   const refit = () => { fit(); renderer.render(scene, camera); };
   if ('ResizeObserver' in window) new ResizeObserver(refit).observe(canvas); else window.addEventListener('resize', refit);
   onDprChange(refit);
-  if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
+  const visible = watchVisible(canvas);
 
   if (reduced() || freeze !== null) return;
   const t0 = performance.now();
@@ -131,10 +126,9 @@ async function start() {
   (function loop(now) {
     if (lost()) return;
     requestAnimationFrame(loop);
-    if (!visible || document.hidden) return;
-    if (document.documentElement.classList.contains('is-moving')) return;   // the page is moving: leave all the room to the move
+    if (!visible() || document.hidden) return;
     if (document.documentElement.classList.contains('stage') && document.documentElement.dataset.slide !== '0') return;   // stage mode: the hero is not on screen
-    if (now - lastDraw < 15) return;   // 60 fps is enough, even on a 120 Hz screen
+    if (!shouldRender(now, lastDraw)) return;
     lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
     if (frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
@@ -142,8 +136,8 @@ async function start() {
       if (key === null || key !== lastKey) paint(t % CYCLE);
       lastKey = key;
     }
-    if (!dragging) {
-      if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt < 600) {
+    if (!grab.dragging) {
+      if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - grab.releasedAt < 600) {
         root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;
       } else {
         const ry = REST_Y + Math.sin(t * 0.45) * 0.2 + target.x * 0.22, rx = REST_X + Math.sin(t * 0.33) * 0.05 + target.y * 0.1;
@@ -156,5 +150,4 @@ async function start() {
   })(performance.now());
 }
 
-if (document.readyState === 'complete') start();
-else window.addEventListener('load', () => { ('requestIdleCallback' in window) ? requestIdleCallback(start, { timeout: 1200 }) : setTimeout(start, 300); });
+if (canvas && webglOk()) bootLazily(start, 1200, 300);
