@@ -2,6 +2,7 @@
 // One experience. On the left (job-side): number, title, date, introduction, challenge, then the stack. On the right
 // (job-main): the bullets. On large screens each experience fills one screen; elsewhere the blocks follow in this order.
 // Without bullets it is a short experience (job-short): one column, a large title, the number as an outlined watermark.
+// With a demo (stage mode only): a third column where the 3D phones play this job's test (src/scripts/3d/hero.js).
 import EntryHeader from './EntryHeader.astro';
 import Chips from './Chips.astro';
 import { md, plain } from '../lib/text';
@@ -11,7 +12,7 @@ const { j, num, stackLabel } = Astro.props;
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
-<article class:list={['job', 'slide', { 'job-short': short }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
+<article class:list={['job', 'slide', { 'job-short': short, 'job-demo': !!j.demo }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
   <div class="job-side">
     <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />
     {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
@@ -25,5 +26,6 @@ const short = bullets.length === 0;
       </ul>
     </div>
   )}
+  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} aria-hidden="true"></div>}
   {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>

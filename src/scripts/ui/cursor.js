@@ -9,7 +9,7 @@ if (matches(MOUSE) && !matches(REDUCED_MOTION)) {
   dot.className = 'cursor'; dot.setAttribute('aria-hidden', 'true');
   dot.innerHTML = '<span class="cursor-ball"></span>';
   document.body.appendChild(dot);
-  const HOT = 'a, button, [role="switch"], .mark.is-3d, .hero3d, .brand, .is-over-pill';
+  const HOT = 'a, button, [role="switch"], .mark.is-3d, .hero3d, .brand, .is-over-pill, .device-anchor, html.stage .hero-stage';
   let mx = 0, my = 0, cx = 0, cy = 0, shown = false, hot = false, running = false;
   const tick = () => {
     const nx = cx + (mx - cx) * 0.35, ny = cy + (my - cy) * 0.35;

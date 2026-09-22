@@ -26,6 +26,18 @@
   }
 }
 
+/* stage mode, experience with a demo: the phones take a third column and play its test; the bullets go to one column */
+.device-anchor { display: none; }
+html.stage .device-anchor { display: block; cursor: grab; }
+html.stage .device-anchor.is-dragging { cursor: grabbing; }
+html.stage .job-demo {
+  grid-template-columns: minmax(0, 4fr) minmax(0, 4.4fr) minmax(0, 3.6fr);
+  grid-template-areas: "side main device" "stack main device";
+}
+html.stage .job-demo .job-main .bullets { grid-template-columns: 1fr; gap: 22px; }
+html.stage .job-device { grid-area: device; position: sticky; top: 0; align-self: start; width: 100%; aspect-ratio: 3 / 4; max-height: calc(100svh - var(--topbar-h) - 64px); }
+html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter) + var(--pager-room)); top: 50%; transform: translateY(-50%); width: clamp(260px, 30vw, 500px); aspect-ratio: 1; }
+
 @media (min-width: 1100px) and (max-height: 860px) {
   .job-side .job-intro { font-size: 15px; line-height: 1.55; }
   .job-side .sub-intro { font-size: 14px; }

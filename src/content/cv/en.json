@@ -75,6 +75,7 @@
     {
       "role": "QA Automation Engineer (Flutter mobile)",
       "client": "BETCLIC",
+      "demo": "betting",
       "date": "March 2026 - Present (Freelance)",
       "intro": "Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests of the gamification features: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.",
       "subtitle": "Building the automation alongside the app",
@@ -102,6 +103,7 @@
     {
       "role": "Mobile QA Automation Engineer",
       "client": "ACCOR (CAC 40)",
+      "demo": "booking",
       "date": "Nov. 2024 - March 2026 (Freelance)",
       "intro": "Accor tests its ALL mobile apps (loyalty, booking, stay) with an automated test framework started four years earlier, with technical debt. I joined to run and maintain the tests, and became the technical reference for the framework.",
       "subtitle": "Modernizing an existing framework",

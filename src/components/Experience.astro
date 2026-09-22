@@ -9,6 +9,7 @@ interface Props { d: Cv }
 const { d } = Astro.props;
 ---
 <Section id="experience" title={d.sections.experience} head="chapter slide" label={plain(d.sections.experience)}>
+  <div class="chapter-device device-anchor" data-demo="hero" slot="head" aria-hidden="true"></div>
   <div class="skills" slot="head">
     {d.skills.map((row) => <div class="skills-row reveal"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
   </div>

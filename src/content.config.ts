@@ -35,6 +35,7 @@ const cv = defineCollection({
       role: text, client: z.string().optional(), date: text,
       intro: z.string().optional(), subtitle: z.string().optional(), subintro: z.string().optional(),
       bullets: z.array(text).optional(), stack: z.array(text).optional(),
+      demo: z.enum(['betting', 'booking']).optional(),   // the test the 3D phones play on this experience's screen
     }).strict()).min(1),
     education: z.array(z.object({ title: text, date: text, text: text }).strict()),
     languages: z.array(z.object({ name: text, level: text }).strict()),
