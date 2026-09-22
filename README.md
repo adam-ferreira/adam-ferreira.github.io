@@ -1,6 +1,6 @@
 # CV — Adam Ferreira
 
-Site : https://adam-ferreira.github.io/ (anglais) · https://adam-ferreira.github.io/fr/ (français). Plus de PDF depuis le 21/09/2026 : le CV est l'application web. Les derniers PDF sont archivés dans `~/admin/PRO/01_ADMINISTRATIF/CV/`.
+Site : https://adam-ferreira.github.io/ (anglais) · https://adam-ferreira.github.io/fr/ (français). Plus de PDF depuis le 21/09/2026 : le CV est l'application web.
 
 ## Architecture
 
@@ -20,7 +20,8 @@ Choix mesuré sur une page témoin, JavaScript envoyé par le framework seul : A
 | `src/scripts/3d/` | La 3D : `hero` (les deux téléphones qui jouent un test), `logo` (le logo AF), `marks` (marques en volume), `common` (démarrage différé, WebGL, densité d'écran, geste d'invite, reflet), `three-lite` (les seules parties de Three.js utilisées, 153 ko compressés, chargées après la page), `env` (reflets). |
 | `src/lib/` | `text.ts` (gras, découpage de la phrase d'accueil avec ses marques `{{betclic}}`), `assets.ts` (adresses et tailles des marques), `types.ts` (types tirés du schéma), `i18n.ts` (chemins et locales des deux langues). |
 | `src/assets/` | Polices, photo, logo, modèle 3D, marques SVG, reflets 3D. Publiés sous un nom qui change avec leur contenu. |
-| `public/photo.jpg` | L'image de partage (Open Graph), à adresse fixe. |
+| `public/photo.jpg`, `public/robots.txt` | L'image de partage (Open Graph, 800 × 800), et les consignes aux moteurs de recherche. |
+| `src/pages/sitemap.xml.ts`, `src/pages/404.astro` | Le plan du site (les deux langues, avec leur date) et la page des adresses inconnues (bilingue, textes dans les JSON). |
 | `src/pages/tools/linkedin-cover.astro` | La bannière LinkedIn (1584 × 396), non indexée. Export : Chrome headless `--window-size=1584,396 --force-device-scale-factor=2 --screenshot` sur `/tools/linkedin-cover/`. |
 | `tests/` | Les tests Playwright (voir plus bas). |
 | `.github/workflows/deploy.yml` | Construction, tests, publication. |
@@ -51,6 +52,14 @@ npm run dev          # http://localhost:4321, rechargé à chaque modification
 
 Les tests de régression ont été vérifiés en réintroduisant chaque défaut corrigé : ils échouent bien.
 
+## Référencement, sécurité, accessibilité
+
+- **Head** : titre descriptif, fiche `Person` (schema.org : nom, poste, e-mail, LinkedIn), aperçu de partage complet, langues (canonique, `hreflang`).
+- **« Updated {date} »** : la date est celle du dernier commit qui a touché `src/content/cv/` (`src/lib/updated.ts`) ; la CI récupère tout l'historique pour la connaître.
+- **Politique de sécurité (CSP)**, en production : rien ne vient d'ailleurs que du site ; le seul script écrit dans la page (celui qui pose `html.js` / `html.stage`) est autorisé par son empreinte, calculée à la construction.
+- **Clavier** : « Aller au contenu » en premier arrêt de Tab ; le repère des écrans vient juste après la barre ; Tab vers un autre écran y emmène la scène.
+- **3D** : si le navigateur retire la carte graphique (onglet en veille sur téléphone), chaque objet revient à sa version plate.
+
 ## Couleur d'accent
 
 Une seule couleur pilote tout : `--accent` (et ses dérivées `--accent-ink`, `--accent-hi`, `--accent-deep`) en tête de `src/styles/base.css`.
@@ -68,4 +77,5 @@ Trois choses ne suivent pas automatiquement si on la change : `src/assets/logo.p
 
 - Une fonction Three.js ajoutée dans un script 3D → l'ajouter à `src/scripts/3d/three-lite.js` (la construction le prend en compte).
 - Un texte qui ajoute un caractère rare → `npm run build && npm run fonts && npm run build` (réduit la police Bricolage aux caractères du site, `tools/subset-fonts.py`, sources dans `tools/fonts-src/`).
+- **Police Humane** (grands titres) : « Humane V2.0 » de Rajesh Rajput, gratuite y compris en usage commercial, mais sa licence interdit de **modifier** le fichier sans son accord écrit — or le site en sert un sous-ensemble. Accord demandé le 22/09/2026 ; en attendant, la source (`tools/fonts-src/Humane.ttf`) n'est plus dans le dépôt public (elle reste dans l'historique Git).
 - Mesures de référence (22/09/2026, Lighthouse sur le site en ligne, après la migration) : mobile 100 / 100 / 100 / 100, 125 ko et 12 requêtes (139 ko et 14 avant), élément principal 1,4 à 1,6 s ; ordinateur 100 / 100 / 100 / 100, 289 ko et 23 requêtes (308 ko et 25 avant) ; aucun domaine tiers. Juste après une publication, le cache de GitHub Pages est froid : un premier passage peut perdre 1 à 2 points.

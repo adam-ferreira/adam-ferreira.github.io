@@ -4,7 +4,7 @@
 // geste d'invite que les marques (inclinaison + reflet), en dernier de la série. On l'attrape, on le lance, il continue sur son élan.
 // Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
 import { CUBEMAP } from './env.js';
-import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine } from './common.js';
+import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine, watchContextLoss } from './common.js';
 import LOGO_GLB from '../../assets/logo.glb?url';
 const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // l'accent du site
 const canvas = document.querySelector('.brand canvas.logo3d');
@@ -32,6 +32,7 @@ async function go() {
 
 function mount(THREE, logo, shine) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+  const lost = watchContextLoss(canvas, () => canvas.classList.remove('is-ready'));   // carte graphique perdue : le logo image revient
   renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));   // suréchantillonné : petit canvas, bords nets
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
@@ -83,6 +84,7 @@ function mount(THREE, logo, shine) {
   // d'au moins 0,004 rad (~¼ de pixel au bord), ou pendant le geste d'invite (le reflet bouge même quand la pose change peu).
   let lastDraw = 0, drawnX = NaN, drawnY = NaN;
   (function loop(now) {
+    if (lost()) return;
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
     if (document.documentElement.classList.contains('is-moving') || now - lastDraw < 15) return;   // figé pendant les mouvements de page, 60 images/s au plus

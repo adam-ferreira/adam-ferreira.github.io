@@ -75,3 +75,24 @@ test('3D : téléphones, logo AF et marques prêts', async ({ page }) => {
   await expect(page.locator('canvas.logo3d.is-ready')).toBeAttached({ timeout: 15_000 });
   await expect(page.locator('.mark.is-3d')).toHaveCount(3, { timeout: 15_000 });
 });
+
+test('« Aller au contenu » : premier arrêt de Tab, visible, et mène à l\'écran Experience', async ({ page }) => {
+  await page.keyboard.press('Tab');
+  const skip = page.locator('.skip-link');
+  await expect(skip).toBeFocused();
+  expect(await skip.evaluate((el) => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; })).toBe(true);
+  await page.keyboard.press('Enter'); await settle(page);
+  expect(await current(page)).toBe('1');
+});
+
+test('carte graphique perdue : la marque revient à son image', async ({ page }) => {
+  const mark = page.locator('.mark-linkedin');
+  await expect(mark).toHaveClass(/is-3d/, { timeout: 15_000 });
+  await page.evaluate(() => {
+    const c = document.querySelector('.mark-linkedin canvas') as HTMLCanvasElement;
+    const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext;
+    gl.getExtension('WEBGL_lose_context')!.loseContext();
+  });
+  await expect(mark).not.toHaveClass(/is-3d/);
+  await expect(mark.locator('img.theme-light')).toHaveCSS('opacity', '1');
+});

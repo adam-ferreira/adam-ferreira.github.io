@@ -20,7 +20,7 @@ const cv = defineCollection({
     meta: z.object({ title: text, description: text }).strict(),
     identity: z.object({
       first_name: text, last_name: text, headline: text, tagline: text, location: text,
-      linkedin: z.object({ handle: text, url: z.string().url() }).strict(),
+      linkedin: z.object({ url: z.string().url() }).strict(),
       photo: text,
       status_freelance: text, status_mode: text,
       hero: text,   // phrase d'accueil : {{nom}} insère une marque, {{br}} un retour à la ligne
@@ -40,8 +40,10 @@ const cv = defineCollection({
     sections: z.object({ experience: text, projects: text, education: text, languages: text, interests: text }).strict(),
     ui: z.object({
       toggle_aria: text, toggle_title_dark: text, toggle_title_light: text, nav_aria: text,
-      footer_note: z.string().optional(), scroll_hint: text, footer_statement: text, footer_availability: text,
-      updated: text, stack_label: text,
+      scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
+      updated: z.string().includes('{date}', { message: 'ui.updated doit contenir {date} (date du dernier changement du contenu)' }),
+      skip_link: text,   // lien « aller au contenu », visible seulement au clavier
+      not_found: z.object({ title: text, text: text, home: text }).strict(),   // la page 404
     }).strict(),
   }).strict().superRefine((d, ctx) => {
     // chaque {{marque}} de la phrase d'accueil doit être décrite dans identity.marks

@@ -7,7 +7,7 @@
 // · On l'attrape sur la marque elle-même, on la lance, elle file sur son élan, puis se remet droite toute seule.
 // · LinkedIn est un cube : le carré bleu devient un vrai volume, avec le « in » en relief devant et derrière,
 //   et on peut le faire tourner dans tous les sens.
-import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine } from './common.js';
+import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine, watchContextLoss } from './common.js';
 const F = 2.6;
 const marks = [...document.querySelectorAll('.mark[data-svg]')];
 const isDark = () => document.documentElement.dataset.theme === 'dark';
@@ -28,6 +28,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   mark.appendChild(canvas);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
+  const lost = watchContextLoss(canvas, () => mark.classList.remove('is-3d'));   // carte graphique perdue : l'image de la marque revient
   // rendu à deux fois la densité de l'écran puis réduit par le navigateur : des bords aussi fins que le SVG plat
   renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -187,6 +188,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
 
   if (reduced()) return;
   (function loop() {
+    if (lost()) return;
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
     if (document.documentElement.classList.contains('is-moving') && !dragging) return;   // figé pendant les mouvements de page

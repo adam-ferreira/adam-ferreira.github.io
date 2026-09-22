@@ -4,7 +4,7 @@
 // Écrans larges avec souris uniquement, après le chargement. On attrape la scène et on la fait tourner ; relâchée,
 // elle reprend son balancement. Sous « réduire les animations » : l'image finale du test, sans boucle.
 import { CUBEMAP } from './env.js';
-import { desktop, reduced, webglOk, onDprChange } from './common.js';
+import { desktop, reduced, webglOk, onDprChange, watchContextLoss } from './common.js';
 const canvas = document.querySelector('canvas.hero3d');
 // l'accent du site (--accent dans la feuille de style) : un seul réglage pour la page, les téléphones et le curseur
 const cssVar = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
@@ -199,6 +199,8 @@ async function start() {
   if (!canvas || !desktop() || !webglOk()) return;
   const THREE = await import('./three-lite.js');   // Three.js réduit à ce que le site utilise, chargé à la demande
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  // carte graphique perdue : la scène s'efface (le reste de l'accueil ne dépend pas d'elle)
+  const lost = watchContextLoss(canvas, () => { canvas.classList.remove('is-ready'); canvas.closest('.hero-stage')?.classList.remove('is-lit'); });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
@@ -270,6 +272,7 @@ async function start() {
   let frame = 0, lastKey;
   let lastDraw = 0;
   (function loop(now) {
+    if (lost()) return;
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
     if (document.documentElement.classList.contains('is-moving')) return;   // la page bouge : on laisse toute la place au mouvement

@@ -5,6 +5,7 @@ import portrait280 from '../assets/portrait-280.webp?url';
 import portrait420 from '../assets/portrait.webp?url';
 import HeroLine from './HeroLine.astro';
 import { md } from '../lib/text';
+import { monthYear } from '../lib/updated';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv; fullName: string }
 const { d, fullName } = Astro.props;
@@ -28,7 +29,7 @@ const idn = d.identity, ui = d.ui;
     </div>
   </div>
   <div class="hero-foot">
-    <span class="label" set:html={md(ui.updated)} />
+    <span class="label" set:html={md(ui.updated.replace('{date}', monthYear(d.lang)))} />
     <span class="label scroll-hint" set:html={md(ui.scroll_hint)} />
   </div>
 </header>
