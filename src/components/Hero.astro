@@ -1,8 +1,12 @@
 ---
+// L'accueil : la scène 3D des téléphones, le portrait, le nom, la phrase d'accueil avec ses marques, les coordonnées.
+// Style : Hero.css. Script : src/scripts/3d/hero.js — chargé par la page (Cv.astro) dans un seul fichier.
 import portrait280 from '../assets/portrait-280.webp?url';
 import portrait420 from '../assets/portrait.webp?url';
 import { md, heroHtml, heroLabel } from '../lib/text';
 import { markAsset } from '../lib/assets';
+import type { Cv } from '../lib/types';
+interface Props { d: Cv; fullName: string }
 const { d, fullName } = Astro.props;
 const idn = d.identity, ui = d.ui;
 const line = heroHtml(idn.hero, idn.marks, (m) => markAsset(m.src));
@@ -29,3 +33,4 @@ const line = heroHtml(idn.hero, idn.marks, (m) => markAsset(m.src));
     <span class="label scroll-hint" set:html={md(ui.scroll_hint)} />
   </div>
 </header>
+

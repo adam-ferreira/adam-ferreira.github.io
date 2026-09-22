@@ -1,0 +1,10 @@
+/* Structure de la page : le contenu recouvre le pied de page ; sections ; colonne de lecture. */
+
+/* le contenu recouvre le pied de page, qui se dévoile en dessous à la fin */
+.page { position: relative; z-index: 1; background: var(--paper); }
+
+/* ---------- contenu : chaque section s'ouvre par un mot géant ---------- */
+main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120px; }
+.section { padding-top: 64px; margin-top: 40px; border-top: 1px solid var(--line); }
+.reading { max-width: 720px; }
+@media (max-width: 640px) { .section { padding-top: 48px; margin-top: 32px; } }
