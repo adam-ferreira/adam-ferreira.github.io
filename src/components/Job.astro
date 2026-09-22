@@ -13,8 +13,9 @@ const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
 <article class:list={['job', 'slide', { 'job-short': short, 'job-demo': !!j.demo }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
+  {j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
   <div class="job-side">
-    <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />
+    {!j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
     {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
     {j.subtitle && <h4 class="sub-title reveal" set:html={md(j.subtitle)} />}
     {j.subtitle && j.subintro && <p class="sub-intro reveal" set:html={md(j.subintro)} />}
@@ -26,6 +27,6 @@ const short = bullets.length === 0;
       </ul>
     </div>
   )}
-  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.5" aria-hidden="true"></div>}
+  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.6" aria-hidden="true"></div>}
   {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>
