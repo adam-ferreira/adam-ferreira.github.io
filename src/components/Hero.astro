@@ -3,13 +3,12 @@
 // Style : Hero.css. Script : src/scripts/3d/hero.js — chargé par la page (Cv.astro) dans un seul fichier.
 import portrait280 from '../assets/portrait-280.webp?url';
 import portrait420 from '../assets/portrait.webp?url';
-import { md, heroHtml, heroLabel } from '../lib/text';
-import { markAsset } from '../lib/assets';
+import HeroLine from './HeroLine.astro';
+import { md } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv; fullName: string }
 const { d, fullName } = Astro.props;
 const idn = d.identity, ui = d.ui;
-const line = heroHtml(idn.hero, idn.marks, (m) => markAsset(m.src));
 ---
 <header class="header slide">
   <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
@@ -18,7 +17,7 @@ const line = heroHtml(idn.hero, idn.marks, (m) => markAsset(m.src));
     <div class="header-name-block">
       <h1 class="name"><span class="name-first">{idn.first_name}</span> <span class="name-last">{idn.last_name}</span></h1>
       <p class="subtitle" set:html={md(idn.headline)} />
-      <p class="hero-line" aria-label={heroLabel(idn.hero, idn.marks)} set:html={line} />
+      <HeroLine hero={idn.hero} marks={idn.marks} />
       <p class="location">
         <span class="flag" aria-hidden="true"><span class="flag-blue"></span><span class="flag-white"></span><span class="flag-red"></span></span><span class="meta-item">{idn.location}</span> <span class="meta-item">{idn.status_freelance}</span> <span class="meta-item">{idn.status_mode}</span>
       </p>
