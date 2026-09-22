@@ -20,12 +20,12 @@ const cv = defineCollection({
     meta: z.object({ title: text, description: text }).strict(),
     identity: z.object({
       first_name: text, last_name: text, headline: text, tagline: text, location: text,
-      linkedin: z.object({ url: z.string().url() }).strict(),
+      linkedin: z.object({ url: z.url() }).strict(),
       photo: text,
       status_freelance: text, status_mode: text,
       hero: text,   // phrase d'accueil : {{nom}} insère une marque, {{br}} un retour à la ligne
       marks: z.record(z.string(), mark),
-      contact: z.object({ email: z.string().email(), phone: text, phone_href: z.string().regex(/^\+\d+$/) }).strict(),
+      contact: z.object({ email: z.email(), phone: text, phone_href: z.string().regex(/^\+\d+$/) }).strict(),
     }).strict(),
     skills: z.array(z.object({ label: text, items: z.array(text).min(1) }).strict()),
     experience: z.array(z.object({
