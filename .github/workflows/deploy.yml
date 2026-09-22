@@ -34,7 +34,7 @@ jobs:
         run: npm run check
       - run: npx playwright install --with-deps chromium webkit
       - run: npm test
-      - name: Lighthouse (seuils : 100 accessibilité, bonnes pratiques, référencement ; ≥ 90 performance)
+      - name: "Lighthouse — seuils : 100 en accessibilité, bonnes pratiques et référencement, 90 en performance"
         run: npx lhci autorun
       - name: Rapports (en cas d'échec)
         if: failure()
