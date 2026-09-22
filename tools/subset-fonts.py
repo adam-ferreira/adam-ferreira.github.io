@@ -1,7 +1,7 @@
 """Subsets the body font (Bricolage Grotesque) to the characters the site displays.
 
-Humane (the giant titles) is not handled here: its current subset (letters, digits, French accents, 13.8 kB) is
-already smaller than what this character set, meant for body text, would give.
+Humane (the giant titles) is never handled here: its licence forbids modifying the file, so the site serves the
+author's original TTF as is (src/assets/fonts/Humane.ttf).
 
 Source in tools/fonts-src/, output in src/assets/fonts/ (same name as the one the stylesheet imports).
 Kept: printable ASCII + everything in the two built pages (dist/) and the two content JSON files

@@ -8,7 +8,7 @@
 }
 @font-face {
   font-family: "Humane";
-  src: url("../assets/fonts/Humane-name.woff2") format("woff2");   /* subset: Latin alphabet, French accents, punctuation */
+  src: url("../assets/fonts/Humane.ttf") format("truetype");   /* the author's original file, UNMODIFIED: its licence forbids changes (README) */
   font-weight: 400;
   font-display: swap;
 }

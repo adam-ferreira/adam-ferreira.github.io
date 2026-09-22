@@ -6,8 +6,5 @@ test-results/
 playwright-report/
 blob-report/
 
-# Humane V2.0 (Rajesh Rajput): its licence forbids modifying the font file without written permission — the source stays
-# on the Mac, out of the public repository. The site serves the subset src/assets/fonts/Humane-name.woff2.
-tools/fonts-src/Humane.ttf
 lighthouse-report/
 .lighthouseci/

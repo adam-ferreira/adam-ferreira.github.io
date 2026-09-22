@@ -5,7 +5,7 @@
 import { createHash } from 'node:crypto';
 import logoUrl from '../assets/logo.png?url';
 import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
-import humaneUrl from '../assets/fonts/Humane-name.woff2?url';
+import humaneUrl from '../assets/fonts/Humane.ttf?url';
 import { pathOf, LOCALE, type Lang } from '../lib/i18n';
 import type { Cv } from '../lib/types';
 interface Props { lang: Lang; d: Cv; fullName: string }
@@ -63,5 +63,5 @@ const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 <link rel="icon" href={logoUrl} type="image/png">
 <link rel="apple-touch-icon" href={logoUrl}>
 <link rel="preload" as="font" type="font/woff2" href={bricolageUrl} crossorigin>
-<link rel="preload" as="font" type="font/woff2" href={humaneUrl} crossorigin>
+<link rel="preload" as="font" type="font/ttf" href={humaneUrl} crossorigin>
 <script type="application/ld+json" set:html={ld}></script>
