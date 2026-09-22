@@ -2,18 +2,15 @@
 // The "Experience" chapter: one screen for the big title and the skills, then one screen per experience.
 import Job from './Job.astro';
 import Chips from './Chips.astro';
-import SectionTitle from './SectionTitle.astro';
+import Section from './Section.astro';
 import { md } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
 ---
-<section class="section" id="experience" aria-labelledby="experience-title">
-  <div class="chapter slide">
-    <SectionTitle id="experience" label={d.sections.experience} />
-    <div class="skills">
-      {d.skills.map((row) => <div class="skills-row"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
-    </div>
+<Section id="experience" title={d.sections.experience} head="chapter slide">
+  <div class="skills" slot="head">
+    {d.skills.map((row) => <div class="skills-row"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
   </div>
   {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} />)}
-</section>
+</Section>
