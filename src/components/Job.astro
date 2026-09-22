@@ -14,16 +14,16 @@ const short = bullets.length === 0;
 <article class:list={['job', 'slide', { 'job-short': short }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
   <div class="job-side">
     <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />
-    {j.intro && <p class="job-intro" set:html={md(j.intro)} />}
-    {j.subtitle && <h4 class="sub-title" set:html={md(j.subtitle)} />}
-    {j.subtitle && j.subintro && <p class="sub-intro" set:html={md(j.subintro)} />}
+    {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
+    {j.subtitle && <h4 class="sub-title reveal" set:html={md(j.subtitle)} />}
+    {j.subtitle && j.subintro && <p class="sub-intro reveal" set:html={md(j.subintro)} />}
   </div>
   {!short && (
     <div class="job-main">
       <ul class="bullets">
-        {bullets.map((b) => <li set:html={md(b)} />)}
+        {bullets.map((b) => <li class="reveal" set:html={md(b)} />)}
       </ul>
     </div>
   )}
-  {j.stack && <div class="stack"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
+  {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>
