@@ -1,10 +1,12 @@
 /* A brand mark (Mark.astro): Betclic, Accor in the welcome sentence; LinkedIn in the top bar. The image, then its 3D volume
-   (src/scripts/3d/marks.js). Placed after Topbar.css in the cascade: .mark takes precedence over .topbar-linkedin there. */
+   (src/scripts/3d/marks.js). The sizing below only applies in the sentence: the top-bar mark keeps its own box (Topbar.css). */
 
-/* the marks in the sentence */
-.mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .18em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
-.mark-accor { height: 1.5em; vertical-align: -.32em; }
-.mark img { height: 100%; width: auto; display: block; transition: opacity .5s ease; }   /* sharp corners, like the real logo and its 3D version */
+.mark { position: relative; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
+.mark img { display: block; transition: opacity .5s ease; }   /* sharp corners, like the real logo and its 3D version */
+/* the marks in the sentence: the height of a line of text */
+.hero-line .mark { height: 1.2em; vertical-align: -.2em; margin: 0 .18em; }
+.hero-line .mark-accor { height: 1.5em; vertical-align: -.32em; }
+.hero-line .mark img { height: 100%; width: auto; }
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
 /* the volume overflows the mark widely (size set by the script) and goes above the text;
