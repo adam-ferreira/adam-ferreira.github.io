@@ -41,12 +41,6 @@
 .job:last-child { margin-bottom: 8px; }
 /* grand écran sans mode scène (tablette en paysage) : un écran par expérience, bord à bord */
 @media (min-width: 1100px) and (min-height: 680px) { .job, .job:last-child { margin-bottom: 0; } }
-.job-header { margin-bottom: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
-.job-title-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; column-gap: 20px; row-gap: 8px; }
-.job-num { color: var(--accent-ink); }
-.job-title { font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; color: var(--ink); }
-.job-date { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-@media (max-width: 640px) { .job-title-line { grid-template-columns: auto 1fr; } .job-date { grid-column: 1 / -1; } }
 .job-intro, .sub-intro { max-width: 68ch; }
 .job-intro { margin-bottom: 14px; font-size: 18px; }
 .sub-title { margin-top: 40px; font-size: 20px; font-weight: 600; color: var(--ink); }

@@ -1,4 +1,5 @@
-/* Marques (Betclic, Accor dans la phrase d'accueil ; LinkedIn dans la barre) : image, puis volume 3D (src/scripts/3d/marks.js). Après Topbar.css : .mark y reprend le dessus sur .topbar-linkedin. */
+/* Une marque (Mark.astro) : Betclic, Accor dans la phrase d'accueil ; LinkedIn dans la barre. L'image, puis son volume 3D
+   (src/scripts/3d/marks.js). Placée après Topbar.css dans la cascade : .mark y reprend le dessus sur .topbar-linkedin. */
 
 /* les marques dans la phrase */
 .mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .18em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
