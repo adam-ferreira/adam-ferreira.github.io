@@ -188,6 +188,9 @@
     "footer_availability": "Available for mobile QA automation work",
     "updated": "Updated {date}",
     "stack_label": "Stack:",
+    "pager_aria": "Page sections",
+    "home_label": "Home",
+    "contact_label": "Contact",
     "skip_link": "Skip to content",
     "not_found": {
       "title": "Page not found",

@@ -6,7 +6,7 @@ interface Props { d: Cv }
 const { d } = Astro.props;
 const c = d.identity.contact, ui = d.ui;
 ---
-<footer class="site-footer slide">
+<footer class="site-footer slide" data-label={ui.contact_label}>
   <a class="footer-statement" href={`mailto:${c.email}`} set:html={md(ui.footer_statement)} />
   <div class="footer-grid label">
     <a class="nocase" href={`mailto:${c.email}`}>{c.email}</a>

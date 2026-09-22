@@ -2,13 +2,13 @@
 // The last content screen: education, languages, interests.
 import EntryHeader from './EntryHeader.astro';
 import Section from './Section.astro';
-import { md } from '../lib/text';
+import { md, plain } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
 const langs = d.languages.map((l) => `<strong>${md(l.name)}</strong> &mdash; ${md(l.level)}`).join(' &nbsp;&middot;&nbsp; ');
 ---
-<div class="facts slide">
+<div class="facts slide" data-label={plain(d.sections.education)}>
   <Section id="education" title={d.sections.education}>
     {d.education.map((e) => (
       <Fragment>

@@ -188,6 +188,9 @@
     "footer_availability": "Ouvert aux missions QA automation mobile",
     "updated": "Mis à jour en {date}",
     "stack_label": "Stack :",
+    "pager_aria": "Écrans de la page",
+    "home_label": "Accueil",
+    "contact_label": "Contact",
     "skip_link": "Aller au contenu",
     "not_found": {
       "title": "Page introuvable",
