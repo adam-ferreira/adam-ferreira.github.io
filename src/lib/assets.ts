@@ -1,5 +1,6 @@
 // URLs of the files in src/assets, versioned by Vite (the name changes with the content).
-import type { MarkAsset } from './text';
+
+export interface MarkAsset { url: string; width?: number; height?: number }
 
 const urls = import.meta.glob('../assets/marks/*.svg', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
 const raws = import.meta.glob('../assets/marks/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;

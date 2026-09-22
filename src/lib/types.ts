@@ -3,3 +3,4 @@ import type { CollectionEntry } from 'astro:content';
 
 export type Cv = CollectionEntry<'cv'>['data'];
 export type Job = Cv['experience'][number];
+export type MarkData = Cv['identity']['marks'][string];
