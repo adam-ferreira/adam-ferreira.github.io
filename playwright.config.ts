@@ -19,5 +19,7 @@ export default defineConfig({
     { name: 'desktop', use: { ...devices['Desktop Chrome'], viewport: { width: 1512, height: 830 } } },
     // iPhone (WebKit, le moteur de Safari) : défilement normal, écran étroit
     { name: 'iphone', use: { ...devices['iPhone 15'] } },
+    // tablette en paysage : grand écran sans souris, donc sans mode scène — seulement pour la comparaison visuelle
+    { name: 'tablette', use: { ...devices['iPad Pro 11 landscape'] }, testMatch: /visual\.spec\.ts/ },
   ],
 });
