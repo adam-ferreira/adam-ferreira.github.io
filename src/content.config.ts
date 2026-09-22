@@ -7,7 +7,6 @@ import { z } from 'astro/zod';
 
 const text = z.string().min(1);
 const mark = z.object({
-  type: z.literal('img'),
   src: z.string().regex(/^assets\/marks\/[\w-]+\.svg$/, 'a mark lives in src/assets/marks/'),
   alt: text,
   fill_dark: z.string().nullable().optional(),

@@ -11,7 +11,7 @@ const { d } = Astro.props;
 <section class="section" id="experience" aria-labelledby="experience-title">
   <div class="chapter slide">
     <SectionTitle id="experience" label={d.sections.experience} />
-    <div class="skills" id="skills">
+    <div class="skills">
       {d.skills.map((row) => <div class="skills-row"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
     </div>
   </div>
