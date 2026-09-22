@@ -7,7 +7,9 @@
 .hero-line .mark { height: 1.2em; vertical-align: -.2em; margin: 0 .18em; }
 .hero-line .mark-accor { height: 1.5em; vertical-align: -.32em; }
 .hero-line .mark img { height: 100%; width: auto; }
+/* the dark Accor logo turns light in dark mode — the chosen theme, or the system one (also without JavaScript) */
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); } }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
 /* the volume overflows the mark widely (size set by the script) and goes above the text;
    the mouse is caught by the mark itself, the canvas lets it through */
