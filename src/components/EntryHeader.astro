@@ -6,7 +6,7 @@ interface Props { title: string; org?: string; date: string; num?: string }   //
 const { title, org, date, num } = Astro.props;
 const heading = md(title) + (org ? ` &mdash; ${md(org)}` : '');
 ---
-<div class="entry-header"><div class="entry-title-line">
+<div class="entry-header reveal"><div class="entry-title-line">
   {num && <span class="entry-num label">{num}</span>}
   <h3 class="entry-title" set:html={heading} />
   <span class="entry-date" set:html={md(date)} />
