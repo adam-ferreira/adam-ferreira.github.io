@@ -80,7 +80,7 @@ test('« Aller au contenu » : premier arrêt de Tab, visible, et mène à l\'é
   await page.keyboard.press('Tab');
   const skip = page.locator('.skip-link');
   await expect(skip).toBeFocused();
-  expect(await skip.evaluate((el) => { const r = el.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight; })).toBe(true);
+  await expect(skip).toBeInViewport({ ratio: 1 });   // attend la fin de son apparition (0,2 s) : entièrement visible
   await page.keyboard.press('Enter'); await settle(page);
   expect(await current(page)).toBe('1');
 });
