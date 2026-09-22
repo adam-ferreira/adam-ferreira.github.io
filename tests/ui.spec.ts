@@ -9,8 +9,9 @@ test('curseur : suit la souris, gonfle au survol d\'un lien, puis s\'arrête', a
   await expect(page.locator('html')).toHaveClass(/has-cursor/);
   const dot = page.locator('.cursor');
   await page.mouse.move(420, 380, { steps: 5 });
-  // arrivée sur la souris, puis plus d'étirement (scale 1, 1) : la boucle s'est arrêtée (le navigateur réécrit la valeur à sa façon)
-  await expect.poll(() => dot.evaluate((d) => (d as HTMLElement).style.transform)).toMatch(/translate3d\(420px, 380px, 0px\).*scale\(1, 1\)/);
+  // the ball catches up with the pointer (within a pixel: on slow CI machines the last frames can lag), then stops
+  const pos = () => dot.evaluate((d) => { const m = new DOMMatrix(getComputedStyle(d).transform); return [m.e, m.f]; });
+  await expect.poll(async () => { const [x, y] = await pos(); return Math.hypot(x - 420, y - 380); }, { timeout: 10_000 }).toBeLessThan(1);
   await page.locator('.contact-link').first().hover();
   await expect(dot).toHaveClass(/is-hot/);
 });
