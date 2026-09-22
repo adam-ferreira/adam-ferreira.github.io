@@ -19,16 +19,18 @@
     "hero": "Currently at {{betclic}}, previously at {{accor}}",
     "marks": {
       "betclic": {
-        "type": "img",
         "src": "assets/marks/betclic.svg",
-        "alt": "Betclic",
-        "fill_dark": null
+        "alt": "Betclic"
       },
       "accor": {
-        "type": "img",
         "src": "assets/marks/accor.svg",
         "alt": "Accor",
-        "fill_dark": "#eef1f5"
+        "dark_map": { "#050033": "#eef1f5" }
+      },
+      "linkedin": {
+        "src": "assets/marks/linkedin.svg",
+        "alt": "LinkedIn",
+        "dark_map": { "#000000": "#ffffff" }
       }
     },
     "contact": {
@@ -150,7 +152,6 @@
       ]
     }
   ],
-  "projects": [],
   "education": [
     {
       "title": "ESIEE Paris — IMAC engineering degree",
@@ -173,7 +174,6 @@
   ],
   "sections": {
     "experience": "Experience",
-    "projects": "Personal projects",
     "education": "Education",
     "languages": "Languages",
     "interests": "Interests"
@@ -188,6 +188,9 @@
     "footer_availability": "Available for mobile QA automation work",
     "updated": "Updated {date}",
     "stack_label": "Stack:",
+    "pager_aria": "Page sections",
+    "home_label": "Home",
+    "contact_label": "Contact",
     "skip_link": "Skip to content",
     "not_found": {
       "title": "Page not found",

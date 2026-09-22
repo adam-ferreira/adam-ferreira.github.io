@@ -7,8 +7,8 @@
 @media (min-width: 1100px) and (min-height: 680px) { .facts { margin-top: 0; padding-top: 0; border-top: 0; } }
 .facts .section-title-wrapper { margin-bottom: 20px; }
 .facts .section-title { font-size: clamp(48px, 5.4vw, 80px); }
-.facts .job-header { padding-top: 0; border-top: 0; margin-bottom: 8px; }
-.facts .job-title { font-size: 18px; }
-.facts .job-title-line { grid-template-columns: 1fr; }
-.facts .job-date { grid-column: 1; }
-.facts .job-intro { font-size: 16px; }
+.facts .entry-header { padding-top: 0; border-top: 0; margin-bottom: 8px; }
+.facts .entry-title { font-size: 18px; }
+.facts .entry-title-line { grid-template-columns: 1fr; }
+.facts .entry-date { grid-column: 1; }
+.facts .prose { font-size: 16px; }

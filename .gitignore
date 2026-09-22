@@ -8,3 +8,4 @@ blob-report/
 
 lighthouse-report/
 .lighthouseci/
+__pycache__/
