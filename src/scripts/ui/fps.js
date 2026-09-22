@@ -1,4 +1,4 @@
-// Compteur de fluidité : ajouter ?fps à l'adresse. Images par seconde, bilan du dernier mouvement, état de la batterie.
+// Smoothness meter: add ?fps to the URL. Frames per second, summary of the last move, battery state.
 const root = document.documentElement;
 
 if (/[?&]fps\b/.test(location.search)) {
@@ -7,20 +7,20 @@ if (/[?&]fps\b/.test(location.search)) {
   document.body.appendChild(meter);
   const frames = [];
   let last = performance.now(), stats = null, lastMove = '—';
-  // Chrome plafonne les animations à 30 i/s sur batterie faible (Économiseur d'énergie, ≤ 20 % par défaut) : on l'affiche pour ne pas le confondre avec un défaut du site
+  // Chrome caps animations at 30 fps on low battery (Energy Saver, ≤ 20 % by default): shown so it is not mistaken for a site problem
   let power = '';
   navigator.getBattery?.().then((b) => {
-    const upd = () => { power = `batterie ${Math.round(b.level * 100)} % · ${b.charging ? 'sur secteur' : 'sur batterie'}`; };
+    const upd = () => { power = `battery ${Math.round(b.level * 100)} % · ${b.charging ? 'plugged in' : 'on battery'}`; };
     upd(); b.addEventListener('levelchange', upd); b.addEventListener('chargingchange', upd);
   });
   (function fps(now) {
     const dt = now - last; last = now; frames.push(dt); if (frames.length > 120) frames.shift();
     if (root.classList.contains('is-moving')) { stats ??= { n: 0, slow: 0, worst: 0 }; stats.n++; if (dt > 20) stats.slow++; if (dt > stats.worst) stats.worst = dt; }
-    else if (stats) { lastMove = `${stats.n} images, ${stats.slow} lentes (> 20 ms), pire ${stats.worst.toFixed(1)} ms`; stats = null; }
+    else if (stats) { lastMove = `${stats.n} frames, ${stats.slow} slow (> 20 ms), worst ${stats.worst.toFixed(1)} ms`; stats = null; }
     const avg = frames.reduce((a, b) => a + b, 0) / frames.length;
-    const capped = avg > 32 && avg < 35 && Math.max(...frames) < 36;   // toutes les images à 33 ms pile : un plafond, pas une page qui peine
-    meter.textContent = `FPS ${(1000 / avg).toFixed(0)}  (image moyenne ${avg.toFixed(1)} ms)\ndernier mouvement : ${lastMove}` +
-      (power ? '\n' + power : '') + (capped ? '\n⚠ cadence plafonnée à 30 i/s par le navigateur (économie d\'énergie ?)' : '');
+    const capped = avg > 32 && avg < 35 && Math.max(...frames) < 36;   // every frame at exactly 33 ms: a cap, not a struggling page
+    meter.textContent = `FPS ${(1000 / avg).toFixed(0)}  (average frame ${avg.toFixed(1)} ms)\nlast move: ${lastMove}` +
+      (power ? '\n' + power : '') + (capped ? '\n⚠ frame rate capped at 30 fps by the browser (energy saver?)' : '');
     requestAnimationFrame(fps);
   })(last);
 }

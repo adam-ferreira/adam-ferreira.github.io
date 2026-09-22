@@ -1,19 +1,19 @@
 ---
-// Bannière LinkedIn (1584 × 396) faite avec les éléments du site : la scène des téléphones figée (data-freeze), Humane.
-// Export : npm run build && npm run preview, puis Chrome headless sur http://localhost:4321/tools/linkedin-cover/ en
-// --window-size=1584,396 --force-device-scale-factor=2 --screenshot. La photo de profil LinkedIn recouvre le coin bas
-// gauche : rien d'important là. Page publiée mais non indexée.
+// LinkedIn banner (1584 × 396) made from the site's building blocks: the frozen phone scene (data-freeze), Humane.
+// Export: npm run build && npm run preview, then headless Chrome on http://localhost:4321/tools/linkedin-cover/ with
+// --window-size=1584,396 --force-device-scale-factor=2 --screenshot. The LinkedIn profile photo covers the bottom-left
+// corner: nothing important there. The page is published but not indexed.
 ---
 <!doctype html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
-<title>Bannière LinkedIn</title>
+<title>LinkedIn banner</title>
 <style is:global>
   @font-face { font-family: "Humane"; src: url("../../assets/fonts/Humane-name.woff2") format("woff2"); }
   @font-face { font-family: "Bricolage Grotesque"; src: url("../../assets/fonts/BricolageGrotesque-fr.woff2") format("woff2"); font-weight: 300 800; }
-  :root { --accent: #ffb627; }   /* même accent que le site (src/styles/base.css) : les téléphones le lisent aussi */
+  :root { --accent: #ffb627; }   /* same accent as the site (src/styles/base.css): the phones read it too */
   html, body { margin: 0; background: #0e1116; }
   .cover {
     position: relative; width: 1584px; height: 396px; overflow: hidden; color: #eef1f5;
@@ -23,7 +23,7 @@
       #0e1116;
     font-family: "Bricolage Grotesque", system-ui, sans-serif;
   }
-  .cover::before {   /* une grille très fine, qui s'efface vers les bords */
+  .cover::before {   /* a very fine grid that fades out towards the edges */
     content: ""; position: absolute; inset: 0;
     background-image: linear-gradient(rgba(255, 255, 255, .035) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, .035) 1px, transparent 1px);
     background-size: 44px 44px;

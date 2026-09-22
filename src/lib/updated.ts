@@ -1,6 +1,6 @@
-// Date du dernier changement du contenu du CV : celle du dernier commit qui a touché src/content/cv/. Remplace {date}
-// dans « Updated {date} » à chaque construction : la mention n'est plus jamais périmée. Sans historique Git (copie sans
-// .git), c'est la date de la construction. En CI, le dépôt est récupéré avec tout son historique (fetch-depth: 0).
+// Date of the last change to the CV content: that of the last commit touching src/content/cv/. It replaces {date} in
+// "Updated {date}" on every build, so the mention is never out of date. Without Git history (a copy without .git),
+// it is the build date. In CI, the repository is checked out with its full history (fetch-depth: 0).
 import { execFileSync } from 'node:child_process';
 import type { Lang } from './i18n';
 
@@ -14,5 +14,5 @@ export function contentUpdatedAt(): Date {
   return cached;
 }
 
-/** « September 2026 », « septembre 2026 ». */
+/** "September 2026", "septembre 2026" (formatted in the page's language). */
 export const monthYear = (lang: Lang) => new Intl.DateTimeFormat(lang, { month: 'long', year: 'numeric', timeZone: 'Europe/Paris' }).format(contentUpdatedAt());

@@ -1,7 +1,7 @@
 ---
-// La phrase d'accueil (« Currently at {{betclic}}, previously at {{accor}} »), mot par mot. Les groupes sont séparés par
-// un espace écrit explicitement : Astro n'en met pas entre des éléments produits en boucle, et les mots sont en ligne.
-// Un groupe de plusieurs mots (une marque et sa virgule) reste insécable. Style : Hero.css (.hero-line).
+// The hero sentence ("Currently at {{betclic}}, previously at {{accor}}"), word by word. Groups are separated by an
+// explicitly written space: Astro puts none between elements produced in a loop, and the words are inline.
+// A group of several words (a brand mark and its comma) never breaks across lines. Style: Hero.css (.hero-line).
 import HeroWord from './HeroWord.astro';
 import { heroGroups, heroLabel } from '../lib/text';
 import type { Cv } from '../lib/types';

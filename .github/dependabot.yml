@@ -1,5 +1,5 @@
-# Mises à jour proposées chaque lundi, regroupées ; chaque proposition passe par la CI complète (types, tests, Lighthouse)
-# avant qu'on l'accepte. Les versions majeures arrivent séparément : elles peuvent casser quelque chose.
+# Updates proposed every Monday, grouped; each proposal goes through the full CI (types, tests, Lighthouse) before it is
+# accepted. Major versions come separately: they may break something.
 version: 2
 updates:
   - package-ecosystem: npm
@@ -7,7 +7,7 @@ updates:
     schedule: { interval: weekly, day: monday, time: "07:00", timezone: Europe/Paris }
     open-pull-requests-limit: 5
     groups:
-      mineures:
+      minor-and-patch:
         update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /

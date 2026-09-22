@@ -1,22 +1,22 @@
-// La scène d'accueil : deux téléphones, un iOS devant et un Android derrière, qui jouent le même test automatisé
-// au même instant. Un cadre de sélection passe d'un élément à l'autre comme dans un inspecteur Appium, tape,
-// vérifie, et chaque étape validée s'ajoute au journal du test en bas de l'écran.
-// Écrans larges avec souris uniquement, après le chargement. On attrape la scène et on la fait tourner ; relâchée,
-// elle reprend son balancement. Sous « réduire les animations » : l'image finale du test, sans boucle.
+// The hero scene: two phones, an iOS one in front and an Android one behind, running the same automated test at the
+// same moment. A selection frame moves from one element to the next as in an Appium inspector, taps, asserts, and each
+// passed step is appended to the test log at the bottom of the screen.
+// Wide screens with a mouse only, after load. You can grab the scene and spin it; once released, it goes back to
+// swaying. Under "reduce motion": the final frame of the test, without a loop.
 import { CUBEMAP } from './env.js';
 import { desktop, reduced, webglOk, onDprChange, watchContextLoss } from './common.js';
 const canvas = document.querySelector('canvas.hero3d');
-// l'accent du site (--accent dans la feuille de style) : un seul réglage pour la page, les téléphones et le curseur
+// the site's accent (--accent in the stylesheet): a single setting for the page, the phones and the cursor
 const cssVar = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
 const ACC = cssVar('--accent', '#ffb627'), GREEN = '#3ddc84', INK = '#161b22';
 const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
-const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // vers le blanc
+const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // towards white
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
 
-// ---------- l'écran : la maquette d'une app, dessinée une fois ; le test est redessiné par-dessus à chaque image ----------
-const SW = 480, SH = 1040, TS = 1.5;   // maquette en 480 × 1040, texture dessinée 1,5 fois plus fine
+// ---------- the screen: an app mockup, drawn once; the test is redrawn over it on each frame ----------
+const SW = 480, SH = 1040, TS = 1.5;   // 480 × 1040 mockup, texture drawn at 1.5× the resolution
 const R = {
   card: { x: 24, y: 150, w: 432, h: 180, r: 22 },
   row1: { x: 24, y: 346, w: 432, h: 68, r: 16 },
@@ -42,15 +42,15 @@ function drawBase() {
   const c = document.createElement('canvas'); c.width = SW * TS; c.height = SH * TS;
   const g = c.getContext('2d'); g.scale(TS, TS);
   g.fillStyle = '#f4f6f9'; g.fillRect(0, 0, SW, SH);
-  // barre d'état
+  // status bar
   g.fillStyle = INK; g.font = `600 24px ${SANS}`; g.fillText('9:41', 44, 46);
   for (let i = 0; i < 4; i++) g.fillRect(352 + i * 9, 44 - (i + 1) * 5, 6, (i + 1) * 5);
   g.lineWidth = 2; g.strokeStyle = INK; rr(g, 396, 29, 38, 17, 5); g.stroke(); g.fillRect(400, 33, 26, 9); g.fillRect(436, 34, 3, 7);
-  // en-tête
+  // header
   rr(g, 24, 84, 176, 28, 9); g.fill();
   g.fillStyle = '#c9d0da'; rr(g, 24, 120, 112, 14, 7); g.fill();
   g.fillStyle = tint(ACC, 0.72); g.beginPath(); g.arc(424, 108, 24, 0, Math.PI * 2); g.fill();
-  // carte mise en avant
+  // featured card
   const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, ACC); gr.addColorStop(1, tint(ACC, 0.35));
   g.fillStyle = gr; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
   g.save(); rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.clip();
@@ -60,7 +60,7 @@ function drawBase() {
   g.fillStyle = 'rgba(255,255,255,.72)'; rr(g, 48, 218, 150, 14, 7); g.fill();
   g.fillStyle = '#fff'; rr(g, 48, 272, 124, 38, 19); g.fill();
   g.fillStyle = ACC; rr(g, 72, 285, 76, 12, 6); g.fill();
-  // deux lignes de liste
+  // two list rows
   for (const r of [R.row1, R.row2]) {
     g.fillStyle = '#fff'; rr(g, r.x, r.y, r.w, r.h, r.r); g.fill();
     g.strokeStyle = '#e3e7ed'; g.lineWidth = 2; g.stroke();
@@ -69,15 +69,15 @@ function drawBase() {
     g.fillStyle = '#c9d0da'; rr(g, r.x + 74, r.y + 40, 128, 12, 6); g.fill();
     g.fillStyle = tint(ACC, 0.72); rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
   }
-  // bouton principal
+  // primary button
   g.fillStyle = INK; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
   g.fillStyle = '#fff'; rr(g, 180, 537, 120, 14, 7); g.fill();
-  // panneau du journal de test
+  // test log panel
   g.fillStyle = '#0e1116'; rr(g, 16, 598, 448, 336, 24); g.fill();
   g.font = `500 17px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('▶ smoke.feature', 40, 640);
   const dev = 'iOS · Android'; g.fillText(dev, 440 - g.measureText(dev).width, 640);
   g.fillStyle = '#232a33'; g.fillRect(40, 656, 400, 2);
-  // barre d'onglets
+  // tab bar
   g.fillStyle = '#fff'; g.fillRect(0, 948, SW, 92); g.fillStyle = '#e3e7ed'; g.fillRect(0, 948, SW, 2);
   [72, 180, 300, 408].forEach((x, i) => { g.fillStyle = i === 0 ? ACC : '#c9d0da'; rr(g, x - 18, 968, 36, 36, 10); g.fill(); });
   g.fillStyle = INK; rr(g, 170, 1022, 140, 6, 3); g.fill();
@@ -85,7 +85,7 @@ function drawBase() {
 }
 
 function drawScreen(g, base, t) {
-  t = ((t % CYCLE) + CYCLE) % CYCLE;   // l'horodatage de la première image peut précéder le départ : jamais de temps négatif
+  t = ((t % CYCLE) + CYCLE) % CYCLE;   // the first frame's timestamp can precede the start: never a negative time
   g.setTransform(TS, 0, 0, TS, 0, 0);
   g.drawImage(base, 0, 0, SW, SH);
   const n = STEPS.length, stepsEnd = n * STEP, inSteps = t < stepsEnd;
@@ -93,7 +93,7 @@ function drawScreen(g, base, t) {
   const p = inSteps ? (t - k * STEP) / STEP : 1;
   const step = STEPS[k];
 
-  // le cadre de sélection glisse vers l'élément visé, affiche son locator, puis tape ou vérifie
+  // the selection frame slides to the target element, shows its locator, then taps or asserts
   let alpha = inSteps ? (k === 0 ? Math.min(1, p / 0.2) : 1) : Math.max(0, 1 - (t - stepsEnd) / 0.5);
   if (alpha > 0) {
     const r = mix(k > 0 ? STEPS[k - 1].rect : step.rect, step.rect, ease(Math.min(1, p / 0.35)));
@@ -116,7 +116,7 @@ function drawScreen(g, base, t) {
     g.restore();
   }
 
-  // le journal : une ligne verte par étape validée, l'étape en cours en gris
+  // the log: one green line per passed step, the current step in grey
   const done = inSteps ? k + (p > 0.8 ? 1 : 0) : n;
   g.font = `500 20px ${MONO}`;
   for (let i = 0; i < done; i++) {
@@ -140,8 +140,8 @@ function drawScreen(g, base, t) {
   }
 }
 
-// Ce qui change à l'écran à l'instant t : null pendant un mouvement (cadre qui glisse, onde du tap, apparition d'une ligne),
-// sinon une clé de l'état fixe (étape, validation, curseur qui clignote). Même clé ⇒ même image : inutile de la redessiner.
+// What changes on screen at time t: null during a motion (sliding frame, tap ripple, a line appearing), otherwise a key
+// for the static state (step, assertion, blinking cursor). Same key ⇒ same image: no need to redraw it.
 function screenKey(t) {
   t = ((t % CYCLE) + CYCLE) % CYCLE;
   const n = STEPS.length, stepsEnd = n * STEP;
@@ -151,7 +151,7 @@ function screenKey(t) {
   return k + '|' + (!tap && p > 0.55) + '|' + (p > 0.8) + '|' + (p <= 0.8 ? Math.floor(t * 4) % 2 : '-');
 }
 
-// ---------- les téléphones ----------
+// ---------- the phones ----------
 function roundedRect(THREE, w, h, r) {
   const s = new THREE.Shape(), x = -w / 2, y = -h / 2;
   s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
@@ -182,10 +182,10 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
     ? flat(THREE, 0.2, 0.056, 0.028, black)
     : new THREE.Mesh(new THREE.CircleGeometry(0.022, 24), black);
   cut.position.set(0, sh / 2 - (notch === 'island' ? 0.058 : 0.05), D / 2 + 0.003); g.add(cut);
-  // boutons latéraux
+  // side buttons
   const btn = (x, y, h) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.014, h, 0.03), body); m.position.set(x, y, 0); g.add(m); };
   btn(W / 2 + 0.004, 0.3, 0.2); btn(-W / 2 - 0.004, 0.44, 0.12); btn(-W / 2 - 0.004, 0.27, 0.12);
-  // bloc photo au dos
+  // camera bump on the back
   const bump = slab(THREE, 0.3, notch === 'island' ? 0.3 : 0.42, 0.08, 0.024, 0.008, body);
   bump.position.set(-W / 2 + 0.22, H / 2 - (notch === 'island' ? 0.22 : 0.28), -D / 2 - 0.01); g.add(bump);
   const lens = (x, y) => { const m = new THREE.Mesh(new THREE.CylinderGeometry(0.052, 0.052, 0.026, 32), glass); m.rotation.x = Math.PI / 2; m.position.set(x, y, -D / 2 - 0.022); g.add(m); };
@@ -197,9 +197,9 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
 
 async function start() {
   if (!canvas || !desktop() || !webglOk()) return;
-  const THREE = await import('./three-lite.js');   // Three.js réduit à ce que le site utilise, chargé à la demande
+  const THREE = await import('./three-lite.js');   // Three.js trimmed to what the site uses, loaded on demand
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  // carte graphique perdue : la scène s'efface (le reste de l'accueil ne dépend pas d'elle)
+  // GPU lost: the scene fades out (the rest of the hero does not depend on it)
   const lost = watchContextLoss(canvas, () => { canvas.classList.remove('is-ready'); canvas.closest('.hero-stage')?.classList.remove('is-lit'); });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
@@ -211,14 +211,14 @@ async function start() {
   const env = new THREE.CubeTextureLoader().load(CUBEMAP);
   env.colorSpace = THREE.SRGBColorSpace;
 
-  // un seul écran pour les deux téléphones : c'est le même test, sur iOS et Android, au même instant
+  // a single screen for both phones: it is the same test, on iOS and Android, at the same moment
   const base = drawBase();
   const sc = document.createElement('canvas'); sc.width = SW * TS; sc.height = SH * TS;
   const sg = sc.getContext('2d');
   const tex = new THREE.CanvasTexture(sc);
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   const paint = (t) => { drawScreen(sg, base, t); tex.needsUpdate = true; };
-  // data-freeze="secondes" : une image fixe du test à cet instant, sans boucle (export de la bannière LinkedIn)
+  // data-freeze="seconds": a still frame of the test at that moment, without a loop (LinkedIn banner export)
   const freeze = canvas.dataset.freeze !== undefined ? parseFloat(canvas.dataset.freeze) : null;
   paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
 
@@ -238,7 +238,7 @@ async function start() {
   function fit() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
     if (!w || !h) return;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 1.5, 2));   // 1,5× sur écran standard, 2× sur Retina
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio * 1.5, 2));   // 1.5× on a standard screen, 2× on Retina
     renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
   }
   fit();
@@ -246,7 +246,7 @@ async function start() {
   canvas.classList.add('is-ready');
   const stage = canvas.closest('.hero-stage'); if (stage) stage.classList.add('is-lit');
 
-  // interaction : on attrape la scène, on la lance, elle file sur son élan, puis reprend son balancement
+  // interaction: grab the scene, throw it, it spins on its momentum, then goes back to swaying
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
   let dragging = false, last = null, releasedAt = -1e9, visible = true;
   const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a));
@@ -275,12 +275,12 @@ async function start() {
     if (lost()) return;
     requestAnimationFrame(loop);
     if (!visible || document.hidden) return;
-    if (document.documentElement.classList.contains('is-moving')) return;   // la page bouge : on laisse toute la place au mouvement
-    if (document.documentElement.classList.contains('stage') && document.documentElement.dataset.slide !== '0') return;   // mode scène : l'accueil n'est pas à l'écran
-    if (now - lastDraw < 15) return;   // 60 images/s suffisent, même sur un écran à 120 Hz
+    if (document.documentElement.classList.contains('is-moving')) return;   // the page is moving: leave all the room to the move
+    if (document.documentElement.classList.contains('stage') && document.documentElement.dataset.slide !== '0') return;   // stage mode: the hero is not on screen
+    if (now - lastDraw < 15) return;   // 60 fps is enough, even on a 120 Hz screen
     lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
-    if (frame++ % 3 === 0) {   // l'écran des téléphones à 20 images/s au plus, et seulement quand il change : ~40 % d'envois en moins à la carte graphique
+    if (frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
       const key = screenKey(t);
       if (key === null || key !== lastKey) paint(t % CYCLE);
       lastKey = key;

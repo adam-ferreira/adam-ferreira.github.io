@@ -1,15 +1,15 @@
 ---
-// Une marque : Betclic et Accor dans la phrase d'accueil (HeroWord), LinkedIn dans la barre (Topbar). L'image d'abord,
-// puis son volume 3D : src/scripts/3d/marks.js extrude le SVG de data-svg. Avec href, la marque est un lien. Style : Mark.css.
+// A brand mark: Betclic and Accor in the hero sentence (HeroWord), LinkedIn in the top bar (Topbar). The image first,
+// then its 3D volume: src/scripts/3d/marks.js extrudes the SVG from data-svg. With href, the mark is a link. Style: Mark.css.
 interface Props {
-  name: string;               // betclic, accor, linkedin → classe mark-<name>
-  svg: string;                // adresse du SVG à mettre en volume
-  href?: string;              // la marque est un lien (ouvert dans un nouvel onglet)
-  label?: string;             // nom accessible du lien
-  class?: string;             // classes en plus : w (un mot de la phrase d'accueil), topbar-linkedin
+  name: string;               // betclic, accor, linkedin → class mark-<name>
+  svg: string;                // URL of the SVG to extrude in 3D
+  href?: string;              // the mark is a link (opened in a new tab)
+  label?: string;             // accessible name of the link
+  class?: string;             // extra classes: w (a word of the hero sentence), topbar-linkedin
   style?: string;
-  fillDark?: string | null;   // mode nuit : couleur qui remplace les faces sombres
-  darkMap?: string;           // mode nuit : correspondances de couleurs précises (JSON)
+  fillDark?: string | null;   // dark mode: color that replaces the dark faces
+  darkMap?: string;           // dark mode: exact color replacements (JSON)
 }
 const { name, svg, href, label, class: extra, style, fillDark, darkMap } = Astro.props;
 const Tag = href ? 'a' : 'span';
