@@ -13,7 +13,7 @@ import { pathOf, type Lang } from '../lib/i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const entry = await getEntry('cv', lang);
-if (!entry) throw new Error(`Contenu manquant : src/content/cv/${lang}.json`);
+if (!entry) throw new Error(`Missing content: src/content/cv/${lang}.json`);
 const d = entry.data;
 const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
 ---
@@ -22,7 +22,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
 <head>
   <Head lang={lang} d={d} fullName={fullName} />
 </head>
-<body id="top">
+<body id="top" data-pager-label={d.ui.pager_aria}>
   <a class="skip-link" href="#experience">{d.ui.skip_link}</a>
 
   <Topbar d={d} fullName={fullName} home={pathOf(lang)} />
@@ -42,7 +42,9 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
     // All the page's scripts, in a single file: measured on 2026-09-22, 2 files on load (13.1 KB) versus 6 (14.3 KB, some
     // chained) when each component declares its own. The order is the execution order.
     import '../components/ThemeToggle.js';  // the light / dark switch
-    import '../scripts/ui/navigation.js';   // the page: progress indicator, stage mode, scrolling
+    import '../scripts/ui/pager.js';        // the page: the screens and their progress indicator
+    import '../scripts/ui/stage.js';        // the page: stage mode (computer)
+    import '../scripts/ui/scroll.js';       // the page: normal scrolling (everything else)
     import '../components/Topbar.js';       // the top bar: the logo reloads the page
     import '../scripts/ui/cursor.js';       // the page: cursor
     import '../scripts/ui/fps.js';          // the page: ?fps

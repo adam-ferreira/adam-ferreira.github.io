@@ -1,12 +1,8 @@
 ---
-// The content of <head>: the security policy (CSP), the script that prepares the display, the title and description,
-// the share preview (Open Graph), the card for search engines (schema.org), the languages (canonical, hreflang), the
-// icon, the preload of the two fonts. The page's style and scripts are added by Astro itself.
-import { createHash } from 'node:crypto';
-import logoUrl from '../assets/logo.png?url';
-import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
-import humaneUrl from '../assets/fonts/Humane.ttf?url';
-import { pathOf, LOCALE, type Lang } from '../lib/i18n';
+// The <head> of a CV page: everything that is specific to it — title and description, share preview (Open Graph), card
+// for search engines (schema.org), languages (canonical, hreflang). What every page shares is in BaseHead.astro.
+import BaseHead from './BaseHead.astro';
+import { LANGS, pathOf, LOCALE, type Lang } from '../lib/i18n';
 import type { Cv } from '../lib/types';
 interface Props { lang: Lang; d: Cv; fullName: string }
 const { lang, d, fullName } = Astro.props;
@@ -14,17 +10,6 @@ const idn = d.identity;
 const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
 const url = new URL(pathOf(lang), site).href;
 const photo = new URL(idn.photo, site).href;
-
-// Before anything is displayed: "js" (content that gets revealed may start hidden) and, on a desktop with a mouse, stage mode.
-const BOOT = 'document.documentElement.classList.add("js");if (matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches) document.documentElement.classList.add("stage")';
-const sha256 = (s: string) => `'sha256-${createHash('sha256').update(s).digest('base64')}'`;
-// Security policy: nothing comes from anywhere but the site; the only script written in the page is BOOT, allowed by
-// its hash (any other injected script would be blocked). style-src keeps 'unsafe-inline': the stylesheet is inlined in
-// the page and the hero words carry style="--i:…". Production only: in development, Astro injects its own tools.
-const CSP = [
-  "default-src 'self'", `script-src 'self' ${sha256(BOOT)}`, "style-src 'self' 'unsafe-inline'", "img-src 'self' data: blob:",
-  "font-src 'self'", "connect-src 'self'", "object-src 'none'", "base-uri 'self'", "form-action 'none'",
-].join('; ');
 
 // The "Person" card read by search engines (schema.org).
 const person = {
@@ -37,15 +22,9 @@ const person = {
 };
 const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 ---
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{import.meta.env.PROD && <meta http-equiv="Content-Security-Policy" content={CSP}>}
-<meta name="referrer" content="strict-origin-when-cross-origin">
-<script is:inline set:html={BOOT}></script>
+<BaseHead />
 <title>{d.meta.title}</title>
 <meta name="description" content={d.meta.description}>
-<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="profile">
 <meta property="og:title" content={`${fullName} — ${idn.headline}`}>
 <meta property="og:description" content={idn.tagline}>
@@ -57,11 +36,6 @@ const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 <meta property="og:locale" content={LOCALE[lang]}>
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href={url}>
-<link rel="alternate" hreflang="en" href={new URL(pathOf('en'), site).href}>
-<link rel="alternate" hreflang="fr" href={new URL(pathOf('fr'), site).href}>
+{LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathOf(l), site).href}>)}
 <link rel="alternate" hreflang="x-default" href={site}>
-<link rel="icon" href={logoUrl} type="image/png">
-<link rel="apple-touch-icon" href={logoUrl}>
-<link rel="preload" as="font" type="font/woff2" href={bricolageUrl} crossorigin>
-<link rel="preload" as="font" type="font/ttf" href={humaneUrl} crossorigin>
 <script type="application/ld+json" set:html={ld}></script>

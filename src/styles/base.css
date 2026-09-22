@@ -26,23 +26,26 @@
   --accent-hi: #ffebc3;     /* highlight (cursor, portrait disc) */
   --accent-deep: #b27f1b;   /* shadow */
   --topbar: rgba(246, 247, 249, 0.82);
+  /* measurements and curves shared by several files (CSS cannot use them in media queries: those breakpoints are listed
+     in src/scripts/media.js) */
+  --topbar-h: 60px;                                 /* height of the top bar: each screen fits under it */
+  --gutter: clamp(16px, 3vw, 36px);                 /* side margin of the page */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);          /* something arriving: it settles in */
+  --ease-out-strong: cubic-bezier(.2, .8, .2, 1);   /* something revealed: a title, the logo, the cursor */
   --display: "Humane", "Bricolage Grotesque", system-ui, sans-serif;
   --sans: "Bricolage Grotesque", "Inter", system-ui, -apple-system, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 }
+/* The dark palette (the accent and its highlight and shadow do not change). It applies to a dark system when the light
+   theme is not chosen — also without JavaScript — and whenever the dark theme is chosen. CSS cannot put a media query and
+   an attribute selector in one selector list, hence two identical blocks: tests/content.spec.ts checks they stay equal. */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-    --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8);
-  }
+  :root:not([data-theme="light"]) { --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028; --accent-ink: #ffb627; --topbar: rgba(14, 17, 22, 0.8); }
 }
-:root[data-theme="dark"] {
-  --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
-  --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8);
-}
+:root[data-theme="dark"] { --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028; --accent-ink: #ffb627; --topbar: rgba(14, 17, 22, 0.8); }
 
 * { box-sizing: border-box; }
-html { background: var(--paper); scroll-padding-top: 72px; }
+html { background: var(--paper); scroll-padding-top: calc(var(--topbar-h) + 12px); }
 body {
   margin: 0; overflow-x: clip;   /* never any horizontal scrolling (clip does not break sticky elements, unlike hidden) */
   background: var(--paper);
@@ -56,6 +59,10 @@ ul { padding: 0; list-style: none; }
 a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 ::selection { background: var(--accent); color: #161b22; }   /* dark text: the accent is light */
+
+/* a giant outlined numeral (Humane, stroke only): the 404 code (.numeral) and the watermark number of a short
+   experience, whose size and place are set by Job.css */
+.numeral, .job-short::after { font-family: var(--display); line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--line); }
 
 /* micro-labels: mono, small, spaced out — the only capitals on the page apart from the giant titles */
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }

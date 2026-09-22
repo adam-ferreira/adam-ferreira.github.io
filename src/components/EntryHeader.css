@@ -1,9 +1,9 @@
 /* Header of a dated entry (experience, degree): number, title, date. The variants live with their parents:
    Job.css (large screen, short experiences), Facts.css (education). */
 
-.job-header { margin-bottom: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
-.job-title-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; column-gap: 20px; row-gap: 8px; }
-.job-num { color: var(--accent-ink); }
-.job-title { font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; color: var(--ink); }
-.job-date { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
-@media (max-width: 640px) { .job-title-line { grid-template-columns: auto 1fr; } .job-date { grid-column: 1 / -1; } }
+.entry-header { margin-bottom: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
+.entry-title-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; column-gap: 20px; row-gap: 8px; }
+.entry-num { color: var(--accent-ink); }
+.entry-title { font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.02em; line-height: 1.25; color: var(--ink); }
+.entry-date { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+@media (max-width: 640px) { .entry-title-line { grid-template-columns: auto 1fr; } .entry-date { grid-column: 1 / -1; } }

@@ -4,7 +4,7 @@
 .site-footer {
   position: sticky; bottom: 0; z-index: 0; overflow: clip;   /* the sentence in the fallback font, wider, must never make the page overflow */
   background: var(--ink); color: var(--paper);
-  padding: clamp(64px, 10vh, 120px) clamp(16px, 3vw, 36px) 32px;
+  padding: clamp(64px, 10vh, 120px) var(--gutter) 32px;
   display: grid; gap: clamp(48px, 8vh, 96px);
 }
 .footer-statement {

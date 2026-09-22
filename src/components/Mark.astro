@@ -1,18 +1,22 @@
 ---
-// A brand mark: Betclic and Accor in the hero sentence (HeroWord), LinkedIn in the top bar (Topbar). The image first,
-// then its 3D volume: src/scripts/3d/marks.js extrudes the SVG from data-svg. With href, the mark is a link. Style: Mark.css.
+// A brand mark: Betclic and Accor in the hero sentence (HeroWord), LinkedIn in the top bar (Topbar). The mark draws its
+// own image from the content file, then src/scripts/3d/marks.js extrudes the SVG named by data-svg into a volume.
+// Dark mode, from the single dark_map field: the 3D faces are recoloured with it, and a mark whose folder holds a
+// <name>-dark.svg (the same drawing already in those colours) shows that file instead of the light one.
+// With href, the mark is a link, named by its alt text — its images are then decorative. Style: Mark.css.
+import { markAsset } from '../lib/assets';
+import type { MarkData } from '../lib/types';
 interface Props {
-  name: string;               // betclic, accor, linkedin → class mark-<name>
-  svg: string;                // URL of the SVG to extrude in 3D
-  href?: string;              // the mark is a link (opened in a new tab)
-  label?: string;             // accessible name of the link
-  class?: string;             // extra classes: w (a word of the hero sentence), topbar-linkedin
+  name: string;      // betclic, accor, linkedin → class mark-<name>
+  mark: MarkData;    // the mark as written in the content file
+  href?: string;     // the mark is a link (opened in a new tab)
+  class?: string;    // extra classes: w (a word of the hero sentence), topbar-linkedin
   style?: string;
-  fillDark?: string | null;   // dark mode: color that replaces the dark faces
-  darkMap?: string;           // dark mode: exact color replacements (JSON)
 }
-const { name, svg, href, label, class: extra, style, fillDark, darkMap } = Astro.props;
+const { name, mark, href, class: extra, style } = Astro.props;
+const { url, width, height, darkUrl } = markAsset(mark.src);
 const Tag = href ? 'a' : 'span';
+const label = href ? mark.alt : undefined;
 ---
 <Tag class:list={[extra, 'mark', `mark-${name}`]} href={href} target={href && '_blank'} rel={href && 'noopener'} aria-label={label} title={label}
-  style={style} data-svg={svg} data-fill-dark={fillDark || undefined} data-dark-map={darkMap}><slot /></Tag>
+  style={style} data-svg={url} data-dark-map={mark.dark_map && JSON.stringify(mark.dark_map)}><img class={darkUrl ? 'theme-light' : undefined} src={url} alt={href ? '' : mark.alt} width={width} height={height} decoding="async">{darkUrl && <img class="theme-dark" src={darkUrl} alt="" width={width} height={height} decoding="async" />}</Tag>
