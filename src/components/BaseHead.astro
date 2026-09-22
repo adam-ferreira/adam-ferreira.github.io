@@ -8,13 +8,14 @@ import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
 import humaneUrl from '../assets/fonts/Humane.ttf?url';
 import { contentSecurityPolicy } from '../lib/csp';
 import { THEME_KEY } from '../scripts/theme.js';
+import { STAGE } from '../scripts/media.js';
 
 // Before anything is displayed: "js" (content that gets revealed may start hidden), the theme the visitor chose (otherwise
 // the page would first appear in the system theme, then switch once the deferred scripts run) and, on a desktop with a
 // mouse, stage mode.
 const BOOT = '(function(r){r.classList.add("js");'
   + `try{var t=localStorage.getItem(${JSON.stringify(THEME_KEY)});if(t==="light"||t==="dark")r.dataset.theme=t}catch(e){}`
-  + 'if(matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches)r.classList.add("stage")'
+  + `if(matchMedia(${JSON.stringify(STAGE)}).matches)r.classList.add("stage")`
   + '})(document.documentElement)';
 ---
 <meta charset="UTF-8">
