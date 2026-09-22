@@ -67,11 +67,11 @@ test('without JavaScript on a dark system, the dark Accor logo is turned light',
   await ctx.close();
 });
 
-test('top bar: the LinkedIn mark is a 34 × 34 square, filled by its image', async ({ page }) => {
+test('top bar: the LinkedIn mark is a 28 × 28 square, filled by its image', async ({ page }) => {
   await page.goto('/');
   const box = await page.locator('.topbar-linkedin').boundingBox();
   const img = await page.locator('.topbar-linkedin img.theme-light').boundingBox();
-  expect([box?.width, box?.height]).toEqual([34, 34]);
+  expect([box?.width, box?.height]).toEqual([28, 28]);
   expect(img).toEqual(box);
 });
 
