@@ -19,24 +19,93 @@ const R = {
   cta: { x: 24, y: 512, w: 432, h: 64, r: 32 },
   tab: { x: 162, y: 968, w: 36, h: 36, r: 10 },
 };
-const STEPS = [
-  { rect: R.card, verb: 'swipe', loc: '~promo_card' },
-  { rect: R.row1, verb: 'tap', loc: '~offer_row_1' },
-  { rect: R.row2, verb: 'assert', loc: '~offer_row_2' },
-  { rect: R.cta, verb: 'tap', loc: '~cta_button' },
-  { rect: R.tab, verb: 'tap', loc: '~tab_rewards' },
-];
+/** The tests the phones can play: the hero's, and one per experience with a demo (content: experience[].demo). All
+ *  have five steps, so one run always lasts CYCLE. */
+export const SCENARIOS = {
+  hero: { style: 'promo', feature: 'smoke.feature', steps: [
+    { rect: R.card, verb: 'swipe', loc: '~promo_card' },
+    { rect: R.row1, verb: 'tap', loc: '~offer_row_1' },
+    { rect: R.row2, verb: 'assert', loc: '~offer_row_2' },
+    { rect: R.cta, verb: 'tap', loc: '~cta_button' },
+    { rect: R.tab, verb: 'tap', loc: '~tab_rewards' },
+  ] },
+  betting: { style: 'missions', feature: 'missions.feature', steps: [
+    { rect: R.card, verb: 'assert', loc: '~mission_progress' },
+    { rect: R.row1, verb: 'tap', loc: '~challenge_row' },
+    { rect: R.row2, verb: 'assert', loc: '~leaderboard_rank' },
+    { rect: R.cta, verb: 'tap', loc: '~claim_reward' },
+    { rect: R.tab, verb: 'tap', loc: '~tab_missions' },
+  ] },
+  booking: { style: 'stays', feature: 'booking.feature', steps: [
+    { rect: R.card, verb: 'tap', loc: '~search_stay' },
+    { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
+    { rect: R.row2, verb: 'swipe', loc: '~hotel_card_2' },
+    { rect: R.cta, verb: 'tap', loc: '~book_button' },
+    { rect: R.tab, verb: 'tap', loc: '~tab_status' },
+  ] },
+};
+const STEP_COUNT = 5;
 const STEP = 1.3, SUMMARY = 2.4;
 /** Length of one run of the test, in seconds. */
-export const CYCLE = STEPS.length * STEP + SUMMARY;
+export const CYCLE = STEP_COUNT * STEP + SUMMARY;
 const LOG_Y = 696, LOG_DY = 38, SUM_Y = 898;
 
 const rr = (g, x, y, w, h, r) => { g.beginPath(); g.roundRect(x, y, w, h, r); };
 const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 const mix = (a, b, m) => ({ x: a.x + (b.x - a.x) * m, y: a.y + (b.y - a.y) * m, w: a.w + (b.w - a.w) * m, h: a.h + (b.h - a.h) * m, r: a.r + (b.r - a.r) * m });
 
+// The featured card and the list rows, per app style: abstract shapes, nothing taken from a real app.
+const CARDS = {
+  promo(g) {
+    const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, ACC); gr.addColorStop(1, tint(ACC, 0.35));
+    g.fillStyle = gr; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
+    g.save(); rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.clip();
+    g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.arc(410, 214, 74, 0, Math.PI * 2); g.fill();
+    g.beginPath(); g.arc(452, 316, 50, 0, Math.PI * 2); g.fill(); g.restore();
+    g.fillStyle = '#fff'; rr(g, 48, 182, 210, 24, 9); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.72)'; rr(g, 48, 218, 150, 14, 7); g.fill();
+    g.fillStyle = '#fff'; rr(g, 48, 272, 124, 38, 19); g.fill();
+    g.fillStyle = ACC; rr(g, 72, 285, 76, 12, 6); g.fill();
+  },
+  missions(g) {   // a mission in progress: title, three milestones, a progress bar two thirds full
+    g.fillStyle = INK; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
+    g.fillStyle = '#fff'; rr(g, 48, 180, 190, 22, 9); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.5)'; rr(g, 48, 214, 130, 12, 6); g.fill();
+    [0, 1, 2].forEach((i) => { g.fillStyle = i < 2 ? ACC : '#39424e'; g.beginPath(); g.arc(360 + i * 36, 196, 13, 0, Math.PI * 2); g.fill(); });
+    g.fillStyle = '#39424e'; rr(g, 48, 262, 384, 16, 8); g.fill();
+    g.fillStyle = ACC; rr(g, 48, 262, 256, 16, 8); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.62)'; rr(g, 48, 294, 90, 12, 6); g.fill();
+  },
+  stays(g) {   // a search card: two fields and a date chip
+    g.fillStyle = '#fff'; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
+    g.strokeStyle = '#e3e7ed'; g.lineWidth = 2; g.stroke();
+    g.fillStyle = '#1f2630'; rr(g, 48, 176, 170, 22, 9); g.fill();
+    for (const y of [214, 262]) { g.fillStyle = '#f0f2f6'; rr(g, 48, y, 384, 38, 12); g.fill(); g.fillStyle = '#c9d0da'; rr(g, 64, y + 13, 150, 12, 6); g.fill(); }
+    g.fillStyle = tint(ACC, 0.55); rr(g, 368, 266, 52, 30, 9); g.fill();
+  },
+};
+const ROWS = {
+  promo(g, r) {
+    g.fillStyle = tint(ACC, 0.82); rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
+    g.fillStyle = tint(ACC, 0.72); rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
+  },
+  missions(g, r) {   // a trophy badge, and the points to win
+    g.fillStyle = INK; rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
+    g.fillStyle = ACC; g.beginPath(); g.arc(r.x + 36, r.y + 31, 10, 0, Math.PI * 2); g.fill(); rr(g, r.x + 30, r.y + 42, 12, 6, 2); g.fill();
+    g.fillStyle = rgba(GREEN, 0.25); rr(g, r.x + r.w - 76, r.y + 22, 56, 24, 12); g.fill();
+    g.fillStyle = '#1f7a4a'; rr(g, r.x + r.w - 64, r.y + 30, 32, 8, 4); g.fill();
+  },
+  stays(g, r) {   // a hotel picture, its rating, and the price
+    const gr = g.createLinearGradient(r.x + 14, r.y + 12, r.x + 58, r.y + 56); gr.addColorStop(0, '#8fb8de'); gr.addColorStop(1, tint(ACC, 0.3));
+    g.fillStyle = gr; rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
+    [0, 1, 2, 3].forEach((i) => { g.fillStyle = ACC; g.beginPath(); g.arc(r.x + 214 + i * 12, r.y + 46, 4, 0, Math.PI * 2); g.fill(); });
+    g.fillStyle = INK; rr(g, r.x + r.w - 76, r.y + 22, 56, 24, 12); g.fill();
+    g.fillStyle = '#fff'; rr(g, r.x + r.w - 64, r.y + 30, 32, 8, 4); g.fill();
+  },
+};
+
 /** The app mock-up, drawn once into its own canvas: everything that never changes during the test. */
-export function drawBase() {
+export function drawBase(sc = SCENARIOS.hero) {
   const c = document.createElement('canvas'); c.width = SW * TS; c.height = SH * TS;
   const g = c.getContext('2d'); g.scale(TS, TS);
   g.fillStyle = '#f4f6f9'; g.fillRect(0, 0, SW, SH);
@@ -48,31 +117,21 @@ export function drawBase() {
   rr(g, 24, 84, 176, 28, 9); g.fill();
   g.fillStyle = '#c9d0da'; rr(g, 24, 120, 112, 14, 7); g.fill();
   g.fillStyle = tint(ACC, 0.72); g.beginPath(); g.arc(424, 108, 24, 0, Math.PI * 2); g.fill();
-  // featured card
-  const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, ACC); gr.addColorStop(1, tint(ACC, 0.35));
-  g.fillStyle = gr; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
-  g.save(); rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.clip();
-  g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.arc(410, 214, 74, 0, Math.PI * 2); g.fill();
-  g.beginPath(); g.arc(452, 316, 50, 0, Math.PI * 2); g.fill(); g.restore();
-  g.fillStyle = '#fff'; rr(g, 48, 182, 210, 24, 9); g.fill();
-  g.fillStyle = 'rgba(255,255,255,.72)'; rr(g, 48, 218, 150, 14, 7); g.fill();
-  g.fillStyle = '#fff'; rr(g, 48, 272, 124, 38, 19); g.fill();
-  g.fillStyle = ACC; rr(g, 72, 285, 76, 12, 6); g.fill();
+  CARDS[sc.style](g);
   // two list rows
   for (const r of [R.row1, R.row2]) {
     g.fillStyle = '#fff'; rr(g, r.x, r.y, r.w, r.h, r.r); g.fill();
     g.strokeStyle = '#e3e7ed'; g.lineWidth = 2; g.stroke();
-    g.fillStyle = tint(ACC, 0.82); rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
+    ROWS[sc.style](g, r);
     g.fillStyle = '#1f2630'; rr(g, r.x + 74, r.y + 16, 190, 14, 7); g.fill();
     g.fillStyle = '#c9d0da'; rr(g, r.x + 74, r.y + 40, 128, 12, 6); g.fill();
-    g.fillStyle = tint(ACC, 0.72); rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
   }
   // primary button
-  g.fillStyle = INK; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
-  g.fillStyle = '#fff'; rr(g, 180, 537, 120, 14, 7); g.fill();
+  g.fillStyle = sc.style === 'stays' ? ACC : INK; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
+  g.fillStyle = sc.style === 'stays' ? INK : '#fff'; rr(g, 180, 537, 120, 14, 7); g.fill();
   // test log panel
   g.fillStyle = '#0e1116'; rr(g, 16, 598, 448, 336, 24); g.fill();
-  g.font = `500 17px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('▶ smoke.feature', 40, 640);
+  g.font = `500 17px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('▶ ' + sc.feature, 40, 640);
   const dev = 'iOS · Android'; g.fillText(dev, 440 - g.measureText(dev).width, 640);
   g.fillStyle = '#232a33'; g.fillRect(40, 656, 400, 2);
   // tab bar
@@ -88,7 +147,7 @@ const FADE_IN = 0.2, SLIDE = 0.35, TAP_FROM = 0.5, TAP_LEN = 0.45, CHECKED = 0.5
 const FRAME_OUT = 0.5, SUMMARY_IN = 0.3;   // seconds after the last step
 
 /** The state of the test at time t (s): what drawScreen draws, and whether anything is moving at that instant. */
-function phase(t) {
+function phase(t, STEPS) {
   t = ((t % CYCLE) + CYCLE) % CYCLE;   // the first frame's timestamp can precede the start: never a negative time
   const n = STEPS.length, stepsEnd = n * STEP, inSteps = t < stepsEnd;
   const k = inSteps ? Math.floor(t / STEP) : n - 1;
@@ -112,8 +171,8 @@ function phase(t) {
 }
 
 /** The screen at time t (s): the mock-up, then the test playing over it. */
-export function drawScreen(g, base, t) {
-  const s = phase(t), step = STEPS[s.k], n = STEPS.length;
+export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
+  const STEPS = sc.steps, s = phase(t, STEPS), step = STEPS[s.k], n = STEPS.length;
   g.setTransform(TS, 0, 0, TS, 0, 0);
   g.drawImage(base, 0, 0, SW, SH);
 
@@ -164,8 +223,8 @@ export function drawScreen(g, base, t) {
 
 // What changes on screen at time t: null during a motion (sliding frame, tap ripple, a line appearing), otherwise a key
 // for the static state (step, assertion, blinking cursor). Same key ⇒ same image: no need to redraw it.
-export function screenKey(t) {
-  const s = phase(t);
+export function screenKey(t, sc = SCENARIOS.hero) {
+  const s = phase(t, sc.steps);
   if (s.moving) return null;
   return s.inSteps ? s.k + '|' + s.checked + '|' + (s.done > s.k) + '|' + (s.cursor ? s.blink : '-') : 'summary';
 }
