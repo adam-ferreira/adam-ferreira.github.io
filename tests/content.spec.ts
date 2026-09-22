@@ -66,3 +66,11 @@ test('top bar: the LinkedIn mark is a 40 × 40 square, filled by its image', asy
   expect([box?.width, box?.height]).toEqual([40, 40]);
   expect(img).toEqual(box);
 });
+
+test('a remembered theme applies before the scripts run (no flash of the system theme)', async ({ page }) => {
+  await page.addInitScript(() => { try { localStorage.setItem('cv-theme', 'dark'); } catch { /* ignore */ } });
+  await page.route('**/_astro/*.js', (r) => r.abort());   // the page's scripts never arrive: only the inline boot script runs
+  await page.emulateMedia({ colorScheme: 'light' });
+  await page.goto('/');
+  expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
+});
