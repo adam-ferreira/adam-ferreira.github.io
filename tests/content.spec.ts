@@ -59,6 +59,14 @@ test('without JavaScript, experiences and titles are visible', async ({ browser 
   await ctx.close();
 });
 
+test('without JavaScript on a dark system, the dark Accor logo is turned light', async ({ browser }, info) => {
+  const ctx = await browser.newContext({ ...info.project.use, javaScriptEnabled: false, colorScheme: 'dark' });
+  const page = await ctx.newPage();
+  await page.goto('/');
+  await expect(page.locator('.mark-accor img')).not.toHaveCSS('filter', 'none');
+  await ctx.close();
+});
+
 test('top bar: the LinkedIn mark is a 40 × 40 square, filled by its image', async ({ page }) => {
   await page.goto('/');
   const box = await page.locator('.topbar-linkedin').boundingBox();
