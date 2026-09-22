@@ -4,14 +4,14 @@
 // Without bullets it is a short experience (job-short): one column, a large title, the number as an outlined watermark.
 import EntryHeader from './EntryHeader.astro';
 import Chips from './Chips.astro';
-import { md } from '../lib/text';
+import { md, plain } from '../lib/text';
 import type { Job } from '../lib/types';
 interface Props { j: Job; num: string; stackLabel: string }
 const { j, num, stackLabel } = Astro.props;
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
-<article class:list={['job', 'slide', { 'job-short': short }]} data-num={num}>
+<article class:list={['job', 'slide', { 'job-short': short }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
   <div class="job-side">
     <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />
     {j.intro && <p class="job-intro" set:html={md(j.intro)} />}

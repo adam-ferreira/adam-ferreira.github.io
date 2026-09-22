@@ -7,6 +7,9 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ESC[c]);
 /** Plain text → HTML: escaping, then **bold** → <strong>. */
 export const md = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
+/** The same text without its **bold** markers: for an attribute read by a script (the labels of the indicator). */
+export const plain = (s: string) => s.replace(/\*\*/g, '');
+
 /** A word of the hero sentence: text, or a mark (name in identity.marks). i = rank, for the staggered entrance. */
 export type HeroPiece = { i: number; text: string } | { i: number; mark: string };
 /** A group = words stuck together without a space ("{{betclic}},": the mark and its comma), or a line break. */

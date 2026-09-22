@@ -12,7 +12,7 @@ interface Props { d: Cv; fullName: string }
 const { d, fullName } = Astro.props;
 const idn = d.identity, ui = d.ui;
 ---
-<header class="header slide">
+<header class="header slide" data-label={ui.home_label}>
   <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
   <div class="header-left">
     <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src={portrait280} srcset={`${portrait280} 280w, ${portrait420} 420w`} sizes="(max-width: 560px) 84px, 128px" alt={fullName} class="portrait-img" width="420" height="562" fetchpriority="high"></div>
