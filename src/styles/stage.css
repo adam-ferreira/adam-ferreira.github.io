@@ -1,12 +1,12 @@
 /* ============================================================
    "STAGE" MODE (computer: ≥ 1100 × 680, mouse) — html.stage, set from the <head>
-   The page no longer scrolls. Each screen (.slide) is fixed under the bar; src/scripts/ui/navigation.js picks the current
+   The page no longer scrolls. Each screen (.slide) is fixed under the bar; src/scripts/ui/stage.js picks the current
    screen, and the passage uses transform/opacity in CSS, so the graphics card. Going forward: the next screen rises on
    top, the current one recedes and fades. Going back: the current screen slides back down (is-leaving) and reveals the
    previous one.
    ============================================================ */
 :root {
-  --stage-duration: 1s;   /* src/scripts/ui/navigation.js reads it: it must know when a move is over */
+  --stage-duration: 1s;   /* src/scripts/ui/stage.js reads it: it must know when a move is over */
   --stage-ease: cubic-bezier(.76, 0, .24, 1);
   --stage-gutter: max(36px, calc((100vw - 1400px) / 2 + 36px));
 }
@@ -25,7 +25,7 @@ html.stage .slide {
 }
 /* Off-screen slides are NOT hidden (visibility:hidden removed them from the accessibility tree: a screen reader only
    read the home screen). They are parked outside the window, above (is-parked) or below (is-after): nothing to draw,
-   but their content stays readable and reachable by keyboard (navigation.js follows the focus). */
+   but their content stays readable and reachable by keyboard (stage.js follows the focus). */
 html.stage .slide.is-current { transform: none; opacity: 1; z-index: 3; }
 /* before the (deferred) script has picked the current screen, the home screen is already in place: never an empty first paint */
 html.stage .header.slide:not(.is-before):not(.is-after) { transform: none; opacity: 1; z-index: 3; }

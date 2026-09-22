@@ -8,7 +8,7 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 /* the watermark number of the short experiences (right: -32%) made the page 135 px wider on a landscape tablet:
    clipped at the edge of main, i.e. at the edge of the screen — same look. (The fixed stage-mode screens are not affected.) */
 main { overflow-x: clip; }
-/* "Skip to content": first stop of the Tab key, invisible until it has focus (in stage mode, src/scripts/ui/navigation.js
+/* "Skip to content": first stop of the Tab key, invisible until it has focus (in stage mode, src/scripts/ui/stage.js
    intercepts it to go to the "Experience" screen) */
 .skip-link {
   position: fixed; left: 16px; top: 10px; z-index: 100; padding: 10px 18px; border-radius: 999px;
