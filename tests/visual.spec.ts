@@ -61,6 +61,11 @@ test.describe('iPhone et tablette, page entière', () => {
       await page.emulateMedia({ colorScheme: 'light' });
       await page.goto(path);
       await still(page);
+      // une capture « page entière » ne fait pas défiler : on dévoile d'office ce qui apparaît au fil du défilement
+      await page.evaluate(() => {
+        document.querySelectorAll('.slide').forEach((s) => s.classList.add('is-active'));
+        document.querySelectorAll('.section-title').forEach((t) => t.classList.add('is-in'));
+      });
       await page.waitForTimeout(800);
       await expect(page).toHaveScreenshot(`page-${lang}.png`, { ...opts, fullPage: true });
     });
