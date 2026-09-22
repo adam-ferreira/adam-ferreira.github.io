@@ -69,7 +69,7 @@ test.describe('iPhone and tablet, full page', () => {
       // Through a CSS rule rather than by setting is-active: navigation.js removes is-active from off-screen panels at an
       // unpredictable moment.
       await page.addStyleTag({ content: `
-        html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li,
+        html.js .job .entry-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li,
         html.js .job .stack, html.js .chapter .skills-row, html.js .facts .section > *, html.js .section-title { opacity: 1 !important; transform: none !important; }` });
       await page.waitForTimeout(800);
       await expect(page).toHaveScreenshot(`page-${lang}.png`, { ...opts, fullPage: true });

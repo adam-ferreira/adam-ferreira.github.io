@@ -19,9 +19,9 @@ let pager = null, ticks = [], count = null;
 const labelOf = (p) => {
   if (p.classList.contains('header')) return fr ? 'Accueil' : 'Home';
   if (p.classList.contains('site-footer')) return 'Contact';
-  const h = p.querySelector('.section-title, .job-title');
+  const h = p.querySelector('.section-title, .entry-title');
   const txt = h ? h.textContent.trim() : '';
-  if (p.classList.contains('job')) { const n = p.querySelector('.job-num'); const parts = txt.split('—'); return (n ? n.textContent + ' ' : '') + (parts[1] || parts[0]).trim(); }
+  if (p.classList.contains('job')) { const n = p.querySelector('.entry-num'); const parts = txt.split('—'); return (n ? n.textContent + ' ' : '') + (parts[1] || parts[0]).trim(); }
   return txt;
 };
 const pad = (n) => (n < 10 ? '0' : '') + n;
