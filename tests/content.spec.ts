@@ -122,3 +122,16 @@ test('footer finale: the pills carry the skills from the content, and never bloc
   await expect(canvas).toHaveAttribute('aria-hidden', 'true');
   await expect(page.locator('.footer-statement')).toHaveAttribute('href', `mailto:${d.identity.contact.email}`);
 });
+
+test('stage mode: the experiences with a demo keep a column for the 3D phones', async ({ page }) => {
+  await page.setViewportSize({ width: 1512, height: 830 });
+  await page.goto('/');
+  test.skip(!(await page.evaluate(() => document.documentElement.classList.contains('stage'))), 'stage mode only');
+  const d = content('en');
+  const demos = d.experience.filter((j: { demo?: string }) => j.demo).map((j: { demo: string }) => j.demo);
+  expect(await page.locator('.job-demo .job-device').evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.demo))).toEqual(demos);
+  const cols = await page.locator('.job-demo .bullets').first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length);
+  expect(cols).toBe(1);
+  await expect(page.locator('canvas.hero3d')).toBeHidden();
+  await expect(page.locator('canvas.devices3d')).toHaveCSS('pointer-events', 'none');
+});

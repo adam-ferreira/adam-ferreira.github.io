@@ -68,6 +68,10 @@ if (stage && slides.length) {
   });
   root.dataset.slide = '0';
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('stage-init')));
+  // a screen taller than the window scrolls: it joins the Tab order, so the keyboard can reach and scroll it
+  const tabbable = () => slides.forEach((s) => s.setAttribute('tabindex', s.scrollHeight > s.clientHeight + 2 ? '0' : '-1'));
+  tabbable();
+  window.addEventListener('resize', tabbable);
 
   const canScroll = (s, dir) => (dir > 0 ? s.scrollTop + s.clientHeight < s.scrollHeight - 2 : s.scrollTop > 2);
   window.addEventListener('wheel', (e) => {

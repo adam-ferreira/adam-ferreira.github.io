@@ -21,6 +21,12 @@
 }
 .hero3d.is-ready { opacity: 1; transform: none; }
 .hero3d.is-dragging { cursor: grabbing; }
+.devices3d { display: none; }
+html.stage .devices3d { display: block; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; opacity: 0; transition: opacity .8s ease; }
+html.stage .devices3d.is-ready { opacity: 1; }
+html.stage .hero3d { display: none; }
+html.stage .hero-stage { cursor: grab; }
+html.stage .hero-stage.is-dragging { cursor: grabbing; }
 .header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
 /* the cut-out portrait comes out of its disc: the head overflows at the top, the shoulders stay inside the circle */
 .portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; }

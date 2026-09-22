@@ -71,7 +71,7 @@ test('AF logo: hidden on the home screen, shown afterwards; a click reloads the 
 });
 
 test('3D: phones, AF logo and marks ready', async ({ page }) => {
-  await expect(page.locator('canvas.hero3d.is-ready')).toBeAttached({ timeout: 15_000 });
+  await expect(page.locator('canvas.devices3d.is-ready')).toBeAttached({ timeout: 15_000 });   // stage mode: the phones' overlay
   await expect(page.locator('canvas.logo3d.is-ready')).toBeAttached({ timeout: 15_000 });
   await expect(page.locator('.mark.is-3d')).toHaveCount(3, { timeout: 15_000 });
 });

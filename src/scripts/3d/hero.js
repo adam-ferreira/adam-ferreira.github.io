@@ -3,9 +3,20 @@
 // passed step is appended to the test log at the bottom of the screen.
 // Wide screens with a mouse only, after load. You can grab the scene and spin it; once released, it goes back to
 // swaying. Under "reduce motion": the final frame of the test, without a loop.
+// Stage mode: the phones live in a fixed canvas over the screens (.devices3d) and travel with them from one anchor to the
+// next (.hero-stage, .device-anchor): the hero, the "Experience" chapter, then each experience with a demo, where they
+// play that job's test; a full turn when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's
+// own canvas.
 import { desktop, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
-import { SW, SH, TS, CYCLE, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
-const canvas = document.querySelector('canvas.hero3d');
+import { SW, SH, TS, CYCLE, SCENARIOS, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
+const doc = document.documentElement;
+const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
+const canvas = overlay || document.querySelector('canvas.hero3d');
+const easeIO = (u) => (u < 0.5 ? 8 * u ** 4 : 1 - (-2 * u + 2) ** 4 / 2);   // close to the screens' cubic-bezier(.76, 0, .24, 1)
+const stageMs = () => {
+  const v = getComputedStyle(doc).getPropertyValue('--stage-duration').trim();
+  return reduced() ? 0 : (v.endsWith('ms') ? parseFloat(v) : parseFloat(v) * 1000) || 1000;
+};
 
 // ---------- the phones ----------
 function roundedRect(THREE, w, h, r) {
@@ -55,8 +66,9 @@ async function start() {
   if (!canvas || !desktop() || !webglOk()) return;
   const THREE = await import('./three-lite.js');   // Three.js trimmed to what the site uses, loaded on demand
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  // GPU lost: the scene fades out (the rest of the hero does not depend on it)
-  const lost = watchContextLoss(canvas, () => { canvas.classList.remove('is-ready'); canvas.closest('.hero-stage')?.classList.remove('is-lit'); });
+  const heroStage = document.querySelector('.hero-stage');
+  // GPU lost: the scene fades out (the rest of the page does not depend on it)
+  const lost = watchContextLoss(canvas, () => { canvas.classList.remove('is-ready'); heroStage?.classList.remove('is-lit'); });
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
@@ -67,12 +79,18 @@ async function start() {
   const env = loadEnv(THREE);
 
   // a single screen for both phones: it is the same test, on iOS and Android, at the same moment
-  const base = drawBase();
-  const sc = document.createElement('canvas'); sc.width = SW * TS; sc.height = SH * TS;
-  const sg = sc.getContext('2d');
-  const tex = new THREE.CanvasTexture(sc);
+  let sc = SCENARIOS.hero, base = drawBase(sc), t0 = performance.now(), lastKey;
+  const sc2d = document.createElement('canvas'); sc2d.width = SW * TS; sc2d.height = SH * TS;
+  const sg = sc2d.getContext('2d');
+  const tex = new THREE.CanvasTexture(sc2d);
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const paint = (t) => { drawScreen(sg, base, t); tex.needsUpdate = true; };
+  const paint = (t) => { drawScreen(sg, base, t, sc); tex.needsUpdate = true; };
+  const setScenario = (name) => {
+    const next = SCENARIOS[name] || SCENARIOS.hero;
+    if (next === sc) return;
+    sc = next; base = drawBase(sc); t0 = performance.now(); lastKey = undefined;
+    paint(reduced() ? CYCLE - 0.01 : 0);
+  };
   // data-freeze="seconds": a still frame of the test at that moment, without a loop (LinkedIn banner export)
   const freeze = canvas.dataset.freeze !== undefined ? parseFloat(canvas.dataset.freeze) : null;
   paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
@@ -86,66 +104,126 @@ async function start() {
   const android = buildPhone(THREE, { body: accent, glass, black, screenMat, notch: 'hole' });
   ios.position.set(-0.36, -0.07, 0.32); ios.rotation.set(0, 0.06, -0.02);
   android.position.set(0.46, 0.14, -0.34); android.rotation.set(0, -0.05, 0.035);
-  const root = new THREE.Group(); root.add(android, ios); scene.add(root);
+  const phones = new THREE.Group(); phones.add(android, ios);
+  const spin = new THREE.Group(); spin.add(phones);          // the full turn when the app changes
+  const holder = new THREE.Group(); holder.add(spin); scene.add(holder);   // size, in overlay mode
 
   const REST_X = 0.1, REST_Y = -0.38;
-  root.rotation.set(REST_X, REST_Y, 0);
+  phones.rotation.set(REST_X, REST_Y, 0);
+  let W = 1, H = 1;
+
+  // ---------- placement (overlay mode): the phones sit on the anchor of the current screen ----------
+  // The camera's principal point is moved onto the anchor (lens shift), so the phones are seen head-on wherever they
+  // are, exactly as in the hero's own canvas; their size follows the anchor's square.
+  const slides = [...document.querySelectorAll('.slide')];
+  const anchorOf = (i) => slides[i]?.querySelector('.hero-stage, .device-anchor') || null;
+  const rectOf = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, s: Math.min(r.width, r.height) }; };
+  let slideIdx = +(doc.dataset.slide || 0), cur = null, shown = true, tw = null;
+  function project() {
+    camera.updateProjectionMatrix();
+    if (!overlay || !cur) return;
+    camera.projectionMatrix.elements[8] = -(cur.x / W * 2 - 1);
+    camera.projectionMatrix.elements[9] = -(1 - cur.y / H * 2);
+    camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert();
+    holder.scale.setScalar(cur.s / H);
+  }
   function fit() {
-    const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (!w || !h) return;
+    W = overlay ? window.innerWidth : canvas.clientWidth; H = overlay ? window.innerHeight : canvas.clientHeight;
+    if (!W || !H) return;
     setPixelRatio(renderer, 1.5, 2);   // 1.5× on a standard screen, 2× on Retina
-    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    renderer.setSize(W, H, false); camera.aspect = W / H;
+    if (overlay && !tw) { const a = anchorOf(slideIdx); if (a) cur = rectOf(a); }
+    project();
+  }
+  if (overlay) {
+    const a = anchorOf(slideIdx);
+    shown = !!a; holder.visible = shown;
+    if (a) { setScenario(a.dataset.demo); }
   }
   fit();
   renderer.render(scene, camera);
   canvas.classList.add('is-ready');
-  const stage = canvas.closest('.hero-stage'); if (stage) stage.classList.add('is-lit');
+  heroStage?.classList.add('is-lit');
+
+  // a screen change: the phones leave their anchor and reach the next one while the screens move
+  function toSlide(n) {
+    const forward = n > slideIdx; slideIdx = n;
+    const a = anchorOf(n), name = a ? (a.dataset.demo || 'hero') : null;
+    const dur = stageMs();
+    if (!a && !shown) return;
+    if (a && !shown) {   // coming back into view: from below when moving forward, from above when going back
+      const t = rectOf(a);
+      cur = { x: t.x, y: forward ? H * 1.35 : -H * 0.35, s: t.s };
+      setScenario(name); shown = true; holder.visible = true;
+    }
+    const flip = !!name && SCENARIOS[name] !== sc;
+    tw = { from: { ...cur }, start: performance.now(), dur, a, off: forward ? -H * 0.4 : H * 1.4, flip, name, switched: !flip };
+    if (!dur) { step(performance.now()); renderer.render(scene, camera); }
+  }
+  function step(now) {
+    if (tw) {
+      const u = tw.dur ? Math.min(1, (now - tw.start) / tw.dur) : 1, e = easeIO(u);
+      const to = tw.a ? rectOf(tw.a) : { x: tw.from.x, y: tw.off, s: tw.from.s };
+      cur = { x: tw.from.x + (to.x - tw.from.x) * e, y: tw.from.y + (to.y - tw.from.y) * e, s: tw.from.s + (to.s - tw.from.s) * e };
+      spin.rotation.y = tw.flip ? e * Math.PI * 2 : 0;
+      if (!tw.switched && e >= 0.5) { tw.switched = true; setScenario(tw.name); }
+      if (u >= 1) { if (!tw.a) { shown = false; holder.visible = false; } tw = null; spin.rotation.y = 0; }
+    } else if (shown) {
+      const a = anchorOf(slideIdx); if (a) cur = rectOf(a);   // follows the anchor (window resized, screen scrolled)
+    }
+    project();
+  }
+  if (overlay) new MutationObserver(() => { const n = +(doc.dataset.slide || 0); if (n !== slideIdx) toSlide(n); })
+    .observe(doc, { attributes: true, attributeFilter: ['data-slide'] });
 
   // interaction: grab the scene, throw it, it spins on its momentum, then goes back to swaying
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
   const clampX = (a) => Math.max(-0.9, Math.min(0.9, a));
-  const grab = makeGrabbable(canvas, {
+  const grabbable = overlay ? [...new Set(slides.map((_, i) => anchorOf(i)).filter(Boolean))] : [canvas];
+  const grabs = grabbable.map((el) => makeGrabbable(el, {
     cls: 'is-dragging',
     onGrab: () => { vel.x = vel.y = 0; },
     onDrag: (dx, dy) => {
       vel.x = dx * 0.008; vel.y = dy * 0.006;
-      root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y);
+      phones.rotation.y += vel.x; phones.rotation.x = clampX(phones.rotation.x + vel.y);
       if (reduced()) renderer.render(scene, camera);
     },
-  });
+  }));
+  const dragging = () => grabs.some((g) => g.dragging);
+  const releasedAt = () => Math.max(...grabs.map((g) => g.releasedAt));
   window.addEventListener('pointermove', (e) => { target.x = (e.clientX / window.innerWidth - 0.5) * 2; target.y = (e.clientY / window.innerHeight - 0.5) * 2; }, { passive: true });
   const refit = () => { fit(); renderer.render(scene, camera); };
-  if ('ResizeObserver' in window) new ResizeObserver(refit).observe(canvas); else window.addEventListener('resize', refit);
+  if (overlay) window.addEventListener('resize', refit);
+  else if ('ResizeObserver' in window) new ResizeObserver(refit).observe(canvas); else window.addEventListener('resize', refit);
   onDprChange(refit);
   const visible = watchVisible(canvas);
 
   if (reduced() || freeze !== null) return;
-  const t0 = performance.now();
-  let frame = 0, lastKey;
-  let lastDraw = 0;
+  let frame = 0, lastDraw = 0;
   (function loop(now) {
     if (lost()) return;
     requestAnimationFrame(loop);
     if (!visible() || document.hidden) return;
-    if (document.documentElement.classList.contains('stage') && document.documentElement.dataset.slide !== '0') return;   // stage mode: the hero is not on screen
-    if (!shouldRender(now, lastDraw)) return;
+    if (overlay) { const wasShown = shown; step(now); if (!shown) { if (wasShown) renderer.render(scene, camera); return; } }
+    else if (doc.classList.contains('stage') && doc.dataset.slide !== '0') return;
+    if (!shouldRender(now, lastDraw, !!tw)) return;   // during a screen change the phones travel with it: every frame
     lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
     if (frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
-      const key = screenKey(t);
-      if (key === null || key !== lastKey) paint(t % CYCLE);
-      lastKey = key;
+      const k = screenKey(t, sc);
+      if (k === null || k !== lastKey) paint(t % CYCLE);
+      lastKey = k;
     }
-    if (!grab.dragging) {
-      if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - grab.releasedAt < 600) {
-        root.rotation.y += vel.x; root.rotation.x = clampX(root.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;
+    if (!dragging()) {
+      if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt() < 600) {
+        phones.rotation.y += vel.x; phones.rotation.x = clampX(phones.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;
       } else {
         const ry = REST_Y + Math.sin(t * 0.45) * 0.2 + target.x * 0.22, rx = REST_X + Math.sin(t * 0.33) * 0.05 + target.y * 0.1;
-        root.rotation.y = norm(root.rotation.y) + (ry - norm(root.rotation.y)) * 0.035;
-        root.rotation.x += (rx - root.rotation.x) * 0.035;
+        phones.rotation.y = norm(phones.rotation.y) + (ry - norm(phones.rotation.y)) * 0.035;
+        phones.rotation.x += (rx - phones.rotation.x) * 0.035;
       }
     }
-    root.position.y = Math.sin(t * 0.9) * 0.035;
+    phones.position.y = Math.sin(t * 0.9) * 0.035;
     renderer.render(scene, camera);
   })(performance.now());
 }
