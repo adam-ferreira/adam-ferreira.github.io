@@ -1,4 +1,4 @@
-// Barre du haut (Topbar.astro) : le logo recharge la page, en repartant du haut (et en gardant ?fps s'il y est).
+// Top bar (Topbar.astro): the logo reloads the page, starting again from the top (and keeping ?fps if present).
 document.querySelector('a.brand')?.addEventListener('click', (e) => {
   if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.button) return;
   e.preventDefault();

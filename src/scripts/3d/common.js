@@ -1,6 +1,6 @@
-// Outils communs aux trois scènes 3D : les téléphones (hero.js), le logo AF (logo.js) et les marques (marks.js).
+// Helpers shared by the three 3D scenes: the phones (hero.js), the AF logo (logo.js) and the marks (marks.js).
 
-/** Ordinateur à la souris, fenêtre assez large : là où la 3D démarre sans attendre un geste. */
+/** A computer with a mouse and a wide enough window: where the 3D starts without waiting for a gesture. */
 export const desktop = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 export const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -9,7 +9,7 @@ export function webglOk() {
   catch (e) { return false; }
 }
 
-/** Suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur). */
+/** Follows pixel density changes (window dragged from a Retina screen to a standard one, browser zoom). */
 export const onDprChange = (cb) => {
   const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
   q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
@@ -17,8 +17,8 @@ export const onDprChange = (cb) => {
 
 export const whenLoaded = (fn) => { if (document.readyState === 'complete') fn(); else window.addEventListener('load', fn); };
 
-/** Démarrage différé, pour ne rien coûter à l'arrivée : sur ordinateur, quand le navigateur est libre après le
- *  chargement ; sur téléphone, au premier geste (toucher, défilement) ou 5 s après la page. */
+/** Deferred start, so the 3D costs nothing on arrival: on a computer, once the browser is idle after load; on a
+ *  phone, on the first gesture (touch, scroll) or 5 s after the page. */
 export function bootLazily(start, idleTimeout, fallbackDelay) {
   whenLoaded(() => {
     if (desktop()) return ('requestIdleCallback' in window) ? requestIdleCallback(start, { timeout: idleTimeout }) : setTimeout(start, fallbackDelay);
@@ -30,15 +30,15 @@ export function bootLazily(start, idleTimeout, fallbackDelay) {
   });
 }
 
-// ---------- geste d'invite : de temps en temps, l'objet s'incline et un reflet le balaie, pour montrer qu'il est en volume ----------
+// ---------- hint gesture: now and then the object tilts and a shine sweeps across it, to show that it is 3D ----------
 export const HINT_MS = 1500;
-/** Premier geste : décalé d'un objet à l'autre (order = 0 LinkedIn, 1 Betclic, 2 Accor, 3 logo AF). */
+/** First gesture: staggered from one object to the next (order = 0 LinkedIn, 1 Betclic, 2 Accor, 3 AF logo). */
 export const firstHint = (order) => performance.now() + 1500 + order * 1500;
-/** Geste suivant : toutes les 4,5 à 6 s. */
+/** Next gesture: every 4.5 to 6 s. */
 export const nextHintAt = (now) => now + 4500 + Math.random() * 1500;
 export const easeIO = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
 
-/** Le reflet : une bande de lumière en diagonale, ajoutée au shader du matériau (position t, largeur w, intensité a). */
+/** The shine: a diagonal band of light added to the material's shader (position t, width w, intensity a). */
 export function withShine(material, shine) {
   material.onBeforeCompile = (sh) => {
     sh.uniforms.uShineT = shine.t; sh.uniforms.uShineW = shine.w; sh.uniforms.uShineA = shine.a;
@@ -49,8 +49,8 @@ export function withShine(material, shine) {
   return material;
 }
 
-/** Si le navigateur retire la carte graphique à la page (onglet mis en veille sur téléphone, pilote qui redémarre), le
- *  canvas resterait vide. On revient alors à la version sans 3D (fallback) ; la boucle s'arrête dès que lost() est vrai. */
+/** If the browser takes the GPU away from the page (tab put to sleep on a phone, driver restart), the canvas would
+ *  stay blank. We then fall back to the non-3D version (fallback); the loop stops as soon as lost() is true. */
 export function watchContextLoss(canvas, fallback) {
   let lost = false;
   canvas.addEventListener('webglcontextlost', () => { lost = true; fallback(); }, { once: true });

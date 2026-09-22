@@ -2,11 +2,11 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://adam-ferreira.github.io',   // dépôt « <nom>.github.io » : pas de base à configurer
+  site: 'https://adam-ferreira.github.io',   // a "<name>.github.io" repository: no base path to configure
   build: {
-    inlineStylesheets: 'always',   // la feuille est intégrée à la page : un aller-retour réseau de moins avant le premier affichage
+    inlineStylesheets: 'always',   // the stylesheet is inlined in the page: one network round trip less before first paint
   },
   vite: {
-    build: { assetsInlineLimit: 0 },   // aucun fichier transformé en data: URI — chacun garde son adresse versionnée, mise en cache à part
+    build: { assetsInlineLimit: 0 },   // no file turned into a data: URI — each keeps its own versioned URL, cached separately
   },
 });

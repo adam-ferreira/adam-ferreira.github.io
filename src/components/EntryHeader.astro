@@ -1,7 +1,7 @@
 ---
-// En-tête d'une entrée datée — une expérience ou un diplôme : numéro (expériences seulement), titre, date. Style : EntryHeader.css.
+// Header of a dated entry — an experience or a degree: number (experiences only), title, date. Style: EntryHeader.css.
 import { md } from '../lib/text';
-interface Props { title: string; date: string; num?: string }   // title : HTML déjà mis en forme (gras, tiret)
+interface Props { title: string; date: string; num?: string }   // title: already formatted HTML (bold, dash)
 const { title, date, num } = Astro.props;
 ---
 <div class="job-header"><div class="job-title-line">

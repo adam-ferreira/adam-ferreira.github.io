@@ -1,9 +1,9 @@
-// Interrupteur jour / nuit (ThemeToggle.astro) : le thème du système par défaut, ou le choix mémorisé du visiteur.
+// Light / dark switch (ThemeToggle.astro): the system theme by default, or the visitor's remembered choice.
 const root = document.documentElement;
 const btn = document.querySelector('.theme-toggle');
 const mq = window.matchMedia('(prefers-color-scheme: dark)');
 let saved = null;
-try { saved = localStorage.getItem('cv-theme'); } catch { /* stockage indisponible (navigation privée) : le thème du système */ }
+try { saved = localStorage.getItem('cv-theme'); } catch { /* storage unavailable (private browsing): fall back to the system theme */ }
 
 function apply(t) {
   root.dataset.theme = t;
@@ -15,7 +15,7 @@ apply(saved || (mq.matches ? 'dark' : 'light'));
 btn?.addEventListener('click', () => {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   saved = next;
-  try { localStorage.setItem('cv-theme', next); } catch { /* idem */ }
+  try { localStorage.setItem('cv-theme', next); } catch { /* same as above */ }
   apply(next);
 });
 mq.addEventListener('change', (e) => { if (!saved) apply(e.matches ? 'dark' : 'light'); });

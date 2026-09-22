@@ -1,6 +1,6 @@
-/* Une expérience : en-tête (numéro, titre, date), introduction, défi, puces, stack. Après Facts.css : ses règles de base doivent passer après celles du grand écran. */
+/* One experience: header (number, title, date), introduction, challenge, bullets, stack. After Facts.css: its base rules must come after the large-screen ones. */
 
-/* expériences : sur grand écran, l'en-tête reste accroché à gauche pendant qu'on lit le détail à droite */
+/* experiences: on a large screen, the header stays pinned on the left while the details are read on the right */
 @media (min-width: 1100px) {
   .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
   .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
@@ -10,13 +10,13 @@
   .job-side .job-intro { font-size: 16px; line-height: 1.6; }
   .job-side .sub-title { margin-top: 22px; font-size: 17px; }
   .job-side .sub-intro { font-size: 15px; line-height: 1.6; }
-  /* puces rangées par paires : on lit de gauche à droite puis de haut en bas, les titres d'une même rangée sont alignés */
+  /* bullets arranged in pairs: read left to right, then top to bottom; the titles of a row are aligned */
   .job-main .bullets { margin-top: 0; grid-template-columns: 1fr 1fr; gap: 30px 40px; align-items: start; }
   .job-main .bullets li { padding-left: 0; max-width: none; font-size: 14.5px; line-height: 1.6; }
   .job-main .bullets li::before { position: static; display: block; width: 22px; height: 2px; margin-bottom: 12px; border-radius: 2px; }
   .job-main .bullets li strong { font-size: 15.5px; margin-bottom: 4px; }
   .job > .stack { gap: 8px; }
-  /* expériences courtes (sans puces) : une colonne, un titre plus grand, et le numéro en filigrane */
+  /* short experiences (no bullets): one column, a larger title, and the number as a watermark */
   .job-short { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "stack"; grid-template-rows: auto auto; max-width: 980px; position: relative; }
   .job-short .job-title { font-size: clamp(30px, 3.2vw, 46px); }
   .job-short .job-side .job-intro { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.5; max-width: 40ch; }
@@ -39,7 +39,7 @@
 
 .job { margin-bottom: 128px; }
 .job:last-child { margin-bottom: 8px; }
-/* grand écran sans mode scène (tablette en paysage) : un écran par expérience, bord à bord */
+/* large screen without stage mode (landscape tablet): one screen per experience, edge to edge */
 @media (min-width: 1100px) and (min-height: 680px) { .job, .job:last-child { margin-bottom: 0; } }
 .job-intro, .sub-intro { max-width: 68ch; }
 .job-intro { margin-bottom: 14px; font-size: 18px; }

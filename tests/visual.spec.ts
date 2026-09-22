@@ -2,26 +2,26 @@ import { test, expect, type Page } from '@playwright/test';
 import { existsSync } from 'node:fs';
 import { settle } from './helpers';
 
-// Comparaison visuelle : prouve qu'un remaniement ne change rien à l'écran. Une série de références par système, le rendu
-// des polices différant : *-darwin.png (le Mac) et *-linux.png (la CI, Ubuntu 24.04).
-// Après un changement d'apparence VOULU : sur le Mac, npx playwright test visual --update-snapshots ; pour Linux, le
-// workflow « Captures de référence (Linux) », dont on committe l'artefact.
-// En CI, le test attend que les références Linux existent (VISUAL_IN_CI ou présence des fichiers).
+// Visual comparison: proves that a refactor changes nothing on screen. One set of baselines per OS, since font rendering
+// differs: *-darwin.png (the Mac) and *-linux.png (CI, Ubuntu 24.04).
+// After an INTENDED change of appearance: on the Mac, npx playwright test visual --update-snapshots; for Linux, run the
+// "Visual baselines (Linux)" workflow and commit its artifact.
+// In CI, the test runs once the Linux baselines exist (or when VISUAL_IN_CI is set, to create them).
 const linuxRefs = existsSync(new URL('./visual.spec.ts-snapshots/scene-light-0-desktop-linux.png', import.meta.url));
-test.skip(!!process.env.CI && !process.env.VISUAL_IN_CI && !linuxRefs, 'pas encore de références Linux');
+test.skip(!!process.env.CI && !process.env.VISUAL_IN_CI && !linuxRefs, 'no Linux baselines yet');
 
-// La 3D bouge en permanence : on la coupe (WebGL indisponible ⇒ les logos restent en image), elle est testée ailleurs.
+// The 3D is always moving: it is switched off (no WebGL ⇒ logos stay as images); it is tested elsewhere.
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => {
     const get = HTMLCanvasElement.prototype.getContext;
-    // @ts-expect-error : on remplace la méthode pour la durée du test
+    // @ts-expect-error: the method is replaced for the duration of the test
     HTMLCanvasElement.prototype.getContext = function (type, ...a) { return /webgl/.test(type) ? null : get.call(this, type, ...a); };
   });
 });
 const opts = { animations: 'disabled' as const, maxDiffPixels: 100 };
-// Sans transitions ni animations CSS : on compare l'état final de la mise en page. (Avec elles, un texte posé sur un
-// sous-pixel — l'écran Betclic est centré à y = 167,27 px — était dessiné un demi-pixel plus haut ou plus bas selon
-// l'instant où le navigateur finissait ses animations : 1 % de pixels « différents » sans aucun changement réel.)
+// Without CSS transitions or animations: the final layout state is compared. (With them, text sitting on a sub-pixel —
+// the Betclic screen is centred at y = 167.27 px — was drawn half a pixel higher or lower depending on when the browser
+// finished its animations: 1 % of pixels "different" without any real change.)
 const still = (page: Page) => page.addStyleTag({ content: '*, *::before, *::after { transition: none !important; animation: none !important; }' });
 const goToSlide = async (page: Page, k: number) => {
   await page.evaluate((i) => (document.querySelectorAll('.pager-tick')[i] as HTMLElement).click(), k);
@@ -29,17 +29,17 @@ const goToSlide = async (page: Page, k: number) => {
   await page.waitForTimeout(300);
 };
 
-test.describe('ordinateur, mode scène', () => {
+test.describe('desktop, stage mode', () => {
   test.beforeEach(({}, info) => { test.skip(info.project.name !== 'desktop'); });
   for (const scheme of ['light', 'dark'] as const) {
-    test(`chaque écran, thème ${scheme}`, async ({ page }) => {
+    test(`every screen, ${scheme} theme`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto('/');
       await still(page);
       await page.waitForTimeout(800);
       const n = await page.locator('.slide').count();
       for (let k = 0; k < n; k++) {
-        if (scheme === 'dark' && ![0, 2, n - 1].includes(k)) continue;   // en sombre : accueil, une expérience, pied de page
+        if (scheme === 'dark' && ![0, 2, n - 1].includes(k)) continue;   // in dark: home, one experience, footer
         if (k > 0) await goToSlide(page, k);
         await expect(page).toHaveScreenshot(`scene-${scheme}-${k}.png`, opts);
       }
@@ -47,26 +47,27 @@ test.describe('ordinateur, mode scène', () => {
   }
 });
 
-test('ordinateur, « réduire les animations »', async ({ page }, info) => {
+test('desktop, reduced motion', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop');
   await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
   await page.goto('/');
   await still(page);
   await page.waitForTimeout(800);
-  await expect(page).toHaveScreenshot('reduit-0.png', opts);
+  await expect(page).toHaveScreenshot('reduced-motion-0.png', opts);
   await goToSlide(page, 2);
-  await expect(page).toHaveScreenshot('reduit-2.png', opts);
+  await expect(page).toHaveScreenshot('reduced-motion-2.png', opts);
 });
 
-test.describe('iPhone et tablette, page entière', () => {
-  test.beforeEach(({}, info) => { test.skip(!['iphone', 'tablette'].includes(info.project.name)); });
+test.describe('iPhone and tablet, full page', () => {
+  test.beforeEach(({}, info) => { test.skip(!['iphone', 'tablet'].includes(info.project.name)); });
   for (const [lang, path] of [['en', '/'], ['fr', '/fr/']] as const) {
     test(`${lang}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: 'light' });
       await page.goto(path);
       await still(page);
-      // Une capture « page entière » ne fait pas défiler : on impose l'état final de ce qui apparaît au fil du défilement.
-      // Par une règle CSS et non en posant is-active : cv.js retire is-active aux écrans hors champ, à un instant variable.
+      // A full-page screenshot does not scroll: the final state of whatever appears on scroll is forced.
+      // Through a CSS rule rather than by setting is-active: navigation.js removes is-active from off-screen panels at an
+      // unpredictable moment.
       await page.addStyleTag({ content: `
         html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li,
         html.js .job .stack, html.js .chapter .skills-row, html.js .facts .section > *, html.js .section-title { opacity: 1 !important; transform: none !important; }` });

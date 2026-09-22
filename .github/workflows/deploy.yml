@@ -1,7 +1,7 @@
-# À chaque push sur main : vérification des types, tests Playwright sur le site construit (ordinateur, iPhone, captures
-# de référence), Lighthouse avec seuils — et publication sur GitHub Pages seulement si tout passe. Une pull request
-# (Dependabot compris) est testée sans être publiée. Ubuntu figé (24.04) : les captures de référence Linux en dépendent.
-name: Tester et publier
+# On every push to main: type check, Playwright tests on the built site (desktop, iPhone, visual baselines), Lighthouse
+# with thresholds — and publishing to GitHub Pages only if everything passes. Pull requests (Dependabot included) are
+# tested without being published. Ubuntu is pinned (24.04): the Linux visual baselines depend on it.
+name: Test and deploy
 
 on:
   push:
@@ -24,23 +24,23 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0   # tout l'historique : la date « Updated … » est celle du dernier commit du contenu
+          fetch-depth: 0   # full history: the "Updated …" date is that of the last commit touching the content
       - uses: actions/setup-node@v7
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Vérification des types (Astro, TypeScript)
+      - name: Type check (Astro, TypeScript)
         run: npm run check
       - run: npx playwright install --with-deps chromium webkit
       - run: npm test
-      - name: "Lighthouse — seuils : 100 en accessibilité, bonnes pratiques et référencement, 90 en performance"
+      - name: "Lighthouse — thresholds: 100 for accessibility, best practices and SEO, 90 for performance"
         run: npx lhci autorun
-      - name: Rapports (en cas d'échec)
+      - name: Reports (on failure)
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: rapports
+          name: reports
           path: |
             playwright-report/
             lighthouse-report/
@@ -53,8 +53,8 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
-          fetch-depth: 0   # tout l'historique : la date « Updated … » est celle du dernier commit du contenu
-      - name: Construire et préparer la publication
+          fetch-depth: 0   # full history: the "Updated …" date is that of the last commit touching the content
+      - name: Build and prepare the deployment
         uses: withastro/action@v6
         with:
           node-version: 24
@@ -66,6 +66,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publier sur GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5

@@ -2,7 +2,7 @@
   "name": "adam-ferreira-cv",
   "private": true,
   "type": "module",
-  "description": "CV web d'Adam Ferreira — site statique Astro, anglais à la racine, français sous /fr/",
+  "description": "Adam Ferreira's web CV — static Astro site, English at the root, French under /fr/",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",

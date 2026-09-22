@@ -1,19 +1,19 @@
-// Le logo 3D d'Adam (src/assets/logo.glb), dans la barre en haut à gauche.
-// Même activation que les marques : après le chargement sur ordinateur ; sur téléphone, au premier geste (toucher,
-// défilement) ou 5 s après la page. Il se balance doucement et suit un peu la souris ; de temps en temps il fait le même
-// geste d'invite que les marques (inclinaison + reflet), en dernier de la série. On l'attrape, on le lance, il continue sur son élan.
-// Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
+// Adam's 3D logo (src/assets/logo.glb), in the top bar, top left.
+// Same start as the marks: after load on a computer; on a phone, on the first gesture (touch, scroll) or 5 s after the
+// page. It sways gently and follows the mouse a little; now and then it makes the same hint gesture as the marks (tilt +
+// shine), last in the series. You can grab it and throw it, it keeps going on its momentum.
+// Under "reduce motion": a static render, but it can still be moved by hand.
 import { CUBEMAP } from './env.js';
 import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine, watchContextLoss } from './common.js';
 import LOGO_GLB from '../../assets/logo.glb?url';
-const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // l'accent du site
+const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // the site's accent color
 const canvas = document.querySelector('.brand canvas.logo3d');
-const ORDER = 3;   // dans la série des gestes d'invite : après LinkedIn, Betclic et Accor
+const ORDER = 3;   // in the series of hint gestures: after LinkedIn, Betclic and Accor
 
 let started = false;
 async function go() {
   if (started) return; started = true;
-  const THREE = await import('./three-lite.js'), { GLTFLoader } = THREE;   // Three.js réduit, chargeur de modèles compris
+  const THREE = await import('./three-lite.js'), { GLTFLoader } = THREE;   // trimmed Three.js, model loader included
   const env = new THREE.CubeTextureLoader().load(CUBEMAP);
   env.colorSpace = THREE.SRGBColorSpace;
   new GLTFLoader().load(LOGO_GLB, (gltf) => {
@@ -22,7 +22,7 @@ async function go() {
     const c = box.getCenter(new THREE.Vector3()), s = box.getSize(new THREE.Vector3());
     logo.position.sub(c);
     logo.scale.setScalar(1.8 / Math.max(s.x, s.y, s.z));
-    // reflet : la même bande de lumière que sur les marques
+    // shine: the same band of light as on the marks
     const shine = { t: { value: -1e5 }, w: { value: 0.3 }, a: { value: 0 } };
     const mat = withShine(new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 }), shine);
     logo.traverse((n) => { if (n.isMesh) n.material = mat; });
@@ -32,8 +32,8 @@ async function go() {
 
 function mount(THREE, logo, shine) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
-  const lost = watchContextLoss(canvas, () => canvas.classList.remove('is-ready'));   // carte graphique perdue : le logo image revient
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));   // suréchantillonné : petit canvas, bords nets
+  const lost = watchContextLoss(canvas, () => canvas.classList.remove('is-ready'));   // GPU lost: the image logo comes back
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio * 2, 4));   // supersampled: small canvas, crisp edges
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 100);
@@ -72,7 +72,7 @@ function mount(THREE, logo, shine) {
   });
   const release = (e) => { if (!dragging) return; dragging = false; releasedAt = performance.now(); canvas.classList.remove('is-dragging'); try { canvas.releasePointerCapture(e.pointerId); } catch (_) {} };
   canvas.addEventListener('pointerup', release); canvas.addEventListener('pointercancel', release);
-  // un lancer n'est pas un clic : on ne recharge la page que si le logo n'a (presque) pas bougé sous le doigt
+  // a throw is not a click: the page reloads only if the logo (almost) did not move under the pointer
   canvas.addEventListener('click', (e) => { if (moved > 6) { e.preventDefault(); e.stopPropagation(); } });
   window.addEventListener('pointermove', (e) => { target.x = (e.clientX / window.innerWidth - 0.5) * 2; target.y = (e.clientY / window.innerHeight - 0.5) * 2; }, { passive: true });
   window.addEventListener('resize', () => { fit(); renderer.render(scene, camera); });
@@ -80,26 +80,26 @@ function mount(THREE, logo, shine) {
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(canvas);
 
   if (reduced()) return;
-  // au repos il se balance de ~5°/s : d'une image à l'autre, moins d'un pixel. On ne le redessine que quand sa pose a bougé
-  // d'au moins 0,004 rad (~¼ de pixel au bord), ou pendant le geste d'invite (le reflet bouge même quand la pose change peu).
+  // at rest it sways at ~5°/s: less than a pixel from one frame to the next. It is only redrawn when its pose has moved
+  // by at least 0.004 rad (~¼ pixel at the edge), or during the hint gesture (the shine moves even when the pose barely does).
   let lastDraw = 0, drawnX = NaN, drawnY = NaN;
   (function loop(now) {
     if (lost()) return;
     requestAnimationFrame(loop);
     if (!visible || document.hidden) { paused = true; return; }
-    if (document.documentElement.classList.contains('is-moving') || now - lastDraw < 15) return;   // figé pendant les mouvements de page, 60 images/s au plus
-    if (!document.body.classList.contains('is-scrolled')) { shown = false; return; }   // caché sur l'accueil : il n'apparaît qu'une fois qu'on l'a quitté
-    if (!shown) { shown = true; stopHint(0); nextHint = performance.now() + 1200; }   // à son apparition, un geste d'invite rapide montre qu'il est en 3D
+    if (document.documentElement.classList.contains('is-moving') || now - lastDraw < 15) return;   // frozen while the page moves, 60 fps at most
+    if (!document.body.classList.contains('is-scrolled')) { shown = false; return; }   // hidden on the hero: it only appears once the visitor has left it
+    if (!shown) { shown = true; stopHint(0); nextHint = performance.now() + 1200; }   // when it appears, a quick hint gesture shows that it is 3D
     lastDraw = now;
     if (paused) { paused = false; stopHint(0); nextHint = Math.max(nextHint, performance.now() + 1000 + ORDER * 1500); }
     if (!dragging) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || performance.now() - releasedAt < 700) {
-        pivot.rotation.y += vel.x; pivot.rotation.x += vel.y; vel.x *= 0.94; vel.y *= 0.94;   // sur son élan
+        pivot.rotation.y += vel.x; pivot.rotation.x += vel.y; vel.x *= 0.94; vel.y *= 0.94;   // on its momentum
       } else {
         const now = performance.now();
-        if (!hover && hintStart < 0 && now >= nextHint) { hintStart = now; canvas.dataset.hint = '1'; }   // marqueur du geste (utile au test)
+        if (!hover && hintStart < 0 && now >= nextHint) { hintStart = now; canvas.dataset.hint = '1'; }   // gesture marker (used by the tests)
         let hy = 0, hx = 0, ease = 0.045;
-        if (hintStart >= 0) {   // geste d'invite : il s'incline et un reflet le balaie
+        if (hintStart >= 0) {   // hint gesture: it tilts and a shine sweeps across it
           const u = Math.min(1, (now - hintStart) / HINT_MS), sw = Math.sin(Math.PI * u);
           hy = HINT_A * sw; hx = -HINT_A * 0.35 * sw; ease = 0.3;
           shine.t.value = -SWEEP + 2 * SWEEP * easeIO(u); shine.a.value = 0.75 * sw;
@@ -107,7 +107,7 @@ function mount(THREE, logo, shine) {
         }
         idle += 0.016;
         const ry = Math.sin(idle * 0.8) * 0.12 + target.x * 0.25 + hy, rx = Math.sin(idle * 0.6) * 0.05 + target.y * 0.15 + hx;
-        pivot.rotation.y = norm(pivot.rotation.y) + (ry - norm(pivot.rotation.y)) * ease;   // se redresse doucement
+        pivot.rotation.y = norm(pivot.rotation.y) + (ry - norm(pivot.rotation.y)) * ease;   // straightens up gently
         pivot.rotation.x = norm(pivot.rotation.x) + (rx - norm(pivot.rotation.x)) * ease;
       }
     }

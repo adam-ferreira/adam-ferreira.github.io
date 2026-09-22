@@ -1,8 +1,8 @@
-/* Pied de page : inversé, une phrase géante, les coordonnées. */
+/* Footer: inverted, one giant sentence, the contact details. */
 
-/* ---------- pied de page : inversé, dévoilé sous le contenu ---------- */
+/* ---------- footer: inverted, revealed under the content ---------- */
 .site-footer {
-  position: sticky; bottom: 0; z-index: 0; overflow: clip;   /* la phrase en police de secours, plus large, ne doit jamais faire déborder la page */
+  position: sticky; bottom: 0; z-index: 0; overflow: clip;   /* the sentence in the fallback font, wider, must never make the page overflow */
   background: var(--ink); color: var(--paper);
   padding: clamp(64px, 10vh, 120px) clamp(16px, 3vw, 36px) 32px;
   display: grid; gap: clamp(48px, 8vh, 96px);
@@ -12,8 +12,8 @@
   font-family: var(--display); font-weight: 400; text-transform: uppercase;
   font-size: clamp(80px, 15vw, 280px); line-height: .86; letter-spacing: .01em;
 }
-/* le pied de page est accroché sous le contenu, donc « à l'écran » dès l'arrivée : sa phrase tient sur une ligne
-   quelle que soit la police, sinon l'arrivée d'Humane le fait bouger (mesuré : décalage 0,085) */
+/* the footer is pinned under the content, so it is "on screen" from the start: its sentence stays on one line
+   whatever the font, otherwise Humane arriving makes it move (measured: shift 0.085) */
 @media (min-width: 641px) { .footer-statement { white-space: nowrap; } }
 .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
 .footer-grid a { text-decoration: none; }

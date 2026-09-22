@@ -1,9 +1,9 @@
-/* Formation, Langues, Intérêts. */
+/* Education, Languages, Interests. */
 
-/* Formation, Langues, Intérêts : une rangée de trois, titres en Humane de taille moyenne */
+/* Education, Languages, Interests: a row of three, medium-size Humane titles */
 .facts { margin-top: 40px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 48px clamp(32px, 4vw, 64px); border-top: 1px solid var(--line); padding-top: 64px; }
 .facts .section { margin-top: 0; padding-top: 0; border-top: 0; }
-/* grand écran sans mode scène : un écran plein, collé au précédent, sans filet */
+/* large screen without stage mode: a full screen, right after the previous one, no rule line */
 @media (min-width: 1100px) and (min-height: 680px) { .facts { margin-top: 0; padding-top: 0; border-top: 0; } }
 .facts .section-title-wrapper { margin-bottom: 20px; }
 .facts .section-title { font-size: clamp(48px, 5.4vw, 80px); }

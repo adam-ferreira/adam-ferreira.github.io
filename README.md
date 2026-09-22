@@ -1,81 +1,85 @@
 # CV — Adam Ferreira
 
-Site : https://adam-ferreira.github.io/ (anglais) · https://adam-ferreira.github.io/fr/ (français). Plus de PDF depuis le 21/09/2026 : le CV est l'application web.
+Site: https://adam-ferreira.github.io/ (English) · https://adam-ferreira.github.io/fr/ (French). No PDF since 21/09/2026: the CV is the web app.
+
+**Everything in this repository is written in English** — code, comments, tests, CI, commit messages. The only French is the French CV itself (`src/content/cv/fr.json`) and the French labels shown on the French page.
 
 ## Architecture
 
-Site statique construit avec **[Astro](https://astro.build) 7** (depuis le 22/09/2026 ; avant : un générateur Python maison). Astro produit du HTML fixe et **n'ajoute aucun JavaScript à lui** : le navigateur ne reçoit que nos scripts (interface, 3D) et Three.js, chargé à la demande.
-Choix mesuré sur une page témoin, JavaScript envoyé par le framework seul : Astro 0 ko · SvelteKit 27 ko · Nuxt 55 ko · Next.js 130 ko.
+Static site built with **[Astro](https://astro.build) 7** (since 22/09/2026; before that, a home-made Python generator). Astro outputs plain HTML and **adds no JavaScript of its own**: the browser only receives our scripts (UI, 3D) and Three.js, loaded on demand.
+The choice was measured on a test page, JavaScript shipped by the framework alone: Astro 0 kB · SvelteKit 27 kB · Nuxt 55 kB · Next.js 130 kB.
 
-| Dossier / fichier | Rôle |
+| Folder / file | Role |
 |---|---|
-| `src/content/cv/en.json`, `fr.json` | **Tout le contenu**, une version par langue, même structure. Texte UTF-8, `**gras**` pour les mises en avant. |
-| `src/content.config.ts` | Le **schéma** du contenu : un champ manquant, en trop ou mal orthographié arrête la construction avec un message clair. `src/lib/types.ts` en tire les types des composants. |
-| `src/pages/index.astro`, `src/pages/fr/index.astro` | Les deux pages (anglais à la racine, français sous `/fr/`), qui appellent la mise en page. |
-| `src/layouts/Cv.astro` | La page : l'assemblage des composants et **le seul point d'entrée des scripts**. |
-| `src/components/` | Chaque composant avec **son style à côté** (`X.css`), et son script quand il n'est qu'à lui (`X.js`) : `Head` (métadonnées, langues, polices, script qui pose `html.js` et `html.stage` avant l'affichage), `Topbar` (+ `Topbar.js` : le logo recharge la page), `ThemeToggle` (+ `.css`, `.js`), `Hero` avec `HeroLine` et `HeroWord` (la phrase d'accueil, mot par mot), `Mark` (Betclic, Accor, LinkedIn), `Experience` + `Job`, `Facts`, `Footer`, et les briques `SectionTitle`, `EntryHeader`, `Chips`. |
-| `src/styles/index.css` | **L'ordre de la cascade**, à un seul endroit : il importe les feuilles dans l'ordre où elles doivent s'appliquer (plusieurs règles de même poids s'arbitrent par leur position). |
-| `src/styles/` | Ce qui traverse la page : `base` (polices, couleurs clair / sombre), `layout`, `screens` (grand écran : panneaux, transitions, repère), `stage` (mode scène), `cursor`. |
-| `src/scripts/ui/` | Ce qui concerne toute la page : `navigation` (repère, mode scène, défilement, Lenis), `cursor`, `fps` (`?fps` dans l'adresse). Le repère, le curseur et le compteur sont créés par JavaScript, exprès : sans lui, ils ne serviraient à rien. |
-| `src/scripts/3d/` | La 3D : `hero` (les deux téléphones qui jouent un test), `logo` (le logo AF), `marks` (marques en volume), `common` (démarrage différé, WebGL, densité d'écran, geste d'invite, reflet), `three-lite` (les seules parties de Three.js utilisées, 153 ko compressés, chargées après la page), `env` (reflets). |
-| `src/lib/` | `text.ts` (gras, découpage de la phrase d'accueil avec ses marques `{{betclic}}`), `assets.ts` (adresses et tailles des marques), `types.ts` (types tirés du schéma), `i18n.ts` (chemins et locales des deux langues). |
-| `src/assets/` | Polices, photo, logo, modèle 3D, marques SVG, reflets 3D. Publiés sous un nom qui change avec leur contenu. |
-| `public/photo.jpg`, `public/robots.txt` | L'image de partage (Open Graph, 800 × 800), et les consignes aux moteurs de recherche. |
-| `src/pages/sitemap.xml.ts`, `src/pages/404.astro` | Le plan du site (les deux langues, avec leur date) et la page des adresses inconnues (bilingue, textes dans les JSON). |
-| `src/pages/tools/linkedin-cover.astro` | La bannière LinkedIn (1584 × 396), non indexée. Export : Chrome headless `--window-size=1584,396 --force-device-scale-factor=2 --screenshot` sur `/tools/linkedin-cover/`. |
-| `tests/` | Les tests Playwright (voir plus bas). |
-| `.github/workflows/deploy.yml` | Construction, tests, publication. |
+| `src/content/cv/en.json`, `fr.json` | **All the content**, one version per language, same structure. UTF-8 text, `**bold**` for emphasis. |
+| `src/content.config.ts` | The content **schema**: a missing, extra or misspelled field stops the build with a clear message. `src/lib/types.ts` derives the component types from it. |
+| `src/pages/index.astro`, `src/pages/fr/index.astro` | The two pages (English at the root, French under `/fr/`), which call the layout. |
+| `src/layouts/Cv.astro` | The page: assembles the components and is **the single entry point of the scripts**. |
+| `src/components/` | Each component with **its style next to it** (`X.css`), and its script when it is its own (`X.js`): `Head` (metadata, languages, fonts, the script that sets `html.js` and `html.stage` before first paint), `Topbar` (+ `Topbar.js`: the logo reloads the page), `ThemeToggle` (+ `.css`, `.js`), `Hero` with `HeroLine` and `HeroWord` (the hero sentence, word by word), `Mark` (Betclic, Accor, LinkedIn), `Experience` + `Job`, `Facts`, `Footer`, and the building blocks `SectionTitle`, `EntryHeader`, `Chips`. |
+| `src/styles/index.css` | **The cascade order**, in one place: it imports the stylesheets in the order they must apply (several rules of equal weight are decided by their position). |
+| `src/styles/` | What spans the whole page: `base` (fonts, light / dark colours), `layout`, `screens` (large screens: panels, transitions, progress indicator), `stage` (stage mode), `cursor`. |
+| `src/scripts/ui/` | Page-wide behaviour: `navigation` (progress indicator, stage mode, scrolling, Lenis), `cursor`, `fps` (`?fps` in the URL). The indicator, the cursor and the meter are created by JavaScript on purpose: without it they would be useless. |
+| `src/scripts/3d/` | The 3D: `hero` (the two phones running a test), `logo` (the AF logo), `marks` (marks in relief), `common` (lazy start, WebGL, pixel density, hint gesture, shine, lost graphics context), `three-lite` (the only Three.js parts used — 166 kB compressed, loaded after the page), `env` (reflections). |
+| `src/lib/` | `text.ts` (bold, splitting the hero sentence with its `{{betclic}}` marks), `assets.ts` (mark URLs and sizes), `types.ts` (types from the schema), `i18n.ts` (paths and locales of both languages), `updated.ts` (date of the last content change). |
+| `src/assets/` | Fonts, photo, logo, 3D model, SVG marks, 3D reflections. Published under a name that changes with their content. |
+| `public/photo.jpg`, `public/robots.txt` | The sharing image (Open Graph, 800 × 800) and the instructions for search engines. |
+| `src/pages/sitemap.xml.ts`, `src/pages/404.astro` | The sitemap (both languages, with their date) and the page for unknown addresses (bilingual, texts from the JSON files). |
+| `src/pages/tools/linkedin-cover.astro` | The LinkedIn banner (1584 × 396), not indexed. Export: headless Chrome `--window-size=1584,396 --force-device-scale-factor=2 --screenshot` on `/tools/linkedin-cover/`. |
+| `tests/` | The Playwright tests (see below). |
+| `.github/` | CI (`deploy.yml`), Linux visual baselines (`visual-baselines.yml`), Dependabot. |
 
-**Pourquoi un seul fichier de scripts** plutôt qu'un `<script>` par composant : mesuré, 2 fichiers au chargement (13,1 ko) contre 6 (14,3 ko, certains en cascade). Chaque composant indique en tête les scripts qui le pilotent.
+**Why a single script file** rather than one `<script>` per component: measured, 2 files on load (13.1 kB) versus 6 (14.3 kB, some chained). Each component names the scripts that drive it in its header.
 
-## Modifier le CV
+## Editing the CV
 
 ```sh
-npm install          # une fois
-npm run dev          # http://localhost:4321, rechargé à chaque modification
+npm install          # once
+npm run dev          # http://localhost:4321, reloaded on every change
 ```
 
-1. Éditer `src/content/cv/en.json` **et** `fr.json` (ou le `.css` du composant concerné pour le style).
-2. `npm test` → construit le site et le teste (ordinateur + iPhone).
-3. `git push` → GitHub Actions reconstruit, reteste, et **ne publie que si tous les tests passent** (une à trois minutes).
+1. Edit `src/content/cv/en.json` **and** `fr.json` (or the component's `.css` for styling).
+2. `npm run check && npm test` → type check, then build and test the site (desktop + iPhone + visual comparison).
+3. `git push` → GitHub Actions checks, builds, tests, runs Lighthouse, and **publishes only if everything passes** (about four minutes).
 
-## Tests
+## Tests and CI
 
-`npm test` (ou `npm run test:ui` pour les voir tourner). Ils s'exécutent sur le site **construit**, dans Chromium (ordinateur, 1512 × 830) et WebKit (iPhone 15), et lisent leurs attentes dans les fichiers de contenu :
+`npm test` (or `npm run test:ui` to watch them run). They run against the **built** site, in Chromium (desktop, 1512 × 830) and WebKit (iPhone 15, iPad in landscape for the visual comparison), and read their expectations from the content files:
 
-- les deux langues se chargent sans aucune erreur JavaScript ni console ; tout le texte est déjà dans le HTML ; canonique et `hreflang` justes ;
-- **accessibilité** : aucune violation WCAG 2.1 A/AA (axe) ; en mode scène, tout le contenu reste exposé aux lecteurs d'écran ; Tab vers un lien d'un autre écran y emmène la scène ;
-- **sans JavaScript**, expériences et titres restent visibles ;
-- mode scène : clavier, molette (un geste = un écran), sauts sans écrans qui traversent la fenêtre, logo AF (absent de l'accueil, un clic recharge en haut), 3D prête ;
-- iPhone : aucun débordement horizontal, défilement normal.
-- **comparaison visuelle** (`tests/visual.spec.ts`, sur le Mac seulement) : 17 captures de référence — les 8 écrans du mode scène en clair, 3 en sombre, 2 en « réduire les animations », les pages entières sur iPhone et sur tablette en paysage. Elle prouve qu'un remaniement ne change rien à l'écran (les pages entières sont capturées avec tout le contenu dévoilé, une capture ne faisant pas défiler) ; après un changement **voulu** : `npx playwright test visual --update-snapshots`.
+- both languages load without any JavaScript or console error; all the text is already in the HTML; canonical and `hreflang` are right; title, `Person` card, CSP, `robots.txt`, sitemap and 404 page;
+- **accessibility**: no WCAG 2.1 A/AA violation (axe); in stage mode, all the content stays exposed to screen readers; "Skip to content" first; Tab to a link on another screen brings the stage there;
+- **without JavaScript**, experiences and titles stay visible;
+- stage mode: keyboard, wheel (one gesture = one screen), jumps without screens crossing the window, AF logo (hidden on the home screen, a click reloads at the top), 3D ready, lost graphics context falls back to images;
+- cursor and `?fps` meter; iPhone: no horizontal overflow, normal scrolling; **no broken link**;
+- **visual comparison** (`tests/visual.spec.ts`): 17 baselines per OS (`-darwin` on the Mac, `-linux` in CI) — the 8 stage screens in light, 3 in dark, 2 in reduced motion, the full pages on iPhone and on a tablet in landscape. It proves a refactor changes nothing on screen. After an **intended** change: `npx playwright test visual --update-snapshots` on the Mac, and the **Visual baselines (Linux)** workflow for CI (commit its artifact).
 
-Les tests de régression ont été vérifiés en réintroduisant chaque défaut corrigé : ils échouent bien.
+Regression tests were verified by reintroducing each fixed bug: they do fail.
 
-## Référencement, sécurité, accessibilité
+CI (`.github/workflows/deploy.yml`, Ubuntu 24.04): type check (`astro check`) → tests → **Lighthouse** (both pages, three runs; fails below 100 for accessibility, best practices and SEO, or 90 for performance) → build → deploy. **Dependabot** proposes grouped updates every Monday, each one going through the same CI.
 
-- **Head** : titre descriptif, fiche `Person` (schema.org : nom, poste, e-mail, LinkedIn), aperçu de partage complet, langues (canonique, `hreflang`).
-- **« Updated {date} »** : la date est celle du dernier commit qui a touché `src/content/cv/` (`src/lib/updated.ts`) ; la CI récupère tout l'historique pour la connaître.
-- **Politique de sécurité (CSP)**, en production : rien ne vient d'ailleurs que du site ; le seul script écrit dans la page (celui qui pose `html.js` / `html.stage`) est autorisé par son empreinte, calculée à la construction.
-- **Clavier** : « Aller au contenu » en premier arrêt de Tab ; le repère des écrans vient juste après la barre ; Tab vers un autre écran y emmène la scène.
-- **3D** : si le navigateur retire la carte graphique (onglet en veille sur téléphone), chaque objet revient à sa version plate.
+## SEO, security, accessibility
 
-## Couleur d'accent
+- **Head**: descriptive title, `Person` card (schema.org: name, job, email, LinkedIn), full sharing preview, languages (canonical, `hreflang`).
+- **"Updated {date}"**: the date of the last commit touching `src/content/cv/` (`src/lib/updated.ts`); CI fetches the full history to know it.
+- **Content Security Policy**, in production: nothing comes from anywhere but the site; the only script written in the page (the one that sets `html.js` / `html.stage`) is allowed by its hash, computed at build time.
+- **Keyboard**: "Skip to content" as the first Tab stop; the progress indicator comes right after the top bar; Tab to another screen brings the stage there.
+- **3D**: if the browser takes the GPU away (tab put to sleep on a phone), every object falls back to its flat version.
 
-Une seule couleur pilote tout : `--accent` (et ses dérivées `--accent-ink`, `--accent-hi`, `--accent-deep`) en tête de `src/styles/base.css`.
-Les téléphones 3D, le logo AF en 3D et le curseur la lisent au chargement. Mangue `#FFB627` depuis le 21/09/2026.
-Trois choses ne suivent pas automatiquement si on la change : `src/assets/logo.png` (recoloré), `src/assets/marks/linkedin.svg`
-(carré à la couleur d'accent) et le `:root` de `src/pages/tools/linkedin-cover.astro`.
+## Accent colour
 
-## Règles de contenu
+One colour drives everything: `--accent` (and its variants `--accent-ink`, `--accent-hi`, `--accent-deep`) at the top of `src/styles/base.css`.
+The 3D phones, the 3D AF logo and the cursor read it on load. Mango `#FFB627` since 21/09/2026.
+Three things do not follow automatically if it changes: `src/assets/logo.png` (recoloured), `src/assets/marks/linkedin.svg`
+(accent-coloured square) and the `:root` of `src/pages/tools/linkedin-cover.astro`.
 
-- Une puce = point de départ, ce qui coinçait, ce que j'ai fait, ce que ça a changé. Première personne, mots du métier en anglais tels quels.
-- Rien qui appartienne à un client : pas de nom interne, d'URL, de ticket, de chiffre de périmètre, ni de nom de projet non public.
-- Toute modification de texte se fait dans les **deux** fichiers de contenu, anglais et français.
+## Content rules
 
-## Entretien
+- One bullet = starting point, what was stuck, what I did, what it changed. First person, trade terms in English as they are.
+- Nothing that belongs to a client: no internal name, URL, ticket, scope figure or non-public project name.
+- Every text change is made in **both** content files, English and French.
 
-- Une fonction Three.js ajoutée dans un script 3D → l'ajouter à `src/scripts/3d/three-lite.js` (la construction le prend en compte).
-- Un texte qui ajoute un caractère rare → `npm run build && npm run fonts && npm run build` (réduit la police Bricolage aux caractères du site, `tools/subset-fonts.py`, sources dans `tools/fonts-src/`).
-- **Police Humane** (grands titres) : « Humane V2.0 » de Rajesh Rajput, gratuite y compris en usage commercial, mais sa licence interdit de **modifier** le fichier sans son accord écrit — or le site en sert un sous-ensemble. Accord demandé le 22/09/2026 ; en attendant, la source (`tools/fonts-src/Humane.ttf`) n'est plus dans le dépôt public (elle reste dans l'historique Git).
-- Mesures de référence (22/09/2026, Lighthouse sur le site en ligne, après la migration) : mobile 100 / 100 / 100 / 100, 125 ko et 12 requêtes (139 ko et 14 avant), élément principal 1,4 à 1,6 s ; ordinateur 100 / 100 / 100 / 100, 289 ko et 23 requêtes (308 ko et 25 avant) ; aucun domaine tiers. Juste après une publication, le cache de GitHub Pages est froid : un premier passage peut perdre 1 à 2 points.
+## Maintenance
+
+- A Three.js class used in a 3D script → add it to `src/scripts/3d/three-lite.js` (the build picks it up).
+- Text that adds a rare character → `npm run build && npm run fonts && npm run build` (subsets the Bricolage font to the site's characters, `tools/subset-fonts.py`, sources in `tools/fonts-src/`).
+- **Humane font** (giant titles): "Humane V2.0" by Rajesh Rajput, free including for commercial use, but its licence forbids **modifying** the file without his written permission — and the site serves a subset. Permission still to be asked (his address is in the licence text); meanwhile the source (`tools/fonts-src/Humane.ttf`) is no longer in the public repository (it remains in the Git history).
+- Reference measurements (22/09/2026, Lighthouse on the live site): mobile 100 / 100 / 100 / 100, 125 kB and 12 requests; desktop 100 / 100 / 100 / 100, 289 kB and 23 requests; no third-party domain. Right after a deployment the GitHub Pages cache is cold: a first run can lose 1 or 2 points.
