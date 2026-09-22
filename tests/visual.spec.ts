@@ -43,15 +43,26 @@ test.describe('ordinateur, mode scène', () => {
   }
 });
 
-test.describe('iPhone, page entière', () => {
-  test.beforeEach(({}, info) => { test.skip(info.project.name !== 'iphone'); });
+test('ordinateur, « réduire les animations »', async ({ page }, info) => {
+  test.skip(info.project.name !== 'desktop');
+  await page.emulateMedia({ colorScheme: 'light', reducedMotion: 'reduce' });
+  await page.goto('/');
+  await still(page);
+  await page.waitForTimeout(800);
+  await expect(page).toHaveScreenshot('reduit-0.png', opts);
+  await goToSlide(page, 2);
+  await expect(page).toHaveScreenshot('reduit-2.png', opts);
+});
+
+test.describe('iPhone et tablette, page entière', () => {
+  test.beforeEach(({}, info) => { test.skip(!['iphone', 'tablette'].includes(info.project.name)); });
   for (const [lang, path] of [['en', '/'], ['fr', '/fr/']] as const) {
     test(`${lang}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: 'light' });
       await page.goto(path);
       await still(page);
       await page.waitForTimeout(800);
-      await expect(page).toHaveScreenshot(`iphone-${lang}.png`, { ...opts, fullPage: true });
+      await expect(page).toHaveScreenshot(`page-${lang}.png`, { ...opts, fullPage: true });
     });
   }
 });
