@@ -12,7 +12,7 @@ function apply(t) {
   root.dataset.theme = t;
   if (!btn) return;
   btn.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
-  btn.title = t === 'dark' ? (btn.dataset.titleDark || 'Switch to light mode') : (btn.dataset.titleLight || 'Switch to dark mode');
+  btn.title = (t === 'dark' ? btn.dataset.titleDark : btn.dataset.titleLight) ?? '';   // the texts come from the content files
 }
 apply(saved || (mq.matches ? 'dark' : 'light'));
 btn?.addEventListener('click', () => {

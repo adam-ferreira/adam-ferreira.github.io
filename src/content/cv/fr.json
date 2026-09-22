@@ -19,13 +19,11 @@
     "hero": "Aujourd'hui chez {{betclic}}, hier chez {{accor}}",
     "marks": {
       "betclic": {
-        "type": "img",
         "src": "assets/marks/betclic.svg",
         "alt": "Betclic",
         "fill_dark": null
       },
       "accor": {
-        "type": "img",
         "src": "assets/marks/accor.svg",
         "alt": "Accor",
         "fill_dark": "#eef1f5"

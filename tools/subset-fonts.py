@@ -28,11 +28,10 @@ for p in ("src/content/cv/en.json", "src/content/cv/fr.json"):
     chars |= set((ROOT / p).read_text(encoding="utf-8"))
 text = "".join(sorted(c for c in chars if ord(c) >= 0x20))
 
-for src, out, feats in (
-    ("BricolageGrotesque-fr.woff2", "BricolageGrotesque-fr.woff2", ["kern", "locl", "tnum"]),   # tnum: the screen counter
-):
-    font = TTFont(SRC / src)
-    opts = subset.Options(); opts.flavor = "woff2"; opts.layout_features = feats; opts.notdef_outline = True; opts.name_IDs = ["*"]
-    sub = subset.Subsetter(opts); sub.populate(text=text); sub.subset(font)
-    font.flavor = "woff2"; font.save(OUT / out)
-    print(f"{out:32} {(OUT / out).stat().st_size / 1024:6.1f} kB  ({len(text)} characters)")
+NAME = "BricolageGrotesque-fr.woff2"
+font = TTFont(SRC / NAME)
+opts = subset.Options(); opts.flavor = "woff2"; opts.notdef_outline = True; opts.name_IDs = ["*"]
+opts.layout_features = ["kern", "locl", "tnum"]   # tnum: the screen counter
+sub = subset.Subsetter(opts); sub.populate(text=text); sub.subset(font)
+font.flavor = "woff2"; font.save(OUT / NAME)
+print(f"{NAME:32} {(OUT / NAME).stat().st_size / 1024:6.1f} kB  ({len(text)} characters)")
