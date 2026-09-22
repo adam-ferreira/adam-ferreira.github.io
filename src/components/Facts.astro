@@ -1,0 +1,28 @@
+---
+// Le dernier écran de contenu : formation, langues, centres d'intérêt.
+import { md } from '../lib/text';
+const { d } = Astro.props;
+const langs = d.languages.map((l) => `<strong>${md(l.name)}</strong> &mdash; ${md(l.level)}`).join(' &nbsp;&middot;&nbsp; ');
+---
+<div class="facts slide">
+  <section class="section" id="education" aria-labelledby="education-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="education-title" set:html={md(d.sections.education)} /></div>
+    {d.education.map((e) => (
+      <Fragment>
+        <div class="job-header"><div class="job-title-line">
+          <h3 class="job-title" set:html={md(e.title)} />
+          <span class="job-date" set:html={md(e.date)} />
+        </div></div>
+        <p class="job-intro reading" set:html={md(e.text)} />
+      </Fragment>
+    ))}
+  </section>
+  <section class="section" id="languages" aria-labelledby="languages-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="languages-title" set:html={md(d.sections.languages)} /></div>
+    <p class="job-intro reading" set:html={langs} />
+  </section>
+  <section class="section" id="interests" aria-labelledby="interests-title">
+    <div class="section-title-wrapper"><h2 class="section-title" id="interests-title" set:html={md(d.sections.interests)} /></div>
+    {d.interests.map((i) => <p class="job-intro reading" set:html={md(i)} />)}
+  </section>
+</div>

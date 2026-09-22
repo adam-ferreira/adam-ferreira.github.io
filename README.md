@@ -2,41 +2,58 @@
 
 Site : https://adam-ferreira.github.io/ (anglais) · https://adam-ferreira.github.io/fr/ (français). Plus de PDF depuis le 21/09/2026 : le CV est l'application web. Les derniers PDF sont archivés dans `~/admin/PRO/01_ADMINISTRATIF/CV/`.
 
-## Où se trouve quoi
+## Architecture
 
-| Fichier | Rôle |
+Site statique construit avec **[Astro](https://astro.build) 7** (depuis le 22/09/2026 ; avant : un générateur Python maison). Astro produit du HTML fixe et **n'ajoute aucun JavaScript à lui** : le navigateur ne reçoit que nos scripts (interface, 3D) et Three.js, chargé à la demande.
+Choix mesuré sur une page témoin, JavaScript envoyé par le framework seul : Astro 0 ko · SvelteKit 27 ko · Nuxt 55 ko · Next.js 130 ko.
+
+| Dossier / fichier | Rôle |
 |---|---|
-| `content/cv.en.json`, `content/cv.fr.json` | **Tout le contenu**, une version par langue, même structure : identité, accroche, compétences, expériences (puces), projets, formation, langues. Texte UTF-8, `**gras**` pour les mises en avant. |
-| `assets/cv.css` | Le style **écran**, façon Awwwards : cadre fixe, scène d'accueil plein écran, titres de section géants en Humane dévoilés par un masque, expériences en deux colonnes (en-tête accroché), Formation/Langues/Intérêts sur une rangée, pied de page inversé dévoilé sous le contenu, mode nuit. **Intégré dans `index.html` par le build** (un aller-retour de moins au chargement) : on l'édite ici, jamais dans la page. |
-| `assets/cv.js` | Mode jour/nuit ; **mode scène** sur ordinateur (≥ 1100 × 680, souris : `html.stage` posé dès le `<head>`, écrans `.slide` fixes, passage en CSS par la carte graphique, un geste = un écran, élan du trackpad ignoré, écran trop haut défilé à l'intérieur) ; défilement normal ailleurs (titres dévoilés, Lenis) ; repère de progression ; curseur ; compteur `?fps`. |
-| `assets/hero3d.js` | La scène d'accueil : un iPhone et un Android qui jouent le même test (locators, tap, journal). L'écran est dessiné en canvas 2D et posé en texture. |
-| `assets/marks3d.js` | Betclic, Accor et LinkedIn (en cube) en volume. Rendu 2,6 fois plus grand que la marque et au-dessus du texte ; au repos, calé au pixel près sur le SVG plat ; recalibré dès que la taille change. |
-| `assets/logo3d.js` | Le logo AF de la barre (`assets/logo.glb` + `assets/cubemaps/`). Caché sur l'accueil, il apparaît dès qu'on l'a quitté ; un clic recharge la page. Redessiné seulement quand sa pose bouge de façon visible. |
-| `assets/vendor/` | **Générés** par `tools/build-vendor.sh` : `three.js` (Three.js réduit à ce que le site utilise, liste dans `tools/three-lite.js`) et `lenis.js`. Chargés par la table d'import de la page ; aucune ressource tierce. |
-| `assets/fonts/` | `Humane-name.woff2` (nom et titres : alphabet latin, accents français, ponctuation — à régénérer avec `pyftsubset` depuis `tools/fonts-src/Humane.ttf` si un titre ajoute un caractère) et `BricolageGrotesque-fr.woff2` (le texte, SIL OFL, réduit aux caractères du site + alphabet français par `tools/subset-fonts.py`, source dans `tools/fonts-src/`). Auto-hébergées. |
-| `tools/linkedin-cover.html` | La bannière LinkedIn (1584 × 396) : la scène des téléphones figée (`data-freeze`), « Ship it. Tested it. » en Humane, sans logo. Export : serveur local à la racine, puis Chrome headless `--window-size=1584,396 --force-device-scale-factor=2 --screenshot`. La photo de profil recouvre le coin bas gauche. |
-| `build.py` | Assemble `index.html` depuis le JSON. Python standard, aucune dépendance. |
-| `index.html`, `fr/index.html` | **Générés** — ne pas éditer à la main. La page française porte `<base href="../">` et partage les mêmes fichiers. |
+| `src/content/cv/en.json`, `fr.json` | **Tout le contenu**, une version par langue, même structure. Texte UTF-8, `**gras**` pour les mises en avant. |
+| `src/content.config.ts` | Le **schéma** du contenu : un champ manquant, en trop ou mal orthographié arrête la construction avec un message clair. |
+| `src/pages/index.astro`, `src/pages/fr/index.astro` | Les deux pages (anglais à la racine, français sous `/fr/`), qui appellent la mise en page. |
+| `src/layouts/Cv.astro` | La page : `<head>` (métadonnées, langues, préchargement des polices, script qui pose `html.js` et `html.stage` avant l'affichage) et l'assemblage des composants. |
+| `src/components/` | `Topbar` (logo AF, LinkedIn, thème), `Hero` (accueil), `Experience` + `Job` (compétences, une expérience par écran), `Facts` (formation, langues, intérêts), `Footer`. |
+| `src/lib/text.ts` | Mise en forme du texte : `**gras**`, pastilles, phrase d'accueil avec les marques `{{betclic}}`. |
+| `src/styles/cv.css` | Tout le style, **intégré à la page** à la construction (un aller-retour réseau de moins). Accent, mode sombre, mode scène, animations. |
+| `src/scripts/cv.js` | Thème clair/sombre ; **mode scène** sur ordinateur (≥ 1100 × 680, souris) : écrans fixes, passage en CSS par la carte graphique, un geste = un écran, clavier, repère cliquable, Tab qui suit le focus ; défilement normal ailleurs (Lenis de 861 à 1099 px) ; curseur ; compteur `?fps`. |
+| `src/scripts/hero3d.js`, `logo3d.js`, `marks3d.js` | La 3D : les deux téléphones qui jouent un test, le logo AF de la barre, les marques Betclic / Accor / LinkedIn. |
+| `src/scripts/three-lite.js` | Les seules parties de Three.js utilisées : Astro n'embarque que ce code (153 ko compressés, chargé après la page). |
+| `src/assets/` | Polices, photo, logo, modèle 3D, marques SVG, reflets 3D. Publiés sous un nom qui change avec leur contenu. |
+| `public/photo.jpg` | L'image de partage (Open Graph), à adresse fixe. |
+| `src/pages/tools/linkedin-cover.astro` | La bannière LinkedIn (1584 × 396), non indexée. Export : Chrome headless `--window-size=1584,396 --force-device-scale-factor=2 --screenshot` sur `/tools/linkedin-cover/`. |
+| `tests/` | Les tests Playwright (voir plus bas). |
+| `.github/workflows/deploy.yml` | Construction, tests, publication. |
 
 ## Modifier le CV
 
-1. Éditer `content/cv.en.json` **et** `content/cv.fr.json` (ou `assets/cv.css` pour le style).
-2. `python3 build.py` → régénère les deux langues (`--lang fr` pour une seule).
-   ⚠️ Pour une capture « téléphone » en headless, Chrome impose 500 px de large minimum : mettre la page dans un `<iframe>` de 390 px.
-   ⚠️ Chrome headless ne déclenche ni défilement ni IntersectionObserver dans une page défilée par script : les titres y restent masqués. Vérifier le défilement dans un vrai navigateur, onglet **visible** (un onglet en arrière-plan suspend aussi le rendu).
-3. `git add -A && git commit && git push` → GitHub Pages publie en une à deux minutes.
+```sh
+npm install          # une fois
+npm run dev          # http://localhost:4321, rechargé à chaque modification
+```
 
+1. Éditer `src/content/cv/en.json` **et** `fr.json` (ou `src/styles/cv.css` pour le style).
+2. `npm test` → construit le site et le teste (ordinateur + iPhone).
+3. `git push` → GitHub Actions reconstruit, reteste, et **ne publie que si tous les tests passent** (une à trois minutes).
 
-## Technique
+## Tests
 
-Aucun framework : HTML généré par `build.py` (Python standard) depuis le JSON, CSS et JavaScript écrits à la main, Three.js pour la 3D (paquet réduit et hébergé par le site), hébergement GitHub Pages. La fluidité vient du travail fait à chaque image, pas d'un framework.
+`npm test` (ou `npm run test:ui` pour les voir tourner). Ils s'exécutent sur le site **construit**, dans Chromium (ordinateur, 1512 × 830) et WebKit (iPhone 15), et lisent leurs attentes dans les fichiers de contenu :
+
+- les deux langues se chargent sans aucune erreur JavaScript ni console ; tout le texte est déjà dans le HTML ; canonique et `hreflang` justes ;
+- **accessibilité** : aucune violation WCAG 2.1 A/AA (axe) ; en mode scène, tout le contenu reste exposé aux lecteurs d'écran ; Tab vers un lien d'un autre écran y emmène la scène ;
+- **sans JavaScript**, expériences et titres restent visibles ;
+- mode scène : clavier, molette (un geste = un écran), sauts sans écrans qui traversent la fenêtre, logo AF (absent de l'accueil, un clic recharge en haut), 3D prête ;
+- iPhone : aucun débordement horizontal, défilement normal.
+
+Les tests de régression ont été vérifiés en réintroduisant chaque défaut corrigé : ils échouent bien.
 
 ## Couleur d'accent
 
-Une seule couleur pilote tout : `--accent` (et ses dérivées `--accent-ink`, `--accent-hi`, `--accent-deep`) en tête de `assets/cv.css`.
+Une seule couleur pilote tout : `--accent` (et ses dérivées `--accent-ink`, `--accent-hi`, `--accent-deep`) en tête de `src/styles/cv.css`.
 Les téléphones 3D, le logo AF en 3D et le curseur la lisent au chargement. Mangue `#FFB627` depuis le 21/09/2026.
-Trois choses ne suivent pas automatiquement si on la change : `assets/logo.png` (logo AF de la barre et icône d'onglet, recoloré),
-`assets/marks/linkedin.svg` (carré à la couleur d'accent, « in » à l'encre sombre) et le `:root` de `tools/linkedin-cover.html`.
+Trois choses ne suivent pas automatiquement si on la change : `src/assets/logo.png` (recoloré), `src/assets/marks/linkedin.svg`
+(carré à la couleur d'accent) et le `:root` de `src/pages/tools/linkedin-cover.astro`.
 
 ## Règles de contenu
 
@@ -44,8 +61,8 @@ Trois choses ne suivent pas automatiquement si on la change : `assets/logo.png` 
 - Rien qui appartienne à un client : pas de nom interne, d'URL, de ticket, de chiffre de périmètre, ni de nom de projet non public.
 - Toute modification de texte se fait dans les **deux** fichiers de contenu, anglais et français.
 
-### Reconstruire les fichiers générés
-- Une fonction Three.js ajoutée dans `hero3d.js`, `logo3d.js` ou `marks3d.js` → l'ajouter à `tools/three-lite.js`, puis `./tools/build-vendor.sh` (Node requis, rien n'est installé dans le dépôt).
-- Un texte qui ajoute un caractère rare → `uvx --from 'fonttools[woff]' python tools/subset-fonts.py && python3 build.py`.
+## Entretien
 
-Mesures du 22/09/2026 (Lighthouse sur le site en ligne) : mobile 100 / 100 / 100 / 100, 139 ko transférés (178 avant) ; ordinateur 100 / 100 / 100 / 100, 308 ko et 25 requêtes (402 ko et 29 avant), aucun domaine tiers. Juste après une publication, le cache de GitHub Pages est froid : un premier passage peut perdre 1 à 2 points.
+- Une fonction Three.js ajoutée dans un script 3D → l'ajouter à `src/scripts/three-lite.js` (la construction le prend en compte).
+- Un texte qui ajoute un caractère rare → `npm run build && npm run fonts && npm run build` (réduit la police Bricolage aux caractères du site, `tools/subset-fonts.py`, sources dans `tools/fonts-src/`).
+- Mesures de référence (22/09/2026, avant la migration, Lighthouse sur le site en ligne) : mobile 100 / 100 / 100 / 100, 139 ko ; ordinateur 100 / 100 / 100 / 100, 308 ko, aucun domaine tiers. Juste après une publication, le cache de GitHub Pages est froid : un premier passage peut perdre 1 à 2 points.
