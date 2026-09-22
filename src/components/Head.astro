@@ -6,7 +6,7 @@ import { createHash } from 'node:crypto';
 import logoUrl from '../assets/logo.png?url';
 import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
 import humaneUrl from '../assets/fonts/Humane.ttf?url';
-import { pathOf, LOCALE, type Lang } from '../lib/i18n';
+import { LANGS, pathOf, LOCALE, type Lang } from '../lib/i18n';
 import { THEME_KEY } from '../scripts/theme.js';
 import type { Cv } from '../lib/types';
 interface Props { lang: Lang; d: Cv; fullName: string }
@@ -63,8 +63,7 @@ const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 <meta property="og:locale" content={LOCALE[lang]}>
 <meta name="twitter:card" content="summary">
 <link rel="canonical" href={url}>
-<link rel="alternate" hreflang="en" href={new URL(pathOf('en'), site).href}>
-<link rel="alternate" hreflang="fr" href={new URL(pathOf('fr'), site).href}>
+{LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathOf(l), site).href}>)}
 <link rel="alternate" hreflang="x-default" href={site}>
 <link rel="icon" href={logoUrl} type="image/png">
 <link rel="apple-touch-icon" href={logoUrl}>
