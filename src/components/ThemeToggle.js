@@ -1,9 +1,12 @@
-// Light / dark switch (ThemeToggle.astro): the system theme by default, or the visitor's remembered choice.
+// Light / dark switch (ThemeToggle.astro): the system theme by default, or the visitor's remembered choice (already
+// applied before the first paint by the boot script in Head.astro).
+import { THEME_KEY } from '../scripts/theme.js';
 const root = document.documentElement;
 const btn = document.querySelector('.theme-toggle');
 const mq = window.matchMedia('(prefers-color-scheme: dark)');
 let saved = null;
-try { saved = localStorage.getItem('cv-theme'); } catch { /* storage unavailable (private browsing): fall back to the system theme */ }
+try { saved = localStorage.getItem(THEME_KEY); } catch { /* storage unavailable (private browsing): fall back to the system theme */ }
+if (saved !== 'light' && saved !== 'dark') saved = null;
 
 function apply(t) {
   root.dataset.theme = t;
@@ -15,7 +18,7 @@ apply(saved || (mq.matches ? 'dark' : 'light'));
 btn?.addEventListener('click', () => {
   const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
   saved = next;
-  try { localStorage.setItem('cv-theme', next); } catch { /* same as above */ }
+  try { localStorage.setItem(THEME_KEY, next); } catch { /* same as above */ }
   apply(next);
 });
 mq.addEventListener('change', (e) => { if (!saved) apply(e.matches ? 'dark' : 'light'); });
