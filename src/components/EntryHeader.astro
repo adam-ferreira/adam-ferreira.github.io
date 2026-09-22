@@ -1,0 +1,11 @@
+---
+// En-tête d'une entrée datée — une expérience ou un diplôme : numéro (expériences seulement), titre, date.
+import { md } from '../lib/text';
+interface Props { title: string; date: string; num?: string }   // title : HTML déjà mis en forme (gras, tiret)
+const { title, date, num } = Astro.props;
+---
+<div class="job-header"><div class="job-title-line">
+  {num && <span class="job-num label">{num}</span>}
+  <h3 class="job-title" set:html={title} />
+  <span class="job-date" set:html={md(date)} />
+</div></div>

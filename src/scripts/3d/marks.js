@@ -7,20 +7,10 @@
 // · On l'attrape sur la marque elle-même, on la lance, elle file sur son élan, puis se remet droite toute seule.
 // · LinkedIn est un cube : le carré bleu devient un vrai volume, avec le « in » en relief devant et derrière,
 //   et on peut le faire tourner dans tous les sens.
+import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine } from './common.js';
 const F = 2.6;
 const marks = [...document.querySelectorAll('.mark[data-svg]')];
-const desktop = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isDark = () => document.documentElement.dataset.theme === 'dark';
-// suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
-const onDprChange = (cb) => {
-  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
-  q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
-};
-
-function webglOk() {
-  try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
-}
 
 async function start() {
   if (!marks.length || !webglOk()) return;
@@ -60,15 +50,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   // tranches : éclairées et un peu plus sombres → le volume n'apparaît que quand on l'incline
   // reflet : une bande de lumière qui balaie la marque en diagonale (position et intensité partagées par toute la marque)
   const shine = { t: { value: -1e5 }, w: { value: 1 }, a: { value: 0 } };
-  const addShine = (m) => {
-    m.onBeforeCompile = (sh) => {
-      sh.uniforms.uShineT = shine.t; sh.uniforms.uShineW = shine.w; sh.uniforms.uShineA = shine.a;
-      sh.vertexShader = 'varying vec2 vShine;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vShine = mvPosition.xy;');
-      sh.fragmentShader = 'uniform float uShineT, uShineW, uShineA;\nvarying vec2 vShine;\n' + sh.fragmentShader.replace('#include <opaque_fragment>',
-        '#include <opaque_fragment>\n  float sd = (vShine.x + vShine.y * 0.6) - uShineT;\n  gl_FragColor.rgb += vec3(1.0) * exp(-sd * sd / (uShineW * uShineW)) * uShineA;');
-    };
-    return m;
-  };
+    const addShine = (m) => withShine(m, shine);
   const mats = (c) => {
     const cap = addShine(new THREE.MeshBasicMaterial({ color: new THREE.Color(c) }));
     const side = addShine(new THREE.MeshStandardMaterial({ color: new THREE.Color(c).multiplyScalar(0.72), metalness: 0.1, roughness: 0.6 }));
@@ -197,9 +179,8 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   let visible = true, dirty = true, lastX = NaN, lastY = NaN, paused = false;
   // geste d'invite : de temps en temps, la marque s'incline un peu et un reflet la balaie, pour montrer qu'elle est en volume.
   // Décalé d'une marque à l'autre, jamais pendant une interaction.
-  const HINT_MS = 1500, HINT_A = cube ? 0.7 : 0.42;
-  let hintStart = -1, nextHint = performance.now() + 1500 + order * 1500;
-  const easeIO = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
+  const HINT_A = cube ? 0.7 : 0.42;
+  let hintStart = -1, nextHint = firstHint(order);
   if ('IntersectionObserver' in window) new IntersectionObserver((en) => { visible = en[0].isIntersecting; }).observe(mark);
   new MutationObserver(() => { recolor(); renderer.render(scene, camera); })
     .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
@@ -228,7 +209,7 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
         const u = Math.min(1, (now - hintStart) / HINT_MS), sw = Math.sin(Math.PI * u);
         wrap.rotation.y = HINT_A * sw; wrap.rotation.x = -HINT_A * 0.35 * sw;
         shine.t.value = -sweep + 2 * sweep * easeIO(u); shine.a.value = 0.75 * sw; dirty = true;
-        if (u >= 1) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; wrap.rotation.set(0, 0, 0); nextHint = now + 4500 + Math.random() * 1500; }
+        if (u >= 1) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; wrap.rotation.set(0, 0, 0); nextHint = nextHintAt(now); }
       } else {
         if (hintStart >= 0) { hintStart = -1; delete mark.dataset.hint; shine.a.value = 0; dirty = true; nextHint = performance.now() + 3000; }   // survol pendant le geste : on l'arrête
         t += 0.016;
@@ -245,14 +226,4 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   })();
 }
 
-function boot() {
-  if (!marks.length || !webglOk()) return;
-  if (desktop()) return ('requestIdleCallback' in window) ? requestIdleCallback(start, { timeout: 2000 }) : setTimeout(start, 500);
-  let done = false;
-  const EVENTS = ['touchstart', 'pointerdown', 'scroll'];
-  const go = () => { if (done) return; done = true; EVENTS.forEach((e) => window.removeEventListener(e, go)); start(); };
-  EVENTS.forEach((e) => window.addEventListener(e, go, { passive: true }));
-  setTimeout(go, 5000);
-}
-if (document.readyState === 'complete') boot();
-else window.addEventListener('load', boot);
+whenLoaded(() => { if (marks.length && webglOk()) bootLazily(start, 2000, 500); });

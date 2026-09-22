@@ -1,0 +1,25 @@
+/* ============================================================
+   CV — la feuille de style, intégrée dans chaque page à la construction. Direction (21/09/2026) : une scène d'accueil
+   plein écran, une déclaration typographique géante par section (Humane), des micro-étiquettes en mono, un pied de page
+   inversé. Le contenu reste une colonne de lecture calme en Bricolage Grotesque. Les marques 3D (Betclic, Accor,
+   LinkedIn) sont plates au repos et prennent du volume quand on les manipule.
+
+   Chaque composant a son fichier, à côté de lui (src/components/X.css) ; ce qui traverse la page est ici (src/styles/).
+   ⚠️ L'ORDRE CI-DESSOUS EST CELUI DE LA CASCADE, ET IL COMPTE : plusieurs règles de même poids s'arbitrent par leur
+   position (ex. .mark après .topbar-linkedin ; les règles de base de Job et Facts après celles du grand écran).
+   Ne pas le changer sans relancer la comparaison visuelle : npx playwright test visual
+   ============================================================ */
+@import "./base.css";
+@import "../components/Topbar.css";
+@import "../components/Hero.css";
+@import "./marks.css";
+@import "../components/Experience.css";
+@import "../components/Chips.css";
+@import "./layout.css";
+@import "../components/SectionTitle.css";
+@import "./screens.css";
+@import "../components/Facts.css";
+@import "../components/Job.css";
+@import "../components/Footer.css";
+@import "./cursor.css";
+@import "./stage.css";

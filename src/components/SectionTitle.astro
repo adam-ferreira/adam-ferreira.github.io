@@ -1,0 +1,7 @@
+---
+// Titre de section géant (Humane). Le conteneur coupe le titre, qui monte à son arrivée (SectionTitle.css).
+import { md } from '../lib/text';
+interface Props { id: string; label: string }
+const { id, label } = Astro.props;
+---
+<div class="section-title-wrapper"><h2 class="section-title" id={`${id}-title`} set:html={md(label)} /></div>

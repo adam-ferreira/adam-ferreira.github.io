@@ -1,13 +1,10 @@
-// Petites fonctions de mise en forme du texte du CV (reprises de l'ancien build.py, même rendu).
+// Petites fonctions de mise en forme du texte du CV (reprises du générateur Python d'avant Astro, même rendu).
 
 const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
 export const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ESC[c]);
 
 /** Texte brut → HTML : échappement, puis **gras** → <strong>. */
 export const md = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-
-/** Liste de pastilles (stack, compétences). Les espaces entre <li> comptent : les pastilles sont en ligne. */
-export const chips = (items: string[]) => '<ul class="chips">' + items.map((i) => `<li>${md(i)}</li>`).join(' ') + '</ul>';
 
 export interface MarkAsset { url: string; width?: number; height?: number }
 export interface Mark { type: 'img'; src: string; alt: string; fill_dark?: string | null }
