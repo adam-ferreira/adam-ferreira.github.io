@@ -1,0 +1,60 @@
+# À chaque push sur main : on construit, on teste le site construit (Playwright, ordinateur + iPhone), et on ne
+# publie sur GitHub Pages que si tous les tests passent. Une pull request est testée sans être publiée.
+name: Tester et publier
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium webkit
+      - run: npm test
+      - name: Rapport des tests (en cas d'échec)
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rapport-playwright
+          path: playwright-report/
+          retention-days: 14
+
+  build:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Construire et préparer la publication
+        uses: withastro/action@v6
+        with:
+          node-version: 24
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publier sur GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
