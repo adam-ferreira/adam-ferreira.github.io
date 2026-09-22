@@ -1,0 +1,30 @@
+---
+// What every page of the site puts in its <head>: character set, viewport, security policy, referrer, the script that
+// prepares the display before the first paint, the colour of the browser interface, the icon and the preload of the two
+// fonts. The CV pages add their title, their share preview and their languages (Head.astro); the 404 page adds its own
+// title. The style and the module scripts are added by Astro itself.
+import logoUrl from '../assets/logo.png?url';
+import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
+import humaneUrl from '../assets/fonts/Humane.ttf?url';
+import { contentSecurityPolicy } from '../lib/csp';
+import { THEME_KEY } from '../scripts/theme.js';
+
+// Before anything is displayed: "js" (content that gets revealed may start hidden), the theme the visitor chose (otherwise
+// the page would first appear in the system theme, then switch once the deferred scripts run) and, on a desktop with a
+// mouse, stage mode.
+const BOOT = '(function(r){r.classList.add("js");'
+  + `try{var t=localStorage.getItem(${JSON.stringify(THEME_KEY)});if(t==="light"||t==="dark")r.dataset.theme=t}catch(e){}`
+  + 'if(matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches)r.classList.add("stage")'
+  + '})(document.documentElement)';
+---
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{import.meta.env.PROD && <meta http-equiv="Content-Security-Policy" content={contentSecurityPolicy([BOOT])}>}
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<script is:inline set:html={BOOT}></script>
+<meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
+<link rel="icon" href={logoUrl} type="image/png">
+<link rel="apple-touch-icon" href={logoUrl}>
+<link rel="preload" as="font" type="font/woff2" href={bricolageUrl} crossorigin>
+<link rel="preload" as="font" type="font/ttf" href={humaneUrl} crossorigin>

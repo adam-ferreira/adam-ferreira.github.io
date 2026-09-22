@@ -12,7 +12,7 @@ test('cursor: follows the mouse, grows over a link, then stops', async ({ page }
   // the ball catches up with the pointer (within a pixel: on slow CI machines the last frames can lag), then stops
   const pos = () => dot.evaluate((d) => { const m = new DOMMatrix(getComputedStyle(d).transform); return [m.e, m.f]; });
   await expect.poll(async () => { const [x, y] = await pos(); return Math.hypot(x - 420, y - 380); }, { timeout: 10_000 }).toBeLessThan(1);
-  await page.locator('.contact-link').first().hover();
+  await page.locator('.pill').first().hover();
   await expect(dot).toHaveClass(/is-hot/);
 });
 
