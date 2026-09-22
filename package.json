@@ -23,7 +23,7 @@
     "@lhci/cli": "0.15.1",
     "@playwright/test": "1.63.0",
     "@types/node": "24.13.5",
-    "typescript": "6.0.3"
+    "typescript": "7.0.2"
   },
   "engines": {
     "node": ">=22.12"
