@@ -47,7 +47,7 @@ npm run dev          # http://localhost:4321, rechargé à chaque modification
 - **sans JavaScript**, expériences et titres restent visibles ;
 - mode scène : clavier, molette (un geste = un écran), sauts sans écrans qui traversent la fenêtre, logo AF (absent de l'accueil, un clic recharge en haut), 3D prête ;
 - iPhone : aucun débordement horizontal, défilement normal.
-- **comparaison visuelle** (`tests/visual.spec.ts`, sur le Mac seulement) : 17 captures de référence — les 8 écrans du mode scène en clair, 3 en sombre, 2 en « réduire les animations », les pages entières sur iPhone et sur tablette en paysage. Elle prouve qu'un remaniement ne change rien à l'écran ; après un changement **voulu** : `npx playwright test visual --update-snapshots`.
+- **comparaison visuelle** (`tests/visual.spec.ts`, sur le Mac seulement) : 17 captures de référence — les 8 écrans du mode scène en clair, 3 en sombre, 2 en « réduire les animations », les pages entières sur iPhone et sur tablette en paysage. Elle prouve qu'un remaniement ne change rien à l'écran (les pages entières sont capturées avec tout le contenu dévoilé, une capture ne faisant pas défiler) ; après un changement **voulu** : `npx playwright test visual --update-snapshots`.
 
 Les tests de régression ont été vérifiés en réintroduisant chaque défaut corrigé : ils échouent bien.
 
