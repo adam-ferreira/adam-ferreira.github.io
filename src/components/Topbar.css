@@ -4,7 +4,7 @@
 .topbar {
   position: sticky; top: 0; z-index: 20;
   display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 18px;
-  height: 60px; padding: 0 clamp(16px, 3vw, 36px);
+  height: var(--topbar-h); padding: 0 var(--gutter);
   background: var(--topbar); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
   border-bottom: 1px solid transparent; transition: border-color .2s ease;
 }
@@ -17,8 +17,8 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .brand .logo3d.is-dragging { cursor: grabbing; }
 .brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
 /* nothing at the top left on the home screen (the name is already there, large); once you leave it, the 3D AF logo appears, and a click reloads the page */
-html.js .brand { visibility: hidden; opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .55s; }
-html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: none; transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+html.js .brand { visibility: hidden; opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s var(--ease-out-strong), visibility 0s linear .55s; }
+html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: none; transition: opacity .45s ease, transform .55s var(--ease-out-strong), visibility 0s; }
 /* LinkedIn: a 3D cube (src/scripts/3d/marks.js), the image in the meantime */
 .topbar-linkedin { grid-column: 3; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }

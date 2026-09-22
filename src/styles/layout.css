@@ -4,7 +4,7 @@
 .page { position: relative; z-index: 1; background: var(--paper); }
 
 /* ---------- content: each section opens with a giant word ---------- */
-main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120px; }
+main { max-width: 1400px; margin: 0 auto; padding: 0 var(--gutter) 120px; }
 /* the watermark number of the short experiences (right: -32%) made the page 135 px wider on a landscape tablet:
    clipped at the edge of main, i.e. at the edge of the screen — same look. (The fixed stage-mode screens are not affected.) */
 main { overflow-x: clip; }

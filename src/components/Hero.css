@@ -3,10 +3,10 @@
 /* ---------- the home scene: full screen, the logo in large ---------- */
 .header {
   position: relative; overflow: hidden;
-  min-height: calc(100svh - 60px);
+  min-height: calc(100svh - var(--topbar-h));
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40%); align-items: center;
   max-width: 1400px; margin: 0 auto;
-  padding: clamp(48px, 8vh, 96px) clamp(16px, 3vw, 36px) 96px;
+  padding: clamp(48px, 8vh, 96px) var(--gutter) 96px;
 }
 .hero-stage { grid-column: 2; grid-row: 1; position: relative; justify-self: center; width: clamp(260px, 34vw, 560px); aspect-ratio: 1; }
 .hero-stage::before {
@@ -17,7 +17,7 @@
 .hero-stage.is-lit::before { opacity: 1; }
 .hero3d {
   position: absolute; inset: -8%; width: 116%; height: 116%; display: block; cursor: grab; touch-action: none;
-  opacity: 0; transform: translateY(22px); transition: opacity 1s ease, transform 1.3s cubic-bezier(.2, .7, .2, 1);
+  opacity: 0; transform: translateY(22px); transition: opacity 1s ease, transform 1.3s var(--ease-out);
 }
 .hero3d.is-ready { opacity: 1; transform: none; }
 .hero3d.is-dragging { cursor: grabbing; }
@@ -49,7 +49,7 @@
 .contact { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 12px; }
 
 .hero-foot {
-  position: absolute; left: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); bottom: 28px;
+  position: absolute; left: var(--gutter); right: var(--gutter); bottom: 28px;
   display: flex; justify-content: space-between; align-items: center; gap: 16px;
 }
 .scroll-hint { display: inline-flex; align-items: center; gap: 8px; transition: opacity .4s ease; }
@@ -72,10 +72,10 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 
 /* ---------- motion: one choreography on arrival, nothing else ---------- */
 @keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.name, .portrait { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
-.subtitle, .location { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .12s both; }
-.contact { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .22s both; }
-.hero-line .w { animation: settle .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.28s + var(--i) * 42ms); }
+.name, .portrait { animation: settle .7s var(--ease-out) both; }
+.subtitle, .location { animation: settle .7s var(--ease-out) .12s both; }
+.contact { animation: settle .7s var(--ease-out) .22s both; }
+.hero-line .w { animation: settle .55s var(--ease-out) both; animation-delay: calc(.28s + var(--i) * 42ms); }
 @media (prefers-reduced-motion: reduce) {
   .name, .subtitle, .location, .contact, .hero-line .w, .scroll-hint::before { animation: none; }
   .hero3d, .hero-stage::before { transition: none; }

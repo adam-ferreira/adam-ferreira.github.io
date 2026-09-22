@@ -30,11 +30,13 @@ if (!root.classList.contains('stage')) {
       entries.forEach((en) => { if (en.isIntersecting) { reveal(en.target); io.unobserve(en.target); } });
     }, { rootMargin: '0px 0px -10% 0px' });
     document.querySelectorAll('.section-title-wrapper').forEach((w) => { if (reduced) reveal(w); else io.observe(w); });
-    // the name moves into the top bar once the big name of the hero has left the screen
+    // the name moves into the top bar once the big name of the hero has left the screen (behind the bar, whose height
+    // the stylesheet holds)
+    const topbarH = getComputedStyle(root).getPropertyValue('--topbar-h').trim() || '60px';
     const nm = document.querySelector('.header .name');
     if (nm) new IntersectionObserver((en) => {
       document.body.classList.toggle('name-away', !en[0].isIntersecting && en[0].boundingClientRect.top < 0);
-    }, { rootMargin: '-60px 0px 0px 0px' }).observe(nm);
+    }, { rootMargin: `-${topbarH} 0px 0px 0px` }).observe(nm);
     // the current screen (the one at the top of the window) gets is-active, and the indicator follows
     const panelIO = new IntersectionObserver((entries) => {
       entries.forEach((en) => { en.target.classList.toggle('is-active', en.isIntersecting); if (en.isIntersecting) setCurrent(slides.indexOf(en.target)); });
