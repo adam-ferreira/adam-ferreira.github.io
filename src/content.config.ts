@@ -4,6 +4,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { LANGS } from './lib/i18n';
 
 const text = z.string().min(1);
 const mark = z.object({
@@ -15,7 +16,7 @@ const mark = z.object({
 const cv = defineCollection({
   loader: glob({ pattern: '*.json', base: './src/content/cv' }),
   schema: z.object({
-    lang: z.enum(['en', 'fr']),
+    lang: z.enum(LANGS),
     meta: z.object({ title: text, description: text }).strict(),
     identity: z.object({
       first_name: text, last_name: text, headline: text, tagline: text, location: text,

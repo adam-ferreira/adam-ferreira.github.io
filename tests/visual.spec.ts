@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { existsSync } from 'node:fs';
-import { settle } from './helpers';
+import { PAGES, settle } from './helpers';
 
 // Visual comparison: proves that a refactor changes nothing on screen. One set of baselines per OS, since font rendering
 // differs: *-darwin.png (the Mac) and *-linux.png (CI, Ubuntu 24.04).
@@ -60,7 +60,7 @@ test('desktop, reduced motion', async ({ page }, info) => {
 
 test.describe('iPhone and tablet, full page', () => {
   test.beforeEach(({}, info) => { test.skip(!['iphone', 'tablet'].includes(info.project.name)); });
-  for (const [lang, path] of [['en', '/'], ['fr', '/fr/']] as const) {
+  for (const { lang, path } of PAGES) {
     test(`${lang}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: 'light' });
       await page.goto(path);
