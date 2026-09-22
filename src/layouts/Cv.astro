@@ -13,7 +13,7 @@ import { pathOf, type Lang } from '../lib/i18n';
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const entry = await getEntry('cv', lang);
-if (!entry) throw new Error(`Contenu manquant : src/content/cv/${lang}.json`);
+if (!entry) throw new Error(`Missing content: src/content/cv/${lang}.json`);
 const d = entry.data;
 const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
 ---
