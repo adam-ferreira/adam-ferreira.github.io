@@ -38,7 +38,7 @@ const en = (await getEntry('cv', 'en'))!.data, fr = (await getEntry('cv', 'fr'))
 </html>
 
 <style>
-  .not-found { min-height: 100svh; max-width: 1100px; margin: 0 auto; padding: 48px clamp(16px, 3vw, 36px); display: grid; align-content: center; gap: 40px; }
+  .not-found { min-height: 100svh; max-width: 1100px; margin: 0 auto; padding: 48px var(--gutter); display: grid; align-content: center; gap: 40px; }
   .nf-code { font-size: clamp(140px, 28vw, 320px); -webkit-text-stroke-color: var(--muted); }
   .nf-langs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px clamp(32px, 5vw, 80px); }
   .nf-langs section { display: grid; gap: 14px; justify-items: start; }

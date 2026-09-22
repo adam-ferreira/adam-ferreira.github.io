@@ -4,17 +4,18 @@
    Home, "Experience" chapter + skills, one experience per screen, Education/Languages/Interests, footer.
    If a screen overflows (small screen), the browser scrolls inside it before moving on to the next one. */
 @media (min-width: 1100px) and (min-height: 680px) {
-  html { scroll-padding-top: 60px; }   /* transitions driven by src/scripts/ui/ (native snapping stuttered with trackpad momentum) */
+  html { scroll-padding-top: var(--topbar-h); }   /* transitions driven by src/scripts/ui/ (native snapping stuttered with trackpad momentum) */
   .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
-  .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
+  .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); }
   /* the footer becomes the last screen (it is no longer "stuck" under the content: snapping cannot target a stuck element) */
-  footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: space-between; }
+  footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); display: flex; flex-direction: column; justify-content: space-between; }
   footer.site-footer .footer-statement, footer.site-footer .footer-grid { margin-top: auto; }   /* the sentence in the middle, the contact details at the bottom */
   .section { margin-top: 0; padding-top: 0; border-top: 0; }
   .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
   .chapter .section-title-wrapper { margin-bottom: 0; }
   .job { align-content: center; padding: 24px 0; }   /* margins between screens: Job.css (they must come after its base rules) */
-  main { padding-right: 84px; }   /* room for the progress indicator */
+  main { padding-right: 84px; }   /* room for the progress indicator — wider than the indicator itself, and not the same
+                                     room as in stage mode (--pager-room), where the content sits inside a gutter */
   .facts { align-content: center; }   /* margins and rule line: Facts.css */
 }
 
@@ -27,7 +28,7 @@
      html.js: without JavaScript, nobody sets is-active, so nothing may start hidden */
   html.js .reveal {
     opacity: 0; transform: translateY(24px);
-    transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1);
+    transition: opacity .7s var(--ease-out), transform .8s var(--ease-out);
     transition-delay: calc(var(--d, 0) * 70ms);
   }
   html.js .is-active .reveal { opacity: 1; transform: none; }
@@ -42,7 +43,7 @@
   @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
     /* the screen itself does not move (otherwise snapping aims at a moving target): it carries a named timeline,
        and it is its content that animates as you scroll */
-    .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: 60px 0px; }
+    .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: var(--topbar-h) 0px; }
     .header > *, .chapter > *, .job > *, .facts > *, .site-footer > * {
       transform-origin: 50% 0%;
       animation: panel-in linear backwards, panel-out linear forwards;
