@@ -29,6 +29,8 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Vérification des types (Astro, TypeScript)
+        run: npm run check
       - run: npx playwright install --with-deps chromium webkit
       - run: npm test
       - name: Rapport des tests (en cas d'échec)

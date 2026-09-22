@@ -7,6 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "check": "astro check",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
     "fonts": "uvx --from 'fonttools[woff]' python tools/subset-fonts.py"
@@ -17,8 +18,11 @@
     "three": "0.170.0"
   },
   "devDependencies": {
+    "@astrojs/check": "0.9.10",
     "@axe-core/playwright": "4.13.0",
-    "@playwright/test": "1.63.0"
+    "@playwright/test": "1.63.0",
+    "@types/node": "24.13.5",
+    "typescript": "6.0.3"
   },
   "engines": {
     "node": ">=22.12"
