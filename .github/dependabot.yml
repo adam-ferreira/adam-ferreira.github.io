@@ -6,6 +6,13 @@ updates:
     directory: /
     schedule: { interval: weekly, day: monday, time: "07:00", timezone: Europe/Paris }
     open-pull-requests-limit: 5
+    ignore:
+      # @astrojs/check (the type check in CI) only supports TypeScript 5 and 6 so far
+      - dependency-name: typescript
+        update-types: ["version-update:semver-major"]
+      # the site builds and runs on Node 24 (LTS): its type definitions follow that major version
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       minor-and-patch:
         update-types: [minor, patch]
