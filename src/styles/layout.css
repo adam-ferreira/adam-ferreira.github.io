@@ -17,5 +17,5 @@ main { overflow-x: clip; }
 }
 .skip-link:focus { transform: none; }
 .section { padding-top: 64px; margin-top: 40px; border-top: 1px solid var(--line); }
-.reading { max-width: 720px; }
+.prose { max-width: 68ch; }   /* a paragraph of running text: education, languages, interests */
 @media (max-width: 640px) { .section { padding-top: 48px; margin-top: 32px; } }

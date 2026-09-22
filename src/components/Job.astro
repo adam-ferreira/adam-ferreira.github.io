@@ -8,13 +8,12 @@ import { md } from '../lib/text';
 import type { Job } from '../lib/types';
 interface Props { j: Job; num: string; stackLabel: string }
 const { j, num, stackLabel } = Astro.props;
-const title = md(j.role) + (j.client ? ` &mdash; ${md(j.client)}` : '');
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
 <article class:list={['job', 'slide', { 'job-short': short }]} data-num={num}>
   <div class="job-side">
-    <EntryHeader num={num} title={title} date={j.date} />
+    <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />
     {j.intro && <p class="job-intro" set:html={md(j.intro)} />}
     {j.subtitle && <h4 class="sub-title" set:html={md(j.subtitle)} />}
     {j.subtitle && j.subintro && <p class="sub-intro" set:html={md(j.subintro)} />}

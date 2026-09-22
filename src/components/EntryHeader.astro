@@ -1,11 +1,13 @@
 ---
-// Header of a dated entry — an experience or a degree: number (experiences only), title, date. Style: EntryHeader.css.
+// Header of a dated entry — an experience or a degree: number (experiences only), title, organisation, date. Every text
+// arrives raw, as written in the content files. Style: EntryHeader.css.
 import { md } from '../lib/text';
-interface Props { title: string; date: string; num?: string }   // title: already formatted HTML (bold, dash)
-const { title, date, num } = Astro.props;
+interface Props { title: string; org?: string; date: string; num?: string }   // org: the client, after a dash
+const { title, org, date, num } = Astro.props;
+const heading = md(title) + (org ? ` &mdash; ${md(org)}` : '');
 ---
-<div class="job-header"><div class="job-title-line">
-  {num && <span class="job-num label">{num}</span>}
-  <h3 class="job-title" set:html={title} />
-  <span class="job-date" set:html={md(date)} />
+<div class="entry-header"><div class="entry-title-line">
+  {num && <span class="entry-num label">{num}</span>}
+  <h3 class="entry-title" set:html={heading} />
+  <span class="entry-date" set:html={md(date)} />
 </div></div>
