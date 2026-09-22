@@ -11,8 +11,9 @@
    ============================================================ */
 @import "./base.css";
 @import "../components/Topbar.css";
+@import "../components/ThemeToggle.css";
 @import "../components/Hero.css";
-@import "./marks.css";
+@import "../components/Mark.css";
 @import "../components/Experience.css";
 @import "../components/Chips.css";
 @import "./layout.css";
@@ -20,6 +21,7 @@
 @import "./screens.css";
 @import "../components/Facts.css";
 @import "../components/Job.css";
+@import "../components/EntryHeader.css";
 @import "../components/Footer.css";
 @import "./cursor.css";
 @import "./stage.css";

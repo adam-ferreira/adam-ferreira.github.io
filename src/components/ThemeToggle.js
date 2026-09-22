@@ -1,4 +1,4 @@
-// Mode jour / nuit : celui du système par défaut, ou le choix mémorisé du visiteur. Rattaché à la barre (Topbar.astro).
+// Interrupteur jour / nuit (ThemeToggle.astro) : le thème du système par défaut, ou le choix mémorisé du visiteur.
 const root = document.documentElement;
 
 var btn = document.querySelector('.theme-toggle');
