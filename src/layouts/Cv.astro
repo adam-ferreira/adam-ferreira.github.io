@@ -1,0 +1,78 @@
+---
+// La page du CV, pour une langue. Anglais à la racine (src/pages/index.astro), français sous /fr/.
+import { getEntry } from 'astro:content';
+import '../styles/cv.css';
+import Topbar from '../components/Topbar.astro';
+import Hero from '../components/Hero.astro';
+import Experience from '../components/Experience.astro';
+import Facts from '../components/Facts.astro';
+import Footer from '../components/Footer.astro';
+import logoUrl from '../assets/logo.png?url';
+import bricolageUrl from '../assets/fonts/BricolageGrotesque-fr.woff2?url';
+import humaneUrl from '../assets/fonts/Humane-name.woff2?url';
+import { esc } from '../lib/text';
+
+interface Props { lang: 'en' | 'fr' }
+const { lang } = Astro.props;
+const entry = await getEntry('cv', lang);
+if (!entry) throw new Error(`Contenu manquant : src/content/cv/${lang}.json`);
+const d = entry.data;
+const idn = d.identity;
+const fullName = `${idn.first_name} ${idn.last_name}`;
+const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
+const LOCALE = { en: 'en_US', fr: 'fr_FR' } as const;
+const pathOf = (l: 'en' | 'fr') => (l === 'en' ? '/' : '/fr/');
+const url = new URL(pathOf(lang), site).href;
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- avant tout affichage : « js » (le contenu à dévoiler peut partir masqué) et, sur ordinateur à la souris, le mode scène -->
+  <script is:inline>document.documentElement.classList.add("js");if (matchMedia("(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)").matches) document.documentElement.classList.add("stage")</script>
+  <title>{d.meta.title}</title>
+  <meta name="description" content={d.meta.description}>
+  <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0e1116" media="(prefers-color-scheme: dark)">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content={`${fullName} — ${idn.headline}`}>
+  <meta property="og:description" content={idn.tagline}>
+  <meta property="og:url" content={url}>
+  <meta property="og:image" content={new URL(idn.photo, site).href}>
+  <meta property="og:locale" content={LOCALE[lang]}>
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href={url}>
+  <link rel="alternate" hreflang="en" href={new URL(pathOf('en'), site).href}>
+  <link rel="alternate" hreflang="fr" href={new URL(pathOf('fr'), site).href}>
+  <link rel="alternate" hreflang="x-default" href={site}>
+  <link rel="icon" href={logoUrl} type="image/png">
+  <link rel="apple-touch-icon" href={logoUrl}>
+  <link rel="preload" as="font" type="font/woff2" href={bricolageUrl} crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href={humaneUrl} crossorigin>
+</head>
+<body id="top">
+
+  <Topbar d={d} fullName={fullName} home={pathOf(lang)} />
+
+  <div class="page">
+  <Hero d={d} fullName={fullName} />
+
+  <main>
+  <Experience d={d} />
+  <Facts d={d} />
+  </main>
+  </div>
+
+  <Footer d={d} />
+
+  <script>
+    // un seul module pour la page : l'interface (thème, mode scène, curseur), puis les trois scènes 3D, qui chargent
+    // Three.js à la demande
+    import '../scripts/cv.js';
+    import '../scripts/hero3d.js';
+    import '../scripts/logo3d.js';
+    import '../scripts/marks3d.js';
+  </script>
+</body>
+</html>

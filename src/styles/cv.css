@@ -8,13 +8,13 @@
 
 @font-face {
   font-family: "Bricolage Grotesque";
-  src: url("fonts/BricolageGrotesque-fr.woff2") format("woff2");
+  src: url("../assets/fonts/BricolageGrotesque-fr.woff2") format("woff2");
   font-weight: 300 800;
   font-display: swap;
 }
 @font-face {
   font-family: "Humane";
-  src: url("fonts/Humane-name.woff2") format("woff2");   /* sous-ensemble : alphabet latin, accents français, ponctuation */
+  src: url("../assets/fonts/Humane-name.woff2") format("woff2");   /* sous-ensemble : alphabet latin, accents français, ponctuation */
   font-weight: 400;
   font-display: swap;
 }
@@ -84,8 +84,8 @@ body.name-away .frame-status { opacity: 1; transform: none; }
 .brand .logo3d.is-dragging { cursor: grabbing; }
 .brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
 /* rien en haut à gauche sur l'accueil (le nom y est déjà en grand) ; dès qu'on l'a quitté, le logo AF 3D apparaît, et un clic recharge la page */
-.brand { visibility: hidden; opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .55s; }
-body.is-scrolled .brand { visibility: visible; opacity: 1; transform: none; transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+html.js .brand { visibility: hidden; opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .55s; }
+html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: none; transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
 /* sélecteur de langue : le code de l'autre langue, en mono, comme les étiquettes du cadre */
 .topbar-linkedin { grid-column: 3; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }
@@ -236,9 +236,10 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
 .section-title {
   font-family: var(--display); font-weight: 400; text-transform: uppercase;
   font-size: clamp(64px, 13vw, 220px); line-height: .88; letter-spacing: .01em; color: var(--ink);
-  transform: translateY(105%); transition: transform .9s cubic-bezier(.2, .8, .2, 1);
+  transition: transform .9s cubic-bezier(.2, .8, .2, 1);
 }
-.section-title.is-in { transform: none; }
+/* masqué pour être dévoilé par cv.js — seulement si JavaScript tourne : sans lui, le titre reste lisible */
+html.js .section-title:not(.is-in) { transform: translateY(105%); }
 .section-line { display: none; }
 .reading { max-width: 720px; }
 
@@ -305,14 +306,15 @@ main { max-width: 1400px; margin: 0 auto; padding: 0 clamp(16px, 3vw, 36px) 120p
    2. L'arrivée : le contenu d'un écran se pose en cascade quand il devient l'écran courant (classe is-active, cv.js).
    3. Le repère : une colonne de traits à droite, avec un compteur (cv.js). */
 @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
-  .job .job-header, .job .job-intro, .job .sub-title, .job .sub-intro, .job .bullets li, .job .stack,
-  .chapter .skills-row, .facts .section > * {
+  /* html.js : sans JavaScript, personne ne pose is-active, donc rien ne doit partir masqué */
+  html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li, html.js .job .stack,
+  html.js .chapter .skills-row, html.js .facts .section > * {
     opacity: 0; transform: translateY(24px);
     transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1);
     transition-delay: calc(var(--d, 0) * 70ms);
   }
-  .job.is-active .job-header, .job.is-active .job-intro, .job.is-active .sub-title, .job.is-active .sub-intro,
-  .job.is-active .bullets li, .job.is-active .stack, .chapter.is-active .skills-row, .facts.is-active .section > * { opacity: 1; transform: none; }
+  html.js .job.is-active .job-header, html.js .job.is-active .job-intro, html.js .job.is-active .sub-title, html.js .job.is-active .sub-intro,
+  html.js .job.is-active .bullets li, html.js .job.is-active .stack, html.js .chapter.is-active .skills-row, html.js .facts.is-active .section > * { opacity: 1; transform: none; }
   .job .job-intro { --d: 1; } .job .sub-title { --d: 2; } .job .sub-intro { --d: 3; }
   .job .bullets li:nth-child(1) { --d: 3; } .job .bullets li:nth-child(2) { --d: 4; } .job .bullets li:nth-child(3) { --d: 5; }
   .job .bullets li:nth-child(4) { --d: 6; } .job .bullets li:nth-child(5) { --d: 7; } .job .bullets li:nth-child(6) { --d: 8; }
@@ -465,15 +467,19 @@ html.stage .slide {
   overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
   padding-left: var(--stage-gutter); padding-right: calc(var(--stage-gutter) + 68px);
   background: var(--paper);
-  visibility: hidden; transform: translate3d(0, 100%, 0);
-  transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease), visibility 0s linear 1s;
+  transform: translate3d(0, 100%, 0);
+  transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease);
   will-change: transform, opacity; backface-visibility: hidden;
 }
-html.stage .slide.is-current { visibility: visible; transform: none; opacity: 1; z-index: 3; transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease), visibility 0s; }
+/* Les écrans hors champ ne sont PAS masqués (visibility:hidden les retirait de l'arbre d'accessibilité : un lecteur
+   d'écran ne lisait que l'accueil). Ils sont rangés hors de la fenêtre, au-dessus (is-parked) ou en dessous (is-after) :
+   rien à dessiner, mais leur contenu reste lisible et atteignable au clavier (cv.js suit le focus). */
+html.stage .slide.is-current { transform: none; opacity: 1; z-index: 3; }
 html.stage .slide.is-before { transform: translate3d(0, -8vh, 0) scale(.92); opacity: 0; }
+html.stage .slide.is-before.is-parked { transform: translate3d(0, -100%, 0); }
 html.stage .slide.is-after { transform: translate3d(0, 100%, 0); }
-html.stage .slide.is-leaving { z-index: 4; visibility: visible; }
-html.stage.stage-init .slide { transition: none !important; }
+html.stage .slide.is-leaving { z-index: 4; }
+html.stage.stage-init .slide, html.stage .slide.no-trans, html.stage .slide.is-parked { transition: none !important; }
 html.stage .slide:focus { outline: none; }
 
 /* mise en page de chaque écran dans sa scène */

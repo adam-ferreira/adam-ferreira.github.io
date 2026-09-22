@@ -1,0 +1,13 @@
+---
+import { md } from '../lib/text';
+const { d } = Astro.props;
+const c = d.identity.contact, ui = d.ui;
+---
+<footer class="site-footer slide">
+  <a class="footer-statement" href={`mailto:${c.email}`} set:html={md(ui.footer_statement)} />
+  <div class="footer-grid label">
+    <a class="nocase" href={`mailto:${c.email}`}>{c.email}</a>
+    <a href={`tel:${c.phone_href}`}>{c.phone}</a>
+    <span><Fragment set:html={md(ui.footer_availability)} /><i class="dot" aria-hidden="true"></i></span>
+  </div>
+</footer>

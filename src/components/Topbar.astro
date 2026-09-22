@@ -1,0 +1,23 @@
+---
+import logoUrl from '../assets/logo.png?url';
+import { markAsset } from '../lib/assets';
+const { d, fullName, home } = Astro.props;
+const idn = d.identity, ui = d.ui;
+const li = markAsset('assets/marks/linkedin.svg'), liDark = markAsset('assets/marks/linkedin-dark.svg');
+---
+<nav class="topbar" aria-label={ui.nav_aria}>
+  <a class="brand" href={home} title={fullName}>
+    <img class="brand-img" src={logoUrl} alt={fullName} width="46" height="46" decoding="async">
+    <canvas class="logo3d" aria-hidden="true"></canvas>
+  </a>
+  <span class="frame-status label" aria-hidden="true">{fullName} &middot; {idn.headline}</span>
+  <a class="mark mark-linkedin topbar-linkedin" href={idn.linkedin.url} target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn" data-svg={li.url} data-dark-map='{"#000000":"#ffffff"}'>
+    <img class="theme-light" src={li.url} alt="" width="40" height="40" decoding="async">
+    <img class="theme-dark" src={liDark.url} alt="" width="40" height="40" decoding="async">
+  </a>
+  <button class="theme-toggle" type="button" role="switch" aria-checked="false" aria-label={ui.toggle_aria} title={ui.toggle_title_light} data-title-light={ui.toggle_title_light} data-title-dark={ui.toggle_title_dark}>
+    <span class="tt-icon tt-sun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span>
+    <span class="tt-icon tt-moon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></span>
+    <span class="tt-knob"></span>
+  </button>
+</nav>

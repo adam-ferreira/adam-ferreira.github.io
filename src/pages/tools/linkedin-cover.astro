@@ -1,17 +1,19 @@
+---
+// Bannière LinkedIn (1584 × 396) faite avec les éléments du site : la scène des téléphones figée (data-freeze), Humane.
+// Export : npm run build && npm run preview, puis Chrome headless sur http://localhost:4321/tools/linkedin-cover/ en
+// --window-size=1584,396 --force-device-scale-factor=2 --screenshot. La photo de profil LinkedIn recouvre le coin bas
+// gauche : rien d'important là. Page publiée mais non indexée.
+---
 <!doctype html>
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<!-- Bannière LinkedIn (1584 × 396) faite avec les éléments du site : la scène des téléphones figée, le logo AF, Humane.
-     Export : python3 -m http.server à la racine du dépôt, puis Chrome headless en --window-size=1584,396
-     --force-device-scale-factor=2 (voir README). La photo de profil LinkedIn recouvre le coin bas gauche : rien d'important là. -->
-<base href="../">
+<meta name="robots" content="noindex">
 <title>Bannière LinkedIn</title>
-<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
-<style>
-  @font-face { font-family: "Humane"; src: url("assets/fonts/Humane-name.woff2") format("woff2"); }
-  @font-face { font-family: "Bricolage Grotesque"; src: url("assets/fonts/BricolageGrotesque-fr.woff2") format("woff2"); font-weight: 300 800; }
-  :root { --accent: #ffb627; }   /* même accent que le site (assets/cv.css) : les téléphones le lisent aussi */
+<style is:global>
+  @font-face { font-family: "Humane"; src: url("../../assets/fonts/Humane-name.woff2") format("woff2"); }
+  @font-face { font-family: "Bricolage Grotesque"; src: url("../../assets/fonts/BricolageGrotesque-fr.woff2") format("woff2"); font-weight: 300 800; }
+  :root { --accent: #ffb627; }   /* même accent que le site (src/styles/cv.css) : les téléphones le lisent aussi */
   html, body { margin: 0; background: #0e1116; }
   .cover {
     position: relative; width: 1584px; height: 396px; overflow: hidden; color: #eef1f5;
@@ -41,6 +43,6 @@
     <div class="meta"><b>Software Engineer · Dev &amp; QA Automation</b><span class="site">adam-ferreira.github.io</span></div>
     <canvas class="hero3d" data-freeze="4.81"></canvas>
   </div>
-  <script type="module" src="assets/hero3d.js"></script>
+  <script>import '../../scripts/hero3d.js';</script>
 </body>
 </html>
