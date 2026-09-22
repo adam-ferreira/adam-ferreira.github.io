@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { PAGES, animationsDone, content, plain, watchErrors } from './helpers';
 
@@ -81,4 +81,33 @@ test('a remembered theme applies before the scripts run (no flash of the system 
   await page.emulateMedia({ colorScheme: 'light' });
   await page.goto('/');
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe('dark');
+});
+
+test('dark palette: the same colours from the system preference and from the switch', async ({ browser }, info) => {
+  // every custom property declared on :root by the stylesheet, as computed on the page
+  const palette = (page: Page) => page.evaluate(() => {
+    const names = new Set<string>();
+    const walk = (rules: CSSRuleList) => { for (const r of rules) {
+      if (r instanceof CSSStyleRule && r.selectorText.includes(':root')) for (const p of r.style) { if (p.startsWith('--')) names.add(p); }
+      if ('cssRules' in r) walk((r as CSSGroupingRule).cssRules);
+    } };
+    for (const s of document.styleSheets) walk(s.cssRules);
+    const cs = getComputedStyle(document.documentElement);
+    return Object.fromEntries([...names].sort().map((n) => [n, cs.getPropertyValue(n).trim()]));
+  });
+  // without JavaScript nothing sets data-theme: only the media query can apply; with a light system, only the switch
+  const open = async (colorScheme: 'light' | 'dark', theme?: string) => {
+    const ctx = await browser.newContext({ ...info.project.use, colorScheme, javaScriptEnabled: !!theme });
+    if (theme) await ctx.addInitScript((t) => localStorage.setItem('cv-theme', t), theme);
+    const page = await ctx.newPage();
+    await page.goto('/');
+    const p = await palette(page);
+    await ctx.close();
+    return p;
+  };
+  const light = await open('light'), fromSystem = await open('dark'), fromSwitch = await open('light', 'dark');
+  expect(Object.keys(fromSystem).length).toBeGreaterThan(8);
+  expect(fromSwitch).toEqual(fromSystem);
+  expect(fromSwitch['--paper']).not.toBe(light['--paper']);
+  expect(await open('dark', 'light')).toEqual(light);   // and the light theme chosen on a dark system
 });
