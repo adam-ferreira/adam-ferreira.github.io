@@ -42,7 +42,9 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
     // All the page's scripts, in a single file: measured on 2026-09-22, 2 files on load (13.1 KB) versus 6 (14.3 KB, some
     // chained) when each component declares its own. The order is the execution order.
     import '../components/ThemeToggle.js';  // the light / dark switch
-    import '../scripts/ui/navigation.js';   // the page: progress indicator, stage mode, scrolling
+    import '../scripts/ui/pager.js';        // the page: the screens and their progress indicator
+    import '../scripts/ui/stage.js';        // the page: stage mode (computer)
+    import '../scripts/ui/scroll.js';       // the page: normal scrolling (everything else)
     import '../components/Topbar.js';       // the top bar: the logo reloads the page
     import '../scripts/ui/cursor.js';       // the page: cursor
     import '../scripts/ui/fps.js';          // the page: ?fps

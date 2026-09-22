@@ -4,7 +4,7 @@
    Home, "Experience" chapter + skills, one experience per screen, Education/Languages/Interests, footer.
    If a screen overflows (small screen), the browser scrolls inside it before moving on to the next one. */
 @media (min-width: 1100px) and (min-height: 680px) {
-  html { scroll-padding-top: 60px; }   /* transitions driven by src/scripts/ui/navigation.js (native snapping stuttered with trackpad momentum) */
+  html { scroll-padding-top: 60px; }   /* transitions driven by src/scripts/ui/ (native snapping stuttered with trackpad momentum) */
   .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
   .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
   /* the footer becomes the last screen (it is no longer "stuck" under the content: snapping cannot target a stuck element) */
@@ -20,8 +20,8 @@
 
 /* ---------- transitions between screens (large screen, motion allowed) ----------
    1. The passage: the leaving screen recedes and fades, the next one rises; driven by the scroll itself (view timeline).
-   2. The arrival: a screen's content settles in a cascade when it becomes the current screen (is-active class, navigation.js).
-   3. The indicator: a column of ticks on the right, with a counter (navigation.js). */
+   2. The arrival: a screen's content settles in a cascade when it becomes the current screen (is-active, stage.js / scroll.js).
+   3. The indicator: a column of ticks on the right, with a counter (pager.js). */
 @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
   /* html.js: without JavaScript, nobody sets is-active, so nothing may start hidden */
   html.js .job .entry-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li, html.js .job .stack,
