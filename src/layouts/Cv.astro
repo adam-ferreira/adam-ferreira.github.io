@@ -23,6 +23,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
   <Head lang={lang} d={d} fullName={fullName} />
 </head>
 <body id="top">
+  <a class="skip-link" href="#experience">{d.ui.skip_link}</a>
 
   <Topbar d={d} fullName={fullName} home={pathOf(lang)} />
 

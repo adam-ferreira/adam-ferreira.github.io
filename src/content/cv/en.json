@@ -1,7 +1,7 @@
 {
   "lang": "en",
   "meta": {
-    "title": "CV — Adam Ferreira",
+    "title": "Adam Ferreira — Software Engineer · Dev & QA Automation",
     "description": "Adam Ferreira's CV: software engineer, mobile development and test automation (Flutter, Appium, iOS, Android)."
   },
   "identity": {
@@ -11,7 +11,6 @@
     "tagline": "I work on what makes a mobile app testable: framework, CI, test data through APIs, test IDs in the code, tooling for the teams.",
     "location": "Paris, France",
     "linkedin": {
-      "handle": "ad-ferreira",
       "url": "https://linkedin.com/in/ad-ferreira"
     },
     "photo": "photo.jpg",
@@ -184,11 +183,16 @@
     "toggle_title_dark": "Switch to light mode",
     "toggle_title_light": "Switch to dark mode",
     "nav_aria": "Navigation",
-    "footer_note": "Paris — 2026",
     "scroll_hint": "Scroll",
     "footer_statement": "Let's build something.",
     "footer_availability": "Available for mobile QA automation work",
-    "updated": "Updated September 2026",
-    "stack_label": "Stack:"
+    "updated": "Updated {date}",
+    "stack_label": "Stack:",
+    "skip_link": "Skip to content",
+    "not_found": {
+      "title": "Page not found",
+      "text": "This address does not exist, or no longer does.",
+      "home": "Back to the CV"
+    }
   }
 }

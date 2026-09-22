@@ -42,7 +42,8 @@ if (slides.length) {
     b.addEventListener('click', function () { goTo(i); });
     pager.appendChild(b); return b;
   });
-  document.body.appendChild(pager);
+  // juste après la barre : au clavier, on atteint le repère avant le contenu (il est fixe, sa place à l'écran ne change pas)
+  if (bar) bar.after(pager); else document.body.appendChild(pager);
   setCurrent(0);
 }
 
@@ -128,6 +129,9 @@ if (stage && slides.length) {
     if (canScroll(s, dir)) s.scrollBy({ top: dir * s.clientHeight * 0.8, behavior: reduced ? 'auto' : 'smooth' });
     else goTo(cur + dir);
   });
+  // « Aller au contenu » : l'écran « Experience », qui reçoit le focus (le Tab suivant part de là)
+  var skip = document.querySelector('.skip-link');
+  if (skip) skip.addEventListener('click', function (e) { e.preventDefault(); goTo(1); slides[1].focus({ preventScroll: true }); });
   // clavier : Tab vers un lien d'un autre écran (le pied de page, par exemple) y emmène la scène
   document.addEventListener('focusin', function (e) {
     var s = e.target && e.target.closest ? e.target.closest('.slide') : null;

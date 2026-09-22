@@ -1,0 +1,44 @@
+---
+// La page des adresses inconnues (GitHub Pages sert /404.html). Les deux langues, puisqu'on ne sait pas d'où vient le
+// visiteur ; les textes viennent des fichiers de contenu. Pas de script : rien à animer ici.
+import { getEntry } from 'astro:content';
+import '../styles/index.css';
+import logoUrl from '../assets/logo.png?url';
+const en = (await getEntry('cv', 'en'))!.data, fr = (await getEntry('cv', 'fr'))!.data;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {import.meta.env.PROD && <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">}
+  <meta name="robots" content="noindex">
+  <title>404 — {en.identity.first_name} {en.identity.last_name}</title>
+  <link rel="icon" href={logoUrl} type="image/png">
+</head>
+<body>
+  <main class="not-found">
+    <p class="nf-code" aria-hidden="true">404</p>
+    <div class="nf-langs">
+      <section>
+        <h1 class="nf-title">{en.ui.not_found.title}</h1>
+        <p>{en.ui.not_found.text}</p>
+        <a class="contact-link" href="/">{en.ui.not_found.home}</a>
+      </section>
+      <section lang="fr">
+        <h2 class="nf-title">{fr.ui.not_found.title}</h2>
+        <p>{fr.ui.not_found.text}</p>
+        <a class="contact-link" href="/fr/">{fr.ui.not_found.home}</a>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
+
+<style>
+  .not-found { min-height: 100svh; max-width: 1100px; margin: 0 auto; padding: 48px clamp(16px, 3vw, 36px); display: grid; align-content: center; gap: 40px; }
+  .nf-code { font-family: var(--display); font-size: clamp(140px, 28vw, 320px); line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--muted); }
+  .nf-langs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px clamp(32px, 5vw, 80px); }
+  .nf-langs section { display: grid; gap: 14px; justify-items: start; }
+  .nf-title { font-size: clamp(22px, 2.6vw, 28px); font-weight: 700; letter-spacing: -.02em; color: var(--ink); }
+</style>
