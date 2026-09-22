@@ -7,10 +7,13 @@ import { z } from 'astro/zod';
 import { LANGS } from './lib/i18n';
 
 const text = z.string().min(1);
+const colour = z.string().regex(/^#[0-9a-f]{6}$/, 'a colour is written #rrggbb in lower case');
 const mark = z.object({
   src: z.string().regex(/^assets\/marks\/[\w-]+\.svg$/, 'a mark lives in src/assets/marks/'),
   alt: text,
-  fill_dark: z.string().nullable().optional(),
+  // dark mode: the colours of the SVG that change, and what they become (the 3D volume and, if the mark ships a
+  // <name>-dark.svg, its flat image already drawn that way)
+  dark_map: z.record(colour, colour).optional(),
 }).strict();
 
 const cv = defineCollection({
@@ -49,6 +52,8 @@ const cv = defineCollection({
     for (const [, name] of d.identity.hero.matchAll(/\{\{(\w+)\}\}/g)) {
       if (name !== 'br' && !d.identity.marks[name]) ctx.addIssue({ code: 'custom', path: ['identity', 'hero'], message: `mark {{${name}}} missing from identity.marks` });
     }
+    // the top bar shows the LinkedIn mark (Topbar.astro)
+    if (!d.identity.marks.linkedin) ctx.addIssue({ code: 'custom', path: ['identity', 'marks'], message: 'mark "linkedin" missing (the top bar shows it)' });
   }),
 });
 
