@@ -30,7 +30,7 @@ test('robots.txt and sitemap', async ({ request }) => {
 });
 
 test('404 page in the site style, in both languages', async ({ page }) => {
-  const res = await page.goto('/cette-page-n-existe-pas/');
+  const res = await page.goto('/this-page-does-not-exist/');
   expect(res?.status()).toBe(404);
   await expect(page.getByRole('heading', { name: content('en').ui.not_found.title })).toBeVisible();
   await expect(page.getByRole('link', { name: content('fr').ui.not_found.home })).toHaveAttribute('href', '/fr/');
