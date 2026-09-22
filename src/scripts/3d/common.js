@@ -48,3 +48,11 @@ export function withShine(material, shine) {
   };
   return material;
 }
+
+/** Si le navigateur retire la carte graphique à la page (onglet mis en veille sur téléphone, pilote qui redémarre), le
+ *  canvas resterait vide. On revient alors à la version sans 3D (fallback) ; la boucle s'arrête dès que lost() est vrai. */
+export function watchContextLoss(canvas, fallback) {
+  let lost = false;
+  canvas.addEventListener('webglcontextlost', () => { lost = true; fallback(); }, { once: true });
+  return () => lost;
+}
