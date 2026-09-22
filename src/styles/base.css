@@ -54,5 +54,9 @@ a { color: inherit; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 ::selection { background: var(--accent); color: #161b22; }   /* dark text: the accent is light */
 
+/* a giant outlined numeral (Humane, stroke only): the 404 code (.numeral) and the watermark number of a short
+   experience, whose size and place are set by Job.css */
+.numeral, .job-short::after { font-family: var(--display); line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--line); }
+
 /* micro-labels: mono, small, spaced out — the only capitals on the page apart from the giant titles */
 .label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
