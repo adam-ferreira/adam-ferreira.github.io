@@ -1,5 +1,8 @@
 ---
+// Pied de page : inversé, une phrase géante qui ouvre un e-mail, les coordonnées, la disponibilité. Style : Footer.css.
 import { md } from '../lib/text';
+import type { Cv } from '../lib/types';
+interface Props { d: Cv }
 const { d } = Astro.props;
 const c = d.identity.contact, ui = d.ui;
 ---

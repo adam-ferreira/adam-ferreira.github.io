@@ -4,9 +4,8 @@
 // Écrans larges avec souris uniquement, après le chargement. On attrape la scène et on la fait tourner ; relâchée,
 // elle reprend son balancement. Sous « réduire les animations » : l'image finale du test, sans boucle.
 import { CUBEMAP } from './env.js';
+import { desktop, reduced, webglOk, onDprChange } from './common.js';
 const canvas = document.querySelector('canvas.hero3d');
-const wanted = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 // l'accent du site (--accent dans la feuille de style) : un seul réglage pour la page, les téléphones et le curseur
 const cssVar = (name, fallback) => (getComputedStyle(document.documentElement).getPropertyValue(name).trim() || fallback);
 const ACC = cssVar('--accent', '#ffb627'), GREEN = '#3ddc84', INK = '#161b22';
@@ -15,16 +14,6 @@ const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
 const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // vers le blanc
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
-// suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
-const onDprChange = (cb) => {
-  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
-  q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
-};
-
-function webglOk() {
-  try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
-  catch (e) { return false; }
-}
 
 // ---------- l'écran : la maquette d'une app, dessinée une fois ; le test est redessiné par-dessus à chaque image ----------
 const SW = 480, SH = 1040, TS = 1.5;   // maquette en 480 × 1040, texture dessinée 1,5 fois plus fine
@@ -207,7 +196,7 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
 }
 
 async function start() {
-  if (!canvas || !wanted() || !webglOk()) return;
+  if (!canvas || !desktop() || !webglOk()) return;
   const THREE = await import('./three-lite.js');   // Three.js réduit à ce que le site utilise, chargé à la demande
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   renderer.outputColorSpace = THREE.SRGBColorSpace;

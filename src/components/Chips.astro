@@ -1,0 +1,7 @@
+---
+// Pastilles : les compétences, la stack d'une expérience.
+import { md } from '../lib/text';
+interface Props { items: string[] }
+const { items } = Astro.props;
+---
+<ul class="chips">{items.map((i) => <li set:html={md(i)} />)}</ul>
