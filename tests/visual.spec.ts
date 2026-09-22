@@ -1,10 +1,14 @@
 import { test, expect, type Page } from '@playwright/test';
+import { existsSync } from 'node:fs';
 import { settle } from './helpers';
 
-// Comparaison visuelle : prouve qu'un remaniement ne change rien à l'écran. Les captures de référence sont prises sur
-// le Mac (fichiers *-darwin.png) ; le rendu des polices diffère sous Linux, donc ce test ne tourne pas en CI.
-// Refaire les références après un changement VOULU : npx playwright test visual --update-snapshots
-test.skip(!!process.env.CI, 'captures de référence propres au Mac');
+// Comparaison visuelle : prouve qu'un remaniement ne change rien à l'écran. Une série de références par système, le rendu
+// des polices différant : *-darwin.png (le Mac) et *-linux.png (la CI, Ubuntu 24.04).
+// Après un changement d'apparence VOULU : sur le Mac, npx playwright test visual --update-snapshots ; pour Linux, le
+// workflow « Captures de référence (Linux) », dont on committe l'artefact.
+// En CI, le test attend que les références Linux existent (VISUAL_IN_CI ou présence des fichiers).
+const linuxRefs = existsSync(new URL('./visual.spec.ts-snapshots/scene-light-0-desktop-linux.png', import.meta.url));
+test.skip(!!process.env.CI && !process.env.VISUAL_IN_CI && !linuxRefs, 'pas encore de références Linux');
 
 // La 3D bouge en permanence : on la coupe (WebGL indisponible ⇒ les logos restent en image), elle est testée ailleurs.
 test.beforeEach(async ({ page }) => {

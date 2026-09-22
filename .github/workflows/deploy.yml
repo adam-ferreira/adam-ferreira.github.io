@@ -1,5 +1,6 @@
-# À chaque push sur main : on construit, on teste le site construit (Playwright, ordinateur + iPhone), et on ne
-# publie sur GitHub Pages que si tous les tests passent. Une pull request est testée sans être publiée.
+# À chaque push sur main : vérification des types, tests Playwright sur le site construit (ordinateur, iPhone, captures
+# de référence), Lighthouse avec seuils — et publication sur GitHub Pages seulement si tout passe. Une pull request
+# (Dependabot compris) est testée sans être publiée. Ubuntu figé (24.04) : les captures de référence Linux en dépendent.
 name: Tester et publier
 
 on:
@@ -19,7 +20,7 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -33,18 +34,22 @@ jobs:
         run: npm run check
       - run: npx playwright install --with-deps chromium webkit
       - run: npm test
-      - name: Rapport des tests (en cas d'échec)
+      - name: Lighthouse (seuils : 100 accessibilité, bonnes pratiques, référencement ; ≥ 90 performance)
+        run: npx lhci autorun
+      - name: Rapports (en cas d'échec)
         if: failure()
         uses: actions/upload-artifact@v7
         with:
-          name: rapport-playwright
-          path: playwright-report/
+          name: rapports
+          path: |
+            playwright-report/
+            lighthouse-report/
           retention-days: 14
 
   build:
     needs: test
     if: github.event_name != 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
         with:
@@ -56,7 +61,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

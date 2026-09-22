@@ -9,7 +9,9 @@ export default defineConfig({
   reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
   use: { baseURL: 'http://localhost:4321', trace: 'retain-on-failure' },
   webServer: {
-    command: 'npm run build && npm run preview -- --port 4321',
+    // --ignore-lock : Astro 7 tient un verrou des serveurs de prévisualisation ; sans lui, un serveur resté ouvert (Lighthouse,
+    // une session précédente) empêche celui des tests de démarrer
+    command: 'npm run build && npm run preview -- --port 4321 --ignore-lock',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

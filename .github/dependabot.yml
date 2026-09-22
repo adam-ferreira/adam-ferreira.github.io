@@ -1,0 +1,17 @@
+# Mises à jour proposées chaque lundi, regroupées ; chaque proposition passe par la CI complète (types, tests, Lighthouse)
+# avant qu'on l'accepte. Les versions majeures arrivent séparément : elles peuvent casser quelque chose.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "07:00", timezone: Europe/Paris }
+    open-pull-requests-limit: 5
+    groups:
+      mineures:
+        update-types: [minor, patch]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: weekly, day: monday, time: "07:00", timezone: Europe/Paris }
+    groups:
+      actions:
+        patterns: ["*"]
