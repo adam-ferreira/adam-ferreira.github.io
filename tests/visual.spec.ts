@@ -61,11 +61,11 @@ test.describe('iPhone et tablette, page entière', () => {
       await page.emulateMedia({ colorScheme: 'light' });
       await page.goto(path);
       await still(page);
-      // une capture « page entière » ne fait pas défiler : on dévoile d'office ce qui apparaît au fil du défilement
-      await page.evaluate(() => {
-        document.querySelectorAll('.slide').forEach((s) => s.classList.add('is-active'));
-        document.querySelectorAll('.section-title').forEach((t) => t.classList.add('is-in'));
-      });
+      // Une capture « page entière » ne fait pas défiler : on impose l'état final de ce qui apparaît au fil du défilement.
+      // Par une règle CSS et non en posant is-active : cv.js retire is-active aux écrans hors champ, à un instant variable.
+      await page.addStyleTag({ content: `
+        html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li,
+        html.js .job .stack, html.js .chapter .skills-row, html.js .facts .section > *, html.js .section-title { opacity: 1 !important; transform: none !important; }` });
       await page.waitForTimeout(800);
       await expect(page).toHaveScreenshot(`page-${lang}.png`, { ...opts, fullPage: true });
     });
