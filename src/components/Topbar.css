@@ -34,7 +34,7 @@ html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: no
 @media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto; gap: 12px; } .frame-status { display: none; } }
 
 
-/* the 3D logo only exists on a large screen with a mouse; elsewhere, the static image */
+/* the 3D logo fades in once it is ready (computer: after load; phone: first gesture); until then, or without WebGL, the image */
 .logo3d { display: block; opacity: 0; transition: opacity .8s ease; }
 .logo3d.is-ready { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .logo3d, .topbar { transition: none; } }
