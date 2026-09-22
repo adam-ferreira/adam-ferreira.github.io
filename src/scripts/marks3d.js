@@ -24,7 +24,7 @@ function webglOk() {
 
 async function start() {
   if (!marks.length || !webglOk()) return;
-  const THREE = await import('three'), { SVGLoader, RoundedBoxGeometry } = THREE;   // paquet du site (assets/vendor/three.js), chargeurs compris
+  const THREE = await import('./three-lite.js'), { SVGLoader, RoundedBoxGeometry } = THREE;   // Three.js réduit, chargeurs compris
   const loader = new SVGLoader();
   marks.forEach((mark, i) => setup(mark, i, THREE, loader, SVGLoader, RoundedBoxGeometry));
 }
