@@ -1,7 +1,7 @@
-# Refaire les captures de référence Linux de la comparaison visuelle (tests/visual.spec.ts-snapshots/*-linux.png).
-# À lancer à la main (onglet Actions, ou : gh workflow run visual-baselines.yml) après un changement d'apparence voulu,
-# ou si l'image Ubuntu des machines GitHub change le rendu des polices. Les captures sont rendues en artefact, à committer.
-name: Captures de référence (Linux)
+# Regenerates the Linux baselines of the visual comparison (tests/visual.spec.ts-snapshots/*-linux.png).
+# Run it by hand (Actions tab, or: gh workflow run visual-baselines.yml) after an intended change of appearance, or if
+# the Ubuntu image of GitHub runners changes font rendering. Screenshots come out as an artifact, to be committed.
+name: Visual baselines (Linux)
 
 on:
   workflow_dispatch:
@@ -22,12 +22,12 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium webkit
-      - name: Refaire les captures
+      - name: Regenerate the screenshots
         run: npx playwright test visual --update-snapshots=all
         env:
           VISUAL_IN_CI: '1'
       - uses: actions/upload-artifact@v7
         with:
-          name: captures-linux
+          name: visual-baselines-linux
           path: tests/visual.spec.ts-snapshots/*-linux.png
           retention-days: 7

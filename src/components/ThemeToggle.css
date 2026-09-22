@@ -1,4 +1,4 @@
-/* Interrupteur jour / nuit (ThemeToggle.astro) : un rail, un soleil, une lune, une pastille qui glisse. */
+/* Light / dark switch (ThemeToggle.astro): a track, a sun, a moon, a sliding knob. */
 .theme-toggle {
   grid-column: 4; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px; flex: none;
   border: 1px solid var(--line); background: var(--chip); cursor: pointer;

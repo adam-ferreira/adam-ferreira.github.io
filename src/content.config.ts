@@ -1,6 +1,6 @@
-// Le contenu du CV : un fichier JSON par langue (src/content/cv/en.json, fr.json).
-// Le schéma est vérifié à chaque construction : une clé mal orthographiée, un champ manquant ou en trop
-// arrête la construction avec un message clair, au lieu de produire une page à moitié vide.
+// The CV content: one JSON file per language (src/content/cv/en.json, fr.json).
+// The schema is checked on every build: a misspelled key, a missing or extra field stops the build with a clear
+// message, instead of producing a half-empty page.
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
@@ -8,7 +8,7 @@ import { z } from 'astro/zod';
 const text = z.string().min(1);
 const mark = z.object({
   type: z.literal('img'),
-  src: z.string().regex(/^assets\/marks\/[\w-]+\.svg$/, 'une marque vit dans src/assets/marks/'),
+  src: z.string().regex(/^assets\/marks\/[\w-]+\.svg$/, 'a mark lives in src/assets/marks/'),
   alt: text,
   fill_dark: z.string().nullable().optional(),
 }).strict();
@@ -23,7 +23,7 @@ const cv = defineCollection({
       linkedin: z.object({ url: z.url() }).strict(),
       photo: text,
       status_freelance: text, status_mode: text,
-      hero: text,   // phrase d'accueil : {{nom}} insère une marque, {{br}} un retour à la ligne
+      hero: text,   // hero sentence: {{name}} inserts a mark, {{br}} a line break
       marks: z.record(z.string(), mark),
       contact: z.object({ email: z.email(), phone: text, phone_href: z.string().regex(/^\+\d+$/) }).strict(),
     }).strict(),
@@ -41,14 +41,14 @@ const cv = defineCollection({
     ui: z.object({
       toggle_aria: text, toggle_title_dark: text, toggle_title_light: text, nav_aria: text,
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
-      updated: z.string().includes('{date}', { message: 'ui.updated doit contenir {date} (date du dernier changement du contenu)' }),
-      skip_link: text,   // lien « aller au contenu », visible seulement au clavier
-      not_found: z.object({ title: text, text: text, home: text }).strict(),   // la page 404
+      updated: z.string().includes('{date}', { message: 'ui.updated must contain {date} (date of the last content change)' }),
+      skip_link: text,   // "skip to content" link, visible only when focused with the keyboard
+      not_found: z.object({ title: text, text: text, home: text }).strict(),   // the 404 page
     }).strict(),
   }).strict().superRefine((d, ctx) => {
-    // chaque {{marque}} de la phrase d'accueil doit être décrite dans identity.marks
+    // every {{mark}} in the hero sentence must be described in identity.marks
     for (const [, name] of d.identity.hero.matchAll(/\{\{(\w+)\}\}/g)) {
-      if (name !== 'br' && !d.identity.marks[name]) ctx.addIssue({ code: 'custom', path: ['identity', 'hero'], message: `marque {{${name}}} absente de identity.marks` });
+      if (name !== 'br' && !d.identity.marks[name]) ctx.addIssue({ code: 'custom', path: ['identity', 'hero'], message: `mark {{${name}}} missing from identity.marks` });
     }
   }),
 });

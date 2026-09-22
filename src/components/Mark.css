@@ -1,15 +1,15 @@
-/* Une marque (Mark.astro) : Betclic, Accor dans la phrase d'accueil ; LinkedIn dans la barre. L'image, puis son volume 3D
-   (src/scripts/3d/marks.js). Placée après Topbar.css dans la cascade : .mark y reprend le dessus sur .topbar-linkedin. */
+/* A brand mark (Mark.astro): Betclic, Accor in the welcome sentence; LinkedIn in the top bar. The image, then its 3D volume
+   (src/scripts/3d/marks.js). Placed after Topbar.css in the cascade: .mark takes precedence over .topbar-linkedin there. */
 
-/* les marques dans la phrase */
+/* the marks in the sentence */
 .mark { position: relative; display: inline-flex; align-items: center; height: 1.2em; vertical-align: -.2em; margin: 0 .18em; transition: transform .35s cubic-bezier(.2, .7, .2, 1); }
 .mark-accor { height: 1.5em; vertical-align: -.32em; }
-.mark img { height: 100%; width: auto; display: block; transition: opacity .5s ease; }   /* coins nets, comme le vrai logo et sa version 3D */
+.mark img { height: 100%; width: auto; display: block; transition: opacity .5s ease; }   /* sharp corners, like the real logo and its 3D version */
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }
-/* le volume déborde largement de la marque (taille posée par le script) et passe au-dessus du texte ;
-   la souris est captée par la marque elle-même, le canvas la laisse passer */
-.mark .mark-3d { position: absolute; left: 0; top: 0; display: block; pointer-events: none; opacity: 0; transition: opacity .6s ease; }   /* position posée par le script, calée sur la grille de pixels */
+/* the volume overflows the mark widely (size set by the script) and goes above the text;
+   the mouse is caught by the mark itself, the canvas lets it through */
+.mark .mark-3d { position: absolute; left: 0; top: 0; display: block; pointer-events: none; opacity: 0; transition: opacity .6s ease; }   /* position set by the script, snapped to the pixel grid */
 .mark.is-3d { z-index: 6; cursor: grab; touch-action: none; }
 .mark.is-grabbed { cursor: grabbing; z-index: 30; }
 .mark.is-3d .mark-3d { opacity: 1; }

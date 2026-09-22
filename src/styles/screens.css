@@ -1,29 +1,29 @@
-/* Grand écran (≥ 1100 × 680) : un écran par panneau, transitions, repère de progression. Le mode scène (stage.css) s'y ajoute sur ordinateur à la souris. */
+/* Large screen (≥ 1100 × 680): one screen per panel, transitions, progress indicator. Stage mode (stage.css) adds to it on computers with a mouse. */
 
-/* ---------- défilement par écrans (ordinateur) : chaque molette amène à l'écran suivant ----------
-   Accueil, chapitre « Experience » + compétences, une expérience par écran, Formation/Langues/Intérêts, pied de page.
-   Si un écran déborde (petit écran), le navigateur laisse défiler à l'intérieur avant de passer au suivant. */
+/* ---------- screen-by-screen scrolling (computer): each wheel gesture brings the next screen ----------
+   Home, "Experience" chapter + skills, one experience per screen, Education/Languages/Interests, footer.
+   If a screen overflows (small screen), the browser scrolls inside it before moving on to the next one. */
 @media (min-width: 1100px) and (min-height: 680px) {
-  html { scroll-padding-top: 60px; }   /* transitions conduites par cv.js (le calage natif saccadait avec l'élan du trackpad) */
+  html { scroll-padding-top: 60px; }   /* transitions driven by src/scripts/ui/navigation.js (native snapping stuttered with trackpad momentum) */
   .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
   .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
-  /* le pied de page devient le dernier écran (il n'est plus « collé » sous le contenu : le calage ne sait pas viser un élément collé) */
+  /* the footer becomes the last screen (it is no longer "stuck" under the content: snapping cannot target a stuck element) */
   footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: space-between; }
-  footer.site-footer .footer-statement, footer.site-footer .footer-grid { margin-top: auto; }   /* la phrase au centre, les contacts en bas */
+  footer.site-footer .footer-statement, footer.site-footer .footer-grid { margin-top: auto; }   /* the sentence in the middle, the contact details at the bottom */
   .section { margin-top: 0; padding-top: 0; border-top: 0; }
   .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
   .chapter .section-title-wrapper { margin-bottom: 0; }
-  .job { align-content: center; padding: 24px 0; }   /* marges entre écrans : Job.css (elles doivent passer après ses règles de base) */
-  main { padding-right: 84px; }   /* place pour le repère de progression */
-  .facts { align-content: center; }   /* marges et filet : Facts.css */
+  .job { align-content: center; padding: 24px 0; }   /* margins between screens: Job.css (they must come after its base rules) */
+  main { padding-right: 84px; }   /* room for the progress indicator */
+  .facts { align-content: center; }   /* margins and rule line: Facts.css */
 }
 
-/* ---------- transitions entre écrans (grand écran, animations autorisées) ----------
-   1. Le passage : l'écran qui part recule et s'efface, le suivant monte ; piloté par le défilement lui-même (view timeline).
-   2. L'arrivée : le contenu d'un écran se pose en cascade quand il devient l'écran courant (classe is-active, cv.js).
-   3. Le repère : une colonne de traits à droite, avec un compteur (cv.js). */
+/* ---------- transitions between screens (large screen, motion allowed) ----------
+   1. The passage: the leaving screen recedes and fades, the next one rises; driven by the scroll itself (view timeline).
+   2. The arrival: a screen's content settles in a cascade when it becomes the current screen (is-active class, navigation.js).
+   3. The indicator: a column of ticks on the right, with a counter (navigation.js). */
 @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
-  /* html.js : sans JavaScript, personne ne pose is-active, donc rien ne doit partir masqué */
+  /* html.js: without JavaScript, nobody sets is-active, so nothing may start hidden */
   html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li, html.js .job .stack,
   html.js .chapter .skills-row, html.js .facts .section > * {
     opacity: 0; transform: translateY(24px);
@@ -41,8 +41,8 @@
 }
 @supports (animation-timeline: view()) {
   @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
-    /* l'écran lui-même ne bouge pas (sinon le calage vise une cible qui se déplace) : il porte une ligne de temps
-       nommée, et c'est son contenu qui s'anime au fil du défilement */
+    /* the screen itself does not move (otherwise snapping aims at a moving target): it carries a named timeline,
+       and it is its content that animates as you scroll */
     .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: 60px 0px; }
     .header > *, .chapter > *, .job > *, .facts > *, .site-footer > * {
       transform-origin: 50% 0%;
@@ -59,9 +59,9 @@
 @media (min-width: 1100px) and (min-height: 680px) {
   .pager { display: flex; flex-direction: column; align-items: flex-end; position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 15; }
   .pager-count { margin-bottom: 12px; color: var(--ink); font-variant-numeric: tabular-nums; }
-  .pager-tick { display: flex; align-items: center; width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }   /* 24 px : taille minimale d'une cible cliquable */
+  .pager-tick { display: flex; align-items: center; width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }   /* 24 px: minimum size of a clickable target */
   .pager-tick::before { content: ""; display: block; margin-left: auto; flex: none; width: 14px; height: 2px; border-radius: 1px; background: currentColor; opacity: .5; transition: width .35s ease, opacity .35s ease, background .35s ease; }
   .pager-tick:hover::before { opacity: .9; }
   .pager-tick.is-current::before { width: 32px; opacity: 1; background: var(--accent); }
-  .pager.is-inverted .pager-count { color: var(--paper); }   /* sur le pied de page inversé */
+  .pager.is-inverted .pager-count { color: var(--paper); }   /* on the inverted footer */
 }

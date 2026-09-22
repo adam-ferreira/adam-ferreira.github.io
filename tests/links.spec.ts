@@ -1,12 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { PAGES, content } from './helpers';
 
-// Aucun lien cassé : chaque adresse interne des deux pages (liens, images, icônes, polices, scripts) répond, et les
-// liens externes sont bien formés. LinkedIn n'est pas appelé : il répond « 999 » aux robots, le test deviendrait aléatoire.
-test.beforeEach(({}, info) => { test.skip(info.project.name !== 'desktop', 'indépendant de l\'appareil'); });
+// No broken link: every internal address of both pages (links, images, icons, fonts, scripts) responds, and external
+// links are well formed. LinkedIn is not called: it answers "999" to bots, which would make the test random.
+test.beforeEach(({}, info) => { test.skip(info.project.name !== 'desktop', 'device-independent'); });
 
 for (const { lang, path } of PAGES) {
-  test(`${lang} : aucun lien cassé`, async ({ page, request, baseURL }) => {
+  test(`${lang}: no broken link`, async ({ page, request, baseURL }) => {
     await page.goto(path);
     const urls = await page.evaluate(() => {
       const out = new Set<string>();
@@ -24,7 +24,7 @@ for (const { lang, path } of PAGES) {
     for (const u of external) {
       if (u.startsWith('mailto:')) expect(u).toBe(`mailto:${d.identity.contact.email}`);
       else if (u.startsWith('tel:')) expect(u).toBe(`tel:${d.identity.contact.phone_href}`);
-      else expect(u, 'lien externe inattendu').toMatch(/^https:\/\/(adam-ferreira\.github\.io|(www\.)?linkedin\.com)\//);
+      else expect(u, 'unexpected external link').toMatch(/^https:\/\/(adam-ferreira\.github\.io|(www\.)?linkedin\.com)\//);
     }
   });
 }

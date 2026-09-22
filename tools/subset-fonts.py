@@ -1,15 +1,15 @@
-"""Réduit la police de texte (Bricolage Grotesque) aux caractères que le site affiche.
+"""Subsets the body font (Bricolage Grotesque) to the characters the site displays.
 
-Humane (les grands titres) n'est pas traitée ici : son sous-ensemble actuel (lettres, chiffres, accents
-français, 13,8 ko) est déjà plus petit que ce que donnerait ce jeu de caractères, qui sert au texte courant.
+Humane (the giant titles) is not handled here: its current subset (letters, digits, French accents, 13.8 kB) is
+already smaller than what this character set, meant for body text, would give.
 
-Source dans tools/fonts-src/, sortie dans src/assets/fonts/ (même nom que celui qu'importe la feuille de style).
-Jeu gardé : ASCII imprimable + tout ce que contiennent les deux pages construites (dist/) et les deux JSON de contenu
-+ l'alphabet français complet et sa ponctuation (un texte modifié plus tard reste couvert sans relancer).
-Les deux axes de Bricolage (graisse et taille optique) sont conservés : ils font le dessin du site.
+Source in tools/fonts-src/, output in src/assets/fonts/ (same name as the one the stylesheet imports).
+Kept: printable ASCII + everything in the two built pages (dist/) and the two content JSON files
++ the full French alphabet and its punctuation (so text edited later stays covered without re-running).
+Both Bricolage axes (weight and optical size) are kept: they shape the site's look.
 
     npm run build && npm run fonts && npm run build
-Mesuré le 22/09/2026 : Bricolage 71,3 → 54,3 ko.
+Measured on 22/09/2026: Bricolage 71.3 → 54.3 kB.
 """
 import html, pathlib, re
 from fontTools import subset
@@ -29,10 +29,10 @@ for p in ("src/content/cv/en.json", "src/content/cv/fr.json"):
 text = "".join(sorted(c for c in chars if ord(c) >= 0x20))
 
 for src, out, feats in (
-    ("BricolageGrotesque-fr.woff2", "BricolageGrotesque-fr.woff2", ["kern", "locl", "tnum"]),   # tnum : le compteur des diapos
+    ("BricolageGrotesque-fr.woff2", "BricolageGrotesque-fr.woff2", ["kern", "locl", "tnum"]),   # tnum: the screen counter
 ):
     font = TTFont(SRC / src)
     opts = subset.Options(); opts.flavor = "woff2"; opts.layout_features = feats; opts.notdef_outline = True; opts.name_IDs = ["*"]
     sub = subset.Subsetter(opts); sub.populate(text=text); sub.subset(font)
     font.flavor = "woff2"; font.save(OUT / out)
-    print(f"{out:32} {(OUT / out).stat().st_size / 1024:6.1f} ko  ({len(text)} caractères)")
+    print(f"{out:32} {(OUT / out).stat().st_size / 1024:6.1f} kB  ({len(text)} characters)")

@@ -1,13 +1,13 @@
 ---
-// La barre du haut : logo AF (3D, visible hors de l'accueil ; un clic recharge la page), nom qui s'y range, LinkedIn,
-// interrupteur jour / nuit (ThemeToggle). Style : Topbar.css. Scripts : Topbar.js (le logo recharge la page) et
-// src/scripts/3d/logo.js, chargés par la page (Cv.astro) dans un seul fichier.
+// The top bar: AF logo (3D, visible outside the hero; a click reloads the page), the name that settles into it, LinkedIn,
+// light / dark switch (ThemeToggle). Style: Topbar.css. Scripts: Topbar.js (the logo reloads the page) and
+// src/scripts/3d/logo.js, loaded by the page (Cv.astro) in a single file.
 import Mark from './Mark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import logoUrl from '../assets/logo.png?url';
 import { markAsset } from '../lib/assets';
 import type { Cv } from '../lib/types';
-interface Props { d: Cv; fullName: string; home: string }   // home : adresse de la page dans sa langue (/ ou /fr/)
+interface Props { d: Cv; fullName: string; home: string }   // home: URL of the page in its language (/ or /fr/)
 const { d, fullName, home } = Astro.props;
 const idn = d.identity, ui = d.ui;
 const li = markAsset('assets/marks/linkedin.svg'), liDark = markAsset('assets/marks/linkedin-dark.svg');

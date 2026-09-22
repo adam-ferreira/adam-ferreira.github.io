@@ -1,8 +1,9 @@
 /* ============================================================
-   MODE « SCÈNE » (ordinateur : ≥ 1100 × 680, souris) — html.stage, posé dès le <head>
-   La page ne défile plus. Chaque écran (.slide) est fixe sous la barre ; cv.js choisit l'écran courant, et le passage
-   se fait par transform/opacity en CSS, donc par la carte graphique. En avançant : l'écran suivant monte par-dessus,
-   l'actuel recule et s'efface. En revenant : l'écran courant redescend (is-leaving) et révèle le précédent.
+   "STAGE" MODE (computer: ≥ 1100 × 680, mouse) — html.stage, set from the <head>
+   The page no longer scrolls. Each screen (.slide) is fixed under the bar; src/scripts/ui/navigation.js picks the current
+   screen, and the passage uses transform/opacity in CSS, so the graphics card. Going forward: the next screen rises on
+   top, the current one recedes and fades. Going back: the current screen slides back down (is-leaving) and reveals the
+   previous one.
    ============================================================ */
 :root { --stage-ease: cubic-bezier(.76, 0, .24, 1); --stage-gutter: max(36px, calc((100vw - 1400px) / 2 + 36px)); }
 html.stage, html.stage body { height: 100%; overflow: hidden; }
@@ -18,11 +19,11 @@ html.stage .slide {
   transition: transform 1s var(--stage-ease), opacity 1s var(--stage-ease);
   will-change: transform, opacity; backface-visibility: hidden;
 }
-/* Les écrans hors champ ne sont PAS masqués (visibility:hidden les retirait de l'arbre d'accessibilité : un lecteur
-   d'écran ne lisait que l'accueil). Ils sont rangés hors de la fenêtre, au-dessus (is-parked) ou en dessous (is-after) :
-   rien à dessiner, mais leur contenu reste lisible et atteignable au clavier (cv.js suit le focus). */
+/* Off-screen slides are NOT hidden (visibility:hidden removed them from the accessibility tree: a screen reader only
+   read the home screen). They are parked outside the window, above (is-parked) or below (is-after): nothing to draw,
+   but their content stays readable and reachable by keyboard (navigation.js follows the focus). */
 html.stage .slide.is-current { transform: none; opacity: 1; z-index: 3; }
-/* avant que le script (différé) n'ait choisi l'écran courant, l'accueil est déjà à sa place : jamais de premier affichage vide */
+/* before the (deferred) script has picked the current screen, the home screen is already in place: never an empty first paint */
 html.stage .header.slide:not(.is-before):not(.is-after) { transform: none; opacity: 1; z-index: 3; }
 html.stage .slide.is-before { transform: translate3d(0, -8vh, 0) scale(.92); opacity: 0; }
 html.stage .slide.is-before.is-parked { transform: translate3d(0, -100%, 0); }
@@ -31,17 +32,17 @@ html.stage .slide.is-leaving { z-index: 4; }
 html.stage.stage-init .slide, html.stage .slide.no-trans, html.stage .slide.is-parked { transition: none !important; }
 html.stage .slide:focus { outline: none; }
 
-/* mise en page de chaque écran dans sa scène */
+/* layout of each screen in its scene */
 html.stage .header.slide { display: grid; align-items: center; padding-top: 32px; padding-bottom: 96px; }
 html.stage .hero-foot { left: var(--stage-gutter); right: calc(var(--stage-gutter) + 68px); }
 html.stage .chapter.slide { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
 html.stage .job.slide { align-content: center; padding-top: 24px; padding-bottom: 24px; }
-html.stage .job-short::after { right: calc(var(--stage-gutter) + 68px); }   /* le numéro en filigrane reste dans la zone de contenu */
+html.stage .job-short::after { right: calc(var(--stage-gutter) + 68px); }   /* the watermark number stays inside the content area */
 html.stage .facts.slide { align-content: center; padding-top: 0; }
 html.stage footer.slide { display: flex; flex-direction: column; background: var(--ink); padding-top: clamp(48px, 8vh, 96px); padding-bottom: 32px; }
 html.stage footer.slide .footer-statement, html.stage footer.slide .footer-grid { margin-top: auto; }
 
-/* plus de défilement : les animations pilotées par le défilement ne servent plus, les titres se dévoilent à l'arrivée */
+/* no more scrolling: the scroll-driven animations are no longer used, the titles are revealed on arrival */
 html.stage .slide > * { animation: none !important; }
 html.stage .slide .section-title { transform: translateY(105%); transition: transform .9s cubic-bezier(.2, .8, .2, 1) .35s; }
 html.stage .slide.is-current .section-title { transform: none; }

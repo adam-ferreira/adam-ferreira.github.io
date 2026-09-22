@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 
-// Le curseur et le compteur ?fps : ordinateur à la souris seulement.
-test.beforeEach(({}, info) => { test.skip(info.project.name !== 'desktop', 'souris seulement'); });
+// The cursor and the ?fps meter: desktop with a mouse only.
+test.beforeEach(({}, info) => { test.skip(info.project.name !== 'desktop', 'mouse only'); });
 
-test('curseur : suit la souris, gonfle au survol d\'un lien, puis s\'arrête', async ({ page }) => {
+test('cursor: follows the mouse, grows over a link, then stops', async ({ page }) => {
   await page.goto('/');
   await page.mouse.move(300, 300);
   await expect(page.locator('html')).toHaveClass(/has-cursor/);
@@ -16,7 +16,7 @@ test('curseur : suit la souris, gonfle au survol d\'un lien, puis s\'arrête', a
   await expect(dot).toHaveClass(/is-hot/);
 });
 
-test('?fps : le compteur s\'affiche', async ({ page }) => {
+test('?fps: the meter shows up', async ({ page }) => {
   await page.goto('/?fps');
   await expect(page.getByText(/^FPS \d+/)).toBeVisible();
 });

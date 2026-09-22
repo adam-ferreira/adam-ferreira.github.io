@@ -1,4 +1,4 @@
-/* Titre de section géant (Humane), dévoilé par un masque à son arrivée. */
+/* Giant section title (Humane), revealed through a mask on arrival. */
 
 .section-title-wrapper { margin-bottom: 64px; overflow: hidden; padding-top: .04em; }
 .section-title {
@@ -6,7 +6,7 @@
   font-size: clamp(64px, 13vw, 220px); line-height: .88; letter-spacing: .01em; color: var(--ink);
   transition: transform .9s cubic-bezier(.2, .8, .2, 1);
 }
-/* masqué pour être dévoilé par cv.js — seulement si JavaScript tourne : sans lui, le titre reste lisible */
+/* hidden so that src/scripts/ui/navigation.js can reveal it — only when JavaScript runs: without it, the title stays readable */
 html.js .section-title:not(.is-in) { transform: translateY(105%); }
 @media (prefers-reduced-motion: reduce) { .section-title { transition: none; transform: none; } }
 @media (max-width: 640px) { .section-title-wrapper { margin-bottom: 32px; } }

@@ -1,10 +1,10 @@
-// Lighthouse en CI : les deux pages, trois passages chacune (on garde la médiane), avec des seuils qui bloquent la
-// publication. Performance ≥ 90 et non 100 : les machines de GitHub sont plus lentes et plus variables que le réel
-// (mesuré sur le site en ligne : 100). Les rapports restent sur la machine (aucun envoi à un service tiers).
+// Lighthouse in CI: both pages, three runs each (the median run is kept), with thresholds that block publishing.
+// Performance ≥ 90 rather than 100: GitHub runners are slower and noisier than real conditions (measured on the live
+// site: 100). Reports stay on the runner (nothing is uploaded to a third-party service).
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'npm run preview -- --port 4322 --ignore-lock',   // --ignore-lock : voir playwright.config.ts
+      startServerCommand: 'npm run preview -- --port 4322 --ignore-lock',   // --ignore-lock: see playwright.config.ts
       startServerReadyPattern: 'localhost:4322',
       url: ['http://localhost:4322/', 'http://localhost:4322/fr/'],
       numberOfRuns: 3,

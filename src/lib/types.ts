@@ -1,4 +1,4 @@
-// Types du contenu, tirés du schéma (src/content.config.ts) : l'éditeur signale un champ absent ou mal orthographié.
+// Content types, derived from the schema (src/content.config.ts): the editor flags a missing or misspelled field.
 import type { CollectionEntry } from 'astro:content';
 
 export type Cv = CollectionEntry<'cv'>['data'];
