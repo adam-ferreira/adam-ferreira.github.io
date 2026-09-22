@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { content, plain, settle } from './helpers';
 
 // Mode scène : ordinateur à la souris, fenêtre d'au moins 1100 × 680.
@@ -8,8 +8,8 @@ test.beforeEach(async ({ page }, info) => {
   await expect(page.locator('html')).toHaveClass(/stage/);
 });
 
-const slideCount = (page) => page.locator('.slide').count();
-const current = (page) => page.evaluate(() => document.documentElement.dataset.slide);
+const slideCount = (page: Page) => page.locator('.slide').count();
+const current = (page: Page) => page.evaluate(() => document.documentElement.dataset.slide);
 
 test('clavier : flèche bas, Fin et Début changent d\'écran', async ({ page }) => {
   const n = await slideCount(page);
