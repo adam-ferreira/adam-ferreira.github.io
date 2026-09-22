@@ -65,4 +65,4 @@ Trois choses ne suivent pas automatiquement si on la change : `src/assets/logo.p
 
 - Une fonction Three.js ajoutée dans un script 3D → l'ajouter à `src/scripts/three-lite.js` (la construction le prend en compte).
 - Un texte qui ajoute un caractère rare → `npm run build && npm run fonts && npm run build` (réduit la police Bricolage aux caractères du site, `tools/subset-fonts.py`, sources dans `tools/fonts-src/`).
-- Mesures de référence (22/09/2026, avant la migration, Lighthouse sur le site en ligne) : mobile 100 / 100 / 100 / 100, 139 ko ; ordinateur 100 / 100 / 100 / 100, 308 ko, aucun domaine tiers. Juste après une publication, le cache de GitHub Pages est froid : un premier passage peut perdre 1 à 2 points.
+- Mesures de référence (22/09/2026, Lighthouse sur le site en ligne, après la migration) : mobile 100 / 100 / 100 / 100, 125 ko et 12 requêtes (139 ko et 14 avant), élément principal 1,4 à 1,6 s ; ordinateur 100 / 100 / 100 / 100, 289 ko et 23 requêtes (308 ko et 25 avant) ; aucun domaine tiers. Juste après une publication, le cache de GitHub Pages est froid : un premier passage peut perdre 1 à 2 points.
