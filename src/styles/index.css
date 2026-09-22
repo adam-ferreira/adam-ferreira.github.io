@@ -6,7 +6,7 @@
 
    Each component has its file next to it (src/components/X.css); what spans the whole page is here (src/styles/).
    ⚠️ THE ORDER BELOW IS THE CASCADE ORDER, AND IT MATTERS: several rules of equal specificity are decided by their
-   position (e.g. .mark after .topbar-linkedin; the base rules of Job and Facts after the large-screen ones).
+   position (e.g. the base rules of Job and Facts after the large-screen ones).
    Do not change it without running the visual comparison again: npx playwright test visual
    ============================================================ */
 @import "./base.css";
