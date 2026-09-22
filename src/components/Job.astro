@@ -26,6 +26,6 @@ const short = bullets.length === 0;
       </ul>
     </div>
   )}
-  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} aria-hidden="true"></div>}
+  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.5" aria-hidden="true"></div>}
   {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>

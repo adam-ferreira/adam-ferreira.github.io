@@ -117,7 +117,7 @@ async function start() {
   // are, exactly as in the hero's own canvas; their size follows the anchor's square.
   const slides = [...document.querySelectorAll('.slide')];
   const anchorOf = (i) => slides[i]?.querySelector('.hero-stage, .device-anchor') || null;
-  const rectOf = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, s: Math.min(r.width, r.height) }; };
+  const rectOf = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, s: Math.min(r.width, r.height) * (+el.dataset.zoom || 1) }; };
   let slideIdx = +(doc.dataset.slide || 0), cur = null, shown = true, tw = null;
   function project() {
     camera.updateProjectionMatrix();
