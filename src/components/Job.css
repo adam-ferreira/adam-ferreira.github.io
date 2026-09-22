@@ -4,8 +4,8 @@
 @media (min-width: 1100px) {
   .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
   .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
-  .job-side .job-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
-  .job-date { grid-column: 2; }
+  .job-side .entry-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
+  .entry-date { grid-column: 2; }
   .job-side .job-intro { font-size: 16px; line-height: 1.6; }
   .job-side .sub-title { margin-top: 22px; font-size: 17px; }
   .job-side .sub-intro { font-size: 15px; line-height: 1.6; }
@@ -17,9 +17,9 @@
   .job > .stack { gap: 8px; }
   /* short experiences (no bullets): one column, a larger title, and the number as a watermark */
   .job-short { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "stack"; grid-template-rows: auto auto; max-width: 980px; position: relative; }
-  .job-short .job-title { font-size: clamp(30px, 3.2vw, 46px); }
+  .job-short .entry-title { font-size: clamp(30px, 3.2vw, 46px); }
   .job-short .job-side .job-intro { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.5; max-width: 40ch; }
-  .job-short .job-num { font-size: 12px; }
+  .job-short .entry-num { font-size: 12px; }
   .job-short::after {
     content: attr(data-num); position: absolute; right: -32%; top: 50%; transform: translateY(-50%); pointer-events: none;
     font-family: var(--display); font-size: clamp(220px, 30vw, 460px); line-height: .8; color: transparent;
@@ -41,7 +41,7 @@
 /* large screen without stage mode (landscape tablet): one screen per experience, edge to edge */
 @media (min-width: 1100px) and (min-height: 680px) { .job, .job:last-child { margin-bottom: 0; } }
 .job-intro, .sub-intro { max-width: 68ch; }
-.job-intro { margin-bottom: 14px; font-size: 18px; }
+.job-intro { font-size: 18px; }
 .sub-title { margin-top: 40px; font-size: 20px; font-weight: 600; color: var(--ink); }
 .sub-intro { margin-top: 10px; color: var(--muted); }
 
@@ -53,5 +53,4 @@
 .stack { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .stack-label { font-size: 14px; font-weight: 600; color: var(--muted); margin-right: 4px; }
 .stack .chips li { font-size: 13px; padding: 3px 10px; }
-.section p.job-intro { margin-bottom: 0; }
 @media (max-width: 640px) { .job { margin-bottom: 80px; } .bullets { gap: 24px; } }

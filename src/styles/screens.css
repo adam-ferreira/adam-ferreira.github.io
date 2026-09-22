@@ -24,13 +24,13 @@
    3. The indicator: a column of ticks on the right, with a counter (navigation.js). */
 @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
   /* html.js: without JavaScript, nobody sets is-active, so nothing may start hidden */
-  html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li, html.js .job .stack,
+  html.js .job .entry-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li, html.js .job .stack,
   html.js .chapter .skills-row, html.js .facts .section > * {
     opacity: 0; transform: translateY(24px);
     transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1);
     transition-delay: calc(var(--d, 0) * 70ms);
   }
-  html.js .job.is-active .job-header, html.js .job.is-active .job-intro, html.js .job.is-active .sub-title, html.js .job.is-active .sub-intro,
+  html.js .job.is-active .entry-header, html.js .job.is-active .job-intro, html.js .job.is-active .sub-title, html.js .job.is-active .sub-intro,
   html.js .job.is-active .bullets li, html.js .job.is-active .stack, html.js .chapter.is-active .skills-row, html.js .facts.is-active .section > * { opacity: 1; transform: none; }
   .job .job-intro { --d: 1; } .job .sub-title { --d: 2; } .job .sub-intro { --d: 3; }
   .job .bullets li:nth-child(1) { --d: 3; } .job .bullets li:nth-child(2) { --d: 4; } .job .bullets li:nth-child(3) { --d: 5; }

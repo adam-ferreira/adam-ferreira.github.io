@@ -12,15 +12,15 @@ const langs = d.languages.map((l) => `<strong>${md(l.name)}</strong> &mdash; ${m
   <Section id="education" title={d.sections.education}>
     {d.education.map((e) => (
       <Fragment>
-        <EntryHeader title={md(e.title)} date={e.date} />
-        <p class="job-intro reading" set:html={md(e.text)} />
+        <EntryHeader title={e.title} date={e.date} />
+        <p class="prose" set:html={md(e.text)} />
       </Fragment>
     ))}
   </Section>
   <Section id="languages" title={d.sections.languages}>
-    <p class="job-intro reading" set:html={langs} />
+    <p class="prose" set:html={langs} />
   </Section>
   <Section id="interests" title={d.sections.interests}>
-    {d.interests.map((i) => <p class="job-intro reading" set:html={md(i)} />)}
+    {d.interests.map((i) => <p class="prose" set:html={md(i)} />)}
   </Section>
 </div>
