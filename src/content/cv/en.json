@@ -149,7 +149,6 @@
       ]
     }
   ],
-  "projects": [],
   "education": [
     {
       "title": "ESIEE Paris — IMAC engineering degree",
@@ -172,7 +171,6 @@
   ],
   "sections": {
     "experience": "Experience",
-    "projects": "Personal projects",
     "education": "Education",
     "languages": "Languages",
     "interests": "Interests"
