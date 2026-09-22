@@ -1,0 +1,62 @@
+/* Base : polices, couleurs (clair / sombre), remise à zéro, micro-étiquettes. Importé en premier (src/styles/index.css). */
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("../assets/fonts/BricolageGrotesque-fr.woff2") format("woff2");
+  font-weight: 300 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Humane";
+  src: url("../assets/fonts/Humane-name.woff2") format("woff2");   /* sous-ensemble : alphabet latin, accents français, ponctuation */
+  font-weight: 400;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light dark;
+  --paper: #f6f7f9;
+  --ink: #161b22;
+  --text: #3a4351;
+  --muted: #5f6875;
+  --line: #dde1e7;
+  --chip: #eaedf1;
+  --accent: #ffb627;        /* LA couleur (mangue, choisie le 21/09/2026) du site : page, téléphones 3D, logo AF 3D, curseur, portrait */
+  --accent-ink: #976400;    /* sa version foncée, pour du texte sur fond clair */
+  --accent-hi: #ffebc3;     /* reflet (curseur, disque du portrait) */
+  --accent-deep: #b27f1b;   /* ombre */
+  --topbar: rgba(246, 247, 249, 0.82);
+  --mark-bg: #1d1f3b;
+  --display: "Humane", "Bricolage Grotesque", system-ui, sans-serif;
+  --sans: "Bricolage Grotesque", "Inter", system-ui, -apple-system, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
+    --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028;
+  --accent: #ffb627; --accent-ink: #ffb627; --accent-hi: #ffebc3; --accent-deep: #b27f1b; --topbar: rgba(14, 17, 22, 0.8); --mark-bg: #2c305c;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--paper); scroll-padding-top: 72px; }
+body {
+  margin: 0; overflow-x: clip;   /* jamais de défilement horizontal (clip ne casse pas les éléments accrochés, contrairement à hidden) */
+  background: var(--paper);
+  color: var(--text);
+  font: 400 17px/1.68 var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, p, ul { margin: 0; }
+ul { padding: 0; list-style: none; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--accent); color: #161b22; }   /* texte sombre : l'accent est clair */
+
+/* micro-étiquettes : mono, petites, espacées — les seules capitales de la page hors titres géants */
+.label { font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }

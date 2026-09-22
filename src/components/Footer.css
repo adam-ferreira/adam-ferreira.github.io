@@ -1,0 +1,23 @@
+/* Pied de page : inversé, une phrase géante, les coordonnées. */
+
+/* ---------- pied de page : inversé, dévoilé sous le contenu ---------- */
+.site-footer {
+  position: sticky; bottom: 0; z-index: 0; overflow: clip;   /* la phrase en police de secours, plus large, ne doit jamais faire déborder la page */
+  background: var(--ink); color: var(--paper);
+  padding: clamp(64px, 10vh, 120px) clamp(16px, 3vw, 36px) 32px;
+  display: grid; gap: clamp(48px, 8vh, 96px);
+}
+.footer-statement {
+  display: block; width: fit-content; color: inherit; text-decoration: none; transition: color .3s ease;
+  font-family: var(--display); font-weight: 400; text-transform: uppercase;
+  font-size: clamp(80px, 15vw, 280px); line-height: .86; letter-spacing: .01em;
+}
+/* le pied de page est accroché sous le contenu, donc « à l'écran » dès l'arrivée : sa phrase tient sur une ligne
+   quelle que soit la police, sinon l'arrivée d'Humane le fait bouger (mesuré : décalage 0,085) */
+@media (min-width: 641px) { .footer-statement { white-space: nowrap; } }
+.footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
+.footer-grid a { text-decoration: none; }
+.footer-grid a:hover, .footer-statement:hover { color: var(--accent); }
+.footer-grid .nocase { text-transform: none; letter-spacing: .06em; }
+.footer-grid .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 0 4px rgba(61, 220, 132, .18); }
+@media (max-width: 640px) { .site-footer { position: static; } }

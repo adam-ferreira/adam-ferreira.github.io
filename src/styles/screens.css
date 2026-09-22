@@ -1,0 +1,68 @@
+/* Grand écran (≥ 1100 × 680) : un écran par panneau, transitions, repère de progression. Le mode scène (stage.css) s'y ajoute sur ordinateur à la souris. */
+
+/* ---------- défilement par écrans (ordinateur) : chaque molette amène à l'écran suivant ----------
+   Accueil, chapitre « Experience » + compétences, une expérience par écran, Formation/Langues/Intérêts, pied de page.
+   Si un écran déborde (petit écran), le navigateur laisse défiler à l'intérieur avant de passer au suivant. */
+@media (min-width: 1100px) and (min-height: 680px) {
+  html { scroll-padding-top: 60px; }   /* transitions conduites par cv.js (le calage natif saccadait avec l'élan du trackpad) */
+  .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
+  .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - 60px); }
+  /* le pied de page devient le dernier écran (il n'est plus « collé » sous le contenu : le calage ne sait pas viser un élément collé) */
+  footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - 60px); display: flex; flex-direction: column; justify-content: space-between; }
+  footer.site-footer .footer-statement, footer.site-footer .footer-grid { margin-top: auto; }   /* la phrase au centre, les contacts en bas */
+  .section { margin-top: 0; padding-top: 0; border-top: 0; }
+  .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
+  .chapter .section-title-wrapper { margin-bottom: 0; }
+  .job { align-content: center; margin-bottom: 0; padding: 24px 0; }
+  main { padding-right: 84px; }   /* place pour le repère de progression */
+  .job:last-child { margin-bottom: 0; }
+  .facts { align-content: center; margin-top: 0; padding-top: 0; border-top: 0; }
+}
+
+/* ---------- transitions entre écrans (grand écran, animations autorisées) ----------
+   1. Le passage : l'écran qui part recule et s'efface, le suivant monte ; piloté par le défilement lui-même (view timeline).
+   2. L'arrivée : le contenu d'un écran se pose en cascade quand il devient l'écran courant (classe is-active, cv.js).
+   3. Le repère : une colonne de traits à droite, avec un compteur (cv.js). */
+@media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
+  /* html.js : sans JavaScript, personne ne pose is-active, donc rien ne doit partir masqué */
+  html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li, html.js .job .stack,
+  html.js .chapter .skills-row, html.js .facts .section > * {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity .7s cubic-bezier(.2, .7, .2, 1), transform .8s cubic-bezier(.2, .7, .2, 1);
+    transition-delay: calc(var(--d, 0) * 70ms);
+  }
+  html.js .job.is-active .job-header, html.js .job.is-active .job-intro, html.js .job.is-active .sub-title, html.js .job.is-active .sub-intro,
+  html.js .job.is-active .bullets li, html.js .job.is-active .stack, html.js .chapter.is-active .skills-row, html.js .facts.is-active .section > * { opacity: 1; transform: none; }
+  .job .job-intro { --d: 1; } .job .sub-title { --d: 2; } .job .sub-intro { --d: 3; }
+  .job .bullets li:nth-child(1) { --d: 3; } .job .bullets li:nth-child(2) { --d: 4; } .job .bullets li:nth-child(3) { --d: 5; }
+  .job .bullets li:nth-child(4) { --d: 6; } .job .bullets li:nth-child(5) { --d: 7; } .job .bullets li:nth-child(6) { --d: 8; }
+  .job .stack { --d: 9; }
+  .chapter .skills-row:nth-child(1) { --d: 2; } .chapter .skills-row:nth-child(2) { --d: 3; } .chapter .skills-row:nth-child(3) { --d: 4; }
+  .facts .section > :nth-child(2) { --d: 1; } .facts .section:nth-child(2) > * { --d: 2; } .facts .section:nth-child(3) > * { --d: 3; }
+}
+@supports (animation-timeline: view()) {
+  @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
+    /* l'écran lui-même ne bouge pas (sinon le calage vise une cible qui se déplace) : il porte une ligne de temps
+       nommée, et c'est son contenu qui s'anime au fil du défilement */
+    .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: 60px 0px; }
+    .header > *, .chapter > *, .job > *, .facts > *, .site-footer > * {
+      transform-origin: 50% 0%;
+      animation: panel-in linear backwards, panel-out linear forwards;
+      animation-timeline: --panel, --panel;
+      animation-range: entry-crossing 0% entry-crossing 100%, exit-crossing 0% exit-crossing 100%;
+    }
+  }
+}
+@keyframes panel-in { from { opacity: 0; transform: translateY(8vh) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes panel-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(-5vh) scale(.92); } }
+
+.pager { display: none; }
+@media (min-width: 1100px) and (min-height: 680px) {
+  .pager { display: flex; flex-direction: column; align-items: flex-end; position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 15; }
+  .pager-count { margin-bottom: 12px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .pager-tick { display: flex; align-items: center; width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }   /* 24 px : taille minimale d'une cible cliquable */
+  .pager-tick::before { content: ""; display: block; margin-left: auto; flex: none; width: 14px; height: 2px; border-radius: 1px; background: currentColor; opacity: .5; transition: width .35s ease, opacity .35s ease, background .35s ease; }
+  .pager-tick:hover::before { opacity: .9; }
+  .pager-tick.is-current::before { width: 32px; opacity: 1; background: var(--accent); }
+  .pager.is-inverted .pager-count { color: var(--paper); }   /* sur le pied de page inversé */
+}

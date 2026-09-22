@@ -1,0 +1,59 @@
+/* Barre du haut : logo AF (3D), nom qui s'y range, LinkedIn, interrupteur jour / nuit. */
+
+/* ---------- le cadre : barre du haut ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 20;
+  display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 18px;
+  height: 60px; padding: 0 clamp(16px, 3vw, 36px);
+  background: var(--topbar); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  border-bottom: 1px solid transparent; transition: border-color .2s ease;
+}
+.topbar.is-scrolled { border-bottom-color: var(--line); }
+.frame-status { justify-self: center; text-align: center; opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
+body.name-away .frame-status { opacity: 1; transform: none; }
+.brand { position: relative; width: 46px; height: 46px; display: block; border-radius: 10px; }
+.brand-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .6s ease; }
+.brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
+.brand .logo3d.is-dragging { cursor: grabbing; }
+.brand:has(.logo3d.is-ready) .brand-img { opacity: 0; }
+/* rien en haut à gauche sur l'accueil (le nom y est déjà en grand) ; dès qu'on l'a quitté, le logo AF 3D apparaît, et un clic recharge la page */
+html.js .brand { visibility: hidden; opacity: 0; transform: scale(.6); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s linear .55s; }
+html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: none; transition: opacity .45s ease, transform .55s cubic-bezier(.2, .8, .2, 1), visibility 0s; }
+/* LinkedIn : un cube 3D (src/scripts/3d/marks.js), l'image en attendant */
+.topbar-linkedin { grid-column: 3; position: relative; width: 40px; height: 40px; display: block; border-radius: 9px; margin: 0; }
+.topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 9px; transition: opacity .5s ease; }
+.topbar-linkedin.is-3d img { opacity: 0; }
+/* le « in » : noir en mode clair, blanc en mode nuit (le cube 3D suit la même règle, data-dark-map) */
+.topbar-linkedin .theme-dark { display: none; }
+:root[data-theme="dark"] .topbar-linkedin .theme-light { display: none; }
+:root[data-theme="dark"] .topbar-linkedin .theme-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .topbar-linkedin .theme-light { display: none; }
+  :root:not([data-theme]) .topbar-linkedin .theme-dark { display: block; }
+}
+@media (max-width: 640px) { .topbar { grid-template-columns: auto 1fr auto auto; gap: 12px; } .frame-status { display: none; } }
+
+/* ---------- interrupteur jour / nuit ---------- */
+.theme-toggle {
+  grid-column: 4; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px; flex: none;
+  border: 1px solid var(--line); background: var(--chip); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: space-between;
+  -webkit-tap-highlight-color: transparent; transition: background .25s ease, border-color .25s ease;
+}
+.theme-toggle:hover { border-color: var(--muted); }
+.tt-icon { position: relative; z-index: 1; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--muted); }
+.tt-icon svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tt-sun { color: #f59e0b; }
+.tt-knob {
+  position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .28); transition: transform .28s cubic-bezier(.4, 0, .2, 1), background .25s ease;
+}
+:root[data-theme="dark"] .theme-toggle { background: #1c2230; border-color: #2c323b; }
+:root[data-theme="dark"] .tt-knob { transform: translateX(26px); background: var(--accent); }
+:root[data-theme="dark"] .tt-sun { color: var(--muted); }
+:root[data-theme="dark"] .tt-moon { color: #f3f4f6; }
+
+/* le logo 3D n'existe que sur écran large avec souris ; ailleurs, l'image fixe */
+.logo3d { display: block; opacity: 0; transition: opacity .8s ease; }
+.logo3d.is-ready { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .logo3d, .topbar { transition: none; } }

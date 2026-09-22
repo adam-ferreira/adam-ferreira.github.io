@@ -4,22 +4,11 @@
 // geste d'invite que les marques (inclinaison + reflet), en dernier de la série. On l'attrape, on le lance, il continue sur son élan.
 // Sous « réduire les animations » : rendu fixe, mais on peut toujours le manipuler à la main.
 import { CUBEMAP } from './env.js';
-import LOGO_GLB from '../assets/logo.glb?url';
+import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, HINT_MS, firstHint, nextHintAt, easeIO, withShine } from './common.js';
+import LOGO_GLB from '../../assets/logo.glb?url';
 const ACC = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#ffb627';   // l'accent du site
 const canvas = document.querySelector('.brand canvas.logo3d');
-const desktop = () => window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
 const ORDER = 3;   // dans la série des gestes d'invite : après LinkedIn, Betclic et Accor
-const reduced = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-// suit les changements de densité d'écran (fenêtre glissée d'un écran Retina vers un écran standard, zoom du navigateur)
-const onDprChange = (cb) => {
-  const q = window.matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
-  q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
-};
-
-function webglOk() {
-  try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
-  catch (e) { return false; }
-}
 
 let started = false;
 async function go() {
@@ -35,13 +24,7 @@ async function go() {
     logo.scale.setScalar(1.8 / Math.max(s.x, s.y, s.z));
     // reflet : la même bande de lumière que sur les marques
     const shine = { t: { value: -1e5 }, w: { value: 0.3 }, a: { value: 0 } };
-    const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 });
-    mat.onBeforeCompile = (sh) => {
-      sh.uniforms.uShineT = shine.t; sh.uniforms.uShineW = shine.w; sh.uniforms.uShineA = shine.a;
-      sh.vertexShader = 'varying vec2 vShine;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vShine = mvPosition.xy;');
-      sh.fragmentShader = 'uniform float uShineT, uShineW, uShineA;\nvarying vec2 vShine;\n' + sh.fragmentShader.replace('#include <opaque_fragment>',
-        '#include <opaque_fragment>\n  float sd = (vShine.x + vShine.y * 0.6) - uShineT;\n  gl_FragColor.rgb += vec3(1.0) * exp(-sd * sd / (uShineW * uShineW)) * uShineA;');
-    };
+    const mat = withShine(new THREE.MeshStandardMaterial({ color: new THREE.Color(ACC), metalness: 0.55, roughness: 0.32, envMap: env, envMapIntensity: 1.1 }), shine);
     logo.traverse((n) => { if (n.isMesh) n.material = mat; });
     mount(THREE, logo, shine);
   });
@@ -72,9 +55,8 @@ function mount(THREE, logo, shine) {
 
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };
   let dragging = false, last = null, releasedAt = -1e9, idle = 0, visible = true, hover = false, paused = false, shown = false, moved = 0;
-  const HINT_MS = 1500, HINT_A = 0.6, SWEEP = 0.9 + 0.6 * 0.9 + 0.3 * 1.6;
-  let hintStart = -1, nextHint = performance.now() + 1500 + ORDER * 1500;
-  const easeIO = (u) => (u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2);
+  const HINT_A = 0.6, SWEEP = 0.9 + 0.6 * 0.9 + 0.3 * 1.6;
+  let hintStart = -1, nextHint = firstHint(ORDER);
   const stopHint = (delay) => { if (hintStart >= 0) { hintStart = -1; delete canvas.dataset.hint; shine.a.value = 0; } nextHint = Math.max(nextHint, performance.now() + delay); };
   canvas.addEventListener('pointerenter', () => { hover = true; stopHint(3000); });
   canvas.addEventListener('pointerleave', () => { hover = false; });
@@ -119,7 +101,7 @@ function mount(THREE, logo, shine) {
           const u = Math.min(1, (now - hintStart) / HINT_MS), sw = Math.sin(Math.PI * u);
           hy = HINT_A * sw; hx = -HINT_A * 0.35 * sw; ease = 0.3;
           shine.t.value = -SWEEP + 2 * SWEEP * easeIO(u); shine.a.value = 0.75 * sw;
-          if (u >= 1) { hintStart = -1; delete canvas.dataset.hint; shine.a.value = 0; nextHint = now + 4500 + Math.random() * 1500; }
+          if (u >= 1) { hintStart = -1; delete canvas.dataset.hint; shine.a.value = 0; nextHint = nextHintAt(now); }
         }
         idle += 0.016;
         const ry = Math.sin(idle * 0.8) * 0.12 + target.x * 0.25 + hy, rx = Math.sin(idle * 0.6) * 0.05 + target.y * 0.15 + hx;
@@ -133,14 +115,4 @@ function mount(THREE, logo, shine) {
   })(performance.now());
 }
 
-function boot() {
-  if (!canvas || !webglOk()) return;
-  if (desktop()) return ('requestIdleCallback' in window) ? requestIdleCallback(go, { timeout: 1500 }) : setTimeout(go, 300);
-  let done = false;
-  const EVENTS = ['touchstart', 'pointerdown', 'scroll'];
-  const g = () => { if (done) return; done = true; EVENTS.forEach((e) => window.removeEventListener(e, g)); go(); };
-  EVENTS.forEach((e) => window.addEventListener(e, g, { passive: true }));
-  setTimeout(g, 5000);
-}
-if (document.readyState === 'complete') boot();
-else window.addEventListener('load', boot);
+whenLoaded(() => { if (canvas && webglOk()) bootLazily(go, 1500, 300); });

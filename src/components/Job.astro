@@ -2,18 +2,19 @@
 // Une expérience. À gauche (job-side) : numéro, titre, date, introduction, défi, puis la stack. À droite (job-main) :
 // les puces. Sur grand écran, chaque expérience remplit un écran ; ailleurs, les blocs s'enchaînent dans cet ordre.
 // Sans puces, c'est une expérience courte (job-short) : une colonne, grand titre, numéro en filigrane.
-import { md, chips } from '../lib/text';
+import EntryHeader from './EntryHeader.astro';
+import Chips from './Chips.astro';
+import { md } from '../lib/text';
+import type { Job } from '../lib/types';
+interface Props { j: Job; num: string; stackLabel: string }
 const { j, num, stackLabel } = Astro.props;
 const title = md(j.role) + (j.client ? ` &mdash; ${md(j.client)}` : '');
-const short = !(j.bullets && j.bullets.length);
+const bullets = j.bullets ?? [];
+const short = bullets.length === 0;
 ---
 <article class:list={['job', 'slide', { 'job-short': short }]} data-num={num}>
   <div class="job-side">
-    <div class="job-header"><div class="job-title-line">
-      <span class="job-num label">{num}</span>
-      <h3 class="job-title" set:html={title} />
-      <span class="job-date" set:html={md(j.date)} />
-    </div></div>
+    <EntryHeader num={num} title={title} date={j.date} />
     {j.intro && <p class="job-intro" set:html={md(j.intro)} />}
     {j.subtitle && <h4 class="sub-title" set:html={md(j.subtitle)} />}
     {j.subtitle && j.subintro && <p class="sub-intro" set:html={md(j.subintro)} />}
@@ -21,9 +22,9 @@ const short = !(j.bullets && j.bullets.length);
   {!short && (
     <div class="job-main">
       <ul class="bullets">
-        {j.bullets.map((b) => <li set:html={md(b)} />)}
+        {bullets.map((b) => <li set:html={md(b)} />)}
       </ul>
     </div>
   )}
-  {j.stack && <div class="stack"><span class="stack-label" set:html={md(stackLabel)} /> <Fragment set:html={chips(j.stack)} /></div>}
+  {j.stack && <div class="stack"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>

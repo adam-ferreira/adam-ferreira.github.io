@@ -1,0 +1,91 @@
+/* Accueil : scène 3D des téléphones, portrait, nom, phrase d'accueil, coordonnées, pied de l'écran. */
+
+/* ---------- la scène d'accueil : plein écran, le logo en grand ---------- */
+.header {
+  position: relative; overflow: hidden;
+  min-height: calc(100svh - 60px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 40%); align-items: center;
+  max-width: 1400px; margin: 0 auto;
+  padding: clamp(48px, 8vh, 96px) clamp(16px, 3vw, 36px) 96px;
+}
+.hero-stage { grid-column: 2; grid-row: 1; position: relative; justify-self: center; width: clamp(260px, 34vw, 560px); aspect-ratio: 1; }
+.hero-stage::before {
+  content: ""; position: absolute; inset: -22%; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent) 0%, transparent 62%);
+  filter: blur(6px); opacity: 0; transition: opacity 1.2s ease .2s;
+}
+.hero-stage.is-lit::before { opacity: 1; }
+.hero3d {
+  position: absolute; inset: -8%; width: 116%; height: 116%; display: block; cursor: grab; touch-action: none;
+  opacity: 0; transform: translateY(22px); transition: opacity 1s ease, transform 1.3s cubic-bezier(.2, .7, .2, 1);
+}
+.hero3d.is-ready { opacity: 1; transform: none; }
+.hero3d.is-dragging { cursor: grabbing; }
+.header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
+/* le portrait détouré sort de son disque : la tête dépasse par le haut, les épaules restent dans le cercle */
+.portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; flex: none; }
+.portrait-disc { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 26%, var(--accent-hi), var(--accent) 56%, var(--accent-deep)); }
+.portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 8px 8px 8px round 0 0 56px 56px); }   /* 8 px en retrait : un anneau d'accent reste visible autour */
+.header-name-block { display: flex; flex-direction: column; min-width: 0; }
+.name {
+  font-family: var(--display); font-weight: 400;
+  font-size: clamp(72px, 12.5vw, 200px); line-height: .86; letter-spacing: .012em;
+  color: var(--ink); margin: -8px 0 18px;
+  white-space: nowrap;   /* une ligne quelle que soit la police : si Humane arrive après le premier affichage, rien ne saute (mesuré : décalage 0,18) */
+}
+.name-first, .name-last { font-weight: 400; }
+.subtitle { margin-top: 4px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
+.hero-line { margin-top: 18px; max-width: 30ch; font-size: clamp(20px, 2.3vw, 28px); line-height: 1.55; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
+.hero-line .w { display: inline-block; }
+.hero-line .nowrap { white-space: nowrap; }
+.hero-line .nowrap > .mark { margin-right: .04em; }   /* ponctuation collée au logo : pas de marge avant la virgule */
+.location { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; font-size: 15px; color: var(--muted); }
+.flag { width: 16px; height: 12px; border-radius: 2.5px; overflow: hidden; display: inline-flex; flex: none; border: .8px solid var(--line); }
+.flag-blue, .flag-white, .flag-red { flex: 1; }
+.flag-blue { background: #0055a4; } .flag-white { background: #fff; } .flag-red { background: #ef4135; }
+.meta-item { position: relative; }
+.meta-item + .meta-item { padding-left: 12px; }
+.meta-item + .meta-item::before { content: ""; position: absolute; left: 2px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
+/* coordonnées : deux boutons, l'e-mail et le téléphone */
+.contact { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 12px; }
+.contact-link {
+  display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border-radius: 999px;
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: var(--ink); text-decoration: none; font-size: 15px; font-weight: 500; letter-spacing: -.005em;
+  transition: border-color .2s ease, color .2s ease, transform .2s ease;
+}
+.contact-link svg { width: 17px; height: 17px; flex: none; fill: none; stroke: var(--accent-ink); stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; }
+.contact-link:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
+
+.hero-foot {
+  position: absolute; left: clamp(16px, 3vw, 36px); right: clamp(16px, 3vw, 36px); bottom: 28px;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+}
+.scroll-hint { display: inline-flex; align-items: center; gap: 8px; transition: opacity .4s ease; }
+.scroll-hint::before { content: ""; width: 1px; height: 28px; background: var(--muted); animation: hint 1.6s ease-in-out infinite; }
+@keyframes hint { 0%, 100% { transform: scaleY(.4); transform-origin: top; opacity: .4; } 50% { transform: scaleY(1); opacity: 1; } }
+body.is-scrolled .scroll-hint { opacity: 0; }
+
+@media (max-width: 860px), (hover: none), (pointer: coarse) {
+  .hero-stage { display: none; }
+  .header { grid-template-columns: 1fr; min-height: auto; padding-bottom: 72px; }
+}
+@media (max-width: 860px), (hover: none), (pointer: coarse) { .header-left { grid-column: 1; } }
+@media (max-width: 560px) {
+  .header-left { grid-template-columns: 1fr; row-gap: 14px; }
+  .portrait { width: 84px; height: 84px; margin-top: 28px; }
+  .portrait-img { clip-path: inset(-60% 5px 5px 5px round 0 0 37px 37px); }
+  .name { font-size: clamp(64px, 20vw, 96px); }
+  .hero-foot { position: static; margin-top: 40px; }
+}
+
+/* ---------- mouvement : une chorégraphie à l'arrivée, rien d'autre ---------- */
+@keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.name, .portrait { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
+.subtitle, .location { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .12s both; }
+.contact { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .22s both; }
+.hero-line .w { animation: settle .55s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(.28s + var(--i) * 42ms); }
+@media (prefers-reduced-motion: reduce) {
+  .name, .subtitle, .location, .contact, .hero-line .w, .scroll-hint::before { animation: none; }
+  .hero3d, .hero-stage::before { transition: none; }
+}
