@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { PAGES, content, plain, watchErrors } from './helpers';
+import { PAGES, animationsDone, content, plain, watchErrors } from './helpers';
 
 for (const { lang, path } of PAGES) {
   test.describe(`page ${lang} (${path})`, () => {
@@ -30,7 +30,7 @@ for (const { lang, path } of PAGES) {
 
     test('accessibilité : aucune violation WCAG 2.1 A/AA détectée par axe', async ({ page }) => {
       await page.goto(path);
-      await page.waitForTimeout(1500);   // animations d'arrivée terminées (contraste mesuré sur l'état final)
+      await animationsDone(page);   // contrast is measured on the final state, not on text that is still fading in
       const r = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
       expect(r.violations.map((v) => `${v.id} (${v.nodes.length}) : ${v.help}`)).toEqual([]);
     });

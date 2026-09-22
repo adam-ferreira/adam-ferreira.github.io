@@ -25,3 +25,10 @@ export function watchErrors(page: Page) {
 export async function settle(page: Page) {
   await page.waitForFunction(() => !document.documentElement.classList.contains('is-moving'));
 }
+
+/** Waits for every finite CSS animation and transition to end (the infinite "Scroll" hint is ignored). */
+export async function animationsDone(page: Page) {
+  await page.evaluate(() => Promise.all(document.getAnimations()
+    .filter((a) => a.effect?.getTiming().iterations !== Infinity)
+    .map((a) => a.finished.catch(() => undefined))));
+}
