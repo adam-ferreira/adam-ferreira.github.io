@@ -84,31 +84,54 @@ function drawBase() {
   return c;
 }
 
-function drawScreen(g, base, t) {
+// Timeline of one step, as fractions of STEP: the frame fades in (first step) or slides from the previous element, a tap
+// ripples, an assertion turns green, then the step's log line fades in. Then the summary, while the frame fades out.
+const FADE_IN = 0.2, SLIDE = 0.35, TAP_FROM = 0.5, TAP_LEN = 0.45, CHECKED = 0.55, LOGGED = 0.8, LOG_FADE = 0.12;
+const FRAME_OUT = 0.5, SUMMARY_IN = 0.3;   // seconds after the last step
+
+/** The state of the test at time t (s): what drawScreen draws, and whether anything is moving at that instant. */
+function phase(t) {
   t = ((t % CYCLE) + CYCLE) % CYCLE;   // the first frame's timestamp can precede the start: never a negative time
-  g.setTransform(TS, 0, 0, TS, 0, 0);
-  g.drawImage(base, 0, 0, SW, SH);
   const n = STEPS.length, stepsEnd = n * STEP, inSteps = t < stepsEnd;
   const k = inSteps ? Math.floor(t / STEP) : n - 1;
   const p = inSteps ? (t - k * STEP) / STEP : 1;
-  const step = STEPS[k];
+  const tap = STEPS[k].verb !== 'assert', since = t - stepsEnd;   // since: time spent in the summary
+  const s = {
+    t, k, p, inSteps,
+    frame: inSteps ? (k === 0 ? Math.min(1, p / FADE_IN) : 1) : Math.max(0, 1 - since / FRAME_OUT),   // opacity of the selection frame
+    slide: ease(Math.min(1, p / SLIDE)),                                           // progress from the previous element
+    checked: !tap && p > CHECKED,                                                  // an assertion that passed
+    ripple: tap && inSteps && p > TAP_FROM && p < TAP_FROM + TAP_LEN ? (p - TAP_FROM) / TAP_LEN : -1,   // tap progress
+    done: inSteps ? k + (p > LOGGED ? 1 : 0) : n,                                  // log lines shown
+    lineIn: inSteps && p > LOGGED ? Math.min(1, (p - LOGGED) / LOG_FADE) : 1,       // opacity of the newest line
+    cursor: inSteps && p <= LOGGED,                                                // the current step's grey line
+    blink: Math.floor(t * 4) % 2,
+    summary: inSteps ? 0 : Math.min(1, since / SUMMARY_IN),                        // opacity of the result line
+    moving: false,
+  };
+  s.moving = inSteps ? (k === 0 ? p < FADE_IN : p < SLIDE) || s.ripple >= 0 || s.lineIn < 1 : since < FRAME_OUT;
+  return s;
+}
+
+function drawScreen(g, base, t) {
+  const s = phase(t), step = STEPS[s.k], n = STEPS.length;
+  g.setTransform(TS, 0, 0, TS, 0, 0);
+  g.drawImage(base, 0, 0, SW, SH);
 
   // the selection frame slides to the target element, shows its locator, then taps or asserts
-  let alpha = inSteps ? (k === 0 ? Math.min(1, p / 0.2) : 1) : Math.max(0, 1 - (t - stepsEnd) / 0.5);
-  if (alpha > 0) {
-    const r = mix(k > 0 ? STEPS[k - 1].rect : step.rect, step.rect, ease(Math.min(1, p / 0.35)));
-    const ok = step.verb === 'assert' && p > 0.55;
-    const col = ok ? GREEN : ACC;
-    g.save(); g.globalAlpha = alpha;
+  if (s.frame > 0) {
+    const r = mix(s.k > 0 ? STEPS[s.k - 1].rect : step.rect, step.rect, s.slide);
+    const col = s.checked ? GREEN : ACC;
+    g.save(); g.globalAlpha = s.frame;
     rr(g, r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6);
-    g.fillStyle = ok ? 'rgba(61,220,132,.12)' : rgba(ACC, 0.1); g.fill();
+    g.fillStyle = s.checked ? rgba(GREEN, 0.12) : rgba(ACC, 0.1); g.fill();
     g.lineWidth = 4; g.strokeStyle = col; g.stroke();
     g.font = `600 19px ${MONO}`;
     const lw = g.measureText(step.loc).width + 20, lx = Math.min(r.x - 6, SW - 8 - lw), ly = r.y - 6 - 34;
     g.fillStyle = col; rr(g, lx, ly, lw, 28, 8); g.fill();
     g.fillStyle = '#16100c'; g.fillText(step.loc, lx + 10, ly + 20);
-    if (step.verb !== 'assert' && inSteps && p > 0.5 && p < 0.95) {
-      const q = (p - 0.5) / 0.45;
+    if (s.ripple >= 0) {
+      const q = s.ripple;
       const cx = step.verb === 'swipe' ? r.x + r.w * (0.78 - 0.5 * ease(q)) : r.x + r.w / 2, cy = r.y + r.h / 2;
       g.fillStyle = rgba(ACC, 0.35 * (1 - q)); g.beginPath(); g.arc(cx, cy, 12 + q * 44, 0, Math.PI * 2); g.fill();
       g.fillStyle = rgba(ACC, 0.9 * (1 - q * 0.6)); g.beginPath(); g.arc(cx, cy, 11, 0, Math.PI * 2); g.fill();
@@ -117,24 +140,24 @@ function drawScreen(g, base, t) {
   }
 
   // the log: one green line per passed step, the current step in grey
-  const done = inSteps ? k + (p > 0.8 ? 1 : 0) : n;
   g.font = `500 20px ${MONO}`;
-  for (let i = 0; i < done; i++) {
-    g.globalAlpha = inSteps && i === done - 1 && p > 0.8 ? Math.min(1, (p - 0.8) / 0.12) : 1;
+  for (let i = 0; i < s.done; i++) {
+    g.globalAlpha = i === s.done - 1 ? s.lineIn : 1;
     const y = LOG_Y + i * LOG_DY;
     g.fillStyle = GREEN; g.fillText('✓', 44, y);
     g.fillStyle = '#d7dde6'; g.fillText(STEPS[i].verb.padEnd(7) + STEPS[i].loc, 74, y);
   }
   g.globalAlpha = 1;
-  if (inSteps && p <= 0.8) {
-    const y = LOG_Y + k * LOG_DY;
-    g.fillStyle = (Math.floor(t * 4) % 2) ? ACC : '#6b7480'; g.fillText('▸', 46, y);
+  if (s.cursor) {
+    const y = LOG_Y + s.k * LOG_DY;
+    g.fillStyle = s.blink ? ACC : '#6b7480'; g.fillText('▸', 46, y);
     g.fillStyle = '#6b7480'; g.fillText(step.verb.padEnd(7) + step.loc, 74, y);
   }
-  if (!inSteps) {
-    g.globalAlpha = Math.min(1, (t - stepsEnd) / 0.3);
-    g.font = `700 22px ${MONO}`; g.fillStyle = GREEN; g.fillText('PASSED 5/5', 44, SUM_Y);
-    const w = g.measureText('PASSED 5/5').width;
+  if (!s.inSteps) {
+    const result = `PASSED ${n}/${n}`;
+    g.globalAlpha = s.summary;
+    g.font = `700 22px ${MONO}`; g.fillStyle = GREEN; g.fillText(result, 44, SUM_Y);
+    const w = g.measureText(result).width;
     g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('· 2 devices · 7.8 s', 44 + w + 14, SUM_Y);
     g.globalAlpha = 1;
   }
@@ -143,12 +166,9 @@ function drawScreen(g, base, t) {
 // What changes on screen at time t: null during a motion (sliding frame, tap ripple, a line appearing), otherwise a key
 // for the static state (step, assertion, blinking cursor). Same key ⇒ same image: no need to redraw it.
 function screenKey(t) {
-  t = ((t % CYCLE) + CYCLE) % CYCLE;
-  const n = STEPS.length, stepsEnd = n * STEP;
-  if (t >= stepsEnd) return t - stepsEnd < 0.5 ? null : 'summary';
-  const k = Math.floor(t / STEP), p = (t - k * STEP) / STEP, tap = STEPS[k].verb !== 'assert';
-  if ((k === 0 && p < 0.2) || (k > 0 && p < 0.35) || (tap && p > 0.5 && p < 0.95) || (p > 0.8 && p < 0.92)) return null;
-  return k + '|' + (!tap && p > 0.55) + '|' + (p > 0.8) + '|' + (p <= 0.8 ? Math.floor(t * 4) % 2 : '-');
+  const s = phase(t);
+  if (s.moving) return null;
+  return s.inSteps ? s.k + '|' + s.checked + '|' + (s.done > s.k) + '|' + (s.cursor ? s.blink : '-') : 'summary';
 }
 
 // ---------- the phones ----------
