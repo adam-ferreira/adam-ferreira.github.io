@@ -20,13 +20,17 @@
     "marks": {
       "betclic": {
         "src": "assets/marks/betclic.svg",
-        "alt": "Betclic",
-        "fill_dark": null
+        "alt": "Betclic"
       },
       "accor": {
         "src": "assets/marks/accor.svg",
         "alt": "Accor",
-        "fill_dark": "#eef1f5"
+        "dark_map": { "#050033": "#eef1f5" }
+      },
+      "linkedin": {
+        "src": "assets/marks/linkedin.svg",
+        "alt": "LinkedIn",
+        "dark_map": { "#000000": "#ffffff" }
       }
     },
     "contact": {

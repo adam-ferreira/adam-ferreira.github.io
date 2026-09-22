@@ -7,7 +7,15 @@
 .hero-line .mark { height: 1.2em; vertical-align: -.2em; margin: 0 .18em; }
 .hero-line .mark-accor { height: 1.5em; vertical-align: -.32em; }
 .hero-line .mark img { height: 100%; width: auto; }
-/* the dark Accor logo turns light in dark mode — the chosen theme, or the system one (also without JavaScript) */
+/* a mark that ships a <name>-dark.svg shows it in dark mode (LinkedIn: the "in" turns white, like its 3D cube) */
+.mark .theme-dark { display: none; }
+:root[data-theme="dark"] .mark .theme-light { display: none; }
+:root[data-theme="dark"] .mark .theme-dark { display: block; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mark .theme-light { display: none; }
+  :root:not([data-theme="light"]) .mark .theme-dark { display: block; }
+}
+/* the dark Accor logo has no dark file: a filter turns it light — the chosen theme, or the system one (also without JavaScript) */
 :root[data-theme="dark"] .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .mark-accor img { filter: invert(1) hue-rotate(180deg) brightness(1.6); } }
 .mark:hover { transform: perspective(320px) rotateX(9deg) rotateY(-12deg); }

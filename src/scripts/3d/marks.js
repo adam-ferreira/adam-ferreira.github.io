@@ -43,7 +43,6 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
   const vb = ((svgText.match(/viewBox="([^"]+)"/) || [])[1] || '0 0 100 100').split(/[\s,]+/).map(parseFloat);
   const [vbX, vbY, vbW, vbH] = vb;
   const cube = mark.classList.contains('mark-linkedin');
-  const darkFill = mark.dataset.fillDark;
   const darkMap = mark.dataset.darkMap ? JSON.parse(mark.dataset.darkMap) : {};
   const fills = data.paths.map((p) => p.userData.style.fill).filter((f) => f && f !== 'none');
   const baseColor = String(fills[0]).toLowerCase();
@@ -98,15 +97,14 @@ async function setup(mark, order, THREE, loader, SVGLoader, RoundedBoxGeometry) 
     });
   }
 
-  // in dark mode, dark faces take the given light color (white stays white)
+  // in dark mode, the colors named by the mark's dark_map are replaced; the others keep theirs
   const recolor = () => group.traverse((m) => {
     if (!m.isMesh) return;
     const ms = [].concat(m.material);
     const cap = ms.find((x) => x.isMeshBasicMaterial), side = ms.find((x) => x.isMeshStandardMaterial);
     if (!cap || !side) return;
-    const b = cap.userData.base, lb = b.toLowerCase();
-    // in dark mode: a specific color is replaced if the mark provides one (data-dark-map), otherwise the general data-fill-dark rule
-    const c = !isDark() ? b : (darkMap[lb] || (darkFill && lb !== '#ffffff' ? darkFill : b));
+    const b = cap.userData.base;
+    const c = (isDark() && darkMap[b.toLowerCase()]) || b;
     cap.color.set(c); side.color.set(c).multiplyScalar(0.72);
   });
   recolor();
