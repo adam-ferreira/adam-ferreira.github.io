@@ -1,9 +1,10 @@
 // Light / dark switch (ThemeToggle.astro): the system theme by default, or the visitor's remembered choice (already
 // applied before the first paint by the boot script in Head.astro).
 import { THEME_KEY } from '../scripts/theme.js';
+import { DARK } from '../scripts/media.js';
 const root = document.documentElement;
 const btn = document.querySelector('.theme-toggle');
-const mq = window.matchMedia('(prefers-color-scheme: dark)');
+const mq = window.matchMedia(DARK);
 let saved = null;
 try { saved = localStorage.getItem(THEME_KEY); } catch { /* storage unavailable (private browsing): fall back to the system theme */ }
 if (saved !== 'light' && saved !== 'dark') saved = null;

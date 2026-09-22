@@ -1,7 +1,8 @@
 // Navigation between the page's screens (Cv.astro): progress indicator, stage mode on a computer, normal scrolling
 // elsewhere (and Lenis on medium-sized screens with a mouse).
+import { STAGE, DESKTOP, REDUCED_MOTION, matches } from '../media.js';
 const root = document.documentElement;
-const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const reduced = matches(REDUCED_MOTION);
 const fr = root.lang === 'fr';
 
 // ---------- "stage" mode (computer) ----------
@@ -10,7 +11,12 @@ const fr = root.lang === 'fr';
 // The html.stage class is set from the <head> (src/components/Head.astro) so nothing jumps on first paint.
 const stage = root.classList.contains('stage');
 const slides = [...document.querySelectorAll('.slide')];
-const DURATION = reduced ? 0 : 1000;
+// the move lasts what the stylesheet says (--stage-duration in stage.css), so the two never drift apart
+const cssMs = (name, fallback) => {
+  const v = getComputedStyle(root).getPropertyValue(name).trim();
+  return v.endsWith('ms') ? parseFloat(v) : v.endsWith('s') ? parseFloat(v) * 1000 : fallback;
+};
+const DURATION = reduced ? 0 : cssMs('--stage-duration', 1000);
 const bar = document.querySelector('.topbar');
 let cur = 0, moving = false, locked = false, lastWheel = 0, lastDelta = 0, moveTimer = 0;
 
@@ -139,8 +145,7 @@ if (stage && slides.length) {
     if (i >= 0 && i !== cur) goTo(i, true);
   });
   // switching to a narrow window (or back) changes mode: reload cleanly
-  window.matchMedia('(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)')
-    .addEventListener('change', () => location.reload());
+  window.matchMedia(STAGE).addEventListener('change', () => location.reload());
 }
 
 // ---------- normal scrolling (phone, tablet, narrow window) ----------
@@ -182,7 +187,7 @@ if (!stage) {
   }
 
   // smooth scrolling (Lenis): large screens with a mouse outside stage mode, after load
-  const wide = window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
+  const wide = matches(DESKTOP);
   if (wide && !reduced) window.addEventListener('load', () => {
     import('lenis').then((m) => {   // loaded on demand, in its own file
       const Lenis = m.default || m.Lenis;
