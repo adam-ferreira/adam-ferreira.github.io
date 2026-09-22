@@ -111,3 +111,14 @@ test('dark palette: the same colours from the system preference and from the swi
   expect(fromSwitch['--paper']).not.toBe(light['--paper']);
   expect(await open('dark', 'light')).toEqual(light);   // and the light theme chosen on a dark system
 });
+
+test('footer finale: the pills carry the skills from the content, and never block the links', async ({ page }) => {
+  await page.goto('/');
+  const d = content('en');
+  const skills = d.skills.flatMap((g: { items: string[] }) => g.items);
+  const canvas = page.locator('.site-footer canvas.footer3d');
+  expect(JSON.parse((await canvas.getAttribute('data-skills')) ?? '[]')).toEqual(skills);
+  await expect(canvas).toHaveCSS('pointer-events', 'none');
+  await expect(canvas).toHaveAttribute('aria-hidden', 'true');
+  await expect(page.locator('.footer-statement')).toHaveAttribute('href', `mailto:${d.identity.contact.email}`);
+});

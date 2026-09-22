@@ -15,6 +15,10 @@
 /* the footer is pinned under the content, so it is "on screen" from the start: its sentence stays on one line
    whatever the font, otherwise Humane arriving makes it move (measured: shift 0.085) */
 @media (min-width: 641px) { .footer-statement { white-space: nowrap; } }
+.footer3d { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; opacity: 0; transition: opacity .6s ease; }
+.footer3d.is-ready { opacity: 1; }
+.site-footer > :not(.footer3d) { position: relative; }   /* the text stays above the pills */
+.site-footer.is-grabbing { cursor: grabbing; }
 .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
 .footer-grid a { text-decoration: none; }
 .footer-grid a:hover, .footer-statement:hover { color: var(--accent); }
