@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { existsSync } from 'node:fs';
-import { settle } from './helpers';
+import { PAGES, settle } from './helpers';
 
 // Visual comparison: proves that a refactor changes nothing on screen. One set of baselines per OS, since font rendering
 // differs: *-darwin.png (the Mac) and *-linux.png (CI, Ubuntu 24.04).
@@ -60,17 +60,15 @@ test('desktop, reduced motion', async ({ page }, info) => {
 
 test.describe('iPhone and tablet, full page', () => {
   test.beforeEach(({}, info) => { test.skip(!['iphone', 'tablet'].includes(info.project.name)); });
-  for (const [lang, path] of [['en', '/'], ['fr', '/fr/']] as const) {
+  for (const { lang, path } of PAGES) {
     test(`${lang}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: 'light' });
       await page.goto(path);
       await still(page);
       // A full-page screenshot does not scroll: the final state of whatever appears on scroll is forced.
-      // Through a CSS rule rather than by setting is-active: navigation.js removes is-active from off-screen panels at an
+      // Through a CSS rule rather than by setting is-active: scroll.js removes is-active from off-screen panels at an
       // unpredictable moment.
-      await page.addStyleTag({ content: `
-        html.js .job .job-header, html.js .job .job-intro, html.js .job .sub-title, html.js .job .sub-intro, html.js .job .bullets li,
-        html.js .job .stack, html.js .chapter .skills-row, html.js .facts .section > *, html.js .section-title { opacity: 1 !important; transform: none !important; }` });
+      await page.addStyleTag({ content: 'html.js .reveal, html.js .section-title { opacity: 1 !important; transform: none !important; }' });
       await page.waitForTimeout(800);
       await expect(page).toHaveScreenshot(`page-${lang}.png`, { ...opts, fullPage: true });
     });

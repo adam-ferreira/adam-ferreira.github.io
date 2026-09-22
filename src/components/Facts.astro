@@ -1,29 +1,26 @@
 ---
 // The last content screen: education, languages, interests.
 import EntryHeader from './EntryHeader.astro';
-import SectionTitle from './SectionTitle.astro';
-import { md } from '../lib/text';
+import Section from './Section.astro';
+import { md, plain } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
 const langs = d.languages.map((l) => `<strong>${md(l.name)}</strong> &mdash; ${md(l.level)}`).join(' &nbsp;&middot;&nbsp; ');
 ---
-<div class="facts slide">
-  <section class="section" id="education" aria-labelledby="education-title">
-    <SectionTitle id="education" label={d.sections.education} />
+<div class="facts slide" data-label={plain(d.sections.education)}>
+  <Section id="education" title={d.sections.education} reveal>
     {d.education.map((e) => (
       <Fragment>
-        <EntryHeader title={md(e.title)} date={e.date} />
-        <p class="job-intro reading" set:html={md(e.text)} />
+        <EntryHeader title={e.title} date={e.date} />
+        <p class="prose reveal" set:html={md(e.text)} />
       </Fragment>
     ))}
-  </section>
-  <section class="section" id="languages" aria-labelledby="languages-title">
-    <SectionTitle id="languages" label={d.sections.languages} />
-    <p class="job-intro reading" set:html={langs} />
-  </section>
-  <section class="section" id="interests" aria-labelledby="interests-title">
-    <SectionTitle id="interests" label={d.sections.interests} />
-    {d.interests.map((i) => <p class="job-intro reading" set:html={md(i)} />)}
-  </section>
+  </Section>
+  <Section id="languages" title={d.sections.languages} reveal>
+    <p class="prose reveal" set:html={langs} />
+  </Section>
+  <Section id="interests" title={d.sections.interests} reveal>
+    {d.interests.map((i) => <p class="prose reveal" set:html={md(i)} />)}
+  </Section>
 </div>

@@ -1,10 +1,10 @@
 // A ball in the accent color, shaded like a sphere, that follows the mouse with a slight lag and stretches in the
 // direction of movement; over a link or a 3D object it swells into a glass bubble. Mouse only, never under
 // "reduce motion". Loaded by the page (Cv.astro).
+import { MOUSE, REDUCED_MOTION, matches } from '../media.js';
 const root = document.documentElement;
-const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced) {
+if (matches(MOUSE) && !matches(REDUCED_MOTION)) {
   const dot = document.createElement('div');
   dot.className = 'cursor'; dot.setAttribute('aria-hidden', 'true');
   dot.innerHTML = '<span class="cursor-ball"></span>';
@@ -15,7 +15,7 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced)
     const nx = cx + (mx - cx) * 0.35, ny = cy + (my - cy) * 0.35;
     const vx = nx - cx, vy = ny - cy; cx = nx; cy = ny;
     let sp = Math.min(Math.hypot(vx, vy) / 40, 0.4);
-    const a = Math.atan2(vy, vx) * 57.2958;
+    const a = Math.atan2(vy, vx) * 180 / Math.PI;
     const still = Math.abs(mx - cx) < 0.05 && Math.abs(my - cy) < 0.05;
     if (still) { cx = mx; cy = my; sp = 0; }
     dot.style.transform = `translate3d(${cx.toFixed(2)}px,${cy.toFixed(2)}px,0) rotate(${a.toFixed(1)}deg) scale(${(1 + sp).toFixed(3)},${(1 - sp * 0.5).toFixed(3)}) rotate(${(-a).toFixed(1)}deg)`;

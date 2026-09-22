@@ -2,24 +2,15 @@
 // The "Experience" chapter: one screen for the big title and the skills, then one screen per experience.
 import Job from './Job.astro';
 import Chips from './Chips.astro';
-import SectionTitle from './SectionTitle.astro';
-import { md } from '../lib/text';
+import Section from './Section.astro';
+import { md, plain } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
 ---
-<section class="section" id="experience" aria-labelledby="experience-title">
-  <div class="chapter slide">
-    <SectionTitle id="experience" label={d.sections.experience} />
-    <div class="skills" id="skills">
-      {d.skills.map((row) => <div class="skills-row"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
-    </div>
+<Section id="experience" title={d.sections.experience} head="chapter slide" label={plain(d.sections.experience)}>
+  <div class="skills" slot="head">
+    {d.skills.map((row) => <div class="skills-row reveal"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
   </div>
   {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} />)}
-</section>
-{d.projects && d.projects.length > 0 && (
-  <section class="section" id="projects" aria-labelledby="projects-title">
-    <SectionTitle id="projects" label={d.sections.projects} />
-    {d.projects.map((p) => <p class="job-intro reading" set:html={md(p)} />)}
-  </section>
-)}
+</Section>

@@ -5,12 +5,10 @@
 import Mark from './Mark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import logoUrl from '../assets/logo.png?url';
-import { markAsset } from '../lib/assets';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv; fullName: string; home: string }   // home: URL of the page in its language (/ or /fr/)
 const { d, fullName, home } = Astro.props;
 const idn = d.identity, ui = d.ui;
-const li = markAsset('assets/marks/linkedin.svg'), liDark = markAsset('assets/marks/linkedin-dark.svg');
 ---
 <nav class="topbar" aria-label={ui.nav_aria}>
   <a class="brand" href={home} title={fullName}>
@@ -18,10 +16,7 @@ const li = markAsset('assets/marks/linkedin.svg'), liDark = markAsset('assets/ma
     <canvas class="logo3d" aria-hidden="true"></canvas>
   </a>
   <span class="frame-status label" aria-hidden="true">{fullName} &middot; {idn.headline}</span>
-  <Mark name="linkedin" svg={li.url} href={idn.linkedin.url} label="LinkedIn" class="topbar-linkedin" darkMap='{"#000000":"#ffffff"}'>
-    <img class="theme-light" src={li.url} alt="" width="40" height="40" decoding="async">
-    <img class="theme-dark" src={liDark.url} alt="" width="40" height="40" decoding="async">
-  </Mark>
+  <Mark name="linkedin" mark={idn.marks.linkedin} href={idn.linkedin.url} class="topbar-linkedin" />
   <ThemeToggle ui={ui} />
 </nav>
 
