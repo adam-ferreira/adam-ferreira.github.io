@@ -33,11 +33,10 @@ const cv = defineCollection({
       intro: z.string().optional(), subtitle: z.string().optional(), subintro: z.string().optional(),
       bullets: z.array(text).optional(), stack: z.array(text).optional(),
     }).strict()).min(1),
-    projects: z.array(text).optional(),
     education: z.array(z.object({ title: text, date: text, text: text }).strict()),
     languages: z.array(z.object({ name: text, level: text }).strict()),
     interests: z.array(text),
-    sections: z.object({ experience: text, projects: text, education: text, languages: text, interests: text }).strict(),
+    sections: z.object({ experience: text, education: text, languages: text, interests: text }).strict(),
     ui: z.object({
       toggle_aria: text, toggle_title_dark: text, toggle_title_light: text, nav_aria: text,
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,

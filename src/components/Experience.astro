@@ -17,9 +17,3 @@ const { d } = Astro.props;
   </div>
   {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} />)}
 </section>
-{d.projects && d.projects.length > 0 && (
-  <section class="section" id="projects" aria-labelledby="projects-title">
-    <SectionTitle id="projects" label={d.sections.projects} />
-    {d.projects.map((p) => <p class="job-intro reading" set:html={md(p)} />)}
-  </section>
-)}
