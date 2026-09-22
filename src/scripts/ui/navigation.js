@@ -1,20 +1,20 @@
-// Navigation entre les écrans de la page (Cv.astro) : repère de progression, mode scène sur ordinateur, défilement
-// normal ailleurs (et Lenis sur les écrans moyens à la souris).
+// Navigation between the page's screens (Cv.astro): progress indicator, stage mode on a computer, normal scrolling
+// elsewhere (and Lenis on medium-sized screens with a mouse).
 const root = document.documentElement;
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const fr = root.lang === 'fr';
 
-// ---------- mode « scène » (ordinateur) ----------
-// La page ne défile plus : chaque écran (.slide) est une scène fixe, et le passage de l'une à l'autre se fait en CSS,
-// par la carte graphique (transform, opacity). Un geste = un écran ; un écran plus haut que la fenêtre défile d'abord
-// à l'intérieur. La classe html.stage est posée dès le <head> (src/components/Head.astro) pour éviter tout saut à l'affichage.
+// ---------- "stage" mode (computer) ----------
+// The page no longer scrolls: each screen (.slide) is a fixed scene, and moving from one to the next is done in CSS, on
+// the GPU (transform, opacity). One gesture = one screen; a screen taller than the window scrolls inside first.
+// The html.stage class is set from the <head> (src/components/Head.astro) so nothing jumps on first paint.
 const stage = root.classList.contains('stage');
 const slides = [...document.querySelectorAll('.slide')];
 const DURATION = reduced ? 0 : 1000;
 const bar = document.querySelector('.topbar');
 let cur = 0, moving = false, locked = false, lastWheel = 0, lastDelta = 0, moveTimer = 0;
 
-// repère de progression (grand écran) : un trait par écran, un compteur, un clic pour y aller
+// progress indicator (large screens): one tick per screen, a counter, a click to go there
 let pager = null, ticks = [], count = null;
 const labelOf = (p) => {
   if (p.classList.contains('header')) return fr ? 'Accueil' : 'Home';
@@ -42,13 +42,13 @@ if (slides.length) {
     b.addEventListener('click', () => goTo(i));
     pager.appendChild(b); return b;
   });
-  // juste après la barre : au clavier, on atteint le repère avant le contenu (il est fixe, sa place à l'écran ne change pas)
+  // right after the top bar: keyboard users reach the indicator before the content (it is fixed, so its place on screen does not change)
   if (bar) bar.after(pager); else document.body.appendChild(pager);
   setCurrent(0);
 }
 
-// keepScroll : navigation déclenchée par le focus (touche Tab) — on ne touche pas au défilement interne de l'écran,
-// que le navigateur vient de régler pour montrer l'élément focalisé
+// keepScroll: navigation triggered by focus (Tab key) — leave the screen's inner scroll alone, the browser has just set
+// it to show the focused element
 function goTo(n, keepScroll) {
   n = Math.max(0, Math.min(slides.length - 1, n));
   if (!stage) { slides[n].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }); return; }
@@ -56,9 +56,9 @@ function goTo(n, keepScroll) {
   const prev = cur, back = n < prev;
   cur = n; moving = true;
   root.classList.add('is-moving');
-  // 1. Sans transition : les écrans qui ne font pas partie du passage (saut par Début, Fin ou le repère) vont
-  //    directement à leur place hors champ — on ne doit pas les voir traverser la fenêtre. L'écran d'arrivée, s'il
-  //    était rangé au-dessus, reprend sa pose « reculée », d'où il revient.
+  // 1. Without transition: screens that are not part of the move (a jump with Home, End or the indicator) go straight to
+  //    their off-screen place — they must not be seen crossing the window. The target screen, if it was parked above,
+  //    first takes back its "receded" pose, which it returns from.
   const quiet = slides.filter((_, k) => k !== n && k !== prev);
   if (slides[n].classList.contains('is-parked')) quiet.push(slides[n]);
   quiet.forEach((s) => s.classList.add('no-trans'));
@@ -68,9 +68,9 @@ function goTo(n, keepScroll) {
     s.classList.remove('is-current', 'is-active', 'is-leaving');
     s.classList.toggle('is-before', k < n); s.classList.toggle('is-parked', k < n); s.classList.toggle('is-after', k > n);
   });
-  void document.body.offsetWidth;   // ces positions sont appliquées avant que les transitions ne reprennent
+  void document.body.offsetWidth;   // these positions are applied before transitions resume
   quiet.forEach((s) => s.classList.remove('no-trans'));
-  // 2. Le passage, animé : l'écran courant part (en revenant, il redescend par-dessus), le nouveau arrive.
+  // 2. The animated move: the current screen leaves (going back, it slides down over the other), the new one arrives.
   const from = slides[prev], to = slides[n];
   from.classList.remove('is-current', 'is-active');
   from.classList.toggle('is-before', !back); from.classList.toggle('is-after', back); from.classList.toggle('is-leaving', back);
@@ -85,13 +85,13 @@ function goTo(n, keepScroll) {
   moveTimer = setTimeout(() => {
     moving = false; locked = true;
     root.classList.remove('is-moving');
-    // l'écran sorti par le haut (déjà invisible) est rangé hors champ : plus rien à dessiner
+    // the screen that left through the top (already invisible) is parked off-screen: nothing left to draw
     slides.forEach((s, k) => { s.classList.remove('is-leaving'); if (k < cur) s.classList.add('is-parked'); });
   }, DURATION + 30);
 }
 
 if (stage && slides.length) {
-  // état de départ, sans animation
+  // initial state, without animation
   root.classList.add('stage-init');
   slides.forEach((s, k) => {
     s.classList.toggle('is-current', k === 0); s.classList.toggle('is-active', k === 0);
@@ -102,11 +102,11 @@ if (stage && slides.length) {
 
   const canScroll = (s, dir) => (dir > 0 ? s.scrollTop + s.clientHeight < s.scrollHeight - 2 : s.scrollTop > 2);
   window.addEventListener('wheel', (e) => {
-    if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;   // zoom au pincement, geste horizontal : on laisse faire
+    if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;   // pinch zoom, horizontal gesture: let the browser handle it
     const d = e.deltaY, dir = d > 0 ? 1 : -1, now = performance.now();
-    const fresh = now - lastWheel > 180 || Math.abs(d) > Math.abs(lastDelta) * 1.5 + 6;   // nouveau geste, pas l'élan du précédent
+    const fresh = now - lastWheel > 180 || Math.abs(d) > Math.abs(lastDelta) * 1.5 + 6;   // a new gesture, not the momentum of the previous one
     lastWheel = now; lastDelta = d;
-    if (!moving && canScroll(slides[cur], dir)) { locked = true; return; }   // l'écran défile d'abord à l'intérieur
+    if (!moving && canScroll(slides[cur], dir)) { locked = true; return; }   // the screen scrolls inside first
     e.preventDefault();
     if (moving || Math.abs(d) < 3) return;
     if (locked && !fresh) return;
@@ -130,20 +130,20 @@ if (stage && slides.length) {
     if (canScroll(s, dir)) s.scrollBy({ top: dir * s.clientHeight * 0.8, behavior: reduced ? 'auto' : 'smooth' });
     else goTo(cur + dir);
   });
-  // « Aller au contenu » : l'écran « Experience », qui reçoit le focus (le Tab suivant part de là)
+  // "Skip to content": the "Experience" screen, which receives focus (the next Tab starts from there)
   document.querySelector('.skip-link')?.addEventListener('click', (e) => { e.preventDefault(); goTo(1); slides[1].focus({ preventScroll: true }); });
-  // clavier : Tab vers un lien d'un autre écran (le pied de page, par exemple) y emmène la scène
+  // keyboard: Tab to a link on another screen (the footer, for instance) takes the stage there
   document.addEventListener('focusin', (e) => {
     const s = e.target instanceof Element ? e.target.closest('.slide') : null;
     const i = s ? slides.indexOf(s) : -1;
     if (i >= 0 && i !== cur) goTo(i, true);
   });
-  // passer en fenêtre étroite (ou revenir) change de mode : on recharge proprement
+  // switching to a narrow window (or back) changes mode: reload cleanly
   window.matchMedia('(min-width: 1100px) and (min-height: 680px) and (hover: hover) and (pointer: fine)')
     .addEventListener('change', () => location.reload());
 }
 
-// ---------- défilement normal (téléphone, tablette, fenêtre étroite) ----------
+// ---------- normal scrolling (phone, tablet, narrow window) ----------
 if (!stage) {
   const onScroll = () => {
     const y = window.scrollY;
@@ -153,7 +153,7 @@ if (!stage) {
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // la page bouge : les rendus 3D se figent le temps du mouvement
+  // the page is moving: 3D rendering freezes for the duration of the move
   let settleTimer = 0;
   window.addEventListener('scroll', () => {
     root.classList.add('is-moving'); clearTimeout(settleTimer);
@@ -161,18 +161,18 @@ if (!stage) {
   }, { passive: true });
 
   if ('IntersectionObserver' in window) {
-    // les titres géants se dévoilent à l'arrivée de leur section (on observe le conteneur, le titre étant masqué)
+    // the giant titles are revealed when their section arrives (we observe the wrapper, since the title itself is hidden)
     const reveal = (w) => w.querySelector('.section-title')?.classList.add('is-in');
     const io = new IntersectionObserver((entries) => {
       entries.forEach((en) => { if (en.isIntersecting) { reveal(en.target); io.unobserve(en.target); } });
     }, { rootMargin: '0px 0px -10% 0px' });
     document.querySelectorAll('.section-title-wrapper').forEach((w) => { if (reduced) reveal(w); else io.observe(w); });
-    // le nom se range dans le cadre du haut quand le grand nom de l'accueil est sorti de l'écran
+    // the name moves into the top bar once the big name of the hero has left the screen
     const nm = document.querySelector('.header .name');
     if (nm) new IntersectionObserver((en) => {
       document.body.classList.toggle('name-away', !en[0].isIntersecting && en[0].boundingClientRect.top < 0);
     }, { rootMargin: '-60px 0px 0px 0px' }).observe(nm);
-    // l'écran courant (celui qui occupe le haut de la fenêtre) reçoit is-active, et le repère suit
+    // the current screen (the one at the top of the window) gets is-active, and the indicator follows
     const panelIO = new IntersectionObserver((entries) => {
       entries.forEach((en) => { en.target.classList.toggle('is-active', en.isIntersecting); if (en.isIntersecting) setCurrent(slides.indexOf(en.target)); });
     }, { rootMargin: '-10% 0px -35% 0px' });
@@ -181,10 +181,10 @@ if (!stage) {
     document.querySelectorAll('.section-title').forEach((t) => t.classList.add('is-in'));
   }
 
-  // défilement lissé (Lenis) : grands écrans à la souris hors mode scène, après le chargement
+  // smooth scrolling (Lenis): large screens with a mouse outside stage mode, after load
   const wide = window.matchMedia('(min-width: 861px) and (hover: hover) and (pointer: fine)').matches;
   if (wide && !reduced) window.addEventListener('load', () => {
-    import('lenis').then((m) => {   // chargé à la demande, dans son propre fichier
+    import('lenis').then((m) => {   // loaded on demand, in its own file
       const Lenis = m.default || m.Lenis;
       const lenis = new Lenis({ lerp: 0.09, smoothWheel: true });
       (function raf(t) { lenis.raf(t); requestAnimationFrame(raf); })(performance.now());

@@ -1,24 +1,24 @@
-// Mise en forme du texte du CV (reprise du générateur Python d'avant Astro, même rendu).
+// Formatting of the CV text (carried over from the Python generator used before Astro, same output).
 
 const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
 export const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ESC[c]);
 
-/** Texte brut → HTML : échappement, puis **gras** → <strong>. */
+/** Plain text → HTML: escaping, then **bold** → <strong>. */
 export const md = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
 export interface MarkAsset { url: string; width?: number; height?: number }
 export interface Mark { type: 'img'; src: string; alt: string; fill_dark?: string | null }
 
-/** Un mot de la phrase d'accueil : du texte, ou une marque (nom dans identity.marks). i = rang, pour l'arrivée décalée. */
+/** A word of the hero sentence: text, or a mark (name in identity.marks). i = rank, for the staggered entrance. */
 export type HeroPiece = { i: number; text: string } | { i: number; mark: string };
-/** Un groupe = des mots collés sans espace (« {{betclic}}, » : la marque et sa virgule), ou un retour à la ligne. */
+/** A group = words stuck together without a space ("{{betclic}},": the mark and its comma), or a line break. */
 export type HeroGroup = 'br' | HeroPiece[];
 
-/** La phrase d'accueil découpée en groupes, séparés par un espace (HeroLine.astro). {{nom}} insère une marque, {{br}}
- *  un retour à la ligne ; la ponctuation collée à ce qui précède rejoint son groupe, qui restera insécable. */
+/** The hero sentence split into groups, separated by a space (HeroLine.astro). {{name}} inserts a mark, {{br}} a line
+ *  break; punctuation stuck to what precedes it joins that group, which will not break across lines. */
 export function heroGroups(hero: string, marks: Record<string, Mark>): HeroGroup[] {
   const out: HeroGroup[] = [];
-  let i = 0, spaced = true;   // spaced : un blanc précède le morceau (sinon il est collé au précédent)
+  let i = 0, spaced = true;   // spaced: whitespace precedes the token (otherwise it is stuck to the previous one)
   for (const tok of hero.split(/(\{\{\w+\}\}|\s+)/)) {
     if (!tok) continue;
     if (/^\s+$/.test(tok)) { spaced = true; continue; }
@@ -33,6 +33,6 @@ export function heroGroups(hero: string, marks: Record<string, Mark>): HeroGroup
   return out;
 }
 
-/** La même phrase, lisible par un lecteur d'écran : les marques remplacées par leur nom. */
+/** The same sentence, readable by a screen reader: marks replaced by their name. */
 export const heroLabel = (hero: string, marks: Record<string, Mark>) =>
   hero.replace(/\{\{(\w+)\}\}/g, (_, n) => (marks[n] ? marks[n].alt : ' '));

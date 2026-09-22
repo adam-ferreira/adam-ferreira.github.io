@@ -1,5 +1,5 @@
-// Le plan du site pour les moteurs de recherche : les deux pages, chacune avec sa traduction (hreflang), et la date du
-// dernier changement du contenu. Les outils (/tools/) n'y figurent pas.
+// The sitemap for search engines: both pages, each with its translation (hreflang), and the date of the last content
+// change. The tools (/tools/) are left out.
 import type { APIRoute } from 'astro';
 import { pathOf, type Lang } from '../lib/i18n';
 import { contentUpdatedAt } from '../lib/updated';

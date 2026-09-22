@@ -1,6 +1,6 @@
-/* Accueil : scène 3D des téléphones, portrait, nom, phrase d'accueil, coordonnées, pied de l'écran. */
+/* Home screen: 3D scene of the phones, portrait, name, welcome sentence, contact details, bottom of the screen. */
 
-/* ---------- la scène d'accueil : plein écran, le logo en grand ---------- */
+/* ---------- the home scene: full screen, the logo in large ---------- */
 .header {
   position: relative; overflow: hidden;
   min-height: calc(100svh - 60px);
@@ -22,23 +22,23 @@
 .hero3d.is-ready { opacity: 1; transform: none; }
 .hero3d.is-dragging { cursor: grabbing; }
 .header-left { grid-column: 1; grid-row: 1; display: grid; grid-template-columns: auto 1fr; column-gap: 22px; align-items: start; min-width: 0; }
-/* le portrait détouré sort de son disque : la tête dépasse par le haut, les épaules restent dans le cercle */
+/* the cut-out portrait comes out of its disc: the head overflows at the top, the shoulders stay inside the circle */
 .portrait { position: relative; width: 128px; height: 128px; margin-top: 46px; flex: none; }
 .portrait-disc { position: absolute; inset: 0; border-radius: 50%; background: radial-gradient(circle at 32% 26%, var(--accent-hi), var(--accent) 56%, var(--accent-deep)); }
-.portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 8px 8px 8px round 0 0 56px 56px); }   /* 8 px en retrait : un anneau d'accent reste visible autour */
+.portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 8px 8px 8px round 0 0 56px 56px); }   /* inset by 8 px: an accent ring stays visible around it */
 .header-name-block { display: flex; flex-direction: column; min-width: 0; }
 .name {
   font-family: var(--display); font-weight: 400;
   font-size: clamp(72px, 12.5vw, 200px); line-height: .86; letter-spacing: .012em;
   color: var(--ink); margin: -8px 0 18px;
-  white-space: nowrap;   /* une ligne quelle que soit la police : si Humane arrive après le premier affichage, rien ne saute (mesuré : décalage 0,18) */
+  white-space: nowrap;   /* one line whatever the font: if Humane arrives after the first paint, nothing jumps (measured: shift 0.18) */
 }
 .name-first, .name-last { font-weight: 400; }
 .subtitle { margin-top: 4px; font-size: clamp(19px, 2vw, 24px); font-weight: 600; color: var(--ink); letter-spacing: -.01em; }
 .hero-line { margin-top: 18px; max-width: 30ch; font-size: clamp(20px, 2.3vw, 28px); line-height: 1.55; font-weight: 500; color: var(--ink); letter-spacing: -.01em; }
 .hero-line .w { display: inline-block; }
 .hero-line .nowrap { white-space: nowrap; }
-.hero-line .nowrap > .mark { margin-right: .04em; }   /* ponctuation collée au logo : pas de marge avant la virgule */
+.hero-line .nowrap > .mark { margin-right: .04em; }   /* punctuation stuck to the logo: no margin before the comma */
 .location { margin-top: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 4px; font-size: 15px; color: var(--muted); }
 .flag { width: 16px; height: 12px; border-radius: 2.5px; overflow: hidden; display: inline-flex; flex: none; border: .8px solid var(--line); }
 .flag-blue, .flag-white, .flag-red { flex: 1; }
@@ -46,7 +46,7 @@
 .meta-item { position: relative; }
 .meta-item + .meta-item { padding-left: 12px; }
 .meta-item + .meta-item::before { content: ""; position: absolute; left: 2px; top: 50%; width: 3px; height: 3px; border-radius: 50%; background: var(--muted); transform: translateY(-50%); }
-/* coordonnées : deux boutons, l'e-mail et le téléphone */
+/* contact details: two buttons, the email and the phone */
 .contact { margin-top: 26px; display: flex; flex-wrap: wrap; gap: 10px 12px; }
 .contact-link {
   display: inline-flex; align-items: center; gap: 10px; padding: 10px 18px 10px 14px; border-radius: 999px;
@@ -79,7 +79,7 @@ body.is-scrolled .scroll-hint { opacity: 0; }
   .hero-foot { position: static; margin-top: 40px; }
 }
 
-/* ---------- mouvement : une chorégraphie à l'arrivée, rien d'autre ---------- */
+/* ---------- motion: one choreography on arrival, nothing else ---------- */
 @keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .name, .portrait { animation: settle .7s cubic-bezier(.2, .7, .2, 1) both; }
 .subtitle, .location { animation: settle .7s cubic-bezier(.2, .7, .2, 1) .12s both; }

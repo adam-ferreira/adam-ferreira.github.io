@@ -1,6 +1,6 @@
-// Une bille à la couleur d'accent, ombrée comme une sphère, qui suit la souris avec un léger retard et s'étire dans le sens
-// du mouvement ; au survol d'un lien ou d'un objet 3D, elle gonfle en bulle de verre. Souris seulement, jamais sous
-// « réduire les animations ». Chargé par la page (Cv.astro).
+// A ball in the accent color, shaded like a sphere, that follows the mouse with a slight lag and stretches in the
+// direction of movement; over a link or a 3D object it swells into a glass bubble. Mouse only, never under
+// "reduce motion". Loaded by the page (Cv.astro).
 const root = document.documentElement;
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -19,7 +19,7 @@ if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduced)
     const still = Math.abs(mx - cx) < 0.05 && Math.abs(my - cy) < 0.05;
     if (still) { cx = mx; cy = my; sp = 0; }
     dot.style.transform = `translate3d(${cx.toFixed(2)}px,${cy.toFixed(2)}px,0) rotate(${a.toFixed(1)}deg) scale(${(1 + sp).toFixed(3)},${(1 - sp * 0.5).toFixed(3)}) rotate(${(-a).toFixed(1)}deg)`;
-    // arrivée sur la souris : on arrête la boucle (plus aucune image produite tant que la souris ne bouge pas)
+    // caught up with the mouse: stop the loop (no frame is produced until the mouse moves again)
     if (still) running = false; else requestAnimationFrame(tick);
   };
   window.addEventListener('pointermove', (e) => {

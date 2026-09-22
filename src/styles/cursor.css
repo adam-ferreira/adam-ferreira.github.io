@@ -1,5 +1,5 @@
-/* ---------- le curseur : une bille orange ombrée comme une sphère ; au survol d'un lien ou d'un objet 3D, une bulle de verre ----------
-   Posé par cv.js sur ordinateur avec souris seulement, jamais sous « réduire les animations » (le curseur natif reste alors). */
+/* ---------- the cursor: an orange ball shaded like a sphere; when hovering a link or a 3D object, a glass bubble ----------
+   Added by src/scripts/ui/cursor.js on computers with a mouse only, never under "reduce motion" (the native cursor stays then). */
 .cursor { position: fixed; left: 0; top: 0; z-index: 9999; width: 0; height: 0; pointer-events: none; opacity: 0; transition: opacity .3s ease; will-change: transform; }
 html.has-cursor .cursor { opacity: 1; }
 html.has-cursor .cursor.is-out { opacity: 0; }

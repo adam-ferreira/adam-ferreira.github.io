@@ -1,5 +1,5 @@
-/* En-tête d'une entrée datée (expérience, diplôme) : numéro, titre, date. Les variantes vivent chez leurs parents :
-   Job.css (grand écran, expériences courtes), Facts.css (formation). */
+/* Header of a dated entry (experience, degree): number, title, date. The variants live with their parents:
+   Job.css (large screen, short experiences), Facts.css (education). */
 
 .job-header { margin-bottom: 24px; padding-top: 22px; border-top: 1px solid var(--line); }
 .job-title-line { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: baseline; column-gap: 20px; row-gap: 8px; }
