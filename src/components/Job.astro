@@ -1,8 +1,9 @@
 ---
-// One experience. On the left (job-side): number, title, date, introduction, challenge, then the stack. On the right
-// (job-main): the bullets. On large screens each experience fills one screen; elsewhere the blocks follow in this order.
-// Without bullets it is a short experience (job-short): one column, a large title, the number as an outlined watermark.
-// With a demo (stage mode only): a third column where the 3D phones play this job's test (src/scripts/3d/hero.js).
+// One experience on the home page. On the left (job-side): number, title, date, the intro in one sentence, then the
+// stack. On the right (job-main): the achievements, a title and one sentence each (the full text is on the CV page).
+// Without achievements it is a short experience (job-short): one column, a large title, the number as an outlined watermark.
+// With a demo: the 3D phones play this job's test. In stage mode the achievements become a story told one at a time
+// next to the phones (src/scripts/ui/story.js), and the phones play each one's test (src/scripts/3d/hero.js).
 import EntryHeader from './EntryHeader.astro';
 import Spotlight from './Spotlight.astro';
 import bettingEn from '../assets/devices/betting-en.webp?url';
@@ -13,25 +14,32 @@ const POSTERS = { betting: { en: bettingEn, fr: bettingFr }, booking: { en: book
 import Chips from './Chips.astro';
 import { md, plain } from '../lib/text';
 import type { Job } from '../lib/types';
-interface Props { j: Job; num: string; stackLabel: string; lang: 'en' | 'fr'; dragLabel: string }
-const { j, num, stackLabel, lang, dragLabel } = Astro.props;
+interface Props { j: Job; num: string; stackLabel: string; storyLabel: string; lang: 'en' | 'fr'; dragLabel: string }
+const { j, num, stackLabel, storyLabel, lang, dragLabel } = Astro.props;
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
+const intro = j.lead ?? j.intro;
+const pad = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <article class:list={['job', 'slide', { 'job-short': short, 'job-demo': !!j.demo }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
   {j.demo && <Spotlight num={num} role={j.role} client={j.client ?? ''} date={j.date} />}
   <div class="job-side">
     {!j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
-    {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
-    {j.subtitle && <h4 class="sub-title reveal" set:html={md(j.subtitle)} />}
-    {j.subtitle && j.subintro && <p class="sub-intro reveal" set:html={md(j.subintro)} />}
+    {intro && <p class="job-intro reveal" set:html={md(intro)} />}
     {j.demo && <div class="job-stage" aria-hidden="true" data-cursor={dragLabel}><img class="device-poster job-poster" src={POSTERS[j.demo][lang]} alt="" width="719" height="719" loading="lazy" decoding="async" /><canvas class="hero3d" data-scenario={j.demo}></canvas></div>}
   </div>
   {!short && (
-    <div class="job-main">
-      <ul class="bullets">
-        {bullets.map((b) => <li class="reveal" set:html={md(b)} />)}
-      </ul>
+    <div class="job-main story">
+      {j.subtitle && <p class="story-kicker label reveal" set:html={md(j.subtitle)} />}
+      <ol class="story-steps reveal" data-label={`${storyLabel} ${plain(j.client ?? j.role)}`}>
+        {bullets.map((b, i) => (
+          <li class="story-step" id={`job-${num}-step-${pad(i)}`}>
+            <span class="story-num" aria-hidden="true">{pad(i)}</span>
+            <h4 class="story-title" set:html={md(b.title)} />
+            <p class="story-text" set:html={md(b.short)} />
+          </li>
+        ))}
+      </ol>
     </div>
   )}
   {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.9" data-cursor={dragLabel} aria-hidden="true"></div>}

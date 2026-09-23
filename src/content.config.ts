@@ -34,7 +34,9 @@ const cv = defineCollection({
     experience: z.array(z.object({
       role: text, client: z.string().optional(), date: text,
       intro: z.string().optional(), subtitle: z.string().optional(), subintro: z.string().optional(),
-      bullets: z.array(text).optional(), stack: z.array(text).optional(),
+      lead: z.string().optional(),   // the intro in one sentence, for the home page (the CV page keeps intro)
+      // an achievement: its title, one short sentence for the home page, the full text for the CV page
+      bullets: z.array(z.object({ title: text, short: text, text: text }).strict()).optional(), stack: z.array(text).optional(),
       demo: z.enum(['betting', 'booking']).optional(),   // the test the 3D phones play on this experience's screen
     }).strict()).min(1),
     education: z.array(z.object({ title: text, date: text, text: text }).strict()),
@@ -46,6 +48,7 @@ const cv = defineCollection({
       sound_aria: text, sound_title_on: text, sound_title_off: text,   // the sound switch (SoundToggle.astro)
       cursor_drag: text, cursor_mail: text, cursor_throw: text,         // words the cursor shows over some objects (cursor.js)
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
+      story_label: text,   // the rail of an experience's achievements in stage mode (story.js), followed by the client's name
       nav_available: text, made_with: text,   // the top bar's availability (with the contact details), the footer's signature
       pager_aria: text, home_label: text, contact_label: text,   // the progress indicator, built by src/scripts/ui/pager.js
       pager_passed: text, pager_done: text,   // the indicator as a test runner: "3/8 passed", then "All tests passed"

@@ -13,5 +13,5 @@ const { d } = Astro.props;
   <div class="skills" slot="head">
     {d.skills.map((row) => <div class="skills-row reveal"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
   </div>
-  {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} lang={d.lang} dragLabel={d.ui.cursor_drag} />)}
+  {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} storyLabel={d.ui.story_label} lang={d.lang} dragLabel={d.ui.cursor_drag} />)}
 </Section>
