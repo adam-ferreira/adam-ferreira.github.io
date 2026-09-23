@@ -4,9 +4,9 @@
 // Everywhere WebGL runs, after load (on a phone: the first gesture). You can grab the scene and spin it (on a touch
 // screen, a sideways drag: an upward one still scrolls the page); once released, it goes back to swaying. Under "reduce motion": the final frame of the test, without a loop.
 // Stage mode: the phones live in a fixed canvas over the screens (.devices3d) and travel with them from one anchor to the
-// next (.hero-stage, .device-anchor): the hero, the "Experience" chapter, then each experience with a demo, where they
-// play that job's test (one per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn
-// when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
+// next (.hero-stage, .device-anchor): the hero, then each experience with a demo, where they play that job's test (one
+// per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn when the app changes.
+// Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
 import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
 import { SW, SH, TS, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;

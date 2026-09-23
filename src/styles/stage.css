@@ -40,7 +40,7 @@ html.stage.stage-init .slide, html.stage .slide.no-trans, html.stage .slide.is-p
 html.stage .slide:focus { outline: none; }
 html.is-measuring .reveal { transform: none !important; transition: none !important; }   /* stage.js measures the screens at rest */
 
-/* layout of each screen in its scene (the chapter, the experiences and the footer are already laid out by screens.css,
+/* layout of each screen in its scene (the experiences and the footer are already laid out by screens.css,
    whose large-screen rules always apply in stage mode) */
 html.stage .header.slide { display: grid; align-items: center; padding-top: 32px; padding-bottom: 96px; }
 html.stage .hero-foot { left: var(--stage-gutter); right: calc(var(--stage-gutter) + var(--pager-room)); }
