@@ -1,0 +1,12 @@
+/* Spotlight: the header of an experience whose phones play its test — the client's name, giant. */
+.spotlight-title { margin: 0; font-weight: 400; }
+.spotlight-meta { display: block; color: var(--muted); margin-bottom: 4px; }
+.spotlight-num { color: var(--accent-ink); margin-right: 6px; }
+.spotlight-name {
+  display: block; color: var(--ink);
+  font-family: var(--display); text-transform: uppercase; letter-spacing: .01em;
+  font-size: clamp(64px, 14vw, 104px); line-height: .84;
+}
+.spotlight-name small { margin-left: .3em; font-size: .3em; color: var(--muted); letter-spacing: .03em; }
+.spotlight-date { white-space: nowrap; }
+@media (min-width: 1100px) { .spotlight-name { font-size: clamp(80px, 6.4vw, 112px); } }

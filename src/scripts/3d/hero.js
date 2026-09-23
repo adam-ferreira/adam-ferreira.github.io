@@ -7,8 +7,8 @@
 // next (.hero-stage, .device-anchor): the hero, the "Experience" chapter, then each experience with a demo, where they
 // play that job's test; a full turn when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's
 // own canvas.
-import { desktop, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
-import { SW, SH, TS, CYCLE, SCENARIOS, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
+import { accent as accentColor, desktop, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
+import { SW, SH, TS, CYCLE, SCENARIOS, loadLogos, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
 const canvas = overlay || document.querySelector('canvas.hero3d');
@@ -64,7 +64,7 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
 
 async function start() {
   if (!canvas || !desktop() || !webglOk()) return;
-  const THREE = await import('./three-lite.js');   // Three.js trimmed to what the site uses, loaded on demand
+  const [THREE] = await Promise.all([import('./three-lite.js'), overlay ? loadLogos() : null]);   // Three.js trimmed to what the site uses, loaded on demand; the clients' logos for their screens
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   const heroStage = document.querySelector('.hero-stage');
   // GPU lost: the scene fades out (the rest of the page does not depend on it)
@@ -85,11 +85,13 @@ async function start() {
   const tex = new THREE.CanvasTexture(sc2d);
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   const paint = (t) => { drawScreen(sg, base, t, sc); tex.needsUpdate = true; };
+  let androidBody = null;   // set once the phones exist
   const setScenario = (name) => {
     const next = SCENARIOS[name] || SCENARIOS.hero;
     if (next === sc) return;
     sc = next; base = drawBase(sc); t0 = performance.now(); lastKey = undefined;
     paint(reduced() ? CYCLE - 0.01 : 0);
+    androidBody?.color.set(sc.body || accentColor());   // the Android phone in the client's colour
   };
   // data-freeze="seconds": a still frame of the test at that moment, without a loop (LinkedIn banner export)
   const freeze = canvas.dataset.freeze !== undefined ? parseFloat(canvas.dataset.freeze) : null;
@@ -97,6 +99,7 @@ async function start() {
 
   const graphite = new THREE.MeshStandardMaterial({ color: 0x2b3038, metalness: 0.8, roughness: 0.28, envMap: env, envMapIntensity: 1.2 });
   const accent = accentMaterial(THREE, env);
+  androidBody = accent;
   const glass = new THREE.MeshStandardMaterial({ color: 0x07080a, metalness: 0.3, roughness: 0.15, envMap: env, envMapIntensity: 0.8 });
   const black = new THREE.MeshBasicMaterial({ color: 0x000000 });
   const screenMat = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false });
