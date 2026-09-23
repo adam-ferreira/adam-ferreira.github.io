@@ -1,6 +1,6 @@
-/* One experience: header (number, title, date), introduction, challenge, bullets, stack. After Facts.css: its base rules must come after the large-screen ones. */
+/* One experience: header (number, title, date), the intro in one sentence, the achievements, the stack. After Facts.css: its base rules must come after the large-screen ones. */
 
-/* experiences: on a large screen, the header stays pinned on the left while the details are read on the right */
+/* experiences: on a large screen, the header stays pinned on the left while the achievements are read on the right */
 @media (min-width: 1100px) {
   .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
   .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
@@ -8,16 +8,11 @@
   .job-demo { grid-template-areas: "head head" "side main" "stack main"; }
   .job > .spotlight { grid-area: head; margin-bottom: 28px; }
   .entry-date { grid-column: 2; }
-  .job-side .job-intro { font-size: 16px; line-height: 1.6; }
-  .job-side .sub-title { margin-top: 22px; font-size: 17px; }
-  .job-side .sub-intro { font-size: 15px; line-height: 1.6; }
-  /* bullets arranged in pairs: read left to right, then top to bottom; the titles of a row are aligned */
-  .job-main .bullets { margin-top: 0; grid-template-columns: 1fr 1fr; gap: 30px 40px; align-items: start; }
-  .job-main .bullets li { padding-left: 0; max-width: none; font-size: 14.5px; line-height: 1.6; }
-  .job-main .bullets li::before { position: static; display: block; width: 22px; height: 2px; margin-bottom: 12px; border-radius: 2px; }
-  .job-main .bullets li strong { font-size: 15.5px; margin-bottom: 4px; }
+  .job-side .job-intro { font-size: 17px; line-height: 1.6; }
+  /* achievements arranged in pairs: read left to right, then top to bottom */
+  .story-steps { grid-template-columns: 1fr 1fr; gap: 30px 40px; }
   .job > .stack { gap: 8px; }
-  /* short experiences (no bullets): one column, a larger title, and the number as a watermark */
+  /* short experiences (no achievements): one column, a larger title, and the number as a watermark */
   .job-short { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "stack"; grid-template-rows: auto auto; max-width: 980px; position: relative; }
   .job-short .entry-title { font-size: clamp(30px, 3.2vw, 46px); }
   .job-short .job-side .job-intro { font-size: clamp(20px, 1.7vw, 25px); line-height: 1.5; max-width: 40ch; }
@@ -31,70 +26,83 @@
 .job-stage { position: relative; width: min(80%, 340px); aspect-ratio: 1; margin: 28px auto 0; }
 .job-poster { display: block; width: 100%; height: auto; transition: opacity .6s ease; }
 .job-stage .hero3d { inset: -18%; width: 136%; height: 136%; }   /* same framing as the still image */
-html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones play in the third column */
+html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones play in the middle column */
 @media (max-width: 1099px) { .job > .spotlight { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); } }
-
-/* stage mode, experience with a demo: the phones take a third column and play its test; the bullets go to one column */
-.device-anchor { display: none; }
-html.stage .device-anchor { display: block; cursor: grab; }
-html.stage .device-anchor.is-dragging { cursor: grabbing; }
-html.stage .job-demo {
-  grid-template-columns: minmax(0, 2.7fr) minmax(0, 6.9fr) minmax(0, 2.4fr);
-  grid-template-areas: "head head device" "side main device" "stack main device"; grid-template-rows: auto auto 1fr;
-  align-content: center;   /* the whole block centred on the screen */
-}
-html.stage .job-demo > .spotlight { margin-bottom: 6px; }
-/* numbered bullets */
-.job-demo .bullets { counter-reset: bullet; }
-.job-demo .bullets li { counter-increment: bullet; }
-.job-demo .job-main .bullets li::before {
-  content: counter(bullet, decimal-leading-zero); width: auto; height: auto; border-radius: 0; background: none;
-  font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--accent-ink);
-}
-/* a halo in the client's colour behind the phones */
-html.stage .job-device::before { content: ""; position: absolute; inset: 6% -8%; border-radius: 50%; background: radial-gradient(closest-side, var(--halo), transparent); pointer-events: none; }
-html.stage .job-device[data-demo="betting"] { --halo: rgba(210, 22, 30, .22); }
-html.stage .job-device[data-demo="booking"] { --halo: rgba(58, 58, 200, .2); }
-html.stage .job-demo .job-main .bullets { row-gap: 12px; }
-html.stage .job-demo .job-main .bullets li { line-height: 1.5; }
-@media (max-height: 800px) {   /* a short laptop screen: the experience still fits in one screen */
-  html.stage .job-demo .spotlight-name { font-size: clamp(60px, 5vw, 84px); }
-  html.stage .job-demo > .spotlight { margin-bottom: 0; }
-  html.stage .job-demo .spotlight-meta { margin-bottom: 0; }
-  html.stage .job-demo .job-main .bullets { row-gap: 8px; }
-  html.stage .job-demo .job-main .bullets li { font-size: 12.5px; line-height: 1.42; }
-  html.stage .job-demo .job-main .bullets li strong { font-size: 13.5px; margin-bottom: 2px; }
-  html.stage .job-demo .job-main .bullets li::before { margin-bottom: 4px; }
-  html.stage .job-demo .job-side .job-intro { font-size: 13.5px; line-height: 1.5; }
-}
-html.stage .job-demo .job-main .bullets li::before { margin-bottom: 7px; }
-html.stage .job-device { grid-area: device; position: sticky; top: 24px; align-self: start; width: 100%; height: calc(100svh - var(--topbar-h) - 48px); }   /* the whole visible height: the phones stay centred while the text scrolls */
-html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter) + var(--pager-room)); top: 50%; transform: translateY(-50%); width: clamp(260px, 30vw, 500px); aspect-ratio: 1; }
-
-@media (min-width: 1100px) and (max-height: 860px) {
-  .job-side .job-intro { font-size: 15px; line-height: 1.55; }
-  .job-side .sub-intro { font-size: 14px; }
-  .job-main .bullets { gap: 22px 36px; }
-  .job-main .bullets li { font-size: 13.5px; line-height: 1.55; }
-  .job-main .bullets li::before { margin-bottom: 9px; }
-  .job-main .bullets li strong { font-size: 14.5px; }
-}
 
 .job { margin-bottom: 128px; }
 .job:last-child { margin-bottom: 8px; }
 /* large screen without stage mode (landscape tablet): one screen per experience, edge to edge */
 @media (min-width: 1100px) and (min-height: 680px) { .job, .job:last-child { margin-bottom: 0; } }
-.job-intro, .sub-intro { max-width: 68ch; }
-.job-intro { font-size: 18px; }
-.sub-title { margin-top: 40px; font-size: 20px; font-weight: 600; color: var(--ink); }
-.sub-intro { margin-top: 10px; color: var(--muted); }
+.job-intro { max-width: 60ch; font-size: 18px; }
 
-.bullets { margin-top: 34px; display: grid; gap: 30px; }
-.bullets li { position: relative; padding-left: 26px; max-width: 66ch; }
-.bullets li::before { content: ""; position: absolute; left: 0; top: .66em; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
-.bullets li strong { display: block; font-weight: 600; font-size: 18px; color: var(--ink); margin-bottom: 6px; }
+/* the achievements: a list everywhere, a story told one at a time in stage mode (below) */
+.story-kicker { margin: 0 0 22px; }
+.story-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; }
+.story-step { max-width: 62ch; }
+.story-num { display: block; margin-bottom: 8px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--accent-ink); }
+.story-title { margin: 0 0 6px; font-size: 18px; font-weight: 600; line-height: 1.3; color: var(--ink); }
+.story-text { margin: 0; }
+.story-rail { display: none; }
 
 .stack { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .stack-label { font-size: 14px; font-weight: 600; color: var(--muted); margin-right: 4px; }
 .stack .chips li { font-size: 13px; padding: 3px 10px; }
-@media (max-width: 640px) { .job { margin-bottom: 80px; } .bullets { gap: 24px; } .job-intro { font-size: 16.5px; line-height: 1.6; } }
+@media (max-width: 640px) { .job { margin-bottom: 80px; } .story-steps { gap: 24px; } .job-intro { font-size: 16.5px; line-height: 1.6; } }
+
+/* ---------- stage mode, experience with a demo: the client on top, the phones in the middle, the story on the right ---------- */
+.device-anchor { display: none; }
+html.stage .device-anchor { display: block; cursor: grab; }
+html.stage .device-anchor.is-dragging { cursor: grabbing; }
+html.stage .job-demo {
+  grid-template-columns: minmax(0, 2.7fr) minmax(0, 4.8fr) minmax(0, 4.5fr);
+  grid-template-areas: "head head head" "side device main" "stack device main"; grid-template-rows: auto 1fr auto;
+  column-gap: clamp(32px, 3.4vw, 64px); align-content: center; height: 100%;
+}
+html.stage .job-demo > .spotlight { margin-bottom: 0; }
+html.stage .job-demo .job-side .job-intro { font-size: 16px; line-height: 1.6; max-width: 34ch; }
+html.stage .job-demo > .stack { align-self: end; margin-top: 0; }
+html.stage .job-device { grid-area: device; position: relative; min-height: min(56vh, 600px); }
+/* a halo in the client's colour behind the phones */
+html.stage .job-device::before { content: ""; position: absolute; inset: 6% -8%; border-radius: 50%; background: radial-gradient(closest-side, var(--halo), transparent); pointer-events: none; }
+html.stage .job-device[data-demo="betting"] { --halo: rgba(210, 22, 30, .22); }
+html.stage .job-device[data-demo="booking"] { --halo: rgba(58, 58, 200, .2); }
+
+/* the story: all the achievements in one cell, the current one shown; the others wait above (seen) or below (to come) */
+html.stage .job-demo .job-main { align-self: center; }
+html.stage .job-demo .story-steps { grid-template-columns: minmax(0, 1fr); }
+html.stage .job-demo .story-step {
+  grid-area: 1 / 1; max-width: 32em;
+  transition: opacity .45s var(--ease-out), transform .6s var(--ease-out);
+}
+html.stage .job-demo .story-step:not(.is-current) { opacity: 0; transform: translateY(32px); pointer-events: none; }
+html.stage .job-demo .story-step.is-before { transform: translateY(-32px); }
+html.stage .job-demo .story-step.is-current { transition-delay: .12s; }
+html.stage .job-demo .story-num {   /* the outlined numeral, in the accent */
+  margin-bottom: 18px; font-family: var(--display); font-size: clamp(88px, 7.4vw, 132px); line-height: .8; letter-spacing: .02em;
+  color: transparent; -webkit-text-stroke: 1.5px var(--accent-ink);
+}
+html.stage .job-demo .story-title { margin-bottom: 16px; font-size: clamp(26px, 2.3vw, 38px); line-height: 1.12; letter-spacing: -.01em; }
+html.stage .job-demo .story-text { font-size: clamp(16px, 1.1vw, 18px); line-height: 1.6; max-width: 36ch; }
+html.stage .job-demo .story-step:focus { outline: none; }
+
+/* the rail: the achievements as test steps, green once seen */
+html.stage .story-rail { display: flex; gap: 6px; max-width: 32em; margin-bottom: clamp(20px, 3.5vh, 40px); }
+.story-tab {
+  flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 32px; padding: 8px 0; border: 0; background: none;
+  cursor: pointer; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: .08em; transition: color .3s ease;
+}
+.story-tab::after { content: ""; display: block; width: 100%; height: 2px; border-radius: 1px; background: currentColor; opacity: .4; transition: background .35s ease, opacity .35s ease; }
+.story-tab:hover, .story-tab[aria-selected="true"] { color: var(--ink); }
+.story-tab[aria-selected="true"]::after { background: var(--accent); opacity: 1; }
+.story-tab.is-passed:not([aria-selected="true"])::after { background: var(--pass); opacity: 1; }
+
+@media (max-height: 800px) {   /* a short laptop screen: the experience still fits in one screen */
+  html.stage .job-demo .spotlight-name { font-size: clamp(60px, 5vw, 84px); }
+  html.stage .job-demo .spotlight-meta { margin-bottom: 0; }
+  html.stage .job-demo .job-side .job-intro { font-size: 14.5px; line-height: 1.5; }
+  html.stage .job-demo .story-num { font-size: clamp(64px, 5.6vw, 96px); margin-bottom: 12px; }
+  html.stage .job-demo .story-title { font-size: clamp(22px, 2vw, 30px); margin-bottom: 10px; }
+  html.stage .job-demo .story-text { font-size: 15px; line-height: 1.5; }
+}
+@media (prefers-reduced-motion: reduce) { html.stage .job-demo .story-step { transition: none; } }
+html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter) + var(--pager-room)); top: 50%; transform: translateY(-50%); width: clamp(260px, 30vw, 500px); aspect-ratio: 1; }
