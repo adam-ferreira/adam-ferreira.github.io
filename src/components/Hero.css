@@ -21,6 +21,8 @@
 }
 .hero3d.is-ready { opacity: 1; transform: none; }
 .hero3d.is-dragging { cursor: grabbing; }
+.hero-poster { position: absolute; inset: -8%; width: 116%; height: 116%; pointer-events: none; }
+@media (min-width: 861px) and (hover: hover) and (pointer: fine) { .hero-poster { display: none; } }   /* the 3D runs here (DESKTOP in media.js) */
 .devices3d { display: none; }
 html.stage .devices3d { display: block; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; opacity: 0; transition: opacity .8s ease; }
 html.stage .devices3d.is-ready { opacity: 1; }
@@ -63,8 +65,15 @@ html.stage .hero-stage.is-dragging { cursor: grabbing; }
 @keyframes hint { 0%, 100% { transform: scaleY(.4); transform-origin: top; opacity: .4; } 50% { transform: scaleY(1); opacity: 1; } }
 body.is-scrolled .scroll-hint { opacity: 0; }
 
+/* no 3D (touch screens, narrow windows): the phones as a still image, in the same place on a tablet, under the
+   contact details on a phone */
 @media (max-width: 860px), (hover: none), (pointer: coarse) {
-  .hero-stage { display: none; }
+  .hero-stage::before { opacity: 1; }
+  .hero3d { display: none; }
+  .hero-poster { inset: 0; width: 100%; height: 100%; }
+}
+@media (max-width: 860px) {
+  .hero-stage { grid-column: 1; grid-row: 2; width: min(72vw, 380px); margin: 28px auto 0; }
   .header { grid-template-columns: 1fr; min-height: auto; padding-bottom: 72px; }
   .header-left { grid-column: 1; }
 }

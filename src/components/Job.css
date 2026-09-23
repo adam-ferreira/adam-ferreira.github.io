@@ -28,6 +28,10 @@
   }
 }
 
+.job-poster { display: block; width: min(80%, 340px); height: auto; margin: 28px auto 0; }
+html.stage .job-poster { display: none; }   /* the 3D phones play there */
+@media (max-width: 1099px) { .job > .spotlight { padding-top: 22px; border-top: 1px solid var(--line); } }
+
 /* stage mode, experience with a demo: the phones take a third column and play its test; the bullets go to one column */
 .device-anchor { display: none; }
 html.stage .device-anchor { display: block; cursor: grab; }

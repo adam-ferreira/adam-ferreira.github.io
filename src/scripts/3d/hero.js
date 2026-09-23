@@ -11,7 +11,8 @@ import { accent as accentColor, desktop, reduced, webglOk, onDprChange, watchCon
 import { SW, SH, TS, CYCLE, SCENARIOS, loadLogos, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
-const canvas = overlay || document.querySelector('canvas.hero3d');
+// elsewhere: each canvas.hero3d is its own scene (the hero; the still images of tools/device-posters, data-scenario)
+const scenes = overlay ? [overlay] : [...document.querySelectorAll('canvas.hero3d')];
 const easeIO = (u) => (u < 0.5 ? 8 * u ** 4 : 1 - (-2 * u + 2) ** 4 / 2);   // close to the screens' cubic-bezier(.76, 0, .24, 1)
 const stageMs = () => {
   const v = getComputedStyle(doc).getPropertyValue('--stage-duration').trim();
@@ -62,9 +63,10 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
   return g;
 }
 
-async function start() {
-  if (!canvas || !desktop() || !webglOk()) return;
-  const [THREE] = await Promise.all([import('./three-lite.js'), overlay ? loadLogos() : null]);   // Three.js trimmed to what the site uses, loaded on demand; the clients' logos for their screens
+async function start(canvas) {
+  if (!desktop() || !webglOk()) return;
+  const initial = canvas.dataset.scenario;   // a scene frozen on one client's test (still images)
+  const [THREE] = await Promise.all([import('./three-lite.js'), overlay || initial ? loadLogos() : null]);   // Three.js trimmed to what the site uses, loaded on demand; the clients' logos for their screens
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
   const heroStage = document.querySelector('.hero-stage');
   // GPU lost: the scene fades out (the rest of the page does not depend on it)
@@ -90,7 +92,7 @@ async function start() {
     const next = SCENARIOS[name] || SCENARIOS.hero;
     if (next === sc) return;
     sc = next; base = drawBase(sc); t0 = performance.now(); lastKey = undefined;
-    paint(reduced() ? CYCLE - 0.01 : 0);
+    paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
     androidBody?.color.set(sc.body || accentColor());   // the Android phone in the client's colour
   };
   // data-freeze="seconds": a still frame of the test at that moment, without a loop (LinkedIn banner export)
@@ -142,7 +144,7 @@ async function start() {
     const a = anchorOf(slideIdx);
     shown = !!a; holder.visible = shown;
     if (a) { setScenario(a.dataset.demo); }
-  }
+  } else if (initial) setScenario(initial);
   // entrance: the phones rise from below while turning into place, the first time the hero shows them
   const INTRO_MS = 1600;
   let intro = !reduced() && freeze === null && (!overlay || slideIdx === 0) ? { start: 0 } : null;
@@ -244,4 +246,4 @@ async function start() {
   })(performance.now());
 }
 
-if (canvas && webglOk()) bootLazily(start, 1200, 300);
+if (webglOk()) scenes.forEach((c) => bootLazily(() => start(c), 1200, 300));

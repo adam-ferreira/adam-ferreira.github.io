@@ -10,7 +10,8 @@
     "check": "astro check",
     "test": "playwright test",
     "test:ui": "playwright test --ui",
-    "fonts": "uvx --from 'fonttools[woff]' python tools/subset-fonts.py"
+    "fonts": "uvx --from 'fonttools[woff]' python tools/subset-fonts.py",
+    "posters": "node tools/render-posters.mjs"
   },
   "dependencies": {
     "astro": "7.3.3",

@@ -4,6 +4,7 @@
 import BaseHead from './BaseHead.astro';
 import { LANGS, pathOf, LOCALE, type Lang } from '../lib/i18n';
 import type { Cv } from '../lib/types';
+import heroPoster from '../assets/devices/hero.webp?url';
 interface Props { lang: Lang; d: Cv; fullName: string }
 const { lang, d, fullName } = Astro.props;
 const idn = d.identity;
@@ -39,3 +40,5 @@ const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 {LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathOf(l), site).href}>)}
 <link rel="alternate" hreflang="x-default" href={site}>
 <script type="application/ld+json" set:html={ld}></script>
+<!-- where the 3D does not run, the phones' still image is the largest element of the first screen: fetched early -->
+<link rel="preload" as="image" href={heroPoster} media="(max-width: 860px), (hover: none), (pointer: coarse)">
