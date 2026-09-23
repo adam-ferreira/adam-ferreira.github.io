@@ -25,7 +25,7 @@ test('robots.txt and sitemap', async ({ request }) => {
   const res = await request.get('/sitemap.xml');
   expect(res.status()).toBe(200);
   const xml = await res.text();
-  for (const loc of ['https://adam-ferreira.github.io/', 'https://adam-ferreira.github.io/fr/']) expect(xml).toContain(`<loc>${loc}</loc>`);
+  for (const path of ['/', '/fr/', '/cv/', '/fr/cv/']) expect(xml).toContain(`<loc>https://adam-ferreira.github.io${path}</loc>`);
   expect(xml).not.toContain('/tools/');
 });
 

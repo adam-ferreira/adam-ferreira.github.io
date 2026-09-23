@@ -1,0 +1,9 @@
+---
+// A section of the detailed CV (CvPage.astro): a micro-label title over a rule, then its content. Style: CvPage.css.
+interface Props { id: string; title: string }
+const { id, title } = Astro.props;
+---
+<section class="cv-section" aria-labelledby={`${id}-title`}>
+  <h2 class="cv-section-title label" id={`${id}-title`}>{title}</h2>
+  <slot />
+</section>

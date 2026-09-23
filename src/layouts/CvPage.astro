@@ -1,0 +1,72 @@
+---
+// The detailed CV, for one language: everything the home page tells in short, in full, as a calm reading column. It
+// prints on A4 (src/styles/print.css) and is exported to PDF at build time (tools/render-pdf.mjs), from this very page.
+// English at /cv/, French at /fr/cv/. No screens, no 3D: its only script is the theme switch.
+import { getEntry } from 'astro:content';
+import '../styles/cv-page.css';
+import Head from '../components/Head.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import PillLink from '../components/PillLink.astro';
+import CvIdentity from '../components/CvIdentity.astro';
+import CvSection from '../components/CvSection.astro';
+import CvJob from '../components/CvJob.astro';
+import EntryHeader from '../components/EntryHeader.astro';
+import Chips from '../components/Chips.astro';
+import { md } from '../lib/text';
+import { monthYear } from '../lib/updated';
+import { pathOf, pdfPathOf, type Lang } from '../lib/i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const entry = await getEntry('cv', lang);
+if (!entry) throw new Error(`Missing content: src/content/cv/${lang}.json`);
+const d = entry.data, ui = d.ui;
+const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
+const home = pathOf(lang);
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <Head lang={lang} d={d} fullName={fullName} page="cv" />
+</head>
+<body class="cv-page">
+  <nav class="cv-bar" aria-label={ui.nav_aria}>
+    <a class="cv-back label" href={home}><span aria-hidden="true">&larr;</span> {ui.cv_page.back}</a>
+    <PillLink href={pdfPathOf(lang)} download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>{ui.cv_page.pdf}</PillLink>
+    <ThemeToggle ui={ui} />
+  </nav>
+
+  <main class="cv-doc">
+    <CvIdentity d={d} fullName={fullName} siteUrl={new URL(home, Astro.site).href} />
+
+    <CvSection id="skills" title={ui.cv_page.skills}>
+      <dl class="cv-skills">
+        {d.skills.map((row) => <div><dt set:html={md(row.label)} /><dd><Chips items={row.items} /></dd></div>)}
+      </dl>
+    </CvSection>
+
+    <CvSection id="experience" title={d.sections.experience}>
+      {d.experience.map((j) => <CvJob j={j} stackLabel={ui.stack_label} />)}
+    </CvSection>
+
+    <CvSection id="education" title={d.sections.education}>
+      {d.education.map((e) => <Fragment><EntryHeader title={e.title} date={e.date} /><p set:html={md(e.text)} /></Fragment>)}
+    </CvSection>
+
+    <div class="cv-duo">
+      <CvSection id="languages" title={d.sections.languages}>
+        <ul class="cv-list">{d.languages.map((l) => <li><strong set:html={md(l.name)} /> &mdash; <span set:html={md(l.level)} /></li>)}</ul>
+      </CvSection>
+      <CvSection id="interests" title={d.sections.interests}>
+        <ul class="cv-list">{d.interests.map((i) => <li set:html={md(i)} />)}</ul>
+      </CvSection>
+    </div>
+
+    <p class="cv-updated label" set:html={md(ui.updated.replace('{date}', monthYear(lang)))} />
+  </main>
+
+  <script>
+    import '../components/ThemeToggle.js';   // the light / dark switch: the page's only script
+  </script>
+</body>
+</html>
