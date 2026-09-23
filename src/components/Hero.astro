@@ -3,6 +3,7 @@
 // details. Style: Hero.css. Script: src/scripts/3d/hero.js — loaded by the page (Cv.astro) in a single file.
 import portrait280 from '../assets/portrait-280.webp?url';
 import portrait420 from '../assets/portrait.webp?url';
+import heroPoster from '../assets/devices/hero.webp?url';   // the phones as a still image (npm run posters)
 import HeroLine from './HeroLine.astro';
 import PillLink from './PillLink.astro';
 import { md } from '../lib/text';
@@ -13,7 +14,7 @@ const { d, fullName } = Astro.props;
 const idn = d.identity, ui = d.ui;
 ---
 <header class="header slide" data-label={ui.home_label}>
-  <div class="hero-stage" aria-hidden="true"><canvas class="hero3d"></canvas></div>
+  <div class="hero-stage" aria-hidden="true"><img class="device-poster hero-poster" src={heroPoster} alt="" width="719" height="719" decoding="async"><canvas class="hero3d"></canvas></div>
   <div class="header-left">
     <div class="portrait"><span class="portrait-disc" aria-hidden="true"></span><img src={portrait280} srcset={`${portrait280} 280w, ${portrait420} 420w`} sizes="(max-width: 560px) 84px, 128px" alt={fullName} class="portrait-img" width="420" height="562" fetchpriority="high"></div>
     <div class="header-name-block">

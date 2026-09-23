@@ -5,11 +5,16 @@
 // With a demo (stage mode only): a third column where the 3D phones play this job's test (src/scripts/3d/hero.js).
 import EntryHeader from './EntryHeader.astro';
 import Spotlight from './Spotlight.astro';
+import bettingEn from '../assets/devices/betting-en.webp?url';
+import bettingFr from '../assets/devices/betting-fr.webp?url';
+import bookingEn from '../assets/devices/booking-en.webp?url';
+import bookingFr from '../assets/devices/booking-fr.webp?url';
+const POSTERS = { betting: { en: bettingEn, fr: bettingFr }, booking: { en: bookingEn, fr: bookingFr } };   // npm run posters
 import Chips from './Chips.astro';
 import { md, plain } from '../lib/text';
 import type { Job } from '../lib/types';
-interface Props { j: Job; num: string; stackLabel: string }
-const { j, num, stackLabel } = Astro.props;
+interface Props { j: Job; num: string; stackLabel: string; lang: 'en' | 'fr' }
+const { j, num, stackLabel, lang } = Astro.props;
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
@@ -20,6 +25,7 @@ const short = bullets.length === 0;
     {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
     {j.subtitle && <h4 class="sub-title reveal" set:html={md(j.subtitle)} />}
     {j.subtitle && j.subintro && <p class="sub-intro reveal" set:html={md(j.subintro)} />}
+    {j.demo && <img class="device-poster job-poster" src={POSTERS[j.demo][lang]} alt="" width="719" height="719" loading="lazy" decoding="async" />}
   </div>
   {!short && (
     <div class="job-main">
