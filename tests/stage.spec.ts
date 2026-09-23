@@ -96,3 +96,11 @@ test('lost graphics context: the mark falls back to its image', async ({ page })
   await expect(mark).not.toHaveClass(/is-3d/);
   await expect(mark.locator('img.theme-light')).toHaveCSS('opacity', '1');
 });
+
+test('the indicator is a test runner: each screen visited passes', async ({ page }) => {
+  const words = content('en').ui, n = String(await slideCount(page)).padStart(2, '0');
+  await expect(page.locator('.pager-count')).toHaveText(`01/${n} ${words.pager_passed}`, { timeout: 5_000 });   // the home screen
+  await page.keyboard.press('ArrowDown');
+  await expect(page.locator('.pager-count')).toHaveText(`02/${n} ${words.pager_passed}`, { timeout: 5_000 });
+  await expect(page.locator('.pager-tick.is-passed')).toHaveCount(2);
+});

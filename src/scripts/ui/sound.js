@@ -35,6 +35,10 @@ const SOUNDS = {
     src.connect(f).connect(g).connect(out); src.start(t); src.stop(t + 1);
   },
   tick() { tone('sine', 2300, 1500, 0.05, 0.03); },
+  success() {   // all tests passed: two rising notes
+    tone('sine', 1047, 1046, 0.18, 0.05);
+    setTimeout(() => tone('sine', 1568, 1567, 0.35, 0.05), 110);
+  },
   tap() { tone('triangle', 900, 420, 0.06, 0.025); },
   impact({ v = 1 }) {   // a pill hitting something: a knock, louder and brighter when harder
     const k = Math.min(1, v), t = ctx.currentTime;
@@ -45,7 +49,7 @@ const SOUNDS = {
     tone('sine', 150 + 90 * k, 60, 0.12, 0.05 + 0.14 * k);
   },
 };
-const MIN_GAP = { whoosh: 250, tick: 70, tap: 150, impact: 40 };   // ms between two of the same sound
+const MIN_GAP = { whoosh: 250, tick: 70, tap: 150, impact: 40, success: 1000 };   // ms between two of the same sound
 const last = {};
 window.addEventListener('cv:sound', (e) => {
   if (!on || !ctx || document.hidden) return;

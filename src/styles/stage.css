@@ -29,6 +29,7 @@ html.stage .slide {
    read the home screen). They are parked outside the window, above (is-parked) or below (is-after): nothing to draw,
    but their content stays readable and reachable by keyboard (stage.js follows the focus). */
 html.stage .slide.is-current { transform: none; clip-path: inset(0); opacity: 1; z-index: 3; }
+html.stage .slide:not(.is-current) { overflow-y: hidden; }   /* only the screen on display scrolls (the blocks waiting for their entrance sit lower) */
 /* before the (deferred) script has picked the current screen, the home screen is already in place: never an empty first paint */
 html.stage .header.slide:not(.is-before):not(.is-after) { transform: none; clip-path: inset(0); opacity: 1; z-index: 3; }
 html.stage .slide.is-before { transform: translate3d(0, -16vh, 0) scale(.9); clip-path: inset(0); opacity: .3; }
@@ -37,6 +38,7 @@ html.stage .slide.is-after { transform: translate3d(0, 28vh, 0); clip-path: inse
 html.stage .slide.is-leaving { z-index: 4; }
 html.stage.stage-init .slide, html.stage .slide.no-trans, html.stage .slide.is-parked { transition: none !important; }
 html.stage .slide:focus { outline: none; }
+html.is-measuring .reveal { transform: none !important; transition: none !important; }   /* stage.js measures the screens at rest */
 
 /* layout of each screen in its scene (the chapter, the experiences and the footer are already laid out by screens.css,
    whose large-screen rules always apply in stage mode) */

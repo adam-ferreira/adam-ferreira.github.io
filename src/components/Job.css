@@ -55,6 +55,16 @@ html.stage .job-device[data-demo="betting"] { --halo: rgba(210, 22, 30, .22); }
 html.stage .job-device[data-demo="booking"] { --halo: rgba(58, 58, 200, .2); }
 html.stage .job-demo .job-main .bullets { row-gap: 12px; }
 html.stage .job-demo .job-main .bullets li { line-height: 1.5; }
+@media (max-height: 800px) {   /* a short laptop screen: the experience still fits in one screen */
+  html.stage .job-demo .spotlight-name { font-size: clamp(60px, 5vw, 84px); }
+  html.stage .job-demo > .spotlight { margin-bottom: 0; }
+  html.stage .job-demo .spotlight-meta { margin-bottom: 0; }
+  html.stage .job-demo .job-main .bullets { row-gap: 8px; }
+  html.stage .job-demo .job-main .bullets li { font-size: 12.5px; line-height: 1.42; }
+  html.stage .job-demo .job-main .bullets li strong { font-size: 13.5px; margin-bottom: 2px; }
+  html.stage .job-demo .job-main .bullets li::before { margin-bottom: 4px; }
+  html.stage .job-demo .job-side .job-intro { font-size: 13.5px; line-height: 1.5; }
+}
 html.stage .job-demo .job-main .bullets li::before { margin-bottom: 7px; }
 html.stage .job-device { grid-area: device; position: sticky; top: 24px; align-self: start; width: 100%; height: calc(100svh - var(--topbar-h) - 48px); }   /* the whole visible height: the phones stay centred while the text scrolls */
 html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter) + var(--pager-room)); top: 50%; transform: translateY(-50%); width: clamp(260px, 30vw, 500px); aspect-ratio: 1; }

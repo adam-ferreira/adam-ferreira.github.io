@@ -30,12 +30,12 @@ const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 <meta property="og:title" content={`${fullName} — ${idn.headline}`}>
 <meta property="og:description" content={idn.tagline}>
 <meta property="og:url" content={url}>
-<meta property="og:image" content={photo}>
-<meta property="og:image:width" content="800">
-<meta property="og:image:height" content="800">
+<meta property="og:image" content={new URL('og-image.jpg', site).href}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta property="og:image:alt" content={fullName}>
 <meta property="og:locale" content={LOCALE[lang]}>
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href={url}>
 {LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathOf(l), site).href}>)}
 <link rel="alternate" hreflang="x-default" href={site}>
