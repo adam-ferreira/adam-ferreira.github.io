@@ -46,7 +46,7 @@ function build(slide) {
     e.preventDefault(); e.stopPropagation();
     show(st, (k + n) % n); st.tabs[st.cur].focus();
   });
-  slide.querySelector('.story').prepend(rail);
+  list.before(rail);   // under the story's kicker, over its achievements
   stories.set(slide, st);
   show(st, 0, true);
 }

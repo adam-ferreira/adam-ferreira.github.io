@@ -115,7 +115,7 @@ if (stage && slides.length) {
     if (canScroll(s, dir)) s.scrollBy({ top: dir * s.clientHeight * 0.8, behavior: reduced ? 'auto' : 'smooth' });
     else goTo(cur + dir);
   });
-  // "Skip to content": the "Experience" screen, which receives focus (the next Tab starts from there)
+  // "Skip to content": the first experience, whose screen receives focus (the next Tab starts from there)
   document.querySelector('.skip-link')?.addEventListener('click', (e) => { e.preventDefault(); goTo(1); slides[1].focus({ preventScroll: true }); });
   // keyboard: Tab to a link on another screen (the footer, for instance) takes the stage there
   document.addEventListener('focusin', (e) => {

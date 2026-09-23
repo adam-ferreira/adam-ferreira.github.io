@@ -133,7 +133,7 @@ test('3D: phones, AF logo and marks ready', async ({ page }) => {
   await expect(page.locator('.mark.is-3d')).toHaveCount(3, { timeout: 15_000 });
 });
 
-test('"Skip to content": first Tab stop, visible, leads to the Experience screen', async ({ page }) => {
+test('"Skip to content": first Tab stop, visible, leads to the first experience', async ({ page }) => {
   await page.keyboard.press('Tab');
   const skip = page.locator('.skip-link');
   await expect(skip).toBeFocused();

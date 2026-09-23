@@ -1,17 +1,12 @@
 ---
-// The "Experience" chapter: one screen for the big title and the skills, then one screen per experience.
+// The experiences, one screen each, straight after the home screen: the skills come at the end (the footer's pills)
+// and on the detailed CV page.
 import Job from './Job.astro';
-import Chips from './Chips.astro';
 import Section from './Section.astro';
-import { md, plain } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
 ---
-<Section id="experience" title={d.sections.experience} head="chapter slide" label={plain(d.sections.experience)}>
-  <div class="chapter-device device-anchor" data-demo="hero" data-cursor={d.ui.cursor_drag} slot="head" aria-hidden="true"></div>
-  <div class="skills" slot="head">
-    {d.skills.map((row) => <div class="skills-row reveal"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
-  </div>
+<Section id="experience" title={d.sections.experience} hideTitle>
   {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} storyLabel={d.ui.story_label} lang={d.lang} dragLabel={d.ui.cursor_drag} />)}
 </Section>

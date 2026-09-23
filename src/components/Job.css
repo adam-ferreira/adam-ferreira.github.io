@@ -49,44 +49,49 @@ html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones p
 .stack .chips li { font-size: 13px; padding: 3px 10px; }
 @media (max-width: 640px) { .job { margin-bottom: 80px; } .story-steps { gap: 24px; } .job-intro { font-size: 16.5px; line-height: 1.6; } }
 
-/* ---------- stage mode, experience with a demo: the client on top, the phones in the middle, the story on the right ---------- */
+/* ---------- stage mode, experience with a demo: one reading column on the left, the phones large on the right ---------- */
 .device-anchor { display: none; }
 html.stage .device-anchor { display: block; cursor: grab; }
 html.stage .device-anchor.is-dragging { cursor: grabbing; }
 html.stage .job-demo {
-  grid-template-columns: minmax(0, 2.7fr) minmax(0, 4.8fr) minmax(0, 4.5fr);
-  grid-template-areas: "head head head" "side device main" "stack device main"; grid-template-rows: auto 1fr auto;
-  column-gap: clamp(32px, 3.4vw, 64px); align-content: center; height: 100%;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-areas: ". device" "head device" "side device" "main device" "stack device" ". device";
+  grid-template-rows: 1fr auto auto auto auto 1fr;   /* the column centred on the screen, the phones over its whole height */
+  column-gap: clamp(40px, 4vw, 80px);
 }
-html.stage .job-demo > .spotlight { margin-bottom: 0; }
-html.stage .job-demo .job-side .job-intro { font-size: 16px; line-height: 1.6; max-width: 34ch; }
-html.stage .job-demo > .stack { align-self: end; margin-top: 0; }
-html.stage .job-device { grid-area: device; position: relative; min-height: min(56vh, 600px); }
+html.stage .job-demo > .spotlight { margin-bottom: 14px; }
+html.stage .job-demo .spotlight-sep { display: none; }   /* a narrower column: the dates on their own line */
+html.stage .job-demo .spotlight-date { display: block; margin-top: 4px; }
+html.stage .job-demo .job-side .job-intro { font-size: 16px; line-height: 1.6; max-width: 44ch; }
+html.stage .job-demo .job-main, html.stage .job-demo > .stack { margin-top: clamp(28px, 4.5vh, 48px); }
+html.stage .job-device { grid-area: device; align-self: stretch; position: relative; }
 /* a halo in the client's colour behind the phones */
 html.stage .job-device::before { content: ""; position: absolute; inset: 6% -8%; border-radius: 50%; background: radial-gradient(closest-side, var(--halo), transparent); pointer-events: none; }
 html.stage .job-device[data-demo="betting"] { --halo: rgba(210, 22, 30, .22); }
 html.stage .job-device[data-demo="booking"] { --halo: rgba(58, 58, 200, .2); }
 
-/* the story: all the achievements in one cell, the current one shown; the others wait above (seen) or below (to come) */
-html.stage .job-demo .job-main { align-self: center; }
+/* the story: all the achievements in one cell, the current one shown; the others wait above (seen) or below (to come).
+   Each one: the outlined numeral on the left, its title and sentence beside it. */
+html.stage .job-demo .story-kicker { margin-bottom: 10px; }
 html.stage .job-demo .story-steps { grid-template-columns: minmax(0, 1fr); }
 html.stage .job-demo .story-step {
-  grid-area: 1 / 1; max-width: 32em;
+  grid-area: 1 / 1; max-width: 34em;
+  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr; column-gap: clamp(18px, 1.8vw, 30px); align-items: start;
   transition: opacity .45s var(--ease-out), transform .6s var(--ease-out);
 }
 html.stage .job-demo .story-step:not(.is-current) { opacity: 0; transform: translateY(32px); pointer-events: none; }
 html.stage .job-demo .story-step.is-before { transform: translateY(-32px); }
 html.stage .job-demo .story-step.is-current { transition-delay: .12s; }
 html.stage .job-demo .story-num {   /* the outlined numeral, in the accent */
-  margin-bottom: 18px; font-family: var(--display); font-size: clamp(88px, 7.4vw, 132px); line-height: .8; letter-spacing: .02em;
+  grid-row: 1 / span 2; margin: 0; font-family: var(--display); font-size: clamp(96px, 7.6vw, 136px); line-height: .78; letter-spacing: .02em;
   color: transparent; -webkit-text-stroke: 1.5px var(--accent-ink);
 }
-html.stage .job-demo .story-title { margin-bottom: 16px; font-size: clamp(26px, 2.3vw, 38px); line-height: 1.12; letter-spacing: -.01em; }
-html.stage .job-demo .story-text { font-size: clamp(16px, 1.1vw, 18px); line-height: 1.6; max-width: 36ch; }
+html.stage .job-demo .story-title { margin: 0 0 12px; font-size: clamp(24px, 2vw, 34px); line-height: 1.14; letter-spacing: -.01em; }
+html.stage .job-demo .story-text { font-size: clamp(15.5px, 1.05vw, 17.5px); line-height: 1.6; max-width: 38ch; }
 html.stage .job-demo .story-step:focus { outline: none; }
 
 /* the rail: the achievements as test steps, green once seen */
-html.stage .story-rail { display: flex; gap: 6px; max-width: 32em; margin-bottom: clamp(20px, 3.5vh, 40px); }
+html.stage .story-rail { display: flex; gap: 6px; max-width: 34em; margin-bottom: clamp(22px, 3.5vh, 36px); }
 .story-tab {
   flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 32px; padding: 8px 0; border: 0; background: none;
   cursor: pointer; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: .08em; transition: color .3s ease;
@@ -100,9 +105,8 @@ html.stage .story-rail { display: flex; gap: 6px; max-width: 32em; margin-bottom
   html.stage .job-demo .spotlight-name { font-size: clamp(60px, 5vw, 84px); }
   html.stage .job-demo .spotlight-meta { margin-bottom: 0; }
   html.stage .job-demo .job-side .job-intro { font-size: 14.5px; line-height: 1.5; }
-  html.stage .job-demo .story-num { font-size: clamp(64px, 5.6vw, 96px); margin-bottom: 12px; }
-  html.stage .job-demo .story-title { font-size: clamp(22px, 2vw, 30px); margin-bottom: 10px; }
+  html.stage .job-demo .story-num { font-size: clamp(72px, 5.8vw, 100px); }
+  html.stage .job-demo .story-title { font-size: clamp(21px, 1.8vw, 28px); margin-bottom: 8px; }
   html.stage .job-demo .story-text { font-size: 15px; line-height: 1.5; }
 }
 @media (prefers-reduced-motion: reduce) { html.stage .job-demo .story-step { transition: none; } }
-html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter) + var(--pager-room)); top: 50%; transform: translateY(-50%); width: clamp(260px, 30vw, 500px); aspect-ratio: 1; }
