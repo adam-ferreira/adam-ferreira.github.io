@@ -256,6 +256,14 @@
       "title": "Page introuvable",
       "text": "Cette adresse n'existe pas, ou plus.",
       "home": "Retour au CV"
+    },
+    "cv_page": {
+      "link": "CV",
+      "link_title": "CV détaillé",
+      "title": "CV détaillé",
+      "back": "Retour au site",
+      "pdf": "Télécharger le PDF",
+      "skills": "Compétences"
     }
   }
 }

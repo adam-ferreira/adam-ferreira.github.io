@@ -58,6 +58,8 @@ jobs:
         uses: withastro/action@v6
         with:
           node-version: 24
+          # the build ends by printing the detailed CV page to PDF (tools/render-pdf.mjs): it needs Chromium
+          build-cmd: npx playwright install --with-deps chromium && npm run build
 
   deploy:
     needs: build

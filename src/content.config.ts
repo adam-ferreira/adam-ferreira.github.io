@@ -56,6 +56,9 @@ const cv = defineCollection({
       updated: z.string().includes('{date}', { message: 'ui.updated must contain {date} (date of the last content change)' }),
       skip_link: text,   // "skip to content" link, visible only when focused with the keyboard
       not_found: z.object({ title: text, text: text, home: text }).strict(),   // the 404 page
+      // the detailed CV page (CvPage.astro) and the top bar's link to it: its visible word, its full name, the way back,
+      // the PDF, the title of the skills (the home page shows them without one)
+      cv_page: z.object({ link: text, link_title: text, title: text, back: text, pdf: text, skills: text }).strict(),
     }).strict(),
   }).strict().superRefine((d, ctx) => {
     // every {{mark}} in the hero sentence must be described in identity.marks

@@ -256,6 +256,14 @@
       "title": "Page not found",
       "text": "This address does not exist, or no longer does.",
       "home": "Back to the CV"
+    },
+    "cv_page": {
+      "link": "CV",
+      "link_title": "Detailed CV",
+      "title": "Detailed CV",
+      "back": "Back to the site",
+      "pdf": "Download the PDF",
+      "skills": "Skills"
     }
   }
 }
