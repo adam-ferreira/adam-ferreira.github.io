@@ -3,7 +3,7 @@
 // page. It sways gently and follows the mouse a little; now and then it makes the same hint gesture as the marks (tilt +
 // shine), last in the series. You can grab it and throw it, it keeps going on its momentum.
 // Under "reduce motion": a static render, but it can still be moved by hand.
-import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, withShine, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
+import { accent, reduced, webglOk, onDprChange, bootLazily, whenLoaded, withShine, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
 import LOGO_GLB from '../../assets/logo.glb?url';
 const canvas = document.querySelector('.brand canvas.logo3d');
 const ORDER = 3;   // in the series of hint gestures: after LinkedIn, Betclic and Accor
@@ -21,7 +21,11 @@ async function go() {
     logo.scale.setScalar(1.8 / Math.max(s.x, s.y, s.z));
     // shine: the same band of light as on the marks
     const shine = { t: { value: -1e5 }, w: { value: 0.3 }, a: { value: 0 } };
-    const mat = withShine(accentMaterial(THREE, env), shine);
+    // its own material: less metal and a touch of glow, so it reads as the bright accent of the flat logo (the metal
+    // of the Android phone mirrors a dark environment, which turned this small logo brown)
+    const base = accentMaterial(THREE, env);
+    base.metalness = 0.18; base.roughness = 0.4; base.emissive = new THREE.Color(accent()).multiplyScalar(0.22);
+    const mat = withShine(base, shine);
     logo.traverse((n) => { if (n.isMesh) n.material = mat; });
     mount(THREE, logo, shine);
   });
