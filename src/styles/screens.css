@@ -72,5 +72,17 @@
   .pager.is-inverted .pager-tick::after { background: var(--ink); color: var(--paper); }
   .pager-tick:hover::after, .pager-tick:focus-visible::after { opacity: 1; transform: translate(0, -50%); }
   .pager-tick.is-current::before { width: 32px; opacity: 1; background: var(--accent); }
+  .pager-tick.is-passed:not(.is-current)::before { background: var(--pass); opacity: 1; }   /* a screen visited: a test that passed */
+  .pager.is-inverted .pager-tick.is-passed:not(.is-current)::before { background: var(--pass-on-ink); }
+  .pager.is-done .pager-count { color: var(--pass); }
+  .pager.is-inverted.is-done .pager-count { color: var(--pass-on-ink); }
   .pager.is-inverted .pager-count { color: var(--paper); }   /* on the inverted footer */
+}
+
+/* ---------- smaller screens: each block settles in when it enters the window (scroll.js adds is-in) ---------- */
+@media (max-width: 1099px), (max-height: 679px) {
+  @media (prefers-reduced-motion: no-preference) {
+    html.js .reveal:not(.is-in) { opacity: 0; transform: translateY(26px); }
+    html.js .reveal { transition: opacity .7s var(--ease-out), transform .8s var(--ease-out); }
+  }
 }

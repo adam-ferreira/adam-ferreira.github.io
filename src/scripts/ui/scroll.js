@@ -42,6 +42,13 @@ if (!root.classList.contains('stage')) {
       entries.forEach((en) => { en.target.classList.toggle('is-active', en.isIntersecting); if (en.isIntersecting) setCurrent(slides.indexOf(en.target)); });
     }, { rootMargin: '-10% 0px -35% 0px' });
     slides.forEach((p) => panelIO.observe(p));
+    // below the large-screen layout (a screen at a time), each block settles in when it enters the window
+    if (!matches('(min-width: 1100px) and (min-height: 680px)') && !reduced) {
+      const blockIO = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('is-in'); blockIO.unobserve(en.target); } });
+      }, { rootMargin: '0px 0px -8% 0px' });
+      document.querySelectorAll('.reveal').forEach((el) => blockIO.observe(el));
+    }
   } else {
     document.querySelectorAll('.section-title').forEach((t) => t.classList.add('is-in'));
   }

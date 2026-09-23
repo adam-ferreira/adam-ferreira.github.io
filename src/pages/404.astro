@@ -1,6 +1,7 @@
 ---
 // The page for unknown URLs (GitHub Pages serves /404.html). Both languages, since we don't know where the visitor
-// comes from; the texts come from the content files. No script of its own: nothing to animate here.
+// comes from; the texts come from the content files. The phones show the failed test (a still image: npm run posters).
+// No script of its own: nothing to animate here.
 // It only loads the styles it uses (the CV's other stylesheets would be dead weight): the base, the pill link and the
 // header of a dated entry, whose title is the same one.
 import { getEntry } from 'astro:content';
@@ -9,6 +10,7 @@ import '../components/PillLink.css';
 import '../components/EntryHeader.css';
 import BaseHead from '../components/BaseHead.astro';
 import PillLink from '../components/PillLink.astro';
+import failedPhones from '../assets/devices/notfound.webp?url';
 const en = (await getEntry('cv', 'en'))!.data, fr = (await getEntry('cv', 'fr'))!.data;
 ---
 <!DOCTYPE html>
@@ -20,7 +22,10 @@ const en = (await getEntry('cv', 'en'))!.data, fr = (await getEntry('cv', 'fr'))
 </head>
 <body>
   <main class="not-found">
-    <p class="numeral nf-code" aria-hidden="true">404</p>
+    <div class="nf-head" aria-hidden="true">
+      <p class="numeral nf-code">404</p>
+      <img class="nf-phones" src={failedPhones} alt="" width="719" height="719" decoding="async">
+    </div>
     <div class="nf-langs">
       <section>
         <h1 class="entry-title">{en.ui.not_found.title}</h1>
@@ -39,7 +44,9 @@ const en = (await getEntry('cv', 'en'))!.data, fr = (await getEntry('cv', 'fr'))
 
 <style>
   .not-found { min-height: 100svh; max-width: 1100px; margin: 0 auto; padding: 48px var(--gutter); display: grid; align-content: center; gap: 40px; }
+  .nf-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px clamp(16px, 4vw, 48px); }
   .nf-code { font-size: clamp(140px, 28vw, 320px); -webkit-text-stroke-color: var(--muted); }
+  .nf-phones { width: clamp(180px, 30vw, 340px); height: auto; }
   .nf-langs { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 40px clamp(32px, 5vw, 80px); }
   .nf-langs section { display: grid; gap: 14px; justify-items: start; }
   .nf-langs .entry-title { line-height: inherit; }   /* one short line: the line height of the page, not the tight one of an entry */

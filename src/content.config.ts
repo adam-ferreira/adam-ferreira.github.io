@@ -47,6 +47,8 @@ const cv = defineCollection({
       cursor_drag: text, cursor_mail: text, cursor_throw: text,         // words the cursor shows over some objects (cursor.js)
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
       pager_aria: text, home_label: text, contact_label: text,   // the progress indicator, built by src/scripts/ui/pager.js
+      pager_passed: text, pager_done: text,   // the indicator as a test runner: "3/8 passed", then "All tests passed"
+      tab_away: text,   // the tab's title while the visitor is elsewhere
       updated: z.string().includes('{date}', { message: 'ui.updated must contain {date} (date of the last content change)' }),
       skip_link: text,   // "skip to content" link, visible only when focused with the keyboard
       not_found: z.object({ title: text, text: text, home: text }).strict(),   // the 404 page

@@ -103,3 +103,13 @@ body.is-scrolled .scroll-hint { opacity: 0; }
   .name > span, .portrait-disc, .portrait-img, .subtitle, .location, .contact, .hero-foot, .hero-line .w, .scroll-hint::before { animation: none; }
   .hero3d, .hero-stage::before { transition: none; }
 }
+
+/* the phones' still images: they float gently, and lean as they cross the window (scroll-driven, where supported) */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes float { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+  @keyframes lean { from { rotate: -5deg; } to { rotate: 4deg; } }
+  .device-poster { animation: float 5s ease-in-out infinite; }
+  @supports (animation-timeline: view()) {
+    .device-poster { animation: float 5s ease-in-out infinite, lean linear both; animation-timeline: auto, view(); }
+  }
+}

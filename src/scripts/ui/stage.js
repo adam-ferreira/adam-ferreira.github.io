@@ -70,7 +70,12 @@ if (stage && slides.length) {
   root.dataset.slide = '0';
   requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('stage-init')));
   // a screen taller than the window scrolls: it joins the Tab order, so the keyboard can reach and scroll it
-  const tabbable = () => slides.forEach((s) => s.setAttribute('tabindex', s.scrollHeight > s.clientHeight + 2 ? '0' : '-1'));
+  // (measured with the blocks at rest: a block waiting for its entrance sits lower and would inflate the height)
+  const tabbable = () => {
+    root.classList.add('is-measuring');
+    slides.forEach((s) => s.setAttribute('tabindex', s.scrollHeight > s.clientHeight + 2 ? '0' : '-1'));
+    root.classList.remove('is-measuring');
+  };
   tabbable();
   window.addEventListener('resize', tabbable);
 
