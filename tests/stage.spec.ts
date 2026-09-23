@@ -75,13 +75,13 @@ test('story rail: a tab shows its achievement, the arrows move along the rail, o
   await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
   await expect(shown).toHaveCount(1);
   await expect(shown).toHaveAttribute('aria-labelledby', (await tabs.nth(2).getAttribute('id'))!);
+  await expect(tabs.nth(2)).toHaveClass(/is-passed/);   // seen for a moment: a step that passed
   await tabs.nth(2).focus();
   await page.keyboard.press('ArrowRight');
   await expect(tabs.nth(3)).toBeFocused();
   await page.keyboard.press('End');   // the rail's own End, not the stage's
   await expect(tabs.nth(n - 1)).toBeFocused();
   expect(await current(page)).toBe(String(i));
-  await expect(tabs.nth(2)).toHaveClass(/is-passed/);   // seen: a step that passed
 });
 
 test('screen reader: all the content is exposed, not only the current screen', async ({ page }) => {
