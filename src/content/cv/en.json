@@ -78,15 +78,40 @@
       "demo": "betting",
       "date": "March 2026 - Present (Freelance)",
       "intro": "Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests of the gamification features: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.",
+      "lead": "Betclic is rebuilding its app in Flutter. I automate the tests of its gamification: missions, leaderboards, reward games and boosts.",
       "subtitle": "Building the automation alongside the app",
       "subintro": "When I joined, the app and its gamification features were still being built. The tests had to keep up with each release without slowing the developers down.",
       "bullets": [
-        "**Test IDs in the app code.** On mobile, a locator based on the displayed text breaks with each translation or design change. I add the Flutter semantics to the app code myself, following rules agreed with the tech leads.",
-        "**Test IDs in the animations.** The interactive animations are made by the motion design team in a dedicated tool, and the tests could not reach their content. I wrote a tool that adds test IDs to the animation files, checked the result with the Flutter runtime, and produced a version the designer can open in their own tool to apply the change themselves.",
-        "**Test data created through APIs.** A betting mission needs bets that are placed and then settled. I create them through APIs before each scenario, on a dedicated test account. The UI is only used for what the test checks, so tests stay short and independent from each other.",
-        "**A nightly run on five regulated markets.** Each country has its own rules, content and accounts. Every morning I sort the failures into product bugs, environment issues and flaky tests. Only product bugs become tickets.",
-        "**Failures investigated down to iOS, Android and Flutter.** For example: a visible button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps. For each one, I found the cause in how the platform or Flutter behaves, and fixed it in the framework rather than working around it in the tests.",
-        "**Shared tooling with the squad.** A test plan per feature, a release test suite, and Claude Code skills that generate page objects from Figma designs and Jira tickets."
+        {
+          "title": "Test IDs in the app code",
+          "short": "Locators based on displayed text break with every translation. I add Flutter semantics to the app code myself.",
+          "text": "On mobile, a locator based on the displayed text breaks with each translation or design change. I add the Flutter semantics to the app code myself, following rules agreed with the tech leads."
+        },
+        {
+          "title": "Test IDs in the animations",
+          "short": "The interactive animations were out of the tests' reach. I wrote a tool that puts test IDs inside the animation files.",
+          "text": "The interactive animations are made by the motion design team in a dedicated tool, and the tests could not reach their content. I wrote a tool that adds test IDs to the animation files, checked the result with the Flutter runtime, and produced a version the designer can open in their own tool to apply the change themselves."
+        },
+        {
+          "title": "Test data created through APIs",
+          "short": "Bets are placed and settled through APIs before each scenario. The UI only serves what the test checks.",
+          "text": "A betting mission needs bets that are placed and then settled. I create them through APIs before each scenario, on a dedicated test account. The UI is only used for what the test checks, so tests stay short and independent from each other."
+        },
+        {
+          "title": "A nightly run on five regulated markets",
+          "short": "Every morning I sort the failures: product bug, environment or flaky test. Only product bugs become tickets.",
+          "text": "Each country has its own rules, content and accounts. Every morning I sort the failures into product bugs, environment issues and flaky tests. Only product bugs become tickets."
+        },
+        {
+          "title": "Failures investigated down to iOS, Android and Flutter",
+          "short": "A button the test could not tap, a tab bar missing from the accessibility tree: fixed at the root, in the framework.",
+          "text": "For example: a visible button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps. For each one, I found the cause in how the platform or Flutter behaves, and fixed it in the framework rather than working around it in the tests."
+        },
+        {
+          "title": "Shared tooling with the squad",
+          "short": "Test plans, a release suite, and Claude Code skills that generate page objects from Figma and Jira.",
+          "text": "A test plan per feature, a release test suite, and Claude Code skills that generate page objects from Figma designs and Jira tickets."
+        }
       ],
       "stack": [
         "Flutter",
@@ -106,13 +131,34 @@
       "demo": "booking",
       "date": "Nov. 2024 - March 2026 (Freelance)",
       "intro": "Accor tests its ALL mobile apps (loyalty, booking, stay) with an automated test framework started four years earlier, with technical debt. I joined to run and maintain the tests, and became the technical reference for the framework.",
+      "lead": "Accor tests its ALL apps with a framework started four years earlier. I joined to run it and became its technical reference.",
       "subtitle": "Modernizing an existing framework",
       "bullets": [
-        "**Framework modernization.** Java and Appium client upgrades, dead code removed, logs rewritten to read scenario by scenario. The framework is now half its previous size.",
-        "**One device per scenario.** Each scenario runs on a different device of the BrowserStack device farm, so bugs specific to a model, a tablet or an orientation show up and can be reproduced. Caching apps and devices shortened session start-up.",
-        "**A rewritten CI pipeline.** The previous pipeline stayed green whatever the results and depended on a template shared with other projects. The new one fails when the pass rate drops below a threshold, publishes the results to Jira and Xray, and notifies each team on Slack of its own failures.",
-        "**Wider test coverage.** Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.",
-        "**A second framework in TypeScript.** Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack."
+        {
+          "title": "Framework modernization",
+          "short": "Java and Appium upgrades, dead code removed, readable logs. The framework is now half its previous size.",
+          "text": "Java and Appium client upgrades, dead code removed, logs rewritten to read scenario by scenario. The framework is now half its previous size."
+        },
+        {
+          "title": "One device per scenario",
+          "short": "Each scenario runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
+          "text": "Each scenario runs on a different device of the BrowserStack device farm, so bugs specific to a model, a tablet or an orientation show up and can be reproduced. Caching apps and devices shortened session start-up."
+        },
+        {
+          "title": "A rewritten CI pipeline",
+          "short": "The old pipeline stayed green whatever happened. The new one fails below a threshold and tells each team on Slack.",
+          "text": "The previous pipeline stayed green whatever the results and depended on a template shared with other projects. The new one fails when the pass rate drops below a threshold, publishes the results to Jira and Xray, and notifies each team on Slack of its own failures."
+        },
+        {
+          "title": "Wider test coverage",
+          "short": "Feature flags, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.",
+          "text": "Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF."
+        },
+        {
+          "title": "A second framework in TypeScript",
+          "short": "Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack.",
+          "text": "Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack."
+        }
       ],
       "stack": [
         "Java 25",
@@ -198,6 +244,7 @@
     "made_with": "Made with ♥ in Paris — tested on every push",
     "updated": "Updated {date}",
     "stack_label": "Stack:",
+    "story_label": "Achievements at",
     "pager_aria": "Page sections",
     "pager_passed": "passed",
     "pager_done": "All tests passed",

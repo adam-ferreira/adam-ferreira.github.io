@@ -78,15 +78,40 @@
       "demo": "betting",
       "date": "Mars 2026 - Aujourd'hui (Freelance)",
       "intro": "Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests des fonctionnalités de gamification : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.",
+      "lead": "Betclic reconstruit son app en Flutter. J'automatise les tests de sa gamification : missions, classements, jeux de récompense et boosts.",
       "subtitle": "Construire l'automatisation en même temps que l'app",
       "subintro": "À mon arrivée, l'app et ses fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.",
       "bullets": [
-        "**Des test IDs dans le code de l'app.** Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads.",
-        "**Des test IDs dans les animations.** Les animations interactives sont produites par l'équipe motion design dans un outil dédié, et les tests n'avaient pas accès à leur contenu. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, et produit une version que le designer ouvre dans son propre outil pour refaire la modification lui-même.",
-        "**Des données de test créées par API.** Une mission de paris demande des paris placés puis réglés. Je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie : les tests restent courts et indépendants les uns des autres.",
-        "**Une nightly sur cinq marchés réglementés.** Chaque pays a ses règles, ses contenus et ses comptes. Chaque matin, je trie les échecs : bug produit, environnement en panne ou test flaky. Seuls les bugs produit deviennent des tickets.",
-        "**Des échecs analysés jusqu'à iOS, Android et Flutter.** Par exemple : un bouton visible que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité iOS, la barre de navigation Android qui interceptait les taps. Pour chacun, j'ai trouvé la cause dans le comportement de la plateforme ou de Flutter, et corrigé le framework plutôt que de contourner dans les tests.",
-        "**Un outillage partagé avec la squad.** Un test plan par feature, une suite de tests de release, et des skills Claude Code qui génèrent les page objects à partir des maquettes Figma et des tickets Jira."
+        {
+          "title": "Des test IDs dans le code de l'app",
+          "short": "Un locator basé sur le texte affiché casse à chaque traduction. Je pose moi-même les semantics dans le code Flutter.",
+          "text": "Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads."
+        },
+        {
+          "title": "Des test IDs dans les animations",
+          "short": "Les animations interactives échappaient aux tests. J'ai écrit un outil qui pose les test IDs dans les fichiers d'animation.",
+          "text": "Les animations interactives sont produites par l'équipe motion design dans un outil dédié, et les tests n'avaient pas accès à leur contenu. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, et produit une version que le designer ouvre dans son propre outil pour refaire la modification lui-même."
+        },
+        {
+          "title": "Des données de test créées par API",
+          "short": "Les paris sont placés puis réglés par API avant chaque scénario. L'UI ne sert qu'à ce que le test vérifie.",
+          "text": "Une mission de paris demande des paris placés puis réglés. Je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie : les tests restent courts et indépendants les uns des autres."
+        },
+        {
+          "title": "Une nightly sur cinq marchés réglementés",
+          "short": "Chaque matin, je trie les échecs : bug produit, environnement ou test flaky. Seuls les bugs produit deviennent des tickets.",
+          "text": "Chaque pays a ses règles, ses contenus et ses comptes. Chaque matin, je trie les échecs : bug produit, environnement en panne ou test flaky. Seuls les bugs produit deviennent des tickets."
+        },
+        {
+          "title": "Des échecs analysés jusqu'à iOS, Android et Flutter",
+          "short": "Un bouton que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité : corrigés à la racine, dans le framework.",
+          "text": "Par exemple : un bouton visible que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité iOS, la barre de navigation Android qui interceptait les taps. Pour chacun, j'ai trouvé la cause dans le comportement de la plateforme ou de Flutter, et corrigé le framework plutôt que de contourner dans les tests."
+        },
+        {
+          "title": "Un outillage partagé avec la squad",
+          "short": "Des test plans, une suite de release, et des skills Claude Code qui génèrent les page objects depuis Figma et Jira.",
+          "text": "Un test plan par feature, une suite de tests de release, et des skills Claude Code qui génèrent les page objects à partir des maquettes Figma et des tickets Jira."
+        }
       ],
       "stack": [
         "Flutter",
@@ -106,13 +131,34 @@
       "demo": "booking",
       "date": "Nov. 2024 - Mars 2026 (Freelance)",
       "intro": "Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés lancé quatre ans plus tôt, en dette technique. Arrivé pour exécuter et maintenir les tests, j'en suis devenu le référent technique.",
+      "lead": "Accor teste ses apps ALL avec un framework lancé quatre ans plus tôt. Arrivé pour l'exécuter, j'en suis devenu le référent technique.",
       "subtitle": "Moderniser un framework existant",
       "bullets": [
-        "**Modernisation du framework.** Migrations de Java et du client Appium, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine.",
-        "**Un device par scénario.** Chaque scénario tourne sur un device différent de la device farm BrowserStack : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions.",
-        "**Un pipeline CI réécrit.** L'ancien restait vert quel que soit le résultat et dépendait d'un template partagé avec d'autres projets. Le nouveau échoue quand le taux de réussite passe sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs.",
-        "**Une couverture élargie.** Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise.",
-        "**Un second framework en TypeScript.** Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java."
+        {
+          "title": "Modernisation du framework",
+          "short": "Migrations Java et Appium, code mort retiré, logs lisibles. Le framework fait la moitié de sa taille d'origine.",
+          "text": "Migrations de Java et du client Appium, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine."
+        },
+        {
+          "title": "Un device par scénario",
+          "short": "Chaque scénario tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
+          "text": "Chaque scénario tourne sur un device différent de la device farm BrowserStack : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions."
+        },
+        {
+          "title": "Un pipeline CI réécrit",
+          "short": "L'ancien pipeline restait vert quoi qu'il arrive. Le nouveau échoue sous un seuil et prévient chaque équipe sur Slack.",
+          "text": "L'ancien restait vert quel que soit le résultat et dépendait d'un template partagé avec d'autres projets. Le nouveau échoue quand le taux de réussite passe sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs."
+        },
+        {
+          "title": "Une couverture élargie",
+          "short": "Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise.",
+          "text": "Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise."
+        },
+        {
+          "title": "Un second framework en TypeScript",
+          "short": "Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java.",
+          "text": "Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java."
+        }
       ],
       "stack": [
         "Java 25",
@@ -198,6 +244,7 @@
     "made_with": "Fait avec ♥ à Paris — testé à chaque push",
     "updated": "Mis à jour en {date}",
     "stack_label": "Stack :",
+    "story_label": "Réalisations chez",
     "pager_aria": "Écrans de la page",
     "pager_passed": "réussis",
     "pager_done": "Tous les tests réussis",
