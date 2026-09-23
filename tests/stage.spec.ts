@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { content, plain, settle } from './helpers';
+import { content, roleOnly, settle } from './helpers';
 
 // Stage mode: a desktop with a mouse, window at least 1100 × 680.
 test.beforeEach(async ({ page }, info) => {
@@ -88,7 +88,8 @@ test('screen reader: all the content is exposed, not only the current screen', a
   const d = content('en');
   // getByRole ignores whatever is removed from the accessibility tree (visibility:hidden, aria-hidden…)
   for (const j of d.experience) {
-    await expect(page.getByRole('heading', { level: 3, name: plain(j.role), exact: false })).toHaveCount(1);
+    const client = (j.client ?? '').replace(/\s*\(.*\)$/, '');   // its heading: the client (without its note) and the role held there
+    await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: roleOnly(j.role) }).filter({ hasText: client })).toHaveCount(1);
   }
   await expect(page.getByRole('heading', { level: 2, name: d.sections.education })).toHaveCount(1);
   await expect(page.getByRole('link', { name: d.identity.contact.email }).last()).toBeAttached();

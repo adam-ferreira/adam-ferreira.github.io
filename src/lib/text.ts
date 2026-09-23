@@ -7,6 +7,9 @@ const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ESC[c]);
 /** Plain text → HTML: escaping, then **bold** → <strong>. */
 export const md = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
+/** A role without its trailing parenthesis: "QA Automation Engineer (Flutter mobile)" → "QA Automation Engineer". */
+export const roleOnly = (s: string) => s.replace(/\s*\(.*\)$/, '');
+
 /** The same text without its **bold** markers: for an attribute read by a script (the labels of the indicator). */
 export const plain = (s: string) => s.replace(/\*\*/g, '');
 

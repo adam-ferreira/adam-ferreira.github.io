@@ -22,7 +22,7 @@ const intro = j.lead ?? j.intro;
 const pad = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <article class:list={['job', 'slide', { 'job-short': short, 'job-demo': !!j.demo }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
-  {j.demo && <Spotlight num={num} role={j.role} client={j.client ?? ''} date={j.date} />}
+  {j.demo && <Spotlight role={j.role} client={j.client ?? ''} />}
   <div class="job-side">
     {!j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
     {intro && <p class="job-intro reveal" set:html={md(intro)} />}
