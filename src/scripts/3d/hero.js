@@ -1,17 +1,18 @@
 // The hero scene: two phones, an iOS one in front and an Android one behind, running the same automated test at the
 // same moment. A selection frame moves from one element to the next as in an Appium inspector, taps, asserts, and each
 // passed step is appended to the test log at the bottom of the screen.
-// Wide screens with a mouse only, after load. You can grab the scene and spin it; once released, it goes back to
-// swaying. Under "reduce motion": the final frame of the test, without a loop.
+// Everywhere WebGL runs, after load (on a phone: the first gesture). You can grab the scene and spin it (on a touch
+// screen, a sideways drag: an upward one still scrolls the page); once released, it goes back to swaying. Under "reduce motion": the final frame of the test, without a loop.
 // Stage mode: the phones live in a fixed canvas over the screens (.devices3d) and travel with them from one anchor to the
 // next (.hero-stage, .device-anchor): the hero, the "Experience" chapter, then each experience with a demo, where they
 // play that job's test; a full turn when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's
 // own canvas.
-import { accent as accentColor, desktop, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
+import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
 import { SW, SH, TS, CYCLE, SCENARIOS, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
-// elsewhere: each canvas.hero3d is its own scene (the hero; the still images of tools/device-posters, data-scenario)
+// elsewhere: each canvas.hero3d is its own scene (the hero; each experience with a demo outside stage mode; the stills
+// of tools/device-posters), data-scenario naming the test it plays
 const scenes = overlay ? [overlay] : [...document.querySelectorAll('canvas.hero3d')];
 const easeIO = (u) => (u < 0.5 ? 8 * u ** 4 : 1 - (-2 * u + 2) ** 4 / 2);   // close to the screens' cubic-bezier(.76, 0, .24, 1)
 const stageMs = () => {
@@ -64,10 +65,10 @@ function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
 }
 
 async function start(canvas) {
-  if (!desktop() || !webglOk()) return;
+  if (!webglOk()) return;
   const initial = canvas.dataset.scenario;   // a scene frozen on one client's test (still images)
   const [THREE] = await Promise.all([import('./three-lite.js'), overlay || initial ? loadLogos() : null]);   // Three.js trimmed to what the site uses, loaded on demand; the clients' logos for their screens
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: overlay ? 'high-performance' : 'default' });
   const heroStage = document.querySelector('.hero-stage');
   // GPU lost: the scene fades out (the rest of the page does not depend on it)
   const lost = watchContextLoss(canvas, () => { canvas.classList.remove('is-ready'); heroStage?.classList.remove('is-lit'); });
@@ -249,4 +250,10 @@ async function start(canvas) {
   })(performance.now());
 }
 
-if (webglOk()) scenes.forEach((c) => bootLazily(() => start(c), 1200, 300));
+// the hero's scene (and the stills) start after load; an experience's only when it comes within a screen of the window
+const whenNear = (el, fn) => {
+  if (!('IntersectionObserver' in window)) return fn();
+  const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: '100% 0px' });
+  io.observe(el);
+};
+if (webglOk()) scenes.forEach((c) => bootLazily(() => (c.closest('.job') ? whenNear(c, () => start(c)) : start(c)), 1200, 300));

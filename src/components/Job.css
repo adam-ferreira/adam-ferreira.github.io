@@ -28,8 +28,10 @@
   }
 }
 
-.job-poster { display: block; width: min(80%, 340px); height: auto; margin: 28px auto 0; }
-html.stage .job-poster { display: none; }   /* the 3D phones play there */
+.job-stage { position: relative; width: min(80%, 340px); aspect-ratio: 1; margin: 28px auto 0; }
+.job-poster { display: block; width: 100%; height: auto; transition: opacity .6s ease; }
+.job-stage .hero3d { inset: -18%; width: 136%; height: 136%; }   /* same framing as the still image */
+html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones play in the third column */
 @media (max-width: 1099px) { .job > .spotlight { padding-top: 22px; border-top: 1px solid var(--line); } }
 
 /* stage mode, experience with a demo: the phones take a third column and play its test; the bullets go to one column */
