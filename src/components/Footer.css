@@ -20,7 +20,8 @@
 .site-footer > :not(.footer3d) { position: relative; }   /* the text stays above the pills */
 .site-footer.is-grabbing { cursor: grabbing; }
 .footer-grid { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 14px 32px; color: var(--paper); opacity: .85; }
-.footer-grid a { text-decoration: none; }
+.footer-grid a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .35s var(--ease-out), color .3s ease; }
+.footer-grid a:hover, .footer-grid a:focus-visible { background-size: 100% 1px; }
 .footer-grid a:hover, .footer-statement:hover { color: var(--accent); }
 .footer-grid .nocase { text-transform: none; letter-spacing: .06em; }
 .footer-grid .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; margin-left: 8px; vertical-align: middle; box-shadow: 0 0 0 4px rgba(61, 220, 132, .18); }

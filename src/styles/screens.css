@@ -62,6 +62,15 @@
   .pager-tick { display: flex; align-items: center; width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }   /* 24 px: minimum size of a clickable target */
   .pager-tick::before { content: ""; display: block; margin-left: auto; flex: none; width: 14px; height: 2px; border-radius: 1px; background: currentColor; opacity: .5; transition: width .35s ease, opacity .35s ease, background .35s ease; }
   .pager-tick:hover::before { opacity: .9; }
+  .pager-tick { position: relative; }
+  .pager-tick::after {   /* the screen's name, on hover or keyboard focus */
+    content: attr(aria-label); position: absolute; right: calc(100% + 6px); top: 50%; transform: translate(6px, -50%);
+    padding: 3px 7px; border-radius: 4px; background: var(--paper); color: var(--ink); white-space: nowrap; pointer-events: none;
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase;
+    opacity: 0; transition: opacity .2s ease, transform .25s var(--ease-out);
+  }
+  .pager.is-inverted .pager-tick::after { background: var(--ink); color: var(--paper); }
+  .pager-tick:hover::after, .pager-tick:focus-visible::after { opacity: 1; transform: translate(0, -50%); }
   .pager-tick.is-current::before { width: 32px; opacity: 1; background: var(--accent); }
   .pager.is-inverted .pager-count { color: var(--paper); }   /* on the inverted footer */
 }

@@ -272,6 +272,9 @@ export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
   }
 }
 
+/** Progress of the tap on screen at time t (0 → 1), or -1 when nothing is being tapped: the sound of the taps. */
+export const rippleAt = (t, sc = SCENARIOS.hero) => phase(t, sc.steps).ripple;
+
 // What changes on screen at time t: null during a motion (sliding frame, tap ripple, a line appearing), otherwise a key
 // for the static state (step, assertion, blinking cursor). Same key ⇒ same image: no need to redraw it.
 export function screenKey(t, sc = SCENARIOS.hero) {

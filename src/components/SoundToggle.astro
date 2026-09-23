@@ -1,0 +1,10 @@
+---
+// Sound switch, in the top bar: four bars that dance while the sound is on. Off by default, the choice is remembered.
+// Style: SoundToggle.css. Script: src/scripts/ui/sound.js (loaded by the page, Cv.astro).
+import type { Cv } from '../lib/types';
+interface Props { ui: Cv['ui'] }
+const { ui } = Astro.props;
+---
+<button class="sound-toggle" type="button" aria-pressed="false" aria-label={ui.sound_aria} title={ui.sound_title_off} data-title-on={ui.sound_title_on} data-title-off={ui.sound_title_off}>
+  <span class="st-bar"></span><span class="st-bar"></span><span class="st-bar"></span><span class="st-bar"></span>
+</button>

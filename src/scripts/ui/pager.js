@@ -31,7 +31,7 @@ if (slides.length) {
   pager.appendChild(count);
   ticks = slides.map((p, i) => {
     const b = document.createElement('button');
-    b.type = 'button'; b.className = 'pager-tick'; b.title = labelOf(p); b.setAttribute('aria-label', labelOf(p));
+    b.type = 'button'; b.className = 'pager-tick'; b.setAttribute('aria-label', labelOf(p));
     b.addEventListener('click', () => navigate(i));
     pager.appendChild(b); return b;
   });

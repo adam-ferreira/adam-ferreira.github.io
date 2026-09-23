@@ -8,7 +8,7 @@
 // play that job's test; a full turn when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's
 // own canvas.
 import { accent as accentColor, desktop, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
-import { SW, SH, TS, CYCLE, SCENARIOS, loadLogos, drawBase, drawScreen, screenKey } from './hero-screen.js';   // the app mock-up drawn on the screens
+import { SW, SH, TS, CYCLE, SCENARIOS, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
 // elsewhere: each canvas.hero3d is its own scene (the hero; the still images of tools/device-posters, data-scenario)
@@ -211,7 +211,7 @@ async function start(canvas) {
   const visible = watchVisible(canvas);
 
   if (reduced() || freeze !== null) return;
-  let frame = 0, lastDraw = 0;
+  let frame = 0, lastDraw = 0, lastRipple = -1;
   (function loop(now) {
     if (lost()) return;
     requestAnimationFrame(loop);
@@ -221,6 +221,9 @@ async function start(canvas) {
     if (!shouldRender(now, lastDraw, !!tw)) return;   // during a screen change the phones travel with it: every frame
     lastDraw = now;
     const t = Math.max(0, (now - t0) / 1000);
+    const ripple = rippleAt(t % CYCLE, sc);
+    if (ripple >= 0 && lastRipple < 0) window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'tap' } }));   // sound.js, if the sound is on
+    lastRipple = ripple;
     if (frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
       const k = screenKey(t, sc);
       if (k === null || k !== lastKey) paint(t % CYCLE);
