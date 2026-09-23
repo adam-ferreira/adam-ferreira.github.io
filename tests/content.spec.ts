@@ -17,6 +17,12 @@ for (const { lang, path } of PAGES) {
       const d = content(lang);
       expect(html).toContain(`<html lang="${lang}"`);
       for (const j of d.experience) expect(html).toContain(plain(j.role).replace(/&/g, '&amp;'));
+      // the achievements: their title and short sentence here, the full text only on the CV page
+      const esc = (t: string) => plain(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+      for (const b of d.experience.flatMap((j: { bullets?: { title: string; short: string; text: string }[] }) => j.bullets ?? [])) {
+        expect(html).toContain(esc(b.title)); expect(html).toContain(esc(b.short));
+        if (b.text !== b.short) expect(html).not.toContain(esc(b.text));
+      }
       expect(html).toContain(d.identity.contact.email);
     });
 
@@ -123,15 +129,18 @@ test('footer finale: the pills carry the skills from the content, and never bloc
   await expect(page.locator('.footer-statement')).toHaveAttribute('href', `mailto:${d.identity.contact.email}`);
 });
 
-test('stage mode: the experiences with a demo keep a column for the 3D phones', async ({ page }) => {
+test('stage mode: the experiences with a demo tell their achievements next to the 3D phones', async ({ page }) => {
   await page.setViewportSize({ width: 1512, height: 830 });
   await page.goto('/');
   test.skip(!(await page.evaluate(() => document.documentElement.classList.contains('stage'))), 'stage mode only');
   const d = content('en');
-  const demos = d.experience.filter((j: { demo?: string }) => j.demo).map((j: { demo: string }) => j.demo);
-  expect(await page.locator('.job-demo .job-device').evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.demo))).toEqual(demos);
-  const cols = await page.locator('.job-demo .bullets').first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length);
-  expect(cols).toBe(2);
+  const demos = d.experience.filter((j: { demo?: string }) => j.demo);
+  expect(await page.locator('.job-demo .job-device').evaluateAll((els) => els.map((e) => (e as HTMLElement).dataset.demo))).toEqual(demos.map((j: { demo: string }) => j.demo));
+  const cols = await page.locator('.job-demo .story-steps').first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length);
+  expect(cols).toBe(1);   // one achievement at a time
+  const rails = page.locator('.job-demo .story-rail');
+  await expect(rails).toHaveCount(demos.length);
+  for (const [i, j] of demos.entries()) await expect(rails.nth(i).getByRole('tab')).toHaveCount(j.bullets.length);
   await expect(page.locator('.job-demo > .spotlight')).toHaveCount(demos.length);   // the client's name, giant, over the text
   for (const c of await page.locator('canvas.hero3d').all()) await expect(c).toBeHidden();   // stage mode: only the overlay draws
   await expect(page.locator('canvas.devices3d')).toHaveCSS('pointer-events', 'none');

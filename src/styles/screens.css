@@ -32,10 +32,7 @@
     transition-delay: calc(var(--d, 0) * 70ms);
   }
   html.js .is-active .reveal { opacity: 1; transform: none; }
-  .job .job-intro { --d: 1; } .job .sub-title { --d: 2; } .job .sub-intro { --d: 3; }
-  .job .bullets li:nth-child(1) { --d: 3; } .job .bullets li:nth-child(2) { --d: 4; } .job .bullets li:nth-child(3) { --d: 5; }
-  .job .bullets li:nth-child(4) { --d: 6; } .job .bullets li:nth-child(5) { --d: 7; } .job .bullets li:nth-child(6) { --d: 8; }
-  .job .stack { --d: 9; }
+  .job .job-intro { --d: 1; } .job .story-rail { --d: 2; } .job .story-kicker { --d: 2; } .job .story-steps { --d: 3; } .job .stack { --d: 4; }
   .chapter .skills-row:nth-child(1) { --d: 2; } .chapter .skills-row:nth-child(2) { --d: 3; } .chapter .skills-row:nth-child(3) { --d: 4; }
   .facts .section > :nth-child(2) { --d: 1; } .facts .section:nth-child(2) > * { --d: 2; } .facts .section:nth-child(3) > * { --d: 3; }
 }

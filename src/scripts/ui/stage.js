@@ -1,9 +1,11 @@
 // "Stage" mode (computer with a mouse, window at least 1100 x 680): the page no longer scrolls. Each screen (.slide) is
 // a fixed scene, and moving from one to the next is done in CSS, on the GPU (transform, opacity). One gesture = one
-// screen; a screen taller than the window scrolls inside first. The html.stage class is set from the <head>
+// screen; a screen taller than the window scrolls inside first, one that tells a story (story.js) goes through it
+// first. The html.stage class is set from the <head>
 // (src/components/BaseHead.astro) so nothing jumps on the first paint.
 import { slides, bar, setCurrent, setNavigator } from './pager.js';
 import { STAGE, REDUCED_MOTION, matches } from '../media.js';
+import * as story from './story.js';
 
 const root = document.documentElement;
 const reduced = matches(REDUCED_MOTION);
@@ -45,6 +47,7 @@ function goTo(n, keepScroll) {
   from.classList.toggle('is-before', !back); from.classList.toggle('is-after', back); from.classList.toggle('is-leaving', back);
   to.classList.remove('is-before', 'is-after'); to.classList.add('is-current', 'is-active');
   if (!keepScroll) to.scrollTop = back ? to.scrollHeight : 0;
+  story.enter(to, back);   // before data-slide: the phones read the story's step when they reach the screen
   root.dataset.slide = String(n);
   document.body.classList.toggle('name-away', n > 0);
   document.body.classList.toggle('is-scrolled', n > 0);
@@ -85,11 +88,13 @@ if (stage && slides.length) {
     const d = e.deltaY, dir = d > 0 ? 1 : -1, now = performance.now();
     const fresh = now - lastWheel > 180 || Math.abs(d) > Math.abs(lastDelta) * 1.5 + 6;   // a new gesture, not the momentum of the previous one
     lastWheel = now; lastDelta = d;
-    if (!moving && canScroll(slides[cur], dir)) { locked = true; return; }   // the screen scrolls inside first
+    const s = slides[cur];
+    if (!moving && !story.canStep(s, dir) && canScroll(s, dir)) { locked = true; return; }   // the screen scrolls inside first
     e.preventDefault();
     if (moving || Math.abs(d) < 3) return;
     if (locked && !fresh) return;
     locked = false;
+    if (story.step(s, dir)) { locked = true; return; }   // the next achievement; the gesture's momentum is ignored
     goTo(cur + dir);
   }, { passive: false });
   window.addEventListener('keydown', (e) => {
@@ -106,6 +111,7 @@ if (stage && slides.length) {
     e.preventDefault();
     if (moving) return;
     const s = slides[cur];
+    if (story.step(s, dir)) return;
     if (canScroll(s, dir)) s.scrollBy({ top: dir * s.clientHeight * 0.8, behavior: reduced ? 'auto' : 'smooth' });
     else goTo(cur + dir);
   });
