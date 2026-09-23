@@ -4,6 +4,7 @@
 // Without bullets it is a short experience (job-short): one column, a large title, the number as an outlined watermark.
 // With a demo (stage mode only): a third column where the 3D phones play this job's test (src/scripts/3d/hero.js).
 import EntryHeader from './EntryHeader.astro';
+import Spotlight from './Spotlight.astro';
 import Chips from './Chips.astro';
 import { md, plain } from '../lib/text';
 import type { Job } from '../lib/types';
@@ -13,7 +14,7 @@ const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
 <article class:list={['job', 'slide', { 'job-short': short, 'job-demo': !!j.demo }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
-  {j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
+  {j.demo && <Spotlight num={num} role={j.role} client={j.client ?? ''} date={j.date} />}
   <div class="job-side">
     {!j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
     {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
@@ -27,6 +28,6 @@ const short = bullets.length === 0;
       </ul>
     </div>
   )}
-  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.6" aria-hidden="true"></div>}
+  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.9" aria-hidden="true"></div>}
   {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>

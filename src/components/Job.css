@@ -4,9 +4,9 @@
 @media (min-width: 1100px) {
   .job { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "side main" "stack main"; grid-template-rows: auto auto; column-gap: clamp(40px, 5vw, 96px); align-items: start; }
   .job-side { grid-area: side; } .job-main { grid-area: main; } .job > .stack { grid-area: stack; margin-top: 26px; }
-  .job-side .entry-header, .job > .entry-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
+  .job-side .entry-header { padding-top: 0; border-top: 0; margin-bottom: 18px; }
   .job-demo { grid-template-areas: "head head" "side main" "stack main"; }
-  .job > .entry-header { grid-area: head; margin-bottom: 28px; }
+  .job > .spotlight { grid-area: head; margin-bottom: 28px; }
   .entry-date { grid-column: 2; }
   .job-side .job-intro { font-size: 16px; line-height: 1.6; }
   .job-side .sub-title { margin-top: 22px; font-size: 17px; }
@@ -33,13 +33,23 @@
 html.stage .device-anchor { display: block; cursor: grab; }
 html.stage .device-anchor.is-dragging { cursor: grabbing; }
 html.stage .job-demo {
-  grid-template-columns: minmax(0, 3fr) minmax(0, 6.2fr) minmax(0, 2.8fr);
+  grid-template-columns: minmax(0, 2.7fr) minmax(0, 6.9fr) minmax(0, 2.4fr);
   grid-template-areas: "head head device" "side main device" "stack main device"; grid-template-rows: auto auto 1fr;
   align-content: center;   /* the whole block centred on the screen */
 }
-html.stage .job-demo > .entry-header .entry-title { font-size: clamp(26px, 2.2vw, 34px); }
-html.stage .job-demo > .entry-header { margin-bottom: 10px; }
-html.stage .job-demo .job-main .bullets { row-gap: 14px; }
+html.stage .job-demo > .spotlight { margin-bottom: 6px; }
+/* numbered bullets */
+.job-demo .bullets { counter-reset: bullet; }
+.job-demo .bullets li { counter-increment: bullet; }
+.job-demo .job-main .bullets li::before {
+  content: counter(bullet, decimal-leading-zero); width: auto; height: auto; border-radius: 0; background: none;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--accent-ink);
+}
+/* a halo in the client's colour behind the phones */
+html.stage .job-device::before { content: ""; position: absolute; inset: 6% -8%; border-radius: 50%; background: radial-gradient(closest-side, var(--halo), transparent); pointer-events: none; }
+html.stage .job-device[data-demo="betting"] { --halo: rgba(210, 22, 30, .22); }
+html.stage .job-device[data-demo="booking"] { --halo: rgba(58, 58, 200, .2); }
+html.stage .job-demo .job-main .bullets { row-gap: 12px; }
 html.stage .job-demo .job-main .bullets li { line-height: 1.5; }
 html.stage .job-demo .job-main .bullets li::before { margin-bottom: 7px; }
 html.stage .job-device { grid-area: device; position: sticky; top: 24px; align-self: start; width: 100%; height: calc(100svh - var(--topbar-h) - 48px); }   /* the whole visible height: the phones stay centred while the text scrolls */
