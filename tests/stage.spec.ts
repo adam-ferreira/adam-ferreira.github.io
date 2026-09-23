@@ -39,7 +39,7 @@ test('screen reader: all the content is exposed, not only the current screen', a
 
 test('Tab to a link on another screen brings the stage there', async ({ page }) => {
   const n = await slideCount(page);
-  await page.locator('footer .nocase').focus(); await settle(page);
+  await page.locator('footer .footer-statement').focus(); await settle(page);   // the footer's link on a large screen
   expect(await current(page)).toBe(String(n - 1));
   await expect(page.locator('footer.slide')).toHaveClass(/is-current/);
 });

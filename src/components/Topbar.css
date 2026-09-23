@@ -9,8 +9,16 @@
   border-bottom: 1px solid transparent; transition: border-color .2s ease;
 }
 .topbar.is-scrolled { border-bottom-color: var(--line); }
-.frame-status { justify-self: center; text-align: center; opacity: 0; transform: translateY(6px); transition: opacity .35s ease, transform .35s ease; }
-body.name-away .frame-status { opacity: 1; transform: none; }
+.frame-status {
+  justify-self: center; display: flex; align-items: center; gap: 12px; white-space: nowrap; color: var(--muted);
+  opacity: 0; transform: translateY(6px); visibility: hidden;   /* hidden on the hero: its links are not reachable then */
+  transition: opacity .35s ease, transform .35s ease, visibility 0s linear .35s;
+}
+body.name-away .frame-status { opacity: 1; transform: none; visibility: visible; transition-delay: 0s; }
+.frame-status a { color: var(--ink); text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .35s var(--ease-out), color .3s ease; }
+.frame-status a:hover, .frame-status a:focus-visible { color: var(--accent-ink); background-size: 100% 1px; }
+.frame-status .nocase { text-transform: none; letter-spacing: .04em; }
+.fs-sep { opacity: .5; }
 .brand { position: relative; width: 46px; height: 46px; display: block; border-radius: 10px; }
 .brand-img { width: 100%; height: 100%; object-fit: contain; display: block; transition: opacity .6s ease; }
 .brand .logo3d { position: absolute; inset: -8px; width: calc(100% + 16px); height: calc(100% + 16px); cursor: grab; touch-action: none; }
@@ -23,7 +31,8 @@ html.js body.is-scrolled .brand { visibility: visible; opacity: 1; transform: no
 .topbar-linkedin { grid-column: 3; position: relative; width: 28px; height: 28px; display: block; border-radius: 7px; margin: 0; }
 .topbar-linkedin img { width: 100%; height: 100%; display: block; border-radius: 7px; transition: opacity .5s ease; }
 .topbar-linkedin.is-3d img { opacity: 0; }
-@media (max-width: 640px) { .topbar { gap: 12px; } .frame-status { display: none; } }
+@media (max-width: 640px) { .topbar { gap: 12px; } }
+@media (max-width: 999px) { .frame-status { display: none; } }   /* not enough room: the footer keeps the contact details */
 
 
 /* the 3D logo fades in once it is ready (computer: after load; phone: first gesture); until then, or without WebGL, the image */
