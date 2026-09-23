@@ -77,12 +77,20 @@ body.is-scrolled .scroll-hint { opacity: 0; }
 }
 
 /* ---------- motion: one choreography on arrival, nothing else ---------- */
+/* each word of the name rises out of a mask (the clip moves with the word, so its bottom edge stays put), the portrait
+   opens, then the rest settles in; the 3D phones arrive last, when they are ready (hero.js) */
 @keyframes settle { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-.name, .portrait { animation: settle .7s var(--ease-out) both; }
-.subtitle, .location { animation: settle .7s var(--ease-out) .12s both; }
-.contact { animation: settle .7s var(--ease-out) .22s both; }
-.hero-line .w { animation: settle .55s var(--ease-out) both; animation-delay: calc(.28s + var(--i) * 42ms); }
+@keyframes rise { from { transform: translateY(100%); clip-path: inset(0 0 100% 0); } to { transform: none; clip-path: inset(0); } }
+@keyframes open { from { opacity: 0; transform: scale(.4); } to { opacity: 1; transform: none; } }
+.name > span { display: inline-block; animation: rise 1s var(--ease-out-strong) .1s both; }
+.name > span + span { animation-delay: .22s; }
+.portrait-disc { animation: open .8s var(--ease-out-strong) .2s both; }
+.portrait-img { animation: settle .9s var(--ease-out) .38s both; }
+.subtitle, .location { animation: settle .7s var(--ease-out) .5s both; }
+.hero-line .w { animation: settle .55s var(--ease-out) both; animation-delay: calc(.6s + var(--i) * 42ms); }
+.contact { animation: settle .7s var(--ease-out) .8s both; }
+.hero-foot { animation: settle .7s var(--ease-out) 1s both; }
 @media (prefers-reduced-motion: reduce) {
-  .name, .subtitle, .location, .contact, .hero-line .w, .scroll-hint::before { animation: none; }
+  .name > span, .portrait-disc, .portrait-img, .subtitle, .location, .contact, .hero-foot, .hero-line .w, .scroll-hint::before { animation: none; }
   .hero3d, .hero-stage::before { transition: none; }
 }
