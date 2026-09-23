@@ -13,8 +13,8 @@ const POSTERS = { betting: { en: bettingEn, fr: bettingFr }, booking: { en: book
 import Chips from './Chips.astro';
 import { md, plain } from '../lib/text';
 import type { Job } from '../lib/types';
-interface Props { j: Job; num: string; stackLabel: string; lang: 'en' | 'fr' }
-const { j, num, stackLabel, lang } = Astro.props;
+interface Props { j: Job; num: string; stackLabel: string; lang: 'en' | 'fr'; dragLabel: string }
+const { j, num, stackLabel, lang, dragLabel } = Astro.props;
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 ---
@@ -34,6 +34,6 @@ const short = bullets.length === 0;
       </ul>
     </div>
   )}
-  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.9" aria-hidden="true"></div>}
+  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.9" data-cursor={dragLabel} aria-hidden="true"></div>}
   {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>

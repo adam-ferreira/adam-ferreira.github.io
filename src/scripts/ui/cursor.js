@@ -1,16 +1,17 @@
 // A ball in the accent color, shaded like a sphere, that follows the mouse with a slight lag and stretches in the
-// direction of movement; over a link or a 3D object it swells into a glass bubble. Mouse only, never under
-// "reduce motion". Loaded by the page (Cv.astro).
+// direction of movement; over a link or a 3D object it swells into a glass bubble, with a word over some of them
+// (data-cursor: "Drag", "Write", "Throw" over a pill). Mouse only, never under "reduce motion". Loaded by the page (Cv.astro).
 import { MOUSE, REDUCED_MOTION, matches } from '../media.js';
 const root = document.documentElement;
 
 if (matches(MOUSE) && !matches(REDUCED_MOTION)) {
   const dot = document.createElement('div');
   dot.className = 'cursor'; dot.setAttribute('aria-hidden', 'true');
-  dot.innerHTML = '<span class="cursor-ball"></span>';
+  dot.innerHTML = '<span class="cursor-ball"></span><span class="cursor-label"></span>';
+  const labelEl = dot.querySelector('.cursor-label');
   document.body.appendChild(dot);
   const HOT = 'a, button, [role="switch"], .mark.is-3d, .hero3d, .brand, .is-over-pill, .device-anchor, html.stage .hero-stage';
-  let mx = 0, my = 0, cx = 0, cy = 0, shown = false, hot = false, running = false;
+  let mx = 0, my = 0, cx = 0, cy = 0, shown = false, hot = false, running = false, label = '';
   const tick = () => {
     const nx = cx + (mx - cx) * 0.35, ny = cy + (my - cy) * 0.35;
     const vx = nx - cx, vy = ny - cy; cx = nx; cy = ny;
@@ -27,8 +28,12 @@ if (matches(MOUSE) && !matches(REDUCED_MOTION)) {
     mx = e.clientX; my = e.clientY;
     if (!shown) { shown = true; cx = mx; cy = my; root.classList.add('has-cursor'); }
     if (!running) { running = true; requestAnimationFrame(tick); }
-    const h = e.target instanceof Element && !!e.target.closest(HOT);
+    const el = e.target instanceof Element ? e.target : null;
+    const h = !!el?.closest(HOT);
     if (h !== hot) { hot = h; dot.classList.toggle('is-hot', hot); }
+    // the word: a pill under the mouse wins over the sentence written on top of it
+    const text = (el?.closest('.is-over-pill') ? el.closest('[data-cursor-pill]')?.dataset.cursorPill : el?.closest('[data-cursor]')?.dataset.cursor) || '';
+    if (text !== label) { label = text; if (text) labelEl.textContent = text; dot.classList.toggle('has-label', !!text); }
   }, { passive: true });
   document.addEventListener('pointerdown', () => dot.classList.add('is-down'));
   document.addEventListener('pointerup', () => dot.classList.remove('is-down'));

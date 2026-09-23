@@ -8,9 +8,9 @@ const { d } = Astro.props;
 const c = d.identity.contact, ui = d.ui;
 const skills = JSON.stringify(d.skills.flatMap((g) => g.items));
 ---
-<footer class="site-footer slide" data-label={ui.contact_label}>
+<footer class="site-footer slide" data-label={ui.contact_label} data-cursor-pill={ui.cursor_throw}>
   <canvas class="footer3d" aria-hidden="true" data-skills={skills}></canvas>
-  <a class="footer-statement" href={`mailto:${c.email}`} set:html={md(ui.footer_statement)} />
+  <a class="footer-statement" data-cursor={ui.cursor_mail} href={`mailto:${c.email}`} set:html={md(ui.footer_statement)} />
   <div class="footer-grid label">
     <a class="nocase" href={`mailto:${c.email}`}>{c.email}</a>
     <a href={`tel:${c.phone_href}`}>{c.phone}</a>

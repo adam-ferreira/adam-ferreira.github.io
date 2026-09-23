@@ -1,6 +1,6 @@
 /* Light / dark switch (ThemeToggle.astro): a track, a sun, a moon, a sliding knob. */
 .theme-toggle {
-  grid-column: 4; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px;
+  grid-column: 5; position: relative; width: 52px; height: 26px; padding: 0; border-radius: 999px;
   border: 1px solid var(--line); background: var(--chip); cursor: pointer;
   display: inline-flex; align-items: center; justify-content: space-between;
   -webkit-tap-highlight-color: transparent; transition: background .25s ease, border-color .25s ease;

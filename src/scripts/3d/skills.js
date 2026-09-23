@@ -26,7 +26,7 @@ async function load() {
 }
 
 function createFinale(THREE, Matter) {
-  const { Engine, Bodies, Body, Composite, Constraint, Query, Sleeping } = Matter;
+  const { Engine, Bodies, Body, Composite, Constraint, Query, Sleeping, Events } = Matter;
   const labels = JSON.parse(canvas.dataset.skills || '[]');
   const mouse = matches(MOUSE);
   const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
@@ -42,6 +42,12 @@ function createFinale(THREE, Matter) {
   const env = loadEnv(THREE);
 
   const engine = Engine.create({ enableSleeping: true });
+  Events.on(engine, 'collisionStart', (ev) => {   // a knock per real impact (sound.js, if the sound is on)
+    for (const { bodyA: a, bodyB: b } of ev.pairs) {
+      const v = Math.hypot(a.velocity.x - b.velocity.x, a.velocity.y - b.velocity.y);
+      if (v > 2.5) window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'impact', v: v / 18 } }));
+    }
+  });
   engine.gravity.y = 1.1;
   const pills = [];
   let W = 0, H = 0, walls = [], pillH = 44;

@@ -43,6 +43,8 @@ const cv = defineCollection({
     sections: z.object({ experience: text, education: text, languages: text, interests: text }).strict(),
     ui: z.object({
       toggle_aria: text, toggle_title_dark: text, toggle_title_light: text, nav_aria: text,
+      sound_aria: text, sound_title_on: text, sound_title_off: text,   // the sound switch (SoundToggle.astro)
+      cursor_drag: text, cursor_mail: text, cursor_throw: text,         // words the cursor shows over some objects (cursor.js)
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
       pager_aria: text, home_label: text, contact_label: text,   // the progress indicator, built by src/scripts/ui/pager.js
       updated: z.string().includes('{date}', { message: 'ui.updated must contain {date} (date of the last content change)' }),
