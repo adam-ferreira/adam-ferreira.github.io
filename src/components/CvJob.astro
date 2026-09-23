@@ -1,0 +1,23 @@
+---
+// One experience on the detailed CV page: everything the home page tells in short, in full — the whole intro, the
+// challenge, each achievement's full text, the stack. Style: CvPage.css.
+import EntryHeader from './EntryHeader.astro';
+import Chips from './Chips.astro';
+import { md } from '../lib/text';
+import type { Job } from '../lib/types';
+interface Props { j: Job; stackLabel: string }
+const { j, stackLabel } = Astro.props;
+const sentence = (t: string) => (/[.!?…]$/.test(t) ? t : `${t}.`);   // the title leads its text, as a sentence of its own
+---
+<article class="cv-job">
+  <EntryHeader title={j.role} org={j.client} date={j.date} />
+  {j.intro && <p set:html={md(j.intro)} />}
+  {j.subtitle && <h4 class="cv-sub-title" set:html={md(j.subtitle)} />}
+  {j.subintro && <p class="cv-sub-intro" set:html={md(j.subintro)} />}
+  {j.bullets && (
+    <ul class="cv-bullets">
+      {j.bullets.map((b) => <li><strong set:html={md(sentence(b.title))} /> <span set:html={md(b.text)} /></li>)}
+    </ul>
+  )}
+  {j.stack && <div class="cv-stack"><span class="cv-stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
+</article>

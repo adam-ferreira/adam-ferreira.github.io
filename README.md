@@ -1,6 +1,6 @@
 # CV — Adam Ferreira
 
-Site: https://adam-ferreira.github.io/ (English) · https://adam-ferreira.github.io/fr/ (French). No PDF since 21/09/2026: the CV is the web app.
+Site: https://adam-ferreira.github.io/ (English) · https://adam-ferreira.github.io/fr/ (French). The home page is the immersive version; the detailed CV is a page of its own, https://adam-ferreira.github.io/cv/ (and `/fr/cv/`), printed to PDF at every build (`/adam-ferreira-cv.pdf`, `/fr/adam-ferreira-cv.pdf`).
 
 **Everything in this repository is written in English** — code, comments, tests, CI, commit messages. The only French is the French CV itself (`src/content/cv/fr.json`) and the French labels shown on the French page.
 
@@ -14,8 +14,10 @@ The choice was measured on a test page, JavaScript shipped by the framework alon
 | `src/content/cv/en.json`, `fr.json` | **All the content**, one version per language, same structure. UTF-8 text, `**bold**` for emphasis. |
 | `src/content.config.ts` | The content **schema**: a missing, extra or misspelled field stops the build with a clear message. `src/lib/types.ts` derives the component types from it. |
 | `src/pages/index.astro`, `src/pages/fr/index.astro` | The two pages (English at the root, French under `/fr/`), which call the layout. |
+| `src/pages/cv.astro`, `src/pages/fr/cv.astro`, `src/layouts/CvPage.astro` | The **detailed CV**: every text in full (the home page shows the `lead` of an experience and the `short` of each achievement, this page the `intro`, the challenge and the full `text`), one reading column, no screens and no 3D, its only script the theme switch. Its components: `CvIdentity`, `CvSection`, `CvJob` (style: `CvPage.css`); its stylesheet: `src/styles/cv-page.css`, with the paper version in `src/styles/print.css` (A4, always light, two pages). |
+| `tools/render-pdf.mjs` | The last step of `npm run build`: prints each built CV page to PDF with Playwright's Chromium (the file named by the page's download link, written into `dist/`). The PDF is made from the page just built, so it never goes stale; `npm run pdf` runs it alone on an existing build. |
 | `src/layouts/Cv.astro` | The page: assembles the components and is **the single entry point of the scripts**. |
-| `src/components/` | Each component with **its style next to it** (`X.css`), and its script when it is its own (`X.js`): `BaseHead` (what every page puts in its head: security policy, fonts, icon, and the script that sets `html.js`, the remembered theme and `html.stage` before first paint), `Head` (the CV's own metadata and languages), `Topbar` (+ `Topbar.js`: the logo reloads the page), `ThemeToggle` (+ `.css`, `.js`), `Hero` with `HeroLine` and `HeroWord` (the hero sentence, word by word), `Mark` (Betclic, Accor, LinkedIn: draws its images and carries its dark colours), `Experience` + `Job`, `Facts`, `Footer`, and the building blocks `Section` (a section and its giant title), `SectionTitle`, `EntryHeader` (`.entry-*`: an experience or a degree), `PillLink`, `Chips`. |
+| `src/components/` | Each component with **its style next to it** (`X.css`), and its script when it is its own (`X.js`): `BaseHead` (what every page puts in its head: security policy, fonts, icon, and the script that sets `html.js`, the remembered theme and `html.stage` before first paint — not on the detailed CV), `Head` (the metadata and languages of the home page and of the detailed CV), `Topbar` (+ `Topbar.js`: the logo reloads the page; the `CV` link to the detailed CV), `ThemeToggle` (+ `.css`, `.js`), `Hero` with `HeroLine` and `HeroWord` (the hero sentence, word by word), `Mark` (Betclic, Accor, LinkedIn: draws its images and carries its dark colours), `Experience` + `Job`, `Facts`, `Footer`, and the building blocks `Section` (a section and its giant title), `SectionTitle`, `EntryHeader` (`.entry-*`: an experience or a degree), `PillLink`, `Chips`. |
 | `src/styles/index.css` | **The cascade order**, in one place: it imports the stylesheets in the order they must apply (several rules of equal weight are decided by their position). |
 | `src/styles/` | What spans the whole page: `base` (fonts, light / dark colours, the shared measurements `--topbar-h`, `--gutter` and the two easing curves), `layout`, `screens` (large screens: panels, transitions, progress indicator), `stage` (stage mode), `cursor`. |
 | `src/scripts/ui/` | Page-wide behaviour: `pager` (the screens and their progress indicator), `stage` (one screen at a time, on a computer), `scroll` (normal scrolling, reveals, Lenis), `cursor`, `fps` (`?fps` in the URL). The indicator, the cursor and the meter are created by JavaScript on purpose: without it they would be useless. `sound` (the sound switch, off by default: sounds synthesised with Web Audio, triggered by a `cv:sound` event from the other scripts), `magnetic` (buttons that lean towards the mouse). |
@@ -24,7 +26,7 @@ The choice was measured on a test page, JavaScript shipped by the framework alon
 | `src/lib/` | `text.ts` (bold, plain text, splitting the hero sentence with its `{{betclic}}` marks), `assets.ts` (mark URLs, sizes and dark variant), `types.ts` (types from the schema), `i18n.ts` (the two languages, their paths and locales), `csp.ts` (the security policy), `updated.ts` (date of the last content change). |
 | `src/assets/` | Fonts, photo, logo, 3D model, SVG marks, 3D reflections. Published under a name that changes with their content. |
 | `public/photo.jpg`, `public/robots.txt` | The sharing image (Open Graph, 800 × 800) and the instructions for search engines. |
-| `src/pages/sitemap.xml.ts`, `src/pages/404.astro` | The sitemap (both languages, with their date) and the page for unknown addresses (bilingual, texts from the JSON files; it loads only the three stylesheets it uses). |
+| `src/pages/sitemap.xml.ts`, `src/pages/404.astro` | The sitemap (home page and detailed CV, both languages, with their date) and the page for unknown addresses (bilingual, texts from the JSON files; it loads only the three stylesheets it uses). |
 | `src/pages/tools/linkedin-cover.astro` | The LinkedIn banner (1584 × 396), not indexed, built from the site's base stylesheet in its dark theme. Export: headless Chrome `--window-size=1584,396 --force-device-scale-factor=2 --screenshot` on `/tools/linkedin-cover/`. |
 | `src/pages/tools/device-posters.astro`, `src/pages/tools/og-image.astro`, `tools/render-posters.mjs` | The phone scenes as still images (`src/assets/devices/`): shown while the 3D loads, where WebGL is unavailable or the graphics context is lost, and on the 404 page (a failed test): the hero's test, each client's in English and in French, the 404's. Then the link preview image (`public/og-image.jpg`, 1200 × 630). After a change to the phones or their screens: `npm run build && npm run posters`, then build again. |
 | `tests/` | The Playwright tests (see below). |
@@ -47,6 +49,7 @@ npm run dev          # http://localhost:4321, reloaded on every change
 
 `npm test` (or `npm run test:ui` to watch them run). They run against the **built** site, in Chromium (desktop, 1512 × 830) and WebKit (iPhone 15, iPad in landscape for the visual comparison), and read their expectations from the content files:
 
+- **detailed CV** (`tests/cv-page.spec.ts`): every full text is there and none of the home page's short versions, the PDF answers and fits on two pages, the paper version is light and without buttons, axe in light and dark, the top bar's `CV` link, the contact line still fitting at 1000 px;
 - both languages load without any JavaScript or console error; all the text is already in the HTML; canonical and `hreflang` are right; title, `Person` card, CSP, `robots.txt`, sitemap and 404 page;
 - **accessibility**: no WCAG 2.1 A/AA violation (axe); in stage mode, all the content stays exposed to screen readers; "Skip to content" first; Tab to a link on another screen brings the stage there;
 - **without JavaScript**, experiences and titles stay visible, and the Accor mark still turns light on a dark system;
@@ -58,7 +61,7 @@ npm run dev          # http://localhost:4321, reloaded on every change
 
 Regression tests were verified by reintroducing each fixed bug: they do fail.
 
-CI (`.github/workflows/deploy.yml`, Ubuntu 24.04): type check (`astro check`) → tests → **Lighthouse** (both pages, three runs; fails below 100 for accessibility, best practices and SEO, or 90 for performance) → build → deploy. **Dependabot** proposes grouped updates every Monday, each one going through the same CI.
+CI (`.github/workflows/deploy.yml`, Ubuntu 24.04): type check (`astro check`) → tests → **Lighthouse** (both home pages and both detailed CV pages, three runs; fails below 100 for accessibility, best practices and SEO, or 90 for performance) → build (Chromium installed for the PDF) → deploy. **Dependabot** proposes grouped updates every Monday, each one going through the same CI.
 
 ## SEO, security, accessibility
 

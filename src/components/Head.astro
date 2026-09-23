@@ -1,16 +1,20 @@
 ---
-// The <head> of a CV page: everything that is specific to it — title and description, share preview (Open Graph), card
-// for search engines (schema.org), languages (canonical, hreflang). What every page shares is in BaseHead.astro.
+// The <head> of a CV page — the home page or the detailed CV: everything that is specific to it — title and description,
+// share preview (Open Graph), card for search engines (schema.org), languages (canonical, hreflang). What every page
+// shares is in BaseHead.astro.
 import BaseHead from './BaseHead.astro';
-import { LANGS, pathOf, LOCALE, type Lang } from '../lib/i18n';
+import { LANGS, pathOf, cvPathOf, LOCALE, type Lang } from '../lib/i18n';
 import type { Cv } from '../lib/types';
 import heroPoster from '../assets/devices/hero.webp?url';
-interface Props { lang: Lang; d: Cv; fullName: string }
-const { lang, d, fullName } = Astro.props;
+interface Props { lang: Lang; d: Cv; fullName: string; page?: 'home' | 'cv' }
+const { lang, d, fullName, page = 'home' } = Astro.props;
 const idn = d.identity;
+const home = page === 'home';
+const pathFor = home ? pathOf : cvPathOf;
 const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
-const url = new URL(pathOf(lang), site).href;
+const url = new URL(pathFor(lang), site).href;
 const photo = new URL(idn.photo, site).href;
+const title = home ? d.meta.title : `${d.ui.cv_page.title} — ${fullName}`;
 
 // The "Person" card read by search engines (schema.org).
 const person = {
@@ -23,8 +27,8 @@ const person = {
 };
 const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 ---
-<BaseHead />
-<title>{d.meta.title}</title>
+<BaseHead stage={home} />
+<title>{title}</title>
 <meta name="description" content={d.meta.description}>
 <meta property="og:type" content="profile">
 <meta property="og:title" content={`${fullName} — ${idn.headline}`}>
@@ -37,8 +41,8 @@ const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 <meta property="og:locale" content={LOCALE[lang]}>
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href={url}>
-{LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathOf(l), site).href}>)}
-<link rel="alternate" hreflang="x-default" href={site}>
+{LANGS.map((l) => <link rel="alternate" hreflang={l} href={new URL(pathFor(l), site).href}>)}
+<link rel="alternate" hreflang="x-default" href={new URL(pathFor('en'), site).href}>
 <script type="application/ld+json" set:html={ld}></script>
 <!-- where the 3D does not run, the phones' still image is the largest element of the first screen: fetched early -->
-<link rel="preload" as="image" href={heroPoster} media="(max-width: 860px), (hover: none), (pointer: coarse)">
+{home && <link rel="preload" as="image" href={heroPoster} media="(max-width: 860px), (hover: none), (pointer: coarse)">}
