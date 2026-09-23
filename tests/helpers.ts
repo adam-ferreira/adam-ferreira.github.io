@@ -9,6 +9,11 @@ export const PAGES = [
   { lang: 'en' as const, path: '/' },
   { lang: 'fr' as const, path: '/fr/' },
 ];
+/** The detailed CV page of each language, and its PDF (made at the end of the build). */
+export const CV_PAGES = [
+  { lang: 'en' as const, path: '/cv/', home: '/', pdf: '/adam-ferreira-cv.pdf' },
+  { lang: 'fr' as const, path: '/fr/cv/', home: '/fr/', pdf: '/fr/adam-ferreira-cv.pdf' },
+];
 
 /** Displayed text, without the JSON **bold** markup. */
 export const plain = (s: string) => s.replace(/\*\*/g, '');

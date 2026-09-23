@@ -10,12 +10,15 @@ import { contentSecurityPolicy } from '../lib/csp';
 import { THEME_KEY } from '../scripts/theme.js';
 import { STAGE } from '../scripts/media.js';
 
+interface Props { stage?: boolean }   // stage: false on a page that never has screens (the detailed CV)
+const { stage = true } = Astro.props;
+
 // Before anything is displayed: "js" (content that gets revealed may start hidden), the theme the visitor chose (otherwise
 // the page would first appear in the system theme, then switch once the deferred scripts run) and, on a desktop with a
 // mouse, stage mode.
 const BOOT = '(function(r){r.classList.add("js");'
   + `try{var t=localStorage.getItem(${JSON.stringify(THEME_KEY)});if(t==="light"||t==="dark")r.dataset.theme=t}catch(e){}`
-  + `if(matchMedia(${JSON.stringify(STAGE)}).matches)r.classList.add("stage")`
+  + (stage ? `if(matchMedia(${JSON.stringify(STAGE)}).matches)r.classList.add("stage")` : '')
   + '})(document.documentElement)';
 ---
 <meta charset="UTF-8">

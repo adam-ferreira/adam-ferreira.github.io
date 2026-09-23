@@ -5,7 +5,8 @@
   "description": "Adam Ferreira's web CV — static Astro site, English at the root, French under /fr/",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node tools/render-pdf.mjs",
+    "pdf": "node tools/render-pdf.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "test": "playwright test",

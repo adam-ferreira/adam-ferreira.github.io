@@ -1,0 +1,21 @@
+---
+// The head of the detailed CV (CvPage.astro): the name, giant, the headline and the tagline, then the contact details.
+// On paper the site's address joins them. Style: CvPage.css.
+import { md } from '../lib/text';
+import type { Cv } from '../lib/types';
+interface Props { d: Cv; fullName: string; siteUrl: string }
+const { d, fullName, siteUrl } = Astro.props;
+const idn = d.identity;
+---
+<header class="cv-identity">
+  <h1 class="cv-name">{fullName}</h1>
+  <p class="cv-headline" set:html={md(idn.headline)} />
+  <p class="cv-tagline" set:html={md(idn.tagline)} />
+  <ul class="cv-contact label">
+    <li set:html={md(idn.location)} />
+    <li><a class="nocase" href={`mailto:${idn.contact.email}`}>{idn.contact.email}</a></li>
+    <li><a href={`tel:${idn.contact.phone_href}`}>{idn.contact.phone}</a></li>
+    <li><a class="nocase" href={idn.linkedin.url}>{idn.linkedin.url.replace(/^https:\/\/(www\.)?/, '')}</a></li>
+    <li class="print-only"><a class="nocase" href={siteUrl}>{siteUrl.replace(/^https:\/\/|\/$/g, '')}</a></li>
+  </ul>
+</header>
