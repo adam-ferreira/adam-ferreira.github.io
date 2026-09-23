@@ -1,0 +1,36 @@
+---
+// The link preview image (1200 × 630): the name in Humane, the headline, the phones. Exported to public/og-image.jpg by
+// npm run posters (tools/render-posters.mjs), after the phones' still images. The page is published but not indexed.
+import { getEntry } from 'astro:content';
+import '../../styles/base.css';
+import phones from '../../assets/devices/hero.webp?url';
+const d = (await getEntry('cv', 'en'))!.data, idn = d.identity;
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Link preview</title>
+<style is:global>
+  html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--paper); }
+  .og { position: relative; width: 1200px; height: 630px; display: grid; grid-template-columns: 1fr 520px; align-items: center; padding: 0 0 0 72px; box-sizing: border-box; }
+  .og::after { content: ""; position: absolute; right: 60px; top: 50%; width: 520px; height: 520px; transform: translateY(-50%); border-radius: 50%;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 24%, transparent) 0%, transparent 62%); z-index: 0; }
+  .og-name { margin: 0; font-family: "Humane", sans-serif; font-weight: 400; text-transform: uppercase; font-size: 190px; line-height: .84; color: var(--ink); }
+  .og-line { margin: 26px 0 0; font-family: var(--sans); font-size: 30px; font-weight: 600; color: var(--ink); }
+  .og-label { margin: 14px 0 0; font-family: var(--mono); font-size: 18px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  .og img { position: relative; z-index: 1; width: 500px; height: 500px; }
+</style>
+</head>
+<body>
+  <div class="og">
+    <div>
+      <h1 class="og-name">{idn.first_name}<br>{idn.last_name}</h1>
+      <p class="og-line">{idn.headline.replace(/\*\*/g, '')}</p>
+      <p class="og-label">adam-ferreira.github.io</p>
+    </div>
+    <img src={phones} alt="" width="500" height="500">
+  </div>
+</body>
+</html>

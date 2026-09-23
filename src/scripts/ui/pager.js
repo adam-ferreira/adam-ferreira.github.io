@@ -1,5 +1,6 @@
 // The screens of the page (.slide) and the progress indicator that lists them: one tick per screen, a counter, a click
-// to go there. Built here rather than written in the page: without JavaScript it would lead nowhere.
+// to go there. It is also a test runner: a screen that has been on screen for a moment passes (its tick turns green),
+// the counter says how many passed, and once they all have: "All tests passed". Built here rather than written in the page: without JavaScript it would lead nowhere.
 // stage.js (one screen at a time, on a computer) and scroll.js (normal scrolling) share it: they say which screen is
 // current, and stage.js replaces the way a tick navigates.
 import { REDUCED_MOTION, matches } from '../media.js';
@@ -12,7 +13,9 @@ export const bar = document.querySelector('.topbar');
 const labelOf = (p) => p.dataset.label ?? '';
 const pad = (n) => (n < 10 ? '0' : '') + n;
 
-let pager = null, ticks = [], count = null;
+let pager = null, ticks = [], count = null, passTimer = 0;
+const passed = new Set(), PASS_MS = 900;
+const words = document.body.dataset;
 /** What a tick does: scroll to the screen, unless stage.js takes over (the page does not scroll there). */
 let navigate = (i) => slides[i].scrollIntoView({ behavior: matches(REDUCED_MOTION) ? 'auto' : 'smooth', block: 'start' });
 export const setNavigator = (fn) => { navigate = fn; };
@@ -20,14 +23,23 @@ export const setNavigator = (fn) => { navigate = fn; };
 export function setCurrent(i) {
   if (!pager) return;
   ticks.forEach((t, k) => { t.classList.toggle('is-current', k === i); if (k === i) t.setAttribute('aria-current', 'true'); else t.removeAttribute('aria-current'); });
-  count.textContent = pad(i + 1) + ' / ' + pad(slides.length);
   pager.classList.toggle('is-inverted', slides[i].classList.contains('site-footer'));
+  clearTimeout(passTimer);
+  passTimer = setTimeout(() => pass(i), PASS_MS);
+}
+function pass(i) {
+  if (passed.has(i)) return;
+  passed.add(i); ticks[i].classList.add('is-passed');
+  const done = passed.size === slides.length;
+  count.textContent = done ? (words.pagerDone ?? '') : `${pad(passed.size)}/${pad(slides.length)} ${words.pagerPassed ?? ''}`;
+  if (done) { pager.classList.add('is-done'); window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'success' } })); }
 }
 
 if (slides.length) {
   pager = document.createElement('nav');
   pager.className = 'pager'; pager.setAttribute('aria-label', document.body.dataset.pagerLabel ?? '');
   count = document.createElement('span'); count.className = 'pager-count label'; count.setAttribute('aria-hidden', 'true');
+  count.textContent = `00/${pad(slides.length)} ${words.pagerPassed ?? ''}`;
   pager.appendChild(count);
   ticks = slides.map((p, i) => {
     const b = document.createElement('button');

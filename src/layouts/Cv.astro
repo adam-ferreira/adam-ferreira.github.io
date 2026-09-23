@@ -22,7 +22,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
 <head>
   <Head lang={lang} d={d} fullName={fullName} />
 </head>
-<body id="top" data-pager-label={d.ui.pager_aria}>
+<body id="top" data-pager-label={d.ui.pager_aria} data-pager-passed={d.ui.pager_passed} data-pager-done={d.ui.pager_done} data-tab-away={d.ui.tab_away}>
   <a class="skip-link" href="#experience">{d.ui.skip_link}</a>
 
   <Topbar d={d} fullName={fullName} home={pathOf(lang)} />
@@ -50,6 +50,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
     import '../components/Topbar.js';       // the top bar: the logo reloads the page
     import '../scripts/ui/cursor.js';       // the page: cursor
     import '../scripts/ui/magnetic.js';     // the page: buttons that lean towards the mouse
+    import '../scripts/ui/tab.js';          // the page: the tab's title while the visitor is away
     import '../scripts/ui/fps.js';          // the page: ?fps
     import '../scripts/3d/hero.js';         // Hero: the phones (Three.js loaded on demand)
     import '../scripts/3d/logo.js';         // Topbar: the AF logo

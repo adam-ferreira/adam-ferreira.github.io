@@ -1,5 +1,6 @@
 // Renders the phone scenes of src/pages/tools/device-posters.astro to WebP stills (src/assets/devices/): the hero's,
-// then each client's in English and in French. Needs a build: npm run build && npm run posters.
+// each client's in English and in French, the 404's failed test; then the link preview image (public/og-image.jpg).
+// Needs a build: npm run build && npm run posters (then build again).
 import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import { writeFileSync } from 'node:fs';
@@ -14,10 +15,10 @@ try {
       try { await page.goto(`http://localhost:${PORT}/tools/device-posters/?lang=${lang}`, { waitUntil: 'networkidle' }); break; }
       catch (e) { if (i > 40) throw e; await page.waitForTimeout(500); }
     }
-    await page.waitForFunction(() => document.querySelectorAll('canvas.hero3d.is-ready').length === 3, null, { timeout: 30_000 });
+    await page.waitForFunction(() => document.querySelectorAll('canvas.hero3d.is-ready').length === 4, null, { timeout: 30_000 });
     await page.waitForTimeout(500);
-    for (const name of ['hero', 'betting', 'booking']) {
-      if (name === 'hero' && lang === 'fr') continue;   // no text on the hero's app
+    for (const name of ['hero', 'betting', 'booking', 'notfound']) {
+      if ((name === 'hero' || name === 'notfound') && lang === 'fr') continue;   // no language-dependent text on those
       const png = await page.locator(`canvas[data-name="${name}"]`).screenshot({ omitBackground: true });
       // cropped to the phones (square, a small margin) and re-encoded as WebP by the browser itself
       const webp = await page.evaluate(async (b64) => {
@@ -34,11 +35,18 @@ try {
         out.getContext('2d').drawImage(src, cx - side / 2, cy - side / 2, side, side, 0, 0, side, side);
         return out.toDataURL('image/webp', 0.86).split(',')[1];
       }, png.toString('base64'));
-      const file = name === 'hero' ? 'hero.webp' : `${name}-${lang}.webp`;
+      const file = name === 'hero' || name === 'notfound' ? `${name}.webp` : `${name}-${lang}.webp`;
       writeFileSync(new URL(file, OUT), Buffer.from(webp, 'base64'));
       console.log(`${file}: ${(Buffer.from(webp, 'base64').length / 1024).toFixed(1)} kB`);
     }
   }
+  // the link preview image, which shows the hero's still: 1200 × 630, JPEG (the format every platform accepts)
+  const og = await (await browser.newContext({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 })).newPage();
+  await og.goto(`http://localhost:${PORT}/tools/og-image/`, { waitUntil: 'networkidle' });
+  await og.evaluate(() => document.fonts.ready);
+  const jpg = await og.screenshot({ type: 'jpeg', quality: 86 });
+  writeFileSync(new URL('../public/og-image.jpg', import.meta.url), jpg);
+  console.log(`og-image.jpg: ${(jpg.length / 1024).toFixed(1)} kB`);
 } finally {
   await browser.close();
   server.kill();

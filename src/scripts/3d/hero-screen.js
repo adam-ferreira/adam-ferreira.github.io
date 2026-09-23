@@ -6,7 +6,7 @@
 import { accent } from './common.js';
 import betclicLogo from '../../assets/marks/betclic.svg?url';
 import accorLogo from '../../assets/marks/accor.svg?url';
-const ACC = accent(), GREEN = '#3ddc84', INK = '#161b22';
+const ACC = accent(), GREEN = '#3ddc84', RED = '#ff5d5d', INK = '#161b22';
 const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
 const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // towards white
@@ -44,6 +44,12 @@ export const SCENARIOS = {
     { rect: R.card, verb: 'assert', loc: '~mission_progress' },
     { rect: R.row2, verb: 'assert', loc: '~leaderboard_rank' },
     { rect: tabRect(2), verb: 'tap', loc: '~tab_missions' },
+  ] },
+  // the 404 page: the test breaks on its last step, the page it expected is not there (`fail`: that step's index)
+  notfound: { style: 'promo', feature: 'navigation.feature', body: '#e5484d', fail: 2, steps: [
+    { rect: R.card, verb: 'tap', loc: '~open_link' },
+    { rect: R.row1, verb: 'tap', loc: '~menu_item' },
+    { rect: R.row2, verb: 'assert', loc: '~page_found' },
   ] },
   booking: { style: 'booking', feature: 'booking.feature', body: ACCOR, steps: [
     { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
@@ -230,10 +236,11 @@ export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
   // the selection frame slides to the target element, shows its locator, then taps or asserts
   if (s.frame > 0) {
     const r = mix(s.k > 0 ? STEPS[s.k - 1].rect : step.rect, step.rect, s.slide);
-    const col = s.checked ? GREEN : ACC;
+    const failed = s.checked && s.k === sc.fail;
+    const col = failed ? RED : s.checked ? GREEN : ACC;
     g.save(); g.globalAlpha = s.frame;
     rr(g, r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6);
-    g.fillStyle = s.checked ? rgba(GREEN, 0.12) : rgba(ACC, 0.1); g.fill();
+    g.fillStyle = failed ? rgba(RED, 0.14) : s.checked ? rgba(GREEN, 0.12) : rgba(ACC, 0.1); g.fill();
     g.lineWidth = 4; g.strokeStyle = col; g.stroke();
     g.font = `600 19px ${MONO}`;
     const lw = g.measureText(step.loc).width + 20, lx = Math.min(r.x - 6, SW - 8 - lw), ly = r.y - 6 - 34;
@@ -253,8 +260,9 @@ export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
   for (let i = 0; i < s.done; i++) {
     g.globalAlpha = i === s.done - 1 ? s.lineIn : 1;
     const y = LOG_Y + i * LOG_DY;
-    g.fillStyle = GREEN; g.fillText('✓', 44, y);
-    g.fillStyle = '#d7dde6'; g.fillText(STEPS[i].verb.padEnd(7) + STEPS[i].loc, 74, y);
+    const broke = i === sc.fail;
+    g.fillStyle = broke ? RED : GREEN; g.fillText(broke ? '✗' : '✓', 44, y);
+    g.fillStyle = broke ? RED : '#d7dde6'; g.fillText(STEPS[i].verb.padEnd(7) + STEPS[i].loc, 74, y);
   }
   g.globalAlpha = 1;
   if (s.cursor) {
@@ -263,11 +271,12 @@ export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
     g.fillStyle = '#6b7480'; g.fillText(step.verb.padEnd(7) + step.loc, 74, y);
   }
   if (!s.inSteps) {
-    const result = `PASSED ${n}/${n}`;
+    const broke = sc.fail !== undefined;
+    const result = broke ? 'FAILED · 404' : `PASSED ${n}/${n}`;
     g.globalAlpha = s.summary;
-    g.font = `700 22px ${MONO}`; g.fillStyle = GREEN; g.fillText(result, 44, SUM_Y);
+    g.font = `700 22px ${MONO}`; g.fillStyle = broke ? RED : GREEN; g.fillText(result, 44, SUM_Y);
     const w = g.measureText(result).width;
-    g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('· 2 devices · 7.8 s', 44 + w + 14, SUM_Y);
+    g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText(broke ? '· page not found' : '· 2 devices · 7.8 s', 44 + w + 14, SUM_Y);
     g.globalAlpha = 1;
   }
 }
