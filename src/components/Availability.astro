@@ -1,0 +1,8 @@
+---
+// Availability: a small green sphere that pulses, and its words. In the top bar (short) and the footer (long).
+// Style: Availability.css.
+import { md } from '../lib/text';
+interface Props { text: string }
+const { text } = Astro.props;
+---
+<span class="availability"><i class="status-dot" aria-hidden="true"></i><span set:html={md(text)} /></span>

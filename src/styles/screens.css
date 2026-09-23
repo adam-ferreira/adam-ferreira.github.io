@@ -9,7 +9,7 @@
   .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); }
   /* the footer becomes the last screen (it is no longer "stuck" under the content: snapping cannot target a stuck element) */
   footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); display: flex; flex-direction: column; justify-content: space-between; }
-  footer.site-footer .footer-statement, footer.site-footer .footer-grid { margin-top: auto; }   /* the sentence in the middle, the contact details at the bottom */
+  footer.site-footer .footer-statement, footer.site-footer .footer-bottom { margin-top: auto; }   /* the sentence in the middle, the contact details at the bottom */
   .section { margin-top: 0; padding-top: 0; border-top: 0; }
   .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
   .chapter .section-title-wrapper { margin-bottom: 0; }
