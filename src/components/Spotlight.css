@@ -10,3 +10,9 @@
 .spotlight-name small { margin-left: .3em; font-size: .3em; color: var(--muted); letter-spacing: .03em; }
 .spotlight-date { white-space: nowrap; }
 @media (min-width: 1100px) { .spotlight-name { font-size: clamp(80px, 6.4vw, 112px); } }
+/* below the large-screen layout: the date on its own line, some air around the client's name */
+@media (max-width: 1099px) {
+  .spotlight-sep { display: none; }
+  .spotlight-date { display: block; margin-top: 4px; }
+  .spotlight-name { margin: 10px 0 18px; }
+}
