@@ -27,6 +27,63 @@ test('wheel: one gesture = one screen', async ({ page }) => {
   expect(await current(page)).toBe('1');
 });
 
+// the first experience with a demo: its screen, its achievements
+const story = async (page: Page) => {
+  const i = await page.locator('.slide').evaluateAll((els) => els.findIndex((e) => e.classList.contains('job-demo')));
+  const n = content('en').experience.find((j: { demo?: string }) => j.demo).bullets.length;
+  return { i, n, tabs: page.locator('.slide').nth(i).getByRole('tab'), anchor: page.locator('.slide').nth(i).locator('.device-anchor') };
+};
+const goToSlide = async (page: Page, i: number) => {
+  for (let k = 0; k < 12 && Number(await current(page)) < i; k++) { await page.keyboard.press('PageDown'); await settle(page); }
+  expect(await current(page)).toBe(String(i));
+};
+
+test('story: the arrows go through the achievements before the next screen, and back through them', async ({ page }) => {
+  const { i, n, tabs, anchor } = await story(page);
+  await goToSlide(page, i);
+  await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
+  for (let k = 1; k < n; k++) {
+    await page.keyboard.press('ArrowDown');
+    await expect(tabs.nth(k)).toHaveAttribute('aria-selected', 'true');
+    await expect(anchor).toHaveAttribute('data-step', String(k));   // the phones play this achievement's test
+  }
+  expect(await current(page)).toBe(String(i));
+  await page.keyboard.press('ArrowDown'); await settle(page);
+  expect(await current(page)).toBe(String(i + 1));
+  await page.keyboard.press('ArrowUp'); await settle(page);   // back: the story resumes at its last achievement
+  expect(await current(page)).toBe(String(i));
+  await expect(tabs.nth(n - 1)).toHaveAttribute('aria-selected', 'true');
+});
+
+test('story: one wheel gesture = one achievement', async ({ page }) => {
+  const { i, tabs } = await story(page);
+  await goToSlide(page, i);
+  await page.mouse.move(700, 400);
+  await page.mouse.wheel(0, 120);
+  await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true');
+  await page.waitForTimeout(400);   // a new gesture, not the momentum of the previous one
+  await page.mouse.wheel(0, 120);
+  await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
+  expect(await current(page)).toBe(String(i));
+});
+
+test('story rail: a tab shows its achievement, the arrows move along the rail, only that achievement is exposed', async ({ page }) => {
+  const { i, n, tabs } = await story(page);
+  await goToSlide(page, i);
+  const shown = page.locator('.slide').nth(i).locator('[role="tabpanel"]:not([inert])');   // the others are inert: out of reach
+  await tabs.nth(2).click();
+  await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
+  await expect(shown).toHaveCount(1);
+  await expect(shown).toHaveAttribute('aria-labelledby', (await tabs.nth(2).getAttribute('id'))!);
+  await tabs.nth(2).focus();
+  await page.keyboard.press('ArrowRight');
+  await expect(tabs.nth(3)).toBeFocused();
+  await page.keyboard.press('End');   // the rail's own End, not the stage's
+  await expect(tabs.nth(n - 1)).toBeFocused();
+  expect(await current(page)).toBe(String(i));
+  await expect(tabs.nth(2)).toHaveClass(/is-passed/);   // seen: a step that passed
+});
+
 test('screen reader: all the content is exposed, not only the current screen', async ({ page }) => {
   const d = content('en');
   // getByRole ignores whatever is removed from the accessibility tree (visibility:hidden, aria-hidden…)

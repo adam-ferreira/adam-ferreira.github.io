@@ -5,10 +5,10 @@
 // screen, a sideways drag: an upward one still scrolls the page); once released, it goes back to swaying. Under "reduce motion": the final frame of the test, without a loop.
 // Stage mode: the phones live in a fixed canvas over the screens (.devices3d) and travel with them from one anchor to the
 // next (.hero-stage, .device-anchor): the hero, the "Experience" chapter, then each experience with a demo, where they
-// play that job's test; a full turn when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's
-// own canvas.
+// play that job's test (one per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn
+// when the app changes. Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
 import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
-import { SW, SH, TS, CYCLE, SCENARIOS, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
+import { SW, SH, TS, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
 // elsewhere: each canvas.hero3d is its own scene (the hero; each experience with a demo outside stage mode; the stills
@@ -89,8 +89,10 @@ async function start(canvas) {
   tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   const paint = (t) => { drawScreen(sg, base, t, sc); tex.needsUpdate = true; };
   let androidBody = null;   // set once the phones exist
-  const setScenario = (name) => {
-    const next = SCENARIOS[name] || SCENARIOS.hero;
+  let demo = 'hero', shownStep = null;   // the app on screen (a new one: a full turn) and the step of its story
+  const setScenario = (name, stepNo = null) => {
+    const next = scenarioFor(name, stepNo);
+    demo = name; shownStep = stepNo;
     if (next === sc) return;
     sc = next; base = drawBase(sc); t0 = performance.now(); lastKey = undefined;
     paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
@@ -123,8 +125,10 @@ async function start(canvas) {
   // are, exactly as in the hero's own canvas; their size follows the anchor's square.
   const slides = [...document.querySelectorAll('.slide')];
   const anchorOf = (i) => slides[i]?.querySelector('.hero-stage, .device-anchor') || null;
+  const stepOf = (a) => (a?.dataset.step === undefined ? null : +a.dataset.step);
   const rectOf = (el) => { const r = el.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, s: Math.min(r.width, r.height) * (+el.dataset.zoom || 1) }; };
-  let slideIdx = +(doc.dataset.slide || 0), cur = null, shown = true, tw = null;
+  let slideIdx = +(doc.dataset.slide || 0), cur = null, shown = true, tw = null, nd = null;
+  const NUDGE_MS = 650;
   function project() {
     camera.updateProjectionMatrix();
     if (!overlay || !cur) return;
@@ -144,7 +148,7 @@ async function start(canvas) {
   if (overlay) {
     const a = anchorOf(slideIdx);
     shown = !!a; holder.visible = shown;
-    if (a) { setScenario(a.dataset.demo); }
+    if (a) setScenario(a.dataset.demo || 'hero', stepOf(a));
   } else if (initial) setScenario(initial);
   // entrance: the phones rise from below while turning into place, the first time the hero shows them
   const INTRO_MS = 1600;
@@ -167,9 +171,9 @@ async function start(canvas) {
     if (a && !shown) {   // coming back into view: from below when moving forward, from above when going back
       const t = rectOf(a);
       cur = { x: t.x, y: forward ? H * 1.35 : -H * 0.35, s: t.s };
-      setScenario(name); shown = true; holder.visible = true;
+      setScenario(name, stepOf(a)); shown = true; holder.visible = true;
     }
-    const flip = !!name && SCENARIOS[name] !== sc;
+    const flip = !!name && name !== demo;
     tw = { from: { ...cur }, start: performance.now(), dur, a, off: forward ? -H * 0.4 : H * 1.4, flip, name, switched: !flip };
     if (!dur) { step(performance.now()); renderer.render(scene, camera); }
   }
@@ -179,15 +183,31 @@ async function start(canvas) {
       const to = tw.a ? rectOf(tw.a) : { x: tw.from.x, y: tw.off, s: tw.from.s };
       cur = { x: tw.from.x + (to.x - tw.from.x) * e, y: tw.from.y + (to.y - tw.from.y) * e, s: tw.from.s + (to.s - tw.from.s) * e };
       spin.rotation.y = tw.flip ? e * Math.PI * 2 : 0;
-      if (!tw.switched && e >= 0.5) { tw.switched = true; setScenario(tw.name); }
-      if (u >= 1) { if (!tw.a) { shown = false; holder.visible = false; } tw = null; spin.rotation.y = 0; }
+      if (!tw.switched && e >= 0.5) { tw.switched = true; setScenario(tw.name, stepOf(tw.a)); }
+      if (u >= 1) { if (tw.a) setScenario(tw.name, stepOf(tw.a)); else { shown = false; holder.visible = false; } tw = null; spin.rotation.y = 0; }   // the story may have moved during the trip
     } else if (shown) {
       const a = anchorOf(slideIdx); if (a) cur = rectOf(a);   // follows the anchor (window resized, screen scrolled)
+      if (nd) {   // the story's next achievement: a quick turn, the new test starting while the phones face away
+        const u = Math.min(1, (now - nd.start) / NUDGE_MS);
+        spin.rotation.y = nd.dir * 0.75 * Math.sin(Math.PI * u);
+        if (!nd.switched && u >= 0.5) { nd.switched = true; setScenario(demo, nd.step); }
+        if (u >= 1) { nd = null; spin.rotation.y = 0; }
+      }
     }
     project();
   }
   if (overlay) new MutationObserver(() => { const n = +(doc.dataset.slide || 0); if (n !== slideIdx) toSlide(n); })
     .observe(doc, { attributes: true, attributeFilter: ['data-slide'] });
+  // a story moves on (story.js writes data-step on the anchor of the screen on display)
+  if (overlay) {
+    const stepIO = new MutationObserver((recs) => {
+      const a = anchorOf(slideIdx), n = stepOf(a);
+      if (tw || !a || !recs.some((r) => r.target === a) || n === null) return;
+      if (reduced()) { setScenario(demo, n); renderer.render(scene, camera); return; }
+      nd = { start: performance.now(), step: n, dir: n > shownStep ? 1 : -1, switched: false };
+    });
+    slides.forEach((_, i) => { const a = anchorOf(i); if (a?.dataset.step !== undefined) stepIO.observe(a, { attributes: true, attributeFilter: ['data-step'] }); });
+  }
 
   // interaction: grab the scene, throw it, it spins on its momentum, then goes back to swaying
   const target = { x: 0, y: 0 }, vel = { x: 0, y: 0 };

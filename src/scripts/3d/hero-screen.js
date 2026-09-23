@@ -6,7 +6,7 @@
 import { accent } from './common.js';
 import betclicLogo from '../../assets/marks/betclic.svg?url';
 import accorLogo from '../../assets/marks/accor.svg?url';
-const ACC = accent(), GREEN = '#3ddc84', RED = '#ff5d5d', INK = '#161b22';
+const ACC = accent(), GREEN = '#3ddc84', RED = '#ff5d5d', AMBER = '#f5b841', INK = '#161b22';
 const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
 const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // towards white
@@ -59,14 +59,102 @@ export const SCENARIOS = {
     { rect: tabRect(2), verb: 'tap', loc: '~tab_status' },
   ] },
 };
+
+// The reward game of the Betclic story (an interactive animation): a wheel, its prize, its button, inside the top card.
+const WHEEL = { x: 44, y: 170, w: 140, h: 140, r: 70 }, PRIZE = { x: 204, y: 204, w: 228, h: 34, r: 8 }, SPIN = { x: 204, y: 258, w: 150, h: 46, r: 23 };
+
+/** The story of each experience with a demo (stage mode, src/scripts/ui/story.js): one short test per achievement, in
+ *  the order of the content's bullets. A step without `rect` happens off screen (an API call, a CI job): only its log
+ *  line shows. `tone`: the log line's mark (pass by default). `keep`: the frames stay on the elements already visited.
+ *  `result` / `note`: the summary line. At most five steps: a run always lasts CYCLE. */
+export const STORIES = {
+  betting: [
+    { feature: 'semantics · inspector', keep: true, result: 'IDS 5/5', note: '· any locale', steps: [
+      { rect: ODDS(0), verb: 'id', loc: '~odds_home' },
+      { rect: R.card, verb: 'id', loc: '~mission_progress' },
+      { rect: R.row2, verb: 'id', loc: '~leaderboard_rank' },
+      { rect: R.cta, verb: 'id', loc: '~place_bet' },
+      { rect: tabRect(2), verb: 'id', loc: '~tab_missions' },
+    ] },
+    { feature: 'reward_game.riv', variant: 'reward', note: '· rive runtime', steps: [
+      { rect: WHEEL, verb: 'find', loc: '~reward_wheel' },
+      { rect: SPIN, verb: 'tap', loc: '~spin_button' },
+      { rect: PRIZE, verb: 'assert', loc: '~prize_label' },
+    ] },
+    { feature: 'missions.feature', note: '· data by API', steps: [
+      { verb: 'api', loc: 'POST /bets', tone: 'info' },
+      { verb: 'api', loc: 'POST /bets/settle', tone: 'info' },
+      { rect: R.card, verb: 'assert', loc: '~mission_progress' },
+      { rect: R.row2, verb: 'assert', loc: '~leaderboard_rank' },
+    ] },
+    { feature: 'nightly · 5 markets', result: 'TRIAGED', note: '· 1 bug → Jira', steps: [
+      { verb: 'run', loc: '5 markets', tone: 'info' },
+      { verb: 'flaky', loc: 'rerun, no ticket', tone: 'warn' },
+      { verb: 'env', loc: 'down, no ticket', tone: 'warn' },
+      { verb: 'bug', loc: 'ticket in Jira', tone: 'fail' },
+    ] },
+    { feature: 'place_bet.feature', note: '· fixed at the root', steps: [
+      { rect: R.cta, verb: 'tap', loc: '~place_bet', tone: 'fail' },
+      { verb: 'debug', loc: 'a11y tree', tone: 'info' },
+      { verb: 'fix', loc: 'in the framework', tone: 'info' },
+      { rect: R.cta, verb: 'tap', loc: '~place_bet' },
+    ] },
+    { feature: 'figma → MissionsPage', keep: true, result: 'GENERATED', note: '· page object', steps: [
+      { rect: R.card, verb: 'map', loc: 'missionCard' },
+      { rect: R.row2, verb: 'map', loc: 'leaderboard' },
+      { rect: R.cta, verb: 'map', loc: 'placeBetButton' },
+      { verb: 'write', loc: 'MissionsPage.ts', tone: 'info' },
+    ] },
+  ],
+  booking: [
+    { feature: 'framework · upgrade', note: '· half the code', steps: [
+      { verb: 'bump', loc: 'Java 25', tone: 'info' },
+      { verb: 'bump', loc: 'Appium client', tone: 'info' },
+      { verb: 'remove', loc: 'dead code', tone: 'info' },
+      { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
+      { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
+    ] },
+    { feature: 'BrowserStack · 4 devices', note: '· 4 devices', steps: [
+      { rect: SEARCH_BTN, verb: 'tap', say: 'iPhone', loc: 'search' },
+      { rect: R.row2, verb: 'swipe', say: 'Pixel', loc: 'hotel list' },
+      { rect: R.cta, verb: 'tap', say: 'tablet', loc: 'booking' },
+      { rect: tabRect(2), verb: 'tap', say: 'iPad ⟲', loc: 'landscape' },
+    ] },
+    { feature: 'gitlab-ci · nightly', result: 'PIPELINE RED', resultTone: 'fail', note: '· as it should', steps: [
+      { verb: 'run', loc: 'booking suite', tone: 'info' },
+      { verb: 'gate', loc: 'below threshold', tone: 'fail' },
+      { verb: 'report', loc: 'Jira · Xray', tone: 'info' },
+      { verb: 'notify', loc: 'Slack · its team', tone: 'info' },
+    ] },
+    { feature: 'coverage', note: '· new ground', steps: [
+      { verb: 'flag', loc: 'on · off' },
+      { verb: 'build', loc: 'TestFlight' },
+      { verb: 'build', loc: 'Firebase' },
+      { rect: tabRect(2), verb: 'tap', loc: '~tab_status' },
+      { rect: R.card, verb: 'assert', loc: 'webview · WAF' },
+    ] },
+    { feature: 'booking.spec.ts · wdio', note: '· TypeScript', steps: [
+      { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
+      { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
+      { verb: 'locale', loc: 'fr-FR · en-GB' },
+      { verb: 'both', loc: 'iOS · Android' },
+    ] },
+  ],
+};
+/** The test the phones play: step `step` of a demo's story, or (step null, or no story) the demo's own test. */
+export const scenarioFor = (name, step) => {
+  const base = SCENARIOS[name] || SCENARIOS.hero, story = step == null ? null : STORIES[name]?.[step];
+  return story ? (story.full ??= { ...base, ...story }) : base;
+};
+const TAPS = new Set(['tap', 'swipe']);   // the verbs that tap the screen; the others check it
 const TEXT = {
   betting: {
     en: { mission: 'Mission of the day', missionSub: 'Place 3 bets · win a €5 freebet', match: 'PSG – OM', when: 'Tonight · 21:00',
       odds: ['1.85', '3.40', '4.10'], board: 'Weekly leaderboard', rank: '#12 · 1,250 pts', balance: '€25.00', cta: 'Place bet · €10',
-      tabs: ['Sports', 'Live', 'Missions', 'Account'] },
+      tabs: ['Sports', 'Live', 'Missions', 'Account'], game: 'Reward game', prize: 'Freebet €5', spin: 'Spin' },
     fr: { mission: 'Mission du jour', missionSub: 'Place 3 paris · 5 € de freebet', match: 'PSG – OM', when: 'Ce soir · 21:00',
       odds: ['1,85', '3,40', '4,10'], board: 'Classement de la semaine', rank: '12e · 1 250 pts', balance: '25,00 €', cta: 'Parier 10 €',
-      tabs: ['Sports', 'Live', 'Missions', 'Compte'] },
+      tabs: ['Sports', 'Live', 'Missions', 'Compte'], game: 'Jeu bonus', prize: 'Freebet 5 €', spin: 'Tourner' },
   },
   booking: {
     en: { where: 'Where to?', city: 'Paris', dates: 'Oct 12 – 14 · 2 guests', search: 'Search', h1: 'Paris Centre', h1sub: '★★★★ · 1.2 km',
@@ -103,6 +191,28 @@ function tabBar(g, labels, active, color) {
   });
 }
 
+function missionCard(g, T) {
+  label(g, T.mission, 48, 196, `700 24px ${SANS}`, '#fff');
+  label(g, T.missionSub, 48, 226, `500 16px ${SANS}`, '#a4abb6');
+  g.fillStyle = '#34343d'; rr(g, 48, 258, 330, 14, 7); g.fill();
+  g.fillStyle = BETCLIC; rr(g, 48, 258, 220, 14, 7); g.fill();
+  label(g, '2 / 3', 432, 271, `700 16px ${SANS}`, '#fff', 'right');
+  [0, 1, 2].forEach((i) => { g.fillStyle = i < 2 ? BETCLIC : '#34343d'; g.beginPath(); g.arc(58 + i * 30, 302, 9, 0, Math.PI * 2); g.fill(); });
+}
+function rewardGame(g, T) {   // the interactive animation: a wheel of eight segments under its pointer, the prize, the button
+  const cx = WHEEL.x + WHEEL.w / 2, cy = WHEEL.y + WHEEL.h / 2, r = WHEEL.w / 2 - 4, cols = [BETCLIC, '#2a2a33', '#f5c518', '#2a2a33'];
+  for (let i = 0; i < 8; i++) {
+    g.fillStyle = cols[i % 4]; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, r, (i - 0.5) * Math.PI / 4, (i + 0.5) * Math.PI / 4); g.closePath(); g.fill();
+  }
+  g.lineWidth = 3; g.strokeStyle = '#fff'; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = '#fff'; g.beginPath(); g.arc(cx, cy, 12, 0, Math.PI * 2); g.fill();
+  g.beginPath(); g.moveTo(cx - 10, WHEEL.y - 2); g.lineTo(cx + 10, WHEEL.y - 2); g.lineTo(cx, WHEEL.y + 16); g.closePath(); g.fill();
+  label(g, T.game, PRIZE.x + 4, 192, `500 16px ${SANS}`, '#a4abb6');
+  label(g, T.prize, PRIZE.x + 4, 230, `700 26px ${SANS}`, '#f5c518');
+  g.fillStyle = BETCLIC; rr(g, SPIN.x, SPIN.y, SPIN.w, SPIN.h, SPIN.r); g.fill();
+  label(g, T.spin, SPIN.x + SPIN.w / 2, SPIN.y + 30, `700 18px ${SANS}`, '#fff', 'center');
+}
+
 // The app under test, per scenario: everything above the test log.
 const APPS = {
   promo(g) {   // the hero's: an abstract app
@@ -130,18 +240,13 @@ const APPS = {
     g.fillStyle = '#fff'; g.fillRect(0, 948, SW, 92); g.fillStyle = '#e3e7ed'; g.fillRect(0, 948, SW, 2);
     TABS.forEach((x, i) => { g.fillStyle = i === 0 ? ACC : '#c9d0da'; rr(g, x - 18, 968, 36, 36, 10); g.fill(); });
   },
-  betting(g, T) {   // a sports betting app: tonight's match and its odds, the mission of the day, the leaderboard
+  betting(g, T, sc) {   // a sports betting app: tonight's match and its odds, the mission of the day, the leaderboard
     if (LOGOS.betclic) g.drawImage(LOGOS.betclic, 24, 80, 117, 40);
     g.fillStyle = '#eef0f4'; rr(g, 330, 82, 126, 36, 18); g.fill();
     label(g, T.balance, 393, 106, `700 17px ${SANS}`, INK, 'center');
     const c = R.card;
     g.fillStyle = '#16161c'; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
-    label(g, T.mission, 48, 196, `700 24px ${SANS}`, '#fff');
-    label(g, T.missionSub, 48, 226, `500 16px ${SANS}`, '#a4abb6');
-    g.fillStyle = '#34343d'; rr(g, 48, 258, 330, 14, 7); g.fill();
-    g.fillStyle = BETCLIC; rr(g, 48, 258, 220, 14, 7); g.fill();
-    label(g, '2 / 3', 432, 271, `700 16px ${SANS}`, '#fff', 'right');
-    [0, 1, 2].forEach((i) => { g.fillStyle = i < 2 ? BETCLIC : '#34343d'; g.beginPath(); g.arc(58 + i * 30, 302, 9, 0, Math.PI * 2); g.fill(); });
+    if (sc.variant === 'reward') rewardGame(g, T); else missionCard(g, T);
     row(g, R.row1);
     label(g, T.match, 40, 375, `700 19px ${SANS}`, INK);
     label(g, T.when, 40, 400, `500 14px ${SANS}`, '#8e97a3');
@@ -188,7 +293,7 @@ export function drawBase(sc = SCENARIOS.hero) {
   g.fillStyle = INK; g.font = `600 24px ${SANS}`; g.fillText('9:41', 44, 46);
   for (let i = 0; i < 4; i++) g.fillRect(352 + i * 9, 44 - (i + 1) * 5, 6, (i + 1) * 5);
   g.lineWidth = 2; g.strokeStyle = INK; rr(g, 396, 29, 38, 17, 5); g.stroke(); g.fillRect(400, 33, 26, 9); g.fillRect(436, 34, 3, 7);
-  APPS[sc.style](g, TEXT[sc.style]?.[lang()]);
+  APPS[sc.style](g, TEXT[sc.style]?.[lang()], sc);
   // test log panel
   g.fillStyle = '#0e1116'; rr(g, 16, 598, 448, 336, 24); g.fill();
   g.font = `500 17px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('▶ ' + sc.feature, 40, 640);
@@ -209,7 +314,7 @@ function phase(t, STEPS) {
   const n = STEPS.length, stepsEnd = n * STEP, inSteps = t < stepsEnd;
   const k = inSteps ? Math.floor(t / STEP) : n - 1;
   const p = inSteps ? (t - k * STEP) / STEP : 1;
-  const tap = STEPS[k].verb !== 'assert', since = t - stepsEnd;   // since: time spent in the summary
+  const tap = TAPS.has(STEPS[k].verb) && !!STEPS[k].rect, since = t - stepsEnd;   // since: time spent in the summary
   const s = {
     t, k, p, inSteps,
     frame: inSteps ? (k === 0 ? Math.min(1, p / FADE_IN) : 1) : Math.max(0, 1 - since / FRAME_OUT),   // opacity of the selection frame
@@ -227,56 +332,67 @@ function phase(t, STEPS) {
   return s;
 }
 
+const MARKS = { pass: ['✓', GREEN], fail: ['✗', RED], warn: ['~', AMBER], info: ['→', ACC] };
+const toneOf = (sc, i) => sc.steps[i].tone ?? (i === sc.fail ? 'fail' : 'pass');
+
+// the selection frame on an element, with its locator above it
+function frameAt(g, r, loc, col, alpha) {
+  g.save(); g.globalAlpha = alpha;
+  rr(g, r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6);
+  g.fillStyle = col === RED ? rgba(RED, 0.14) : col === GREEN ? rgba(GREEN, 0.12) : rgba(ACC, 0.1); g.fill();
+  g.lineWidth = 4; g.strokeStyle = col; g.stroke();
+  g.font = `600 19px ${MONO}`;
+  const lw = g.measureText(loc).width + 20, lx = Math.min(r.x - 6, SW - 8 - lw), ly = r.y - 6 - 34;
+  g.fillStyle = col; rr(g, lx, ly, lw, 28, 8); g.fill();
+  g.fillStyle = '#16100c'; g.fillText(loc, lx + 10, ly + 20);
+  g.restore();
+}
+
 /** The screen at time t (s): the mock-up, then the test playing over it. */
 export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
   const STEPS = sc.steps, s = phase(t, STEPS), step = STEPS[s.k], n = STEPS.length;
   g.setTransform(TS, 0, 0, TS, 0, 0);
   g.drawImage(base, 0, 0, SW, SH);
 
-  // the selection frame slides to the target element, shows its locator, then taps or asserts
-  if (s.frame > 0) {
-    const r = mix(s.k > 0 ? STEPS[s.k - 1].rect : step.rect, step.rect, s.slide);
-    const failed = s.checked && s.k === sc.fail;
-    const col = failed ? RED : s.checked ? GREEN : ACC;
-    g.save(); g.globalAlpha = s.frame;
-    rr(g, r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6);
-    g.fillStyle = failed ? rgba(RED, 0.14) : s.checked ? rgba(GREEN, 0.12) : rgba(ACC, 0.1); g.fill();
-    g.lineWidth = 4; g.strokeStyle = col; g.stroke();
-    g.font = `600 19px ${MONO}`;
-    const lw = g.measureText(step.loc).width + 20, lx = Math.min(r.x - 6, SW - 8 - lw), ly = r.y - 6 - 34;
-    g.fillStyle = col; rr(g, lx, ly, lw, 28, 8); g.fill();
-    g.fillStyle = '#16100c'; g.fillText(step.loc, lx + 10, ly + 20);
+  // `keep`: the elements already visited stay framed
+  if (sc.keep) for (let i = 0; i < (s.inSteps ? s.k : n); i++) if (STEPS[i].rect) frameAt(g, STEPS[i].rect, STEPS[i].loc, GREEN, 1);
+  // the selection frame slides to the target element (or fades in, after a step off screen), then taps or asserts
+  if (s.frame > 0 && step.rect) {
+    const prev = s.k > 0 ? STEPS[s.k - 1].rect : null;
+    const r = mix(prev || step.rect, step.rect, s.slide);
+    const alpha = !prev && s.inSteps ? Math.min(1, s.p / FADE_IN) : s.frame;
+    const tap = TAPS.has(step.verb), failed = toneOf(sc, s.k) === 'fail' && (s.checked || (tap && s.p > CHECKED));
+    frameAt(g, r, step.loc, failed ? RED : s.checked ? GREEN : ACC, alpha);
     if (s.ripple >= 0) {
       const q = s.ripple;
       const cx = step.verb === 'swipe' ? r.x + r.w * (0.78 - 0.5 * ease(q)) : r.x + r.w / 2, cy = r.y + r.h / 2;
       g.fillStyle = rgba(ACC, 0.35 * (1 - q)); g.beginPath(); g.arc(cx, cy, 12 + q * 44, 0, Math.PI * 2); g.fill();
       g.fillStyle = rgba(ACC, 0.9 * (1 - q * 0.6)); g.beginPath(); g.arc(cx, cy, 11, 0, Math.PI * 2); g.fill();
     }
-    g.restore();
   }
 
-  // the log: one green line per passed step, the current step in grey
+  // the log: one line per step done, marked by its outcome; the current step in grey
+  const said = (st) => (st.say ?? st.verb).padEnd(7) + st.loc;
   g.font = `500 20px ${MONO}`;
   for (let i = 0; i < s.done; i++) {
     g.globalAlpha = i === s.done - 1 ? s.lineIn : 1;
-    const y = LOG_Y + i * LOG_DY;
-    const broke = i === sc.fail;
-    g.fillStyle = broke ? RED : GREEN; g.fillText(broke ? '✗' : '✓', 44, y);
-    g.fillStyle = broke ? RED : '#d7dde6'; g.fillText(STEPS[i].verb.padEnd(7) + STEPS[i].loc, 74, y);
+    const y = LOG_Y + i * LOG_DY, tone = toneOf(sc, i), [mark, col] = MARKS[tone];
+    g.fillStyle = col; g.fillText(mark, 44, y);
+    g.fillStyle = tone === 'fail' ? RED : '#d7dde6'; g.fillText(said(STEPS[i]), 74, y);
   }
   g.globalAlpha = 1;
   if (s.cursor) {
     const y = LOG_Y + s.k * LOG_DY;
     g.fillStyle = s.blink ? ACC : '#6b7480'; g.fillText('▸', 46, y);
-    g.fillStyle = '#6b7480'; g.fillText(step.verb.padEnd(7) + step.loc, 74, y);
+    g.fillStyle = '#6b7480'; g.fillText(said(step), 74, y);
   }
   if (!s.inSteps) {
-    const broke = sc.fail !== undefined;
-    const result = broke ? 'FAILED · 404' : `PASSED ${n}/${n}`;
+    const broke = sc.fail !== undefined, red = broke || sc.resultTone === 'fail';
+    const result = sc.result ?? (broke ? 'FAILED · 404' : `PASSED ${n}/${n}`);
     g.globalAlpha = s.summary;
-    g.font = `700 22px ${MONO}`; g.fillStyle = broke ? RED : GREEN; g.fillText(result, 44, SUM_Y);
+    g.font = `700 22px ${MONO}`; g.fillStyle = red ? RED : GREEN; g.fillText(result, 44, SUM_Y);
     const w = g.measureText(result).width;
-    g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText(broke ? '· page not found' : '· 2 devices · 7.8 s', 44 + w + 14, SUM_Y);
+    g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText(sc.note ?? (broke ? '· page not found' : '· 2 devices · 7.8 s'), 44 + w + 14, SUM_Y);
     g.globalAlpha = 1;
   }
 }
