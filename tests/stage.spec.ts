@@ -39,6 +39,7 @@ const goToSlide = async (page: Page, i: number) => {
 };
 
 test('story: the arrows go through the achievements before the next screen, and back through them', async ({ page }) => {
+  test.slow();   // every step redraws the phones' screen: on a CI machine without a GPU, 30 s is not enough (23/09)
   const { i, n, tabs, anchor } = await story(page);
   await goToSlide(page, i);
   await expect(tabs.first()).toHaveAttribute('aria-selected', 'true');
