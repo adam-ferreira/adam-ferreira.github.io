@@ -1,6 +1,7 @@
 ---
-// A link drawn as a pill: the contact details of the hero (with an icon), the way back of the 404 page. Style: PillLink.css.
-interface Props { href: string }
-const { href } = Astro.props;
+// A link drawn as a pill: the contact details of the hero (with an icon), the way back of the 404 page, the PDF of the
+// detailed CV. Style: PillLink.css.
+interface Props { href: string; download?: boolean }
+const { href, download } = Astro.props;
 ---
-<a class="pill" href={href}><slot /></a>
+<a class="pill" href={href} download={download}><slot /></a>

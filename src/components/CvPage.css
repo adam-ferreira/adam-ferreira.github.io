@@ -1,0 +1,54 @@
+/* The detailed CV (CvPage.astro and its parts: CvIdentity, CvSection, CvJob): one calm reading column. */
+
+.cv-bar, .cv-doc { max-width: 820px; margin: 0 auto; padding-left: var(--gutter); padding-right: var(--gutter); }
+.cv-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding-top: 20px; padding-bottom: 20px; }
+.cv-bar > * { white-space: nowrap; }
+.cv-back { margin-right: auto; color: var(--ink); text-decoration: none; }
+.cv-back:hover, .cv-back:focus-visible { color: var(--accent-ink); }
+.cv-bar .pill { padding-top: 7px; padding-bottom: 7px; font-size: 14px; }
+@media (max-width: 560px) { .cv-bar .pill { order: 1; } }   /* a phone: the PDF on its own line, under the way back and the switch */
+.cv-doc { padding-top: 32px; padding-bottom: 72px; }
+.cv-doc a { text-decoration: none; background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .35s var(--ease-out), color .3s ease; }
+.cv-doc a:hover, .cv-doc a:focus-visible { color: var(--accent-ink); background-size: 100% 1px; }
+
+/* identity: the name as giant as the home page's titles, then the contact details as micro-labels */
+.cv-name { font-family: var(--display); font-weight: 400; text-transform: uppercase; letter-spacing: .01em; line-height: .82; font-size: clamp(96px, 20vw, 168px); color: var(--ink); }
+.cv-headline { margin-top: 16px; font-size: 21px; font-weight: 600; letter-spacing: -.01em; color: var(--ink); }
+.cv-tagline { margin-top: 8px; max-width: 62ch; }
+.cv-contact { margin-top: 18px; display: flex; flex-wrap: wrap; row-gap: 6px; }
+.cv-contact li + li::before { content: "\00b7"; margin: 0 10px; opacity: .5; }
+.cv-contact a { color: var(--ink); }
+.cv-contact .nocase { text-transform: none; letter-spacing: .04em; }
+@media (max-width: 560px) { .cv-contact { flex-direction: column; } .cv-contact li + li::before { content: none; } }
+.print-only { display: none; }
+
+/* sections: a micro-label over a rule */
+.cv-section { margin-top: 56px; }
+.cv-section-title { margin-bottom: 26px; padding-bottom: 12px; border-bottom: 1px solid var(--line); color: var(--accent-ink); }
+.cv-skills { margin: 0; display: grid; gap: 14px; }
+.cv-skills > div { display: grid; grid-template-columns: 170px minmax(0, 1fr); column-gap: 20px; align-items: baseline; }
+.cv-skills dt { font-size: 15px; font-weight: 600; color: var(--ink); }
+.cv-skills dd { margin: 0; }
+.cv-skills .chips { gap: 8px; }
+@media (max-width: 640px) { .cv-skills > div { grid-template-columns: 1fr; row-gap: 8px; } }
+
+/* an experience, in full */
+.cv-page .entry-header { margin-bottom: 12px; padding-top: 0; border-top: 0; }
+.cv-page .entry-title-line { grid-template-columns: minmax(0, 1fr); }
+.cv-page .entry-date { grid-column: 1; order: -1; }   /* the dates over the title: a long title never pushes them out */
+.cv-page .entry-title { font-size: 22px; }
+.cv-job + .cv-job { margin-top: 40px; padding-top: 36px; border-top: 1px solid var(--line); }
+.cv-sub-title { margin-top: 22px; font-size: 17px; font-weight: 600; color: var(--ink); }
+.cv-sub-intro { margin-top: 6px; color: var(--muted); }
+.cv-bullets { margin-top: 18px; display: grid; gap: 12px; }
+.cv-bullets li { position: relative; padding-left: 22px; }
+.cv-bullets li::before { content: ""; position: absolute; left: 2px; top: .7em; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.cv-bullets strong, .cv-list strong { font-weight: 600; color: var(--ink); }
+.cv-stack { margin-top: 20px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.cv-stack-label { font-size: 14px; font-weight: 600; color: var(--muted); }
+.cv-stack .chips { gap: 8px; }
+.cv-stack .chips li { padding: 3px 10px; font-size: 13px; }
+
+.cv-duo { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); column-gap: 48px; }
+.cv-list { display: grid; gap: 6px; }
+.cv-updated { margin-top: 64px; }

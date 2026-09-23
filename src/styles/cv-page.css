@@ -1,0 +1,9 @@
+/* The detailed CV page (src/layouts/CvPage.astro): the site's base, the few components it shares with the home page,
+   its own layout, then its paper version. As in index.css, the order below is the cascade order. */
+@import "./base.css";
+@import "../components/ThemeToggle.css";
+@import "../components/PillLink.css";
+@import "../components/Chips.css";
+@import "../components/EntryHeader.css";
+@import "../components/CvPage.css";
+@import "./print.css";
