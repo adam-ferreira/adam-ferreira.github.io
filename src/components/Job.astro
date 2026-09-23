@@ -42,6 +42,6 @@ const pad = (i: number) => String(i + 1).padStart(2, '0');
       </ol>
     </div>
   )}
-  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.45" data-cursor={dragLabel} aria-hidden="true"></div>}
+  {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.1" data-cursor={dragLabel} aria-hidden="true"></div>}
   {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
 </article>

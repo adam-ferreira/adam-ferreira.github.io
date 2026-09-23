@@ -1,12 +1,11 @@
 ---
 // A section of the CV, named for screen readers by its giant title (SectionTitle): the link between the two is written
-// here only. `head`: classes of a block that opens the section with the title (the "Experience" chapter, where the title
-// shares its screen with the skills); what goes in it is passed in the "head" slot, the rest follows in the default slot.
+// here only. `hideTitle`: the title is only read by screen readers (the experiences follow the home screen directly).
 import SectionTitle from './SectionTitle.astro';
-interface Props { id: string; title: string; head?: string; label?: string; reveal?: boolean }   // label: the screen's name in the indicator
-const { id, title, head, label, reveal } = Astro.props;   // reveal: the title settles in with the rest of its screen
+interface Props { id: string; title: string; reveal?: boolean; hideTitle?: boolean }   // reveal: the title settles in with the rest of its screen
+const { id, title, reveal, hideTitle } = Astro.props;
 const titleId = `${id}-title`;
 ---
-<section class="section" id={id} aria-labelledby={titleId}>{head
-  ? <div class={head} data-label={label}><SectionTitle id={titleId} label={title} /><slot name="head" /></div>
+<section class:list={['section', { 'is-untitled': hideTitle }]} id={id} aria-labelledby={titleId}>{hideTitle
+  ? <h2 class="sr-only" id={titleId}>{title}</h2>
   : <SectionTitle id={titleId} label={title} class={reveal ? 'reveal' : undefined} />}<slot /></section>

@@ -1,18 +1,16 @@
 /* Large screen (≥ 1100 × 680): one screen per panel, transitions, progress indicator. Stage mode (stage.css) adds to it on computers with a mouse. */
 
 /* ---------- screen-by-screen scrolling (computer): each wheel gesture brings the next screen ----------
-   Home, "Experience" chapter + skills, one experience per screen, Education/Languages/Interests, footer.
+   Home, one experience per screen, Education/Languages/Interests, footer.
    If a screen overflows (small screen), the browser scrolls inside it before moving on to the next one. */
 @media (min-width: 1100px) and (min-height: 680px) {
   html { scroll-padding-top: var(--topbar-h); }   /* transitions driven by src/scripts/ui/ (native snapping stuttered with trackpad momentum) */
   .topbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); }
-  .header, .chapter, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); }
+  .header, .job, .facts { scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); }
   /* the footer becomes the last screen (it is no longer "stuck" under the content: snapping cannot target a stuck element) */
   footer.site-footer { position: relative; scroll-snap-align: start; min-height: calc(100svh - var(--topbar-h)); display: flex; flex-direction: column; justify-content: space-between; }
   footer.site-footer .footer-statement, footer.site-footer .footer-bottom { margin-top: auto; }   /* the sentence in the middle, the contact details at the bottom */
   .section { margin-top: 0; padding-top: 0; border-top: 0; }
-  .chapter { display: flex; flex-direction: column; justify-content: center; gap: 56px; }
-  .chapter .section-title-wrapper { margin-bottom: 0; }
   .job { align-content: center; padding: 24px 0; }   /* margins between screens: Job.css (they must come after its base rules) */
   main { padding-right: 84px; }   /* room for the progress indicator — wider than the indicator itself, and not the same
                                      room as in stage mode (--pager-room), where the content sits inside a gutter */
@@ -33,15 +31,14 @@
   }
   html.js .is-active .reveal { opacity: 1; transform: none; }
   .job .job-intro { --d: 1; } .job .story-rail { --d: 2; } .job .story-kicker { --d: 2; } .job .story-steps { --d: 3; } .job .stack { --d: 4; }
-  .chapter .skills-row:nth-child(1) { --d: 2; } .chapter .skills-row:nth-child(2) { --d: 3; } .chapter .skills-row:nth-child(3) { --d: 4; }
   .facts .section > :nth-child(2) { --d: 1; } .facts .section:nth-child(2) > * { --d: 2; } .facts .section:nth-child(3) > * { --d: 3; }
 }
 @supports (animation-timeline: view()) {
   @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
     /* the screen itself does not move (otherwise snapping aims at a moving target): it carries a named timeline,
        and it is its content that animates as you scroll */
-    .header, .chapter, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: var(--topbar-h) 0px; }
-    .header > *, .chapter > *, .job > *, .facts > *, .site-footer > :not(.footer3d) {
+    .header, .job, .facts, .site-footer { view-timeline: --panel block; view-timeline-inset: var(--topbar-h) 0px; }
+    .header > *, .job > *, .facts > *, .site-footer > :not(.footer3d) {
       transform-origin: 50% 0%;
       animation: panel-in linear backwards, panel-out linear forwards;
       animation-timeline: --panel, --panel;
