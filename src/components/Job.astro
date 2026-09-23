@@ -25,7 +25,7 @@ const short = bullets.length === 0;
     {j.intro && <p class="job-intro reveal" set:html={md(j.intro)} />}
     {j.subtitle && <h4 class="sub-title reveal" set:html={md(j.subtitle)} />}
     {j.subtitle && j.subintro && <p class="sub-intro reveal" set:html={md(j.subintro)} />}
-    {j.demo && <img class="device-poster job-poster" src={POSTERS[j.demo][lang]} alt="" width="719" height="719" loading="lazy" decoding="async" />}
+    {j.demo && <div class="job-stage" aria-hidden="true" data-cursor={dragLabel}><img class="device-poster job-poster" src={POSTERS[j.demo][lang]} alt="" width="719" height="719" loading="lazy" decoding="async" /><canvas class="hero3d" data-scenario={j.demo}></canvas></div>}
   </div>
   {!short && (
     <div class="job-main">
