@@ -5,6 +5,7 @@
 import Mark from './Mark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import SoundToggle from './SoundToggle.astro';
+import Availability from './Availability.astro';
 import logoUrl from '../assets/logo.png?url';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv; fullName: string; home: string }   // home: URL of the page in its language (/ or /fr/)
@@ -16,7 +17,13 @@ const idn = d.identity, ui = d.ui;
     <img class="brand-img" src={logoUrl} alt={fullName} width="46" height="46" decoding="async">
     <canvas class="logo3d" aria-hidden="true"></canvas>
   </a>
-  <span class="frame-status label" aria-hidden="true">{fullName} &middot; {idn.headline}</span>
+  <div class="frame-status label">
+    <Availability text={ui.nav_available} />
+    <span class="fs-sep" aria-hidden="true">&middot;</span>
+    <a class="nocase" href={`mailto:${idn.contact.email}`}>{idn.contact.email}</a>
+    <span class="fs-sep" aria-hidden="true">&middot;</span>
+    <a href={`tel:${idn.contact.phone_href}`}>{idn.contact.phone}</a>
+  </div>
   <Mark name="linkedin" mark={idn.marks.linkedin} href={idn.linkedin.url} class="topbar-linkedin" />
   <SoundToggle ui={ui} />
   <ThemeToggle ui={ui} />

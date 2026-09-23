@@ -118,7 +118,7 @@ function createFinale(THREE, Matter) {
     renderer.setSize(W, H, false);
     camera.left = 0; camera.right = W; camera.top = 0; camera.bottom = -H; camera.updateProjectionMatrix();
     pillH = W < 640 ? 36 : 44;
-    const grid = footer.querySelector('.footer-grid');
+    const grid = footer.querySelector('.footer-bottom');
     const floor = Math.min(H, (grid ? grid.offsetTop : H) - 10);
     Composite.remove(engine.world, walls);
     const T = 400;

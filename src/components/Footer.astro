@@ -1,7 +1,9 @@
 ---
-// Footer: inverted colors, a giant sentence that opens an email, the contact details, the availability. Style: Footer.css.
+// Footer: inverted colors, a giant sentence that opens an email, a signature (and on a narrow screen the contact
+// details, which the top bar shows elsewhere). Style: Footer.css.
 // The skills fall in as 3D pills behind the sentence: src/scripts/3d/skills.js, loaded by the page (Cv.astro).
 import { md } from '../lib/text';
+import Availability from './Availability.astro';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
@@ -11,9 +13,12 @@ const skills = JSON.stringify(d.skills.flatMap((g) => g.items));
 <footer class="site-footer slide" data-label={ui.contact_label} data-cursor-pill={ui.cursor_throw}>
   <canvas class="footer3d" aria-hidden="true" data-skills={skills}></canvas>
   <a class="footer-statement" data-cursor={ui.cursor_mail} href={`mailto:${c.email}`} set:html={md(ui.footer_statement)} />
-  <div class="footer-grid label">
-    <a class="nocase" href={`mailto:${c.email}`}>{c.email}</a>
-    <a href={`tel:${c.phone_href}`}>{c.phone}</a>
-    <span><Fragment set:html={md(ui.footer_availability)} /><i class="dot" aria-hidden="true"></i></span>
+  <div class="footer-bottom label">
+    <div class="footer-contact">   <!-- on a narrow screen only: elsewhere the top bar shows them -->
+      <a class="nocase" href={`mailto:${c.email}`}>{c.email}</a>
+      <a href={`tel:${c.phone_href}`}>{c.phone}</a>
+      <Availability text={ui.footer_availability} />
+    </div>
+    <p class="made-with" set:html={md(ui.made_with)} />
   </div>
 </footer>

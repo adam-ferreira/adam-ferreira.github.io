@@ -194,6 +194,8 @@
     "scroll_hint": "Scroll",
     "footer_statement": "On construit quelque chose ?",
     "footer_availability": "Ouvert aux missions QA automation mobile",
+    "nav_available": "Disponible pour une mission",
+    "made_with": "Fait avec ♥ à Paris — testé à chaque push",
     "updated": "Mis à jour en {date}",
     "stack_label": "Stack :",
     "pager_aria": "Écrans de la page",

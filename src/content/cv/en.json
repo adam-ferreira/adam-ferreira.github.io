@@ -194,6 +194,8 @@
     "scroll_hint": "Scroll",
     "footer_statement": "Let's build something.",
     "footer_availability": "Available for mobile QA automation work",
+    "nav_available": "Available for work",
+    "made_with": "Made with ♥ in Paris — tested on every push",
     "updated": "Updated {date}",
     "stack_label": "Stack:",
     "pager_aria": "Page sections",

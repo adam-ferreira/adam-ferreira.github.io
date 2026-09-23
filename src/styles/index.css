@@ -13,6 +13,7 @@
 @import "../components/Topbar.css";
 @import "../components/ThemeToggle.css";
 @import "../components/SoundToggle.css";
+@import "../components/Availability.css";
 @import "../components/Hero.css";
 @import "../components/PillLink.css";
 @import "../components/Mark.css";

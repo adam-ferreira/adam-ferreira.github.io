@@ -46,6 +46,7 @@ const cv = defineCollection({
       sound_aria: text, sound_title_on: text, sound_title_off: text,   // the sound switch (SoundToggle.astro)
       cursor_drag: text, cursor_mail: text, cursor_throw: text,         // words the cursor shows over some objects (cursor.js)
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
+      nav_available: text, made_with: text,   // the top bar's availability (with the contact details), the footer's signature
       pager_aria: text, home_label: text, contact_label: text,   // the progress indicator, built by src/scripts/ui/pager.js
       pager_passed: text, pager_done: text,   // the indicator as a test runner: "3/8 passed", then "All tests passed"
       tab_away: text,   // the tab's title while the visitor is elsewhere
