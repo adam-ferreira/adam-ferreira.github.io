@@ -8,7 +8,7 @@ const [, name, note] = client.match(/^(.*?)\s*(\(.*\))?$/) ?? [, client];
 ---
 <header class="spotlight reveal">
   <h3 class="spotlight-title">
-    <span class="spotlight-meta label"><span class="spotlight-num">{num}</span> <span set:html={md(role)} /> <span class="spotlight-date" set:html={`· ${md(date)}`} /></span>
+    <span class="spotlight-meta label"><span class="spotlight-num">{num}</span> <span set:html={md(role)} /> <span class="spotlight-sep" aria-hidden="true">·</span> <span class="spotlight-date" set:html={md(date)} /></span>
     <span class="spotlight-name">{name}{note && <small>{note}</small>}</span>
   </h3>
 </header>
