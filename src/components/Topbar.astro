@@ -4,6 +4,7 @@
 // src/scripts/3d/logo.js, loaded by the page (Cv.astro) in a single file.
 import Mark from './Mark.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import SoundToggle from './SoundToggle.astro';
 import logoUrl from '../assets/logo.png?url';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv; fullName: string; home: string }   // home: URL of the page in its language (/ or /fr/)
@@ -17,6 +18,7 @@ const idn = d.identity, ui = d.ui;
   </a>
   <span class="frame-status label" aria-hidden="true">{fullName} &middot; {idn.headline}</span>
   <Mark name="linkedin" mark={idn.marks.linkedin} href={idn.linkedin.url} class="topbar-linkedin" />
+  <SoundToggle ui={ui} />
   <ThemeToggle ui={ui} />
 </nav>
 

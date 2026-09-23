@@ -45,6 +45,7 @@
 :root[data-theme="dark"] { --paper: #0e1116; --ink: #eef1f5; --text: #c3c9d2; --muted: #8e97a3; --line: #232a33; --chip: #1a2028; --accent-ink: #ffb627; --topbar: rgba(14, 17, 22, 0.8); }
 
 * { box-sizing: border-box; }
+.is-magnetic { transition: translate .35s var(--ease-out); }   /* src/scripts/ui/magnetic.js */
 html { background: var(--paper); scroll-padding-top: calc(var(--topbar-h) + 12px); }
 body {
   margin: 0; overflow-x: clip;   /* never any horizontal scrolling (clip does not break sticky elements, unlike hidden) */

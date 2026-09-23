@@ -23,6 +23,7 @@ function goTo(n, keepScroll) {
   if (n === cur) return;
   const prev = cur, back = n < prev;
   cur = n; moving = true;
+  window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'whoosh', back } }));   // sound.js, if the sound is on
   root.classList.add('is-moving');
   // 1. Without transition: screens that are not part of the move (a jump with Home, End or the indicator) go straight to
   //    their off-screen place — they must not be seen crossing the window. The target screen, if it was parked above,

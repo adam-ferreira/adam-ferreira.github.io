@@ -9,9 +9,9 @@ interface Props { d: Cv }
 const { d } = Astro.props;
 ---
 <Section id="experience" title={d.sections.experience} head="chapter slide" label={plain(d.sections.experience)}>
-  <div class="chapter-device device-anchor" data-demo="hero" slot="head" aria-hidden="true"></div>
+  <div class="chapter-device device-anchor" data-demo="hero" data-cursor={d.ui.cursor_drag} slot="head" aria-hidden="true"></div>
   <div class="skills" slot="head">
     {d.skills.map((row) => <div class="skills-row reveal"><span class="skills-label" set:html={md(row.label)} /><Chips items={row.items} /></div>)}
   </div>
-  {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} lang={d.lang} />)}
+  {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} lang={d.lang} dragLabel={d.ui.cursor_drag} />)}
 </Section>
