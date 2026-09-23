@@ -1,14 +1,15 @@
 ---
-// Header of an experience whose phones play its test (stage mode): the role and the dates on one label line, the client's
-// name giant. The heading keeps role and client together for screen readers. Style: Spotlight.css.
-import { md } from '../lib/text';
-interface Props { num: string; role: string; client: string; date: string }
-const { num, role, client, date } = Astro.props;
+// Header of an experience whose phones play its test: the client's name, giant, and the role held there (without its
+// parenthesis: the platform is in the intro; the dates are on the CV page). One heading for both, for screen readers.
+// Style: Spotlight.css.
+import { md, roleOnly } from '../lib/text';
+interface Props { role: string; client: string }
+const { role, client } = Astro.props;
 const [, name, note] = client.match(/^(.*?)\s*(\(.*\))?$/) ?? [, client];
 ---
 <header class="spotlight reveal">
   <h3 class="spotlight-title">
-    <span class="spotlight-meta label"><span class="spotlight-num">{num}</span> <span set:html={md(role)} /> <span class="spotlight-sep" aria-hidden="true">·</span> <span class="spotlight-date" set:html={md(date)} /></span>
     <span class="spotlight-name">{name}{note && <small>{note}</small>}</span>
+    <span class="spotlight-role" set:html={md(roleOnly(role))} />
   </h3>
 </header>

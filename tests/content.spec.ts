@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { PAGES, animationsDone, content, plain, watchErrors } from './helpers';
+import { PAGES, animationsDone, content, plain, roleOnly, watchErrors } from './helpers';
 
 for (const { lang, path } of PAGES) {
   test.describe(`page ${lang} (${path})`, () => {
@@ -16,7 +16,7 @@ for (const { lang, path } of PAGES) {
       const html = await (await request.get(path)).text();
       const d = content(lang);
       expect(html).toContain(`<html lang="${lang}"`);
-      for (const j of d.experience) expect(html).toContain(plain(j.role).replace(/&/g, '&amp;'));
+      for (const j of d.experience) expect(html).toContain(roleOnly(j.role).replace(/&/g, '&amp;'));
       // the achievements: their title and short sentence here, the full text only on the CV page
       const esc = (t: string) => plain(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
       for (const b of d.experience.flatMap((j: { bullets?: { title: string; short: string; text: string }[] }) => j.bullets ?? [])) {
