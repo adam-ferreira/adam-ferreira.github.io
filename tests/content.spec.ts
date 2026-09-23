@@ -136,3 +136,12 @@ test('stage mode: the experiences with a demo keep a column for the 3D phones', 
   await expect(page.locator('canvas.hero3d')).toBeHidden();
   await expect(page.locator('canvas.devices3d')).toHaveCSS('pointer-events', 'none');
 });
+
+test('where the 3D does not run, the phones are still images, in the page language', async ({ page }, info) => {
+  test.skip(info.project.name !== 'iphone', 'phones only');
+  await page.goto('/fr/');
+  await expect(page.locator('.hero-poster')).toBeVisible();
+  const srcs = await page.locator('.job-poster').evaluateAll((els) => els.map((e) => (e as HTMLImageElement).getAttribute('src')));
+  expect(srcs.length).toBe(content('fr').experience.filter((j: { demo?: string }) => j.demo).length);
+  for (const s of srcs) expect(s).toMatch(/-fr\.[^.]+\.webp$/);
+});

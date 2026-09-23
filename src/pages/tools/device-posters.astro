@@ -1,0 +1,27 @@
+---
+// The phone scenes as still images, for the screens where the 3D does not run (phones, touch tablets): the hero's test
+// and each client's, frozen at the same moment. ?lang=fr draws the apps' text in French.
+// Export: npm run build && npm run posters (tools/render-posters.mjs). The page is published but not indexed.
+import '../../styles/base.css';
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Device posters</title>
+<script is:inline>if (new URLSearchParams(location.search).get('lang') === 'fr') document.documentElement.lang = 'fr';</script>
+<style is:global>
+  html, body { background: transparent !important; margin: 0; }
+  canvas.hero3d { display: block; width: 480px; height: 480px; }
+</style>
+</head>
+<body>
+  <canvas class="hero3d" data-name="hero" data-freeze="4.81"></canvas>
+  <canvas class="hero3d" data-name="betting" data-scenario="betting" data-freeze="4.81"></canvas>
+  <canvas class="hero3d" data-name="booking" data-scenario="booking" data-freeze="4.81"></canvas>
+  <script>
+    import '../../scripts/3d/hero.js';
+  </script>
+</body>
+</html>
