@@ -1,12 +1,13 @@
 ---
-// The top bar: AF logo (3D, visible outside the hero; a click reloads the page), the name that settles into it, LinkedIn,
-// light / dark switch (ThemeToggle). Style: Topbar.css. Scripts: Topbar.js (the logo reloads the page) and
-// src/scripts/3d/logo.js, loaded by the page (Cv.astro) in a single file.
+// The top bar: AF logo (3D, visible outside the hero; a click reloads the page), the name that settles into it, the link
+// to the detailed CV page, LinkedIn, light / dark switch (ThemeToggle). Style: Topbar.css. Scripts: Topbar.js (the logo
+// reloads the page) and src/scripts/3d/logo.js, loaded by the page (Cv.astro) in a single file.
 import Mark from './Mark.astro';
 import ThemeToggle from './ThemeToggle.astro';
 import SoundToggle from './SoundToggle.astro';
 import Availability from './Availability.astro';
 import logoUrl from '../assets/logo.png?url';
+import { cvPathOf } from '../lib/i18n';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv; fullName: string; home: string }   // home: URL of the page in its language (/ or /fr/)
 const { d, fullName, home } = Astro.props;
@@ -24,6 +25,7 @@ const idn = d.identity, ui = d.ui;
     <span class="fs-sep" aria-hidden="true">&middot;</span>
     <a href={`tel:${idn.contact.phone_href}`}>{idn.contact.phone}</a>
   </div>
+  <a class="topbar-cv" href={cvPathOf(d.lang)} aria-label={ui.cv_page.link_title} title={ui.cv_page.link_title}>{ui.cv_page.link}</a>
   <Mark name="linkedin" mark={idn.marks.linkedin} href={idn.linkedin.url} class="topbar-linkedin" />
   <SoundToggle ui={ui} />
   <ThemeToggle ui={ui} />

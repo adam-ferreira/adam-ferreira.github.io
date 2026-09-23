@@ -1,0 +1,50 @@
+/* The detailed CV on paper, and in its PDF (tools/render-pdf.mjs): A4, always light, without the bar and its buttons,
+   the same column tightened to fit on two pages. */
+@page { size: A4; margin: 13mm 15mm 12mm; }
+
+@media print {
+  /* the light palette, whatever the theme on screen (the dark one wins by specificity: each of its selectors is matched) */
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    --paper: #fff; --ink: #161b22; --text: #3a4351; --muted: #5f6875; --line: #dde1e7; --chip: #eaedf1; --accent-ink: #976400;
+  }
+  html, body { background: #fff; }
+  body { font-size: 9.5pt; line-height: 1.5; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .cv-bar { display: none; }
+  .print-only { display: block; }
+  .cv-doc { max-width: none; padding: 0; }
+  .cv-doc a { background: none; }
+
+  .cv-name { font-size: 46pt; }
+  .cv-headline { margin-top: 5pt; font-size: 12.5pt; }
+  .cv-tagline { margin-top: 2pt; max-width: none; }
+  .cv-contact { margin-top: 7pt; column-gap: 14pt; font-size: 7.5pt; letter-spacing: .1em; }
+  .cv-contact li + li::before { content: none; }   /* the site's address adds a line: no dot may start it */
+
+  .cv-section { margin-top: 15pt; }
+  .cv-section-title { margin-bottom: 8pt; padding-bottom: 3pt; font-size: 7.5pt; }
+  .cv-skills { gap: 2pt; }
+  .cv-skills > div { grid-template-columns: 100pt minmax(0, 1fr); column-gap: 10pt; }
+  .cv-skills dt { font-size: inherit; }
+  /* chips become a plain list: a pill per word is ink for nothing on paper */
+  .chips, .cv-skills .chips, .cv-stack .chips { display: inline; }
+  .chips li, .cv-stack .chips li { display: inline-block; padding: 0; background: none; font-size: inherit; line-height: inherit; }   /* a line breaks between two items, never inside one */
+  .chips li + li::before { content: "\00b7"; margin: 0 .4em; }
+
+  .cv-page .entry-header { margin-bottom: 3pt; }
+  .cv-page .entry-title { font-size: 11.5pt; }
+  .cv-page .entry-title-line { grid-template-columns: auto minmax(0, 1fr); column-gap: 10pt; }   /* paper: title and dates on one line */
+  .cv-page .entry-date { grid-column: 2; order: 0; font-size: 7.5pt; }
+  .cv-job + .cv-job { margin-top: 10pt; padding-top: 9pt; }
+  .cv-sub-title { margin-top: 6pt; font-size: 10pt; }
+  .cv-sub-intro { margin-top: 1pt; }
+  .cv-bullets { margin-top: 5pt; gap: 3pt; }
+  .cv-bullets li { padding-left: 11pt; }
+  .cv-bullets li::before { left: 1pt; top: .62em; width: 4pt; height: 4pt; }
+  .cv-stack { margin-top: 5pt; display: block; }
+  .cv-stack-label { font-size: inherit; }
+  .cv-duo { column-gap: 24pt; }
+  .cv-updated { margin-top: 12pt; font-size: 7pt; }
+
+  .cv-section-title, .entry-header, .cv-sub-title { break-after: avoid; }
+  .entry-header, .cv-bullets li, .cv-stack, .cv-skills > div { break-inside: avoid; }
+}
