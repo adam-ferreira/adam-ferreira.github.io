@@ -16,12 +16,14 @@
 }
 .hero-stage.is-lit::before { opacity: 1; }
 .hero3d {
-  position: absolute; inset: -8%; width: 116%; height: 116%; display: block; cursor: grab; touch-action: none;
+  position: absolute; inset: -8%; width: 116%; height: 116%; display: block; cursor: grab; touch-action: pan-y;   /* a finger still scrolls the page up and down */
   opacity: 0; transform: translateY(22px); transition: opacity 1s ease, transform 1.3s var(--ease-out);
 }
 .hero3d.is-ready { opacity: 1; transform: none; }
 .hero3d.is-dragging { cursor: grabbing; }
-.hero-poster { position: absolute; inset: -8%; width: 116%; height: 116%; pointer-events: none; }
+.hero-poster { position: absolute; inset: -8%; width: 116%; height: 116%; pointer-events: none; transition: opacity .6s ease; }
+/* the phones' still image waits for the 3D, and comes back if the graphics context is lost */
+.hero-stage:has(.hero3d.is-ready) .hero-poster, .job-stage:has(.hero3d.is-ready) .job-poster { opacity: 0; }
 @media (min-width: 861px) and (hover: hover) and (pointer: fine) { .hero-poster { display: none; } }   /* the 3D runs here (DESKTOP in media.js) */
 .devices3d { display: none; }
 html.stage .devices3d { display: block; position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; opacity: 0; transition: opacity .8s ease; }
@@ -69,8 +71,8 @@ body.is-scrolled .scroll-hint { opacity: 0; }
    contact details on a phone */
 @media (max-width: 860px), (hover: none), (pointer: coarse) {
   .hero-stage::before { opacity: 1; }
-  .hero3d { display: none; }
   .hero-poster { inset: 0; width: 100%; height: 100%; }
+  .hero3d { inset: -18%; width: 136%; height: 136%; }   /* the 3D frames the phones like the (tightly cropped) still image */
 }
 @media (max-width: 860px) {
   .hero-stage { grid-column: 1; grid-row: 2; width: min(72vw, 380px); margin: 28px auto 0; }

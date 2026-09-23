@@ -133,11 +133,11 @@ test('stage mode: the experiences with a demo keep a column for the 3D phones', 
   const cols = await page.locator('.job-demo .bullets').first().evaluate((el) => getComputedStyle(el).gridTemplateColumns.split(' ').length);
   expect(cols).toBe(2);
   await expect(page.locator('.job-demo > .spotlight')).toHaveCount(demos.length);   // the client's name, giant, over the text
-  await expect(page.locator('canvas.hero3d')).toBeHidden();
+  for (const c of await page.locator('canvas.hero3d').all()) await expect(c).toBeHidden();   // stage mode: only the overlay draws
   await expect(page.locator('canvas.devices3d')).toHaveCSS('pointer-events', 'none');
 });
 
-test('where the 3D does not run, the phones are still images, in the page language', async ({ page }, info) => {
+test('before the 3D (and without WebGL), the phones are still images, in the page language', async ({ page }, info) => {
   test.skip(info.project.name !== 'iphone', 'phones only');
   await page.goto('/fr/');
   await expect(page.locator('.hero-poster')).toBeVisible();
