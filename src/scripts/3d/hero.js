@@ -143,6 +143,12 @@ async function start() {
     shown = !!a; holder.visible = shown;
     if (a) { setScenario(a.dataset.demo); }
   }
+  // entrance: the phones rise from below while turning into place, the first time the hero shows them
+  const INTRO_MS = 1600;
+  let intro = !reduced() && freeze === null && (!overlay || slideIdx === 0) ? { start: 0 } : null;
+  const easeOut = (u) => 1 - (1 - u) ** 3;
+  const introPose = (e) => { spin.position.y = (1 - e) * -1.5; spin.rotation.y = (1 - e) * -2.4; spin.scale.setScalar(0.7 + 0.3 * e); };
+  if (intro) introPose(0);
   fit();
   renderer.render(scene, camera);
   canvas.classList.add('is-ready');
@@ -150,6 +156,7 @@ async function start() {
 
   // a screen change: the phones leave their anchor and reach the next one while the screens move
   function toSlide(n) {
+    if (intro) { intro = null; introPose(1); }   // a screen change during the entrance: the move takes over
     const forward = n > slideIdx; slideIdx = n;
     const a = anchorOf(n), name = a ? (a.dataset.demo || 'hero') : null;
     const dur = stageMs();
@@ -227,6 +234,12 @@ async function start() {
       }
     }
     phones.position.y = Math.sin(t * 0.9) * 0.035;
+    if (intro) {
+      if (!intro.start) intro.start = now;
+      const u = Math.min(1, (now - intro.start) / INTRO_MS);
+      introPose(easeOut(u));
+      if (u >= 1) intro = null;
+    }
     renderer.render(scene, camera);
   })(performance.now());
 }
