@@ -14,3 +14,5 @@
 .sound-toggle.is-on .st-bar:nth-child(4) { animation-delay: -.65s; }
 @keyframes st-eq { 0%, 100% { height: 4px; } 50% { height: 12px; } }
 @media (prefers-reduced-motion: reduce) { .sound-toggle.is-on .st-bar { animation: none; height: 10px; } }
+/* touch screens: no hover, no screen changes, so almost nothing to hear; the switch would only puzzle */
+@media (hover: none), (pointer: coarse) { .sound-toggle { display: none; } }

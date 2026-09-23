@@ -32,7 +32,7 @@
 .job-poster { display: block; width: 100%; height: auto; transition: opacity .6s ease; }
 .job-stage .hero3d { inset: -18%; width: 136%; height: 136%; }   /* same framing as the still image */
 html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones play in the third column */
-@media (max-width: 1099px) { .job > .spotlight { padding-top: 22px; border-top: 1px solid var(--line); } }
+@media (max-width: 1099px) { .job > .spotlight { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); } }
 
 /* stage mode, experience with a demo: the phones take a third column and play its test; the bullets go to one column */
 .device-anchor { display: none; }
@@ -97,4 +97,4 @@ html.stage .chapter-device { position: absolute; right: calc(var(--stage-gutter)
 .stack { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .stack-label { font-size: 14px; font-weight: 600; color: var(--muted); margin-right: 4px; }
 .stack .chips li { font-size: 13px; padding: 3px 10px; }
-@media (max-width: 640px) { .job { margin-bottom: 80px; } .bullets { gap: 24px; } }
+@media (max-width: 640px) { .job { margin-bottom: 80px; } .bullets { gap: 24px; } .job-intro { font-size: 16.5px; line-height: 1.6; } }
