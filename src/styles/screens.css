@@ -20,7 +20,7 @@
 /* ---------- transitions between screens (large screen, motion allowed) ----------
    1. The passage: the leaving screen recedes and fades, the next one rises; driven by the scroll itself (view timeline).
    2. The arrival: a screen's content settles in a cascade when it becomes the current screen (is-active, stage.js / scroll.js).
-   3. The indicator: a column of ticks on the right, with a counter (pager.js). */
+   3. The indicator: a column of ticks on the right, the current screen in the accent (pager.js). */
 @media (min-width: 1100px) and (min-height: 680px) and (prefers-reduced-motion: no-preference) {
   /* .reveal: the blocks that settle in when their screen arrives (the tests force this same class visible).
      html.js: without JavaScript, nobody sets is-active, so nothing may start hidden */
@@ -30,7 +30,7 @@
     transition-delay: calc(var(--d, 0) * 70ms);
   }
   html.js .is-active .reveal { opacity: 1; transform: none; }
-  .job .job-intro { --d: 1; } .job .story-rail { --d: 2; } .job .story-kicker { --d: 2; } .job .story-steps { --d: 3; } .job .stack { --d: 4; }
+  .job .job-intro { --d: 1; } .job .story-rail { --d: 2; } .job .story-steps { --d: 3; } .job .story-cue { --d: 4; } .job .stack { --d: 4; }
   .facts .section > :nth-child(2) { --d: 1; } .facts .section:nth-child(2) > * { --d: 2; } .facts .section:nth-child(3) > * { --d: 3; }
 }
 @supports (animation-timeline: view()) {
@@ -52,7 +52,6 @@
 .pager { display: none; }
 @media (min-width: 1100px) and (min-height: 680px) {
   .pager { display: flex; flex-direction: column; align-items: flex-end; position: fixed; right: 18px; top: 50%; transform: translateY(-50%); z-index: 15; }
-  .pager-count { margin-bottom: 12px; color: var(--ink); font-variant-numeric: tabular-nums; }
   .pager-tick { display: flex; align-items: center; width: 34px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }   /* 24 px: minimum size of a clickable target */
   .pager-tick::before { content: ""; display: block; margin-left: auto; flex: none; width: 14px; height: 2px; border-radius: 1px; background: currentColor; opacity: .5; transition: width .35s ease, opacity .35s ease, background .35s ease; }
   .pager-tick:hover::before { opacity: .9; }
@@ -66,11 +65,6 @@
   .pager.is-inverted .pager-tick::after { background: var(--ink); color: var(--paper); }
   .pager-tick:hover::after, .pager-tick:focus-visible::after { opacity: 1; transform: translate(0, -50%); }
   .pager-tick.is-current::before { width: 32px; opacity: 1; background: var(--accent); }
-  .pager-tick.is-passed:not(.is-current)::before { background: var(--pass); opacity: 1; }   /* a screen visited: a test that passed */
-  .pager.is-inverted .pager-tick.is-passed:not(.is-current)::before { background: var(--pass-on-ink); }
-  .pager.is-done .pager-count { color: var(--pass); }
-  .pager.is-inverted.is-done .pager-count { color: var(--pass-on-ink); }
-  .pager.is-inverted .pager-count { color: var(--paper); }   /* on the inverted footer */
 }
 
 /* ---------- smaller screens: each block settles in when it enters the window (scroll.js adds is-in) ---------- */

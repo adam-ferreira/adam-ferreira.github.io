@@ -114,7 +114,7 @@ export const STORIES = {
       { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
       { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
     ] },
-    { feature: 'BrowserStack · 4 devices', note: '· 4 devices', steps: [
+    { feature: 'BrowserStack farm', note: '· 4 devices', steps: [
       { rect: SEARCH_BTN, verb: 'tap', say: 'iPhone', loc: 'search' },
       { rect: R.row2, verb: 'swipe', say: 'Pixel', loc: 'hotel list' },
       { rect: R.cta, verb: 'tap', say: 'tablet', loc: 'booking' },

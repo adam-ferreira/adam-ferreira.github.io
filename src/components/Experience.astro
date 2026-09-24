@@ -3,10 +3,15 @@
 // and on the detailed CV page.
 import Job from './Job.astro';
 import Section from './Section.astro';
+import { withoutNote } from '../lib/text';
 import type { Cv } from '../lib/types';
 interface Props { d: Cv }
 const { d } = Astro.props;
+const markOf = (key?: string) => {
+  if (key && !d.identity.marks[key]) throw new Error(`experience.mark "${key}" is not in identity.marks`);
+  return key ? { name: key, data: d.identity.marks[key] } : undefined;
+};
 ---
 <Section id="experience" title={d.sections.experience} hideTitle>
-  {d.experience.map((j, i) => <Job j={j} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} storyLabel={d.ui.story_label} lang={d.lang} dragLabel={d.ui.cursor_drag} />)}
+  {d.experience.map((j, i) => <Job j={j} mark={markOf(j.mark)} next={d.experience[i + 1] && `${d.ui.next_label} ${withoutNote(d.experience[i + 1].client ?? d.experience[i + 1].role)}`} scrollHint={d.ui.scroll_hint} num={String(i + 1).padStart(2, '0')} stackLabel={d.ui.stack_label} storyLabel={d.ui.story_label} lang={d.lang} dragLabel={d.ui.cursor_drag} />)}
 </Section>

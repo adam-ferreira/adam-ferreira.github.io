@@ -1,11 +1,9 @@
 // Stage mode: an experience with a demo tells its achievements one at a time, next to the phones. The wheel and the arrow
-// keys go to the next achievement before the next screen (stage.js asks here first); the rail lists them as test steps
-// that turn green once seen, and the phones play each one's test (hero.js reads data-step on the device anchor).
+// keys go to the next achievement before the next screen (stage.js asks here first); the rail lists them, the cue under
+// them says what scrolling does ("Scroll" until the visitor has moved a story once, "Next: …" on the last
+// achievement), and the phones play each one's test (hero.js reads data-step on the device anchor).
 // Without stage mode nothing happens here: the achievements stay a list.
-const PASS_MS = 900;
 const stories = new Map();   // slide → its story
-let passTimer = 0;
-const pad = (i) => String(i + 1).padStart(2, '0');
 
 function show(st, i, quiet) {
   if (i === st.cur && !quiet) return false;
@@ -14,11 +12,13 @@ function show(st, i, quiet) {
     s.inert = k !== i; s.tabIndex = k === i ? 0 : -1;
   });
   st.tabs.forEach((b, k) => { b.setAttribute('aria-selected', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
+  st.root.dataset.at = i === st.steps.length - 1 ? 'last' : i === 0 ? 'first' : 'middle';
   st.cur = i;
   if (st.anchor) st.anchor.dataset.step = String(i);
-  if (!quiet) window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'tick' } }));   // sound.js, if the sound is on
-  clearTimeout(passTimer);
-  passTimer = setTimeout(() => st.tabs[i].classList.add('is-passed'), PASS_MS);
+  if (!quiet) {
+    document.documentElement.classList.add('story-learned');   // the visitor knows scrolling moves the story: no more "Scroll"
+    window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'tick' } }));   // sound.js, if the sound is on
+  }
   return true;
 }
 
@@ -29,12 +29,11 @@ function build(slide) {
   const rail = document.createElement('div');
   rail.className = 'story-rail reveal'; rail.setAttribute('role', 'tablist'); rail.setAttribute('aria-label', list.dataset.label ?? '');
   list.setAttribute('role', 'none');   // the items become tab panels
-  const st = { steps, tabs: [], anchor: slide.querySelector('.device-anchor'), cur: 0 };
+  const st = { root: slide.querySelector('.story'), steps, tabs: [], anchor: slide.querySelector('.device-anchor'), cur: 0 };
   st.tabs = steps.map((s, i) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'story-tab'; b.id = `${s.id}-tab`; b.setAttribute('role', 'tab'); b.setAttribute('aria-controls', s.id);
-    b.setAttribute('aria-label', `${pad(i)} ${s.querySelector('.story-title')?.textContent ?? ''}`);
-    b.innerHTML = `<span class="story-tab-num">${pad(i)}</span>`;
+    b.setAttribute('aria-label', `${i + 1} ${s.querySelector('.story-title')?.textContent ?? ''}`);
     b.addEventListener('click', () => show(st, i));
     s.setAttribute('role', 'tabpanel'); s.setAttribute('aria-labelledby', b.id);
     rail.appendChild(b); return b;
@@ -59,7 +58,6 @@ export const step = (slide, dir) => canStep(slide, dir) && show(stories.get(slid
 export function enter(slide, back) {
   const st = stories.get(slide);
   if (st) show(st, back ? st.steps.length - 1 : 0, true);
-  else clearTimeout(passTimer);
 }
 
 if (document.documentElement.classList.contains('stage')) document.querySelectorAll('.job-demo').forEach(build);

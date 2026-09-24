@@ -11,18 +11,17 @@ import bettingFr from '../assets/devices/betting-fr.webp?url';
 import bookingEn from '../assets/devices/booking-en.webp?url';
 import bookingFr from '../assets/devices/booking-fr.webp?url';
 const POSTERS = { betting: { en: bettingEn, fr: bettingFr }, booking: { en: bookingEn, fr: bookingFr } };   // npm run posters
-import Chips from './Chips.astro';
 import { md, plain } from '../lib/text';
-import type { Job } from '../lib/types';
-interface Props { j: Job; num: string; stackLabel: string; storyLabel: string; lang: 'en' | 'fr'; dragLabel: string }
-const { j, num, stackLabel, storyLabel, lang, dragLabel } = Astro.props;
+import type { Job, MarkData } from '../lib/types';
+interface Props { j: Job; mark?: { name: string; data: MarkData }; next?: string; scrollHint: string; num: string; stackLabel: string; storyLabel: string; lang: 'en' | 'fr'; dragLabel: string }
+const { j, mark, next, scrollHint, num, stackLabel, storyLabel, lang, dragLabel } = Astro.props;
 const bullets = j.bullets ?? [];
 const short = bullets.length === 0;
 const intro = j.lead ?? j.intro;
 const pad = (i: number) => String(i + 1).padStart(2, '0');
 ---
 <article class:list={['job', 'slide', { 'job-short': short, 'job-demo': !!j.demo }]} data-num={num} data-label={`${num} ${plain(j.client ?? j.role)}`}>
-  {j.demo && <Spotlight role={j.role} client={j.client ?? ''} />}
+  {j.demo && <Spotlight role={j.role} client={j.client ?? ''} date={j.date} mark={mark} />}
   <div class="job-side">
     {!j.demo && <EntryHeader num={num} title={j.role} org={j.client} date={j.date} />}
     {intro && <p class="job-intro reveal" set:html={md(intro)} />}
@@ -30,18 +29,18 @@ const pad = (i: number) => String(i + 1).padStart(2, '0');
   </div>
   {!short && (
     <div class="job-main story">
-      {j.subtitle && <p class="story-kicker label reveal" set:html={md(j.subtitle)} />}
       <ol class="story-steps reveal" data-label={`${storyLabel} ${plain(j.client ?? j.role)}`}>
         {bullets.map((b, i) => (
           <li class="story-step" id={`job-${num}-step-${pad(i)}`}>
-            <span class="story-num" aria-hidden="true">{pad(i)}</span>
+            <span class="story-num" aria-hidden="true">{i + 1}<small>/{bullets.length}</small></span>
             <h4 class="story-title" set:html={md(b.title)} />
             <p class="story-text" set:html={md(b.short)} />
           </li>
         ))}
       </ol>
+      <p class="story-cue label" aria-hidden="true"><span class="story-cue-scroll" set:html={md(scrollHint)} />{next && <span class="story-cue-next" set:html={md(next)} />}</p>
     </div>
   )}
   {j.demo && <div class="job-device device-anchor" data-demo={j.demo} data-zoom="1.1" data-cursor={dragLabel} aria-hidden="true"></div>}
-  {j.stack && <div class="stack reveal"><span class="stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
+  {j.stack && <p class="stack reveal"><span class="stack-label label" set:html={md(stackLabel)} /> <span set:html={j.stack.map((t) => md(t).replace(/ /g, '&nbsp;')).join(' · ')} /></p>}
 </article>

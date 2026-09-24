@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { PAGES, animationsDone, content, plain, roleOnly, watchErrors } from './helpers';
+import { PAGES, animationsDone, content, plain, withoutNote, watchErrors } from './helpers';
 
 for (const { lang, path } of PAGES) {
   test.describe(`page ${lang} (${path})`, () => {
@@ -13,10 +13,10 @@ for (const { lang, path } of PAGES) {
     });
 
     test('all the text is already in the HTML (readable without JavaScript, indexable)', async ({ request }) => {
-      const html = await (await request.get(path)).text();
+      const html = (await (await request.get(path)).text()).replace(/\u00a0/g, ' ');   // the typography ties short words with non-breaking spaces
       const d = content(lang);
       expect(html).toContain(`<html lang="${lang}"`);
-      for (const j of d.experience) expect(html).toContain(roleOnly(j.role).replace(/&/g, '&amp;'));
+      for (const j of d.experience) expect(html).toContain(withoutNote(j.role).replace(/&/g, '&amp;'));
       // the achievements: their title and short sentence here, the full text only on the CV page
       const esc = (t: string) => plain(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
       for (const b of d.experience.flatMap((j: { bullets?: { title: string; short: string; text: string }[] }) => j.bullets ?? [])) {
@@ -69,7 +69,7 @@ test('without JavaScript on a dark system, the dark Accor logo is turned light',
   const ctx = await browser.newContext({ ...info.project.use, javaScriptEnabled: false, colorScheme: 'dark' });
   const page = await ctx.newPage();
   await page.goto('/');
-  await expect(page.locator('.mark-accor img')).not.toHaveCSS('filter', 'none');
+  for (const img of await page.locator('.mark-accor img').all()) await expect(img).not.toHaveCSS('filter', 'none');   // the hero's and the experience's
   await ctx.close();
 });
 

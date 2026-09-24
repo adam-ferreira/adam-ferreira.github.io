@@ -18,8 +18,8 @@ export const CV_PAGES = [
 /** Displayed text, without the JSON **bold** markup. */
 export const plain = (s: string) => s.replace(/\*\*/g, '');
 
-/** A role as the home page shows it: without its trailing parenthesis (src/lib/text.ts). */
-export const roleOnly = (s: string) => plain(s).replace(/\s*\(.*\)$/, '');
+/** A role or a client as the home page shows it: without its trailing parenthesis (src/lib/text.ts). */
+export const withoutNote = (s: string) => plain(s).replace(/\s*\(.*\)$/, '');
 
 /** Collects a page's JavaScript errors and console errors. */
 export function watchErrors(page: Page) {

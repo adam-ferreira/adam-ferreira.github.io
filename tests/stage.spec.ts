@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { content, roleOnly, settle } from './helpers';
+import { content, withoutNote, settle } from './helpers';
 
 // Stage mode: a desktop with a mouse, window at least 1100 × 680.
 test.beforeEach(async ({ page }, info) => {
@@ -68,6 +68,23 @@ test('story: one wheel gesture = one achievement', async ({ page }) => {
   expect(await current(page)).toBe(String(i));
 });
 
+test('story cues: "Scroll" until the story first moves, the next experience on its last achievement; the numeral counts', async ({ page }) => {
+  const { i, n } = await story(page);
+  await goToSlide(page, i);
+  const slide = page.locator('.slide').nth(i), d = content('en');
+  await expect(slide.locator('.story-cue-scroll')).toHaveCSS('opacity', '1');
+  const numeral = slide.locator('.story-step.is-current .story-num'), of = `/${n}`;
+  await expect(numeral).toHaveText(`1${of}`);   // the only counter: the big numeral and how many there are
+  await page.keyboard.press('ArrowDown');
+  await expect(numeral).toHaveText(`2${of}`);
+  await expect(slide.locator('.story-cue-scroll')).toHaveCSS('opacity', '0');   // learned: it does not come back
+  await expect(slide.locator('.story-cue-next')).toHaveCSS('opacity', '0');
+  for (let k = 2; k < n; k++) await page.keyboard.press('ArrowDown');
+  const next = d.experience[d.experience.findIndex((j: { demo?: string }) => j.demo) + 1];
+  await expect(slide.locator('.story-cue-next')).toHaveCSS('opacity', '1');
+  await expect(slide.locator('.story-cue-next')).toContainText(withoutNote(next.client ?? next.role));
+});
+
 test('story rail: a tab shows its achievement, the arrows move along the rail, only that achievement is exposed', async ({ page }) => {
   const { i, n, tabs } = await story(page);
   await goToSlide(page, i);
@@ -76,7 +93,6 @@ test('story rail: a tab shows its achievement, the arrows move along the rail, o
   await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true');
   await expect(shown).toHaveCount(1);
   await expect(shown).toHaveAttribute('aria-labelledby', (await tabs.nth(2).getAttribute('id'))!);
-  await expect(tabs.nth(2)).toHaveClass(/is-passed/);   // seen for a moment: a step that passed
   await tabs.nth(2).focus();
   await page.keyboard.press('ArrowRight');
   await expect(tabs.nth(3)).toBeFocused();
@@ -89,8 +105,10 @@ test('screen reader: all the content is exposed, not only the current screen', a
   const d = content('en');
   // getByRole ignores whatever is removed from the accessibility tree (visibility:hidden, aria-hidden…)
   for (const j of d.experience) {
-    const client = (j.client ?? '').replace(/\s*\(.*\)$/, '');   // its heading: the client (without its note) and the role held there
-    await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: roleOnly(j.role) }).filter({ hasText: client })).toHaveCount(1);
+    // its heading: the client (its name, or its logo's alt text) and the role held there
+    const client = (j.client ?? '').replace(/\s*\(.*\)$/, '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const role = withoutNote(j.role).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    await expect(page.getByRole('heading', { level: 3, name: new RegExp(`(?=.*${client})(?=.*${role})`, 'i') })).toHaveCount(1);
   }
   await expect(page.getByRole('heading', { level: 2, name: d.sections.education })).toHaveCount(1);
   await expect(page.getByRole('link', { name: d.identity.contact.email }).last()).toBeAttached();
@@ -132,14 +150,14 @@ test('AF logo: hidden on the home screen, shown afterwards; a click reloads the 
 test('3D: phones, AF logo and marks ready', async ({ page }) => {
   await expect(page.locator('canvas.devices3d.is-ready')).toBeAttached({ timeout: 15_000 });   // stage mode: the phones' overlay
   await expect(page.locator('canvas.logo3d.is-ready')).toBeAttached({ timeout: 15_000 });
-  await expect(page.locator('.mark.is-3d')).toHaveCount(3, { timeout: 15_000 });
+  await expect(page.locator('.mark.is-3d')).toHaveCount(await page.locator('.mark[data-svg]').count(), { timeout: 15_000 });   // the hero's, the top bar's, the experiences'
 });
 
 test('"Skip to content": first Tab stop, visible, leads to the first experience', async ({ page }) => {
   await page.keyboard.press('Tab');
   const skip = page.locator('.skip-link');
   await expect(skip).toBeFocused();
-  await expect(skip).toBeInViewport({ ratio: 1 });   // waits for its 0.2 s slide-in: fully visible
+  await expect(skip).toBeInViewport({ ratio: 1, timeout: 15_000 });   // its 0.2 s slide-in: much longer on a busy machine
   await page.keyboard.press('Enter'); await settle(page);
   expect(await current(page)).toBe('1');
 });
@@ -156,10 +174,12 @@ test('lost graphics context: the mark falls back to its image', async ({ page })
   await expect(mark.locator('img.theme-light')).toHaveCSS('opacity', '1');
 });
 
-test('the indicator is a test runner: each screen visited passes', async ({ page }) => {
-  const words = content('en').ui, n = String(await slideCount(page)).padStart(2, '0');
-  await expect(page.locator('.pager-count')).toHaveText(`01/${n} ${words.pager_passed}`, { timeout: 5_000 });   // the home screen
-  await page.keyboard.press('ArrowDown');
-  await expect(page.locator('.pager-count')).toHaveText(`02/${n} ${words.pager_passed}`, { timeout: 5_000 });
-  await expect(page.locator('.pager-tick.is-passed')).toHaveCount(2);
+test('the indicator: one tick per screen, the current one marked, a click goes there', async ({ page }) => {
+  const ticks = page.locator('.pager-tick');
+  await expect(ticks).toHaveCount(await slideCount(page));
+  await expect(ticks.first()).toHaveAttribute('aria-current', 'true');
+  await ticks.nth(2).click(); await settle(page);
+  expect(await current(page)).toBe('2');
+  await expect(ticks.nth(2)).toHaveAttribute('aria-current', 'true');
+  await expect(page.locator('.pager-tick[aria-current]')).toHaveCount(1);
 });
