@@ -57,6 +57,7 @@ test('story: the arrows go through the achievements before the next screen, and 
 });
 
 test('story: one wheel gesture = one achievement', async ({ page }) => {
+  test.slow();   // see the full story test above
   const { i, tabs } = await story(page);
   await goToSlide(page, i);
   await page.mouse.move(700, 400);
@@ -69,6 +70,7 @@ test('story: one wheel gesture = one achievement', async ({ page }) => {
 });
 
 test('story cues: "Scroll" until the story first moves, the next experience on its last achievement; the numeral counts', async ({ page }) => {
+  test.slow();   // see the full story test above
   const { i, n } = await story(page);
   await goToSlide(page, i);
   const slide = page.locator('.slide').nth(i), d = content('en');
@@ -86,6 +88,7 @@ test('story cues: "Scroll" until the story first moves, the next experience on i
 });
 
 test('story rail: a tab shows its achievement, the arrows move along the rail, only that achievement is exposed', async ({ page }) => {
+  test.slow();   // see the full story test above
   const { i, n, tabs } = await story(page);
   await goToSlide(page, i);
   const shown = page.locator('.slide').nth(i).locator('[role="tabpanel"]:not([inert])');   // the others are inert: out of reach
