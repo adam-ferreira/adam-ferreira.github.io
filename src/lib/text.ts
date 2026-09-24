@@ -4,11 +4,25 @@ import type { MarkData } from './types';
 const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' };
 const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ESC[c]);
 
-/** Plain text → HTML: escaping, then **bold** → <strong>. */
-export const md = (s: string) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+// Typography: a word of one or two letters ("I", "à", "de", "a") is tied to the next one, and French punctuation
+// (" :", " ?", "« ") to its word, with a non-breaking space: never a short word or a colon alone at the end of a line.
+const NBSP = '\u00a0';
+const typo = (s: string) => s
+  .replace(/(?<=^|[\s(])([\p{L}\d'’]{1,2}) (?=\S)/gu, `$1${NBSP}`)
+  .replace(/ ([:;!?»])/g, `${NBSP}$1`).replace(/« /g, `«${NBSP}`);
 
-/** A role without its trailing parenthesis: "QA Automation Engineer (Flutter mobile)" → "QA Automation Engineer". */
-export const roleOnly = (s: string) => s.replace(/\s*\(.*\)$/, '');
+/** Plain text → HTML: escaping, **bold** → <strong>, then the typography above. */
+export const md = (s: string) => typo(esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'));
+
+/** A role or a client without its trailing parenthesis: "QA Automation Engineer (Flutter mobile)" → "QA Automation Engineer". */
+export const withoutNote = (s: string) => s.replace(/\s*\(.*\)$/, '');
+
+/** "March 2026 - Present (Freelance)" → "Freelance · March 2026 – Present": the kind of contract first, then the dates. */
+export const contractAndDates = (s: string) => {
+  const [, range, note] = s.match(/^(.*?)\s*(?:\((.*)\))?$/) ?? [, s];
+  const dates = (range ?? s).replace(/\s-\s/, ' – ');
+  return note ? `${note} · ${dates}` : dates;
+};
 
 /** The same text without its **bold** markers: for an attribute read by a script (the labels of the indicator). */
 export const plain = (s: string) => s.replace(/\*\*/g, '');
