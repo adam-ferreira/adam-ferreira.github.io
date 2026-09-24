@@ -22,7 +22,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
 <head>
   <Head lang={lang} d={d} fullName={fullName} />
 </head>
-<body id="top" data-pager-label={d.ui.pager_aria} data-pager-passed={d.ui.pager_passed} data-pager-done={d.ui.pager_done} data-tab-away={d.ui.tab_away}>
+<body id="top" data-pager-label={d.ui.pager_aria} data-tab-away={d.ui.tab_away}>
   <a class="skip-link" href="#experience">{d.ui.skip_link}</a>
 
   <Topbar d={d} fullName={fullName} home={pathOf(lang)} />

@@ -33,6 +33,7 @@ const cv = defineCollection({
     skills: z.array(z.object({ label: text, items: z.array(text).min(1) }).strict()),
     experience: z.array(z.object({
       role: text, client: z.string().optional(), date: text,
+      mark: z.string().optional(),   // a key of identity.marks: the client's logo, in 3D, instead of its name
       intro: z.string().optional(), subtitle: z.string().optional(), subintro: z.string().optional(),
       lead: z.string().optional(),   // the intro in one sentence, for the home page (the CV page keeps intro)
       // an achievement: its title, one short sentence for the home page, the full text for the CV page
@@ -49,9 +50,9 @@ const cv = defineCollection({
       cursor_drag: text, cursor_mail: text, cursor_throw: text,         // words the cursor shows over some objects (cursor.js)
       scroll_hint: text, footer_statement: text, footer_availability: text, stack_label: text,
       story_label: text,   // the rail of an experience's achievements in stage mode (story.js), followed by the client's name
+      next_label: text,    // on a story's last achievement, before the name of the experience that follows
       nav_available: text, made_with: text,   // the top bar's availability (with the contact details), the footer's signature
       pager_aria: text, home_label: text, contact_label: text,   // the progress indicator, built by src/scripts/ui/pager.js
-      pager_passed: text, pager_done: text,   // the indicator as a test runner: "3/8 passed", then "All tests passed"
       tab_away: text,   // the tab's title while the visitor is elsewhere
       updated: z.string().includes('{date}', { message: 'ui.updated must contain {date} (date of the last content change)' }),
       skip_link: text,   // "skip to content" link, visible only when focused with the keyboard

@@ -11,7 +11,6 @@
   .job-side .job-intro { font-size: 17px; line-height: 1.6; }
   /* achievements arranged in pairs: read left to right, then top to bottom */
   .story-steps { grid-template-columns: 1fr 1fr; gap: 30px 40px; }
-  .job > .stack { gap: 8px; }
   /* short experiences (no achievements): one column, a larger title, and the number as a watermark */
   .job-short { grid-template-columns: minmax(0, 1fr); grid-template-areas: "side" "stack"; grid-template-rows: auto auto; max-width: 980px; position: relative; }
   .job-short .entry-title { font-size: clamp(30px, 3.2vw, 46px); }
@@ -36,17 +35,17 @@ html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones p
 .job-intro { max-width: 60ch; font-size: 18px; }
 
 /* the achievements: a list everywhere, a story told one at a time in stage mode (below) */
-.story-kicker { margin: 0 0 22px; }
 .story-steps { margin: 0; padding: 0; list-style: none; display: grid; gap: 28px; }
 .story-step { max-width: 62ch; }
 .story-num { display: block; margin-bottom: 8px; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; color: var(--accent-ink); }
+.story-num small { font-size: inherit; color: var(--accent); }   /* "2/6": the step and how many there are, in the lighter accent */
 .story-title { margin: 0 0 6px; font-size: 18px; font-weight: 600; line-height: 1.3; color: var(--ink); }
 .story-text { margin: 0; }
 .story-rail { display: none; }
 
-.stack { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.stack-label { font-size: 14px; font-weight: 600; color: var(--muted); margin-right: 4px; }
-.stack .chips li { font-size: 13px; padding: 3px 10px; }
+/* the stack: one quiet line (the full list, as chips, is on the CV page) */
+.stack { margin: 36px 0 0; max-width: 62ch; font-size: 15px; line-height: 1.6; color: var(--muted); }
+.stack-label { margin-right: 8px; }
 @media (max-width: 640px) { .job { margin-bottom: 80px; } .story-steps { gap: 24px; } .job-intro { font-size: 16.5px; line-height: 1.6; } }
 
 /* ---------- stage mode, experience with a demo: one reading column on the left, the phones large on the right ---------- */
@@ -60,8 +59,12 @@ html.stage .job-demo {
   column-gap: clamp(40px, 4vw, 80px);
 }
 html.stage .job-demo > .spotlight { margin-bottom: 18px; }
-html.stage .job-demo .job-side .job-intro { font-size: 16px; line-height: 1.6; max-width: 44ch; }
+html.stage .job-demo .job-side .job-intro { font-size: 16px; line-height: 1.6; }
 html.stage .job-demo .job-main, html.stage .job-demo > .stack { margin-top: clamp(28px, 4.5vh, 48px); }
+/* one column, one measure: the intro, the rail, the achievement and the stack all run to the same right edge */
+html.stage .job-demo .job-side .job-intro, html.stage .job-demo .story-rail, html.stage .job-demo .story-step,
+html.stage .job-demo .story-text, html.stage .job-demo > .stack { max-width: none; }
+html.stage .job-demo .job-intro, html.stage .job-demo .story-text, html.stage .job-demo > .stack { text-align: justify; }   /* flush on both edges, never a word cut (no hyphenation) */
 html.stage .job-device { grid-area: device; align-self: stretch; position: relative; }
 /* a halo in the client's colour behind the phones */
 html.stage .job-device::before { content: ""; position: absolute; inset: 6% -8%; border-radius: 50%; background: radial-gradient(closest-side, var(--halo), transparent); pointer-events: none; }
@@ -70,7 +73,6 @@ html.stage .job-device[data-demo="booking"] { --halo: rgba(58, 58, 200, .2); }
 
 /* the story: all the achievements in one cell, the current one shown; the others wait above (seen) or below (to come).
    Each one: the outlined numeral on the left, its title and sentence beside it. */
-html.stage .job-demo .story-kicker { margin-bottom: 10px; }
 html.stage .job-demo .story-steps { grid-template-columns: minmax(0, 1fr); }
 html.stage .job-demo .story-step {
   grid-area: 1 / 1; max-width: 34em;
@@ -84,24 +86,35 @@ html.stage .job-demo .story-num {   /* the outlined numeral, in the accent */
   grid-row: 1 / span 2; margin: 0; font-family: var(--display); font-size: clamp(96px, 7.6vw, 136px); line-height: .78; letter-spacing: .02em;
   color: transparent; -webkit-text-stroke: 1.5px var(--accent-ink);
 }
+html.stage .job-demo .story-num small { margin-left: .06em; font-size: .45em; color: transparent; -webkit-text-stroke: 1.5px var(--accent-ink); opacity: .5; }   /* "/6" at the numeral's foot: the same outline, in the background */
 html.stage .job-demo .story-title { margin: 0 0 12px; font-size: clamp(24px, 2vw, 34px); line-height: 1.14; letter-spacing: -.01em; }
-html.stage .job-demo .story-text { font-size: clamp(15.5px, 1.05vw, 17.5px); line-height: 1.6; max-width: 38ch; }
+html.stage .job-demo .story-text { font-size: clamp(15.5px, 1.05vw, 17.5px); line-height: 1.6; }
 html.stage .job-demo .story-step:focus { outline: none; }
 
-/* the rail: the achievements as test steps, green once seen */
-html.stage .story-rail { display: flex; gap: 6px; max-width: 34em; margin-bottom: clamp(22px, 3.5vh, 36px); }
-.story-tab {
-  flex: 1; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; min-width: 32px; padding: 8px 0; border: 0; background: none;
-  cursor: pointer; color: var(--muted); font-family: var(--mono); font-size: 11px; letter-spacing: .08em; transition: color .3s ease;
-}
-.story-tab::after { content: ""; display: block; width: 100%; height: 2px; border-radius: 1px; background: currentColor; opacity: .4; transition: background .35s ease, opacity .35s ease; }
-.story-tab:hover, .story-tab[aria-selected="true"] { color: var(--ink); }
+/* the rail: the achievements, the current one in the accent */
+html.stage .story-rail { display: flex; align-items: center; gap: 6px; margin-bottom: clamp(22px, 3.5vh, 36px); }
+.story-tab { flex: 1; display: flex; align-items: center; min-width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; color: var(--muted); }   /* 24 px: minimum size of a clickable target */
+.story-tab::after { content: ""; width: 100%; height: 2px; border-radius: 1px; background: currentColor; opacity: .35; transition: background .35s ease, opacity .35s ease; }
+.story-tab:hover::after { opacity: .8; }
 .story-tab[aria-selected="true"]::after { background: var(--accent); opacity: 1; }
-.story-tab.is-passed:not([aria-selected="true"])::after { background: var(--pass); opacity: 1; }
+
+/* what scrolling does here: "Scroll" until the visitor has moved a story once, "Next: …" on the last achievement */
+.story-cue { display: none; }
+html.stage .story-cue { display: block; position: relative; height: 26px; margin: clamp(18px, 3vh, 30px) 0 0; }
+.story-cue > span { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 8px; opacity: 0; transition: opacity .4s ease; }
+.story-cue > span::after { content: "↓"; }
+.story-cue > span::before { content: ""; width: 1px; height: 22px; background: var(--muted); animation: hint 1.6s ease-in-out infinite; }   /* the home screen's hint (Hero.css) */
+html.stage:not(.story-learned) .story[data-at="first"] .story-cue-scroll, .story[data-at="last"] .story-cue-next { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .story-cue > span::before { animation: none; } }
 
 @media (max-height: 800px) {   /* a short laptop screen: the experience still fits in one screen */
   html.stage .job-demo .spotlight-name { font-size: clamp(52px, 4.2vw, 72px); }
+  html.stage .job-demo .mark-betclic { height: clamp(46px, 3.6vw, 60px); }
+  html.stage .job-demo .mark-accor { height: clamp(60px, 4.8vw, 80px); }
   html.stage .job-demo .spotlight-role { margin-top: 8px; font-size: 17px; }
+  html.stage .job-demo .spotlight-when { margin-top: 2px; font-size: 14px; }
+  html.stage .job-demo > .spotlight { margin-bottom: 10px; }
+  html.stage .job-demo .job-main, html.stage .job-demo > .stack { margin-top: 20px; }
   html.stage .job-demo .job-side .job-intro { font-size: 14.5px; line-height: 1.5; }
   html.stage .job-demo .story-num { font-size: clamp(72px, 5.8vw, 100px); }
   html.stage .job-demo .story-title { font-size: clamp(21px, 1.8vw, 28px); margin-bottom: 8px; }
