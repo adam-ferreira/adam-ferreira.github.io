@@ -62,10 +62,20 @@ export const SCENARIOS = {
 
 // The reward game of the Betclic story (an interactive animation): a wheel, its prize, its button, inside the top card.
 const WHEEL = { x: 44, y: 170, w: 140, h: 140, r: 70 }, PRIZE = { x: 204, y: 204, w: 228, h: 34, r: 8 }, SPIN = { x: 204, y: 258, w: 150, h: 46, r: 23 };
+// The other screens of the stories: missions, leaderboard, bet slip (Betclic); results, confirmation, status, hotel (Accor)
+const MIS = (i) => ({ x: 24, y: 196 + i * 96, w: 432, h: 84, r: 16 }), MIS_CHIP = (i) => ({ x: 318, y: 210 + i * 96, w: 122, h: 28, r: 14 });
+const LB = (i) => ({ x: 24, y: 196 + i * 64, w: 432, h: 54, r: 14 });
+const SLIP = { x: 0, y: 286, w: 480, h: 312, r: 28 }, SLIP_PICK = { x: 24, y: 354, w: 432, h: 64, r: 14 };
+const SLIP_BOOST = { x: 24, y: 430, w: 432, h: 50, r: 14 }, SLIP_CTA = { x: 24, y: 500, w: 432, h: 64, r: 32 };
+const FILTER = (i) => ({ x: [24, 128, 232][i], y: 196, w: [96, 96, 84][i], h: 34, r: 17 }), HOT = (i) => ({ x: 24, y: 246 + i * 84, w: 432, h: 74, r: 14 });
+const CONF_CARD = { x: 24, y: 384, w: 432, h: 100, r: 18 }, CONF_BTN = { x: 24, y: 500, w: 432, h: 58, r: 29 }, NOTIF = { x: 16, y: 16, w: 448, h: 84, r: 20 };
+const STATUS_CARD = { x: 24, y: 150, w: 432, h: 172, r: 22 }, BENEFIT = (i) => ({ x: 24, y: 340 + i * 62, w: 432, h: 50, r: 14 });
+const PHOTO = { x: 24, y: 140, w: 432, h: 190, r: 20 };
 
 /** The story of each experience with a demo (stage mode, src/scripts/ui/story.js): one short test per achievement, in
  *  the order of the content's bullets. A step without `rect` happens off screen (an API call, a CI job): only its log
- *  line shows. `tone`: the log line's mark (pass by default). `keep`: the frames stay on the elements already visited.
+ *  line shows. `screen`: the app's screen it happens on (APPS). `tone`: the log line's mark (pass by default). `keep`:
+ *  the frames stay on the elements already visited.
  *  `result` / `note`: the summary line. At most five steps: a run always lasts CYCLE. */
 export const STORIES = {
   betting: [
@@ -76,33 +86,33 @@ export const STORIES = {
       { rect: R.cta, verb: 'id', loc: '~place_bet' },
       { rect: tabRect(2), verb: 'id', loc: '~tab_missions' },
     ] },
-    { feature: 'reward_game.riv', variant: 'reward', note: '· rive runtime', steps: [
+    { feature: 'reward_game.riv', screen: 'reward', note: '· rive runtime', steps: [
       { rect: WHEEL, verb: 'find', loc: '~reward_wheel' },
       { rect: SPIN, verb: 'tap', loc: '~spin_button' },
       { rect: PRIZE, verb: 'assert', loc: '~prize_label' },
     ] },
-    { feature: 'missions.feature', note: '· data by API', steps: [
+    { feature: 'missions.feature', screen: 'missions', note: '· data by API', steps: [
       { verb: 'api', loc: 'POST /bets', tone: 'info' },
       { verb: 'api', loc: 'POST /bets/settle', tone: 'info' },
-      { rect: R.card, verb: 'assert', loc: '~mission_progress' },
-      { rect: R.row2, verb: 'assert', loc: '~leaderboard_rank' },
+      { rect: MIS(0), verb: 'assert', loc: '~mission_progress' },
+      { rect: MIS_CHIP(0), verb: 'assert', loc: '~mission_reward' },
     ] },
-    { feature: 'nightly · 5 markets', result: 'TRIAGED', note: '· 1 bug → Jira', steps: [
+    { feature: 'nightly · 5 markets', screen: 'leaderboard', result: 'TRIAGED', note: '· 1 bug → Jira', steps: [
       { verb: 'run', loc: '5 markets', tone: 'info' },
       { verb: 'flaky', loc: 'rerun, no ticket', tone: 'warn' },
       { verb: 'env', loc: 'down, no ticket', tone: 'warn' },
       { verb: 'bug', loc: 'ticket in Jira', tone: 'fail' },
     ] },
-    { feature: 'place_bet.feature', note: '· fixed at the root', steps: [
-      { rect: R.cta, verb: 'tap', loc: '~place_bet', tone: 'fail' },
+    { feature: 'place_bet.feature', screen: 'betslip', note: '· fixed at the root', steps: [
+      { rect: SLIP_CTA, verb: 'tap', loc: '~place_bet', tone: 'fail' },
       { verb: 'debug', loc: 'a11y tree', tone: 'info' },
       { verb: 'fix', loc: 'in the framework', tone: 'info' },
-      { rect: R.cta, verb: 'tap', loc: '~place_bet' },
+      { rect: SLIP_CTA, verb: 'tap', loc: '~place_bet' },
     ] },
-    { feature: 'figma → MissionsPage', keep: true, result: 'GENERATED', note: '· page object', steps: [
-      { rect: R.card, verb: 'map', loc: 'missionCard' },
-      { rect: R.row2, verb: 'map', loc: 'leaderboard' },
-      { rect: R.cta, verb: 'map', loc: 'placeBetButton' },
+    { feature: 'figma → MissionsPage', screen: 'missions', keep: true, result: 'GENERATED', note: '· page object', steps: [
+      { rect: MIS(0), verb: 'map', loc: 'missionRow' },
+      { rect: MIS_CHIP(1), verb: 'map', loc: 'rewardChip' },
+      { rect: tabRect(2), verb: 'map', loc: 'missionsTab' },
       { verb: 'write', loc: 'MissionsPage.ts', tone: 'info' },
     ] },
   ],
@@ -114,28 +124,28 @@ export const STORIES = {
       { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
       { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
     ] },
-    { feature: 'BrowserStack farm', note: '· 4 devices', steps: [
-      { rect: SEARCH_BTN, verb: 'tap', say: 'iPhone', loc: 'search' },
-      { rect: R.row2, verb: 'swipe', say: 'Pixel', loc: 'hotel list' },
-      { rect: R.cta, verb: 'tap', say: 'tablet', loc: 'booking' },
-      { rect: tabRect(2), verb: 'tap', say: 'iPad ⟲', loc: 'landscape' },
+    { feature: 'BrowserStack farm', screen: 'results', note: '· 4 devices', steps: [
+      { rect: FILTER(0), verb: 'tap', say: 'iPhone', loc: 'price filter' },
+      { rect: HOT(1), verb: 'swipe', say: 'Pixel', loc: 'hotel list' },
+      { rect: HOT(2), verb: 'tap', say: 'tablet', loc: 'hotel card' },
+      { rect: HOT(3), verb: 'assert', say: 'iPad ⟲', loc: 'landscape' },
     ] },
-    { feature: 'gitlab-ci · nightly', result: 'PIPELINE RED', resultTone: 'fail', note: '· as it should', steps: [
+    { feature: 'gitlab-ci · nightly', screen: 'confirm', result: 'PIPELINE RED', resultTone: 'fail', note: '· as it should', steps: [
       { verb: 'run', loc: 'booking suite', tone: 'info' },
       { verb: 'gate', loc: 'below threshold', tone: 'fail' },
       { verb: 'report', loc: 'Jira · Xray', tone: 'info' },
       { verb: 'notify', loc: 'Slack · its team', tone: 'info' },
     ] },
-    { feature: 'coverage', note: '· new ground', steps: [
+    { feature: 'coverage', screen: 'status', note: '· new ground', steps: [
       { verb: 'flag', loc: 'on · off' },
       { verb: 'build', loc: 'TestFlight' },
       { verb: 'build', loc: 'Firebase' },
       { rect: tabRect(2), verb: 'tap', loc: '~tab_status' },
-      { rect: R.card, verb: 'assert', loc: 'webview · WAF' },
+      { rect: STATUS_CARD, verb: 'assert', loc: 'webview · WAF' },
     ] },
-    { feature: 'booking.spec.ts · wdio', note: '· TypeScript', steps: [
-      { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
-      { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
+    { feature: 'booking.spec.ts · wdio', screen: 'detail', note: '· TypeScript', steps: [
+      { rect: PHOTO, verb: 'swipe', loc: '~photo_gallery' },
+      { rect: R.cta, verb: 'tap', loc: '~book_button' },
       { verb: 'locale', loc: 'fr-FR · en-GB' },
       { verb: 'both', loc: 'iOS · Android' },
     ] },
@@ -151,16 +161,32 @@ const TEXT = {
   betting: {
     en: { mission: 'Mission of the day', missionSub: 'Place 3 bets · win a €5 freebet', match: 'PSG – OM', when: 'Tonight · 21:00',
       odds: ['1.85', '3.40', '4.10'], board: 'Weekly leaderboard', rank: '#12 · 1,250 pts', balance: '€25.00', cta: 'Place bet · €10',
-      tabs: ['Sports', 'Live', 'Missions', 'Account'], game: 'Reward game', prize: 'Freebet €5', spin: 'Spin' },
+      tabs: ['Sports', 'Live', 'Missions', 'Account'], game: 'Reward game', prize: 'Freebet €5', spin: 'Spin',
+      missionsTitle: 'Missions', missions: [['Place 3 bets', 2, 3, '€5 freebet'], ['Bet on 2 sports', 1, 2, 'Boost +10%'], ['Win a live bet', 0, 1, '50 pts'], ['Weekly challenge', 3, 5, 'Reward game']],
+      ranks: ['1', '2', '3', '10', '11', '12'], pts: ['2,840', '2,610', '2,395', '1,330', '1,290', '1,250'], you: 'You',
+      slip: 'Bet slip', pick: 'Paris SG to win', boost: 'Boost +10%', boosted: '1.85 → 2.04' },
     fr: { mission: 'Mission du jour', missionSub: 'Place 3 paris · 5 € de freebet', match: 'PSG – OM', when: 'Ce soir · 21:00',
       odds: ['1,85', '3,40', '4,10'], board: 'Classement de la semaine', rank: '12e · 1 250 pts', balance: '25,00 €', cta: 'Parier 10 €',
-      tabs: ['Sports', 'Live', 'Missions', 'Compte'], game: 'Jeu bonus', prize: 'Freebet 5 €', spin: 'Tourner' },
+      tabs: ['Sports', 'Live', 'Missions', 'Compte'], game: 'Jeu bonus', prize: 'Freebet 5 €', spin: 'Tourner',
+      missionsTitle: 'Missions', missions: [['Placer 3 paris', 2, 3, '5 € freebet'], ['Parier sur 2 sports', 1, 2, 'Boost +10 %'], ['Gagner un pari live', 0, 1, '50 pts'], ['Défi de la semaine', 3, 5, 'Jeu bonus']],
+      ranks: ['1', '2', '3', '10', '11', '12'], pts: ['2 840', '2 610', '2 395', '1 330', '1 290', '1 250'], you: 'Vous',
+      slip: 'Ticket', pick: 'Victoire du Paris SG', boost: 'Boost +10 %', boosted: '1,85 → 2,04' },
   },
   booking: {
-    en: { where: 'Where to?', city: 'Paris', dates: 'Oct 12 – 14 · 2 guests', search: 'Search', h1: 'Paris Centre', h1sub: '★★★★ · 1.2 km',
-      p1: '€189', h2: 'Gare de Lyon', h2sub: '★★★ · 2.4 km', p2: '€142', cta: 'Book · €189', tabs: ['Explore', 'Stays', 'Status', 'Account'] },
-    fr: { where: 'Où allez-vous ?', city: 'Paris', dates: '12 – 14 oct. · 2 pers.', search: 'Chercher', h1: 'Paris Centre', h1sub: '★★★★ · 1,2 km',
-      p1: '189 €', h2: 'Gare de Lyon', h2sub: '★★★ · 2,4 km', p2: '142 €', cta: 'Réserver · 189 €', tabs: ['Explorer', 'Séjours', 'Statut', 'Compte'] },
+    en: { where: 'Where to?', city: 'Paris', dates: 'Oct 12 – 14 · 2 guests', search: 'Search', cta: 'Book · €189', tabs: ['Explore', 'Stays', 'Status', 'Account'],
+      hotels: [['Paris Centre', '★★★★ · 1.2 km', '€189'], ['Gare de Lyon', '★★★ · 2.4 km', '€142'], ['Montmartre', '★★★★ · 3.1 km', '€158'], ['La Défense', '★★★ · 6.8 km', '€121']],
+      resultsTitle: 'Paris · Oct 12 – 14', filters: ['Price', 'Stars', 'Map'],
+      confirmed: 'Booking confirmed', confirmSub: 'Paris Centre · Oct 12 – 14', confirmRows: ['2 guests · 2 nights', 'Total · €378'], calendar: 'Add to calendar',
+      slack: ['Slack · QA bot', 'Your team: 2 failed tests'],
+      statusTitle: 'Your status', tier: 'Silver', points: '2,450 pts', toNext: 'Gold next', webview: 'webview', benefits: ['Late check-out', 'Welcome drink', 'Room upgrade'],
+      amenities: ['Wi-Fi', 'Breakfast', 'Spa'], night: '€189 / night' },
+    fr: { where: 'Où allez-vous ?', city: 'Paris', dates: '12 – 14 oct. · 2 pers.', search: 'Chercher', cta: 'Réserver · 189 €', tabs: ['Explorer', 'Séjours', 'Statut', 'Compte'],
+      hotels: [['Paris Centre', '★★★★ · 1,2 km', '189 €'], ['Gare de Lyon', '★★★ · 2,4 km', '142 €'], ['Montmartre', '★★★★ · 3,1 km', '158 €'], ['La Défense', '★★★ · 6,8 km', '121 €']],
+      resultsTitle: 'Paris · 12 – 14 oct.', filters: ['Prix', 'Étoiles', 'Carte'],
+      confirmed: 'Réservation confirmée', confirmSub: 'Paris Centre · 12 – 14 oct.', confirmRows: ['2 pers. · 2 nuits', 'Total · 378 €'], calendar: 'Ajouter au calendrier',
+      slack: ['Slack · QA bot', 'Votre équipe : 2 tests en échec'],
+      statusTitle: 'Votre statut', tier: 'Silver', points: '2 450 pts', toNext: 'prochain : Gold', webview: 'webview', benefits: ['Départ tardif', 'Boisson de bienvenue', 'Surclassement'],
+      amenities: ['Wi-Fi', 'Petit-déj.', 'Spa'], night: '189 € / nuit' },
   },
 };
 const lang = () => (document.documentElement.lang === 'fr' ? 'fr' : 'en');
@@ -212,75 +238,197 @@ function rewardGame(g, T) {   // the interactive animation: a wheel of eight seg
   g.fillStyle = BETCLIC; rr(g, SPIN.x, SPIN.y, SPIN.w, SPIN.h, SPIN.r); g.fill();
   label(g, T.spin, SPIN.x + SPIN.w / 2, SPIN.y + 30, `700 18px ${SANS}`, '#fff', 'center');
 }
+const thumb = (g, x, y, s, cols) => {   // a hotel photo: a two-tone gradient
+  const gr = g.createLinearGradient(x, y, x + s, y + s); gr.addColorStop(0, cols[0]); gr.addColorStop(1, cols[1]);
+  g.fillStyle = gr; rr(g, x, y, s, s, 10); g.fill();
+};
+const PHOTOS = [['#8fb8de', '#d8c3a0'], ['#9fb1c9', '#e6d6b8'], ['#b9a3c9', '#e8cfa8'], ['#8ec1b8', '#d9d2b0']];
+const title = (g, str, y = 176) => label(g, str, 24, y, `700 26px ${SANS}`, INK);
 
-// The app under test, per scenario: everything above the test log.
+// Betclic's top bar (logo, balance) and Accor's (logo, avatar), on every screen of their app
+function betclicTop(g, T) {
+  if (LOGOS.betclic) g.drawImage(LOGOS.betclic, 24, 80, 117, 40);
+  g.fillStyle = '#eef0f4'; rr(g, 330, 82, 126, 36, 18); g.fill();
+  label(g, T.balance, 393, 106, `700 17px ${SANS}`, INK, 'center');
+}
+function accorTop(g) {
+  if (LOGOS.accor) g.drawImage(LOGOS.accor, 24, 70, 65, 56);
+  g.fillStyle = tint(ACCOR, 0.86); g.beginPath(); g.arc(424, 98, 22, 0, Math.PI * 2); g.fill();
+}
+
+// The app under test: per scenario (`style`), per screen (`screen`, "home" by default); everything above the test log.
+// In a story, each achievement shows the screen of the app where it happened.
 const APPS = {
-  promo(g) {   // the hero's: an abstract app
-    g.fillStyle = INK; rr(g, 24, 84, 176, 28, 9); g.fill();
-    g.fillStyle = '#c9d0da'; rr(g, 24, 120, 112, 14, 7); g.fill();
-    g.fillStyle = tint(ACC, 0.72); g.beginPath(); g.arc(424, 108, 24, 0, Math.PI * 2); g.fill();
-    const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, ACC); gr.addColorStop(1, tint(ACC, 0.35));
-    g.fillStyle = gr; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
-    g.save(); rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.clip();
-    g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.arc(410, 214, 74, 0, Math.PI * 2); g.fill();
-    g.beginPath(); g.arc(452, 316, 50, 0, Math.PI * 2); g.fill(); g.restore();
-    g.fillStyle = '#fff'; rr(g, 48, 182, 210, 24, 9); g.fill();
-    g.fillStyle = 'rgba(255,255,255,.72)'; rr(g, 48, 218, 150, 14, 7); g.fill();
-    g.fillStyle = '#fff'; rr(g, 48, 272, 124, 38, 19); g.fill();
-    g.fillStyle = ACC; rr(g, 72, 285, 76, 12, 6); g.fill();
-    for (const r of [R.row1, R.row2]) {
-      row(g, r);
-      g.fillStyle = tint(ACC, 0.82); rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
-      g.fillStyle = '#1f2630'; rr(g, r.x + 74, r.y + 16, 190, 14, 7); g.fill();
-      g.fillStyle = '#c9d0da'; rr(g, r.x + 74, r.y + 40, 128, 12, 6); g.fill();
-      g.fillStyle = tint(ACC, 0.72); rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
-    }
-    g.fillStyle = INK; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
-    g.fillStyle = '#fff'; rr(g, 180, 537, 120, 14, 7); g.fill();
-    g.fillStyle = '#fff'; g.fillRect(0, 948, SW, 92); g.fillStyle = '#e3e7ed'; g.fillRect(0, 948, SW, 2);
-    TABS.forEach((x, i) => { g.fillStyle = i === 0 ? ACC : '#c9d0da'; rr(g, x - 18, 968, 36, 36, 10); g.fill(); });
+  promo: {
+    home(g) {   // the hero's: an abstract app
+      g.fillStyle = INK; rr(g, 24, 84, 176, 28, 9); g.fill();
+      g.fillStyle = '#c9d0da'; rr(g, 24, 120, 112, 14, 7); g.fill();
+      g.fillStyle = tint(ACC, 0.72); g.beginPath(); g.arc(424, 108, 24, 0, Math.PI * 2); g.fill();
+      const gr = g.createLinearGradient(24, 150, 456, 330); gr.addColorStop(0, ACC); gr.addColorStop(1, tint(ACC, 0.35));
+      g.fillStyle = gr; rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.fill();
+      g.save(); rr(g, R.card.x, R.card.y, R.card.w, R.card.h, R.card.r); g.clip();
+      g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.arc(410, 214, 74, 0, Math.PI * 2); g.fill();
+      g.beginPath(); g.arc(452, 316, 50, 0, Math.PI * 2); g.fill(); g.restore();
+      g.fillStyle = '#fff'; rr(g, 48, 182, 210, 24, 9); g.fill();
+      g.fillStyle = 'rgba(255,255,255,.72)'; rr(g, 48, 218, 150, 14, 7); g.fill();
+      g.fillStyle = '#fff'; rr(g, 48, 272, 124, 38, 19); g.fill();
+      g.fillStyle = ACC; rr(g, 72, 285, 76, 12, 6); g.fill();
+      for (const r of [R.row1, R.row2]) {
+        row(g, r);
+        g.fillStyle = tint(ACC, 0.82); rr(g, r.x + 14, r.y + 12, 44, 44, 12); g.fill();
+        g.fillStyle = '#1f2630'; rr(g, r.x + 74, r.y + 16, 190, 14, 7); g.fill();
+        g.fillStyle = '#c9d0da'; rr(g, r.x + 74, r.y + 40, 128, 12, 6); g.fill();
+        g.fillStyle = tint(ACC, 0.72); rr(g, r.x + r.w - 72, r.y + 26, 50, 16, 8); g.fill();
+      }
+      g.fillStyle = INK; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
+      g.fillStyle = '#fff'; rr(g, 180, 537, 120, 14, 7); g.fill();
+      g.fillStyle = '#fff'; g.fillRect(0, 948, SW, 92); g.fillStyle = '#e3e7ed'; g.fillRect(0, 948, SW, 2);
+      TABS.forEach((x, i) => { g.fillStyle = i === 0 ? ACC : '#c9d0da'; rr(g, x - 18, 968, 36, 36, 10); g.fill(); });
+    },
   },
-  betting(g, T, sc) {   // a sports betting app: tonight's match and its odds, the mission of the day, the leaderboard
-    if (LOGOS.betclic) g.drawImage(LOGOS.betclic, 24, 80, 117, 40);
-    g.fillStyle = '#eef0f4'; rr(g, 330, 82, 126, 36, 18); g.fill();
-    label(g, T.balance, 393, 106, `700 17px ${SANS}`, INK, 'center');
-    const c = R.card;
-    g.fillStyle = '#16161c'; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
-    if (sc.variant === 'reward') rewardGame(g, T); else missionCard(g, T);
-    row(g, R.row1);
-    label(g, T.match, 40, 375, `700 19px ${SANS}`, INK);
-    label(g, T.when, 40, 400, `500 14px ${SANS}`, '#8e97a3');
-    T.odds.forEach((o, i) => { const b = ODDS(i); g.fillStyle = '#eef0f4'; rr(g, b.x, b.y, b.w, b.h, b.r); g.fill(); label(g, o, b.x + b.w / 2, b.y + 26, `700 16px ${SANS}`, INK, 'center'); });
-    const r2 = R.row2; row(g, r2);
-    g.fillStyle = '#f5c518'; g.beginPath(); g.arc(r2.x + 34, r2.y + 34, 16, 0, Math.PI * 2); g.fill();
-    label(g, T.board, r2.x + 64, r2.y + 41, `600 17px ${SANS}`, INK);
-    label(g, T.rank, r2.x + r2.w - 16, r2.y + 41, `700 16px ${SANS}`, BETCLIC, 'right');
-    g.fillStyle = BETCLIC; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
-    label(g, T.cta, SW / 2, R.cta.y + 40, `700 21px ${SANS}`, '#fff', 'center');
-    tabBar(g, T.tabs, 2, BETCLIC);
+  betting: {   // a sports betting app
+    home(g, T, reward) {   // tonight's match and its odds, the mission of the day (or the reward game), the leaderboard
+      betclicTop(g, T);
+      const c = R.card;
+      g.fillStyle = '#16161c'; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
+      if (reward) rewardGame(g, T); else missionCard(g, T);
+      row(g, R.row1);
+      label(g, T.match, 40, 375, `700 19px ${SANS}`, INK);
+      label(g, T.when, 40, 400, `500 14px ${SANS}`, '#8e97a3');
+      T.odds.forEach((o, i) => { const b = ODDS(i); g.fillStyle = '#eef0f4'; rr(g, b.x, b.y, b.w, b.h, b.r); g.fill(); label(g, o, b.x + b.w / 2, b.y + 26, `700 16px ${SANS}`, INK, 'center'); });
+      const r2 = R.row2; row(g, r2);
+      g.fillStyle = '#f5c518'; g.beginPath(); g.arc(r2.x + 34, r2.y + 34, 16, 0, Math.PI * 2); g.fill();
+      label(g, T.board, r2.x + 64, r2.y + 41, `600 17px ${SANS}`, INK);
+      label(g, T.rank, r2.x + r2.w - 16, r2.y + 41, `700 16px ${SANS}`, BETCLIC, 'right');
+      g.fillStyle = BETCLIC; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
+      label(g, T.cta, SW / 2, R.cta.y + 40, `700 21px ${SANS}`, '#fff', 'center');
+      tabBar(g, T.tabs, 2, BETCLIC);
+    },
+    reward(g, T) { APPS.betting.home(g, T, true); },
+    missions(g, T) {   // the missions, their progress and their reward
+      betclicTop(g, T); title(g, T.missionsTitle);
+      T.missions.forEach(([name, done, of, reward], i) => {
+        const r = MIS(i), c = MIS_CHIP(i); row(g, r);
+        label(g, name, r.x + 20, r.y + 34, `700 18px ${SANS}`, INK);
+        g.fillStyle = '#eef0f4'; rr(g, r.x + 20, r.y + 52, 230, 10, 5); g.fill();
+        g.fillStyle = BETCLIC; rr(g, r.x + 20, r.y + 52, Math.max(10, 230 * done / of), 10, 5); g.fill();
+        label(g, `${done} / ${of}`, r.x + 266, r.y + 62, `700 14px ${SANS}`, '#4a5563');
+        g.fillStyle = '#fdecec'; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
+        label(g, reward, c.x + c.w / 2, c.y + 19, `700 13px ${SANS}`, BETCLIC, 'center');
+      });
+      tabBar(g, T.tabs, 2, BETCLIC);
+    },
+    leaderboard(g, T) {   // the week's leaderboard, the player's own row highlighted
+      betclicTop(g, T); title(g, T.board);
+      T.ranks.forEach((rank, i) => {
+        const r = LB(i), me = i === T.ranks.length - 1;
+        g.fillStyle = me ? '#fdecec' : '#fff'; rr(g, r.x, r.y, r.w, r.h, r.r); g.fill();
+        g.strokeStyle = me ? BETCLIC : '#e3e7ed'; g.lineWidth = 2; g.stroke();
+        label(g, rank, r.x + 22, r.y + 34, `800 17px ${SANS}`, i < 3 ? '#c99a06' : '#4a5563');
+        g.fillStyle = me ? BETCLIC : ['#f5c518', '#c9d0da', '#d9a066', '#dfe3ea', '#dfe3ea'][i]; g.beginPath(); g.arc(r.x + 78, r.y + 27, 15, 0, Math.PI * 2); g.fill();
+        if (me) label(g, T.you, r.x + 104, r.y + 33, `700 16px ${SANS}`, INK);
+        else { g.fillStyle = '#c9d0da'; rr(g, r.x + 104, r.y + 21, 120 - i * 8, 12, 6); g.fill(); }
+        label(g, T.pts[i], r.x + r.w - 18, r.y + 34, `700 15px ${SANS}`, me ? BETCLIC : INK, 'right');
+      });
+      tabBar(g, T.tabs, 2, BETCLIC);
+    },
+    betslip(g, T) {   // the bet slip over tonight's match: the pick, the boost offered at placing time, the button
+      APPS.betting.home(g, T);
+      g.fillStyle = 'rgba(10,12,16,.5)'; g.fillRect(0, 0, SW, SH);
+      g.fillStyle = '#fff'; rr(g, SLIP.x, SLIP.y, SLIP.w, SLIP.h, [SLIP.r, SLIP.r, 0, 0]); g.fill();
+      g.fillStyle = '#d6dbe3'; rr(g, SW / 2 - 24, SLIP.y + 10, 48, 5, 3); g.fill();
+      label(g, T.slip, 24, SLIP.y + 50, `700 22px ${SANS}`, INK);
+      const p = SLIP_PICK; row(g, p);
+      label(g, T.pick, p.x + 18, p.y + 28, `700 16px ${SANS}`, INK);
+      label(g, T.match, p.x + 18, p.y + 50, `500 14px ${SANS}`, '#8e97a3');
+      label(g, T.odds[0], p.x + p.w - 18, p.y + 40, `800 18px ${SANS}`, INK, 'right');
+      const b = SLIP_BOOST; g.fillStyle = '#fff7da'; rr(g, b.x, b.y, b.w, b.h, b.r); g.fill();
+      label(g, `⚡ ${T.boost}`, b.x + 18, b.y + 31, `700 15px ${SANS}`, '#a07800');
+      label(g, T.boosted, b.x + b.w - 18, b.y + 31, `700 15px ${SANS}`, '#a07800', 'right');
+      const c = SLIP_CTA; g.fillStyle = BETCLIC; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
+      label(g, T.cta, SW / 2, c.y + 40, `700 21px ${SANS}`, '#fff', 'center');
+    },
   },
-  booking(g, T) {   // a hotel booking app: the search, two results with their price, the loyalty status tab
-    if (LOGOS.accor) g.drawImage(LOGOS.accor, 24, 70, 65, 56);
-    g.fillStyle = tint(ACCOR, 0.86); g.beginPath(); g.arc(424, 98, 22, 0, Math.PI * 2); g.fill();
-    const c = R.card; row(g, c);
-    label(g, T.where, 48, 190, `700 22px ${SANS}`, ACCOR);
-    g.fillStyle = '#f0f2f6'; rr(g, 48, 204, 392, 46, 12); g.fill();
-    label(g, T.city, 64, 234, `700 18px ${SANS}`, INK);
-    g.fillStyle = '#f0f2f6'; rr(g, 48, 262, 272, 48, 12); g.fill();
-    label(g, T.dates, 64, 292, `500 15px ${SANS}`, '#4a5563');
-    const s = SEARCH_BTN; g.fillStyle = ACCOR; rr(g, s.x, s.y, s.w, s.h, s.r); g.fill();
-    label(g, T.search, s.x + s.w / 2, s.y + 30, `700 16px ${SANS}`, '#fff', 'center');
-    [[R.row1, T.h1, T.h1sub, T.p1, ['#8fb8de', '#d8c3a0']], [R.row2, T.h2, T.h2sub, T.p2, ['#9fb1c9', '#e6d6b8']]].forEach(([r, name, sub, price, cols]) => {
-      row(g, r);
-      const gr = g.createLinearGradient(r.x + 12, r.y + 10, r.x + 60, r.y + 58); gr.addColorStop(0, cols[0]); gr.addColorStop(1, cols[1]);
-      g.fillStyle = gr; rr(g, r.x + 12, r.y + 10, 48, 48, 10); g.fill();
-      label(g, name, r.x + 74, r.y + 30, `700 17px ${SANS}`, INK);
-      label(g, sub, r.x + 74, r.y + 52, `500 14px ${SANS}`, '#8e97a3');
-      label(g, price, r.x + r.w - 16, r.y + 42, `700 19px ${SANS}`, ACCOR, 'right');
-    });
-    g.fillStyle = ACCOR; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
-    label(g, T.cta, SW / 2, R.cta.y + 40, `700 21px ${SANS}`, '#fff', 'center');
-    tabBar(g, T.tabs, 2, ACCOR);
+  booking: {   // a hotel booking app
+    home(g, T) {   // the search, two results with their price
+      accorTop(g);
+      const c = R.card; row(g, c);
+      label(g, T.where, 48, 190, `700 22px ${SANS}`, ACCOR);
+      g.fillStyle = '#f0f2f6'; rr(g, 48, 204, 392, 46, 12); g.fill();
+      label(g, T.city, 64, 234, `700 18px ${SANS}`, INK);
+      g.fillStyle = '#f0f2f6'; rr(g, 48, 262, 272, 48, 12); g.fill();
+      label(g, T.dates, 64, 292, `500 15px ${SANS}`, '#4a5563');
+      const s = SEARCH_BTN; g.fillStyle = ACCOR; rr(g, s.x, s.y, s.w, s.h, s.r); g.fill();
+      label(g, T.search, s.x + s.w / 2, s.y + 30, `700 16px ${SANS}`, '#fff', 'center');
+      [R.row1, R.row2].forEach((r, i) => {
+        const [name, sub, price] = T.hotels[i]; row(g, r); thumb(g, r.x + 12, r.y + 10, 48, PHOTOS[i]);
+        label(g, name, r.x + 74, r.y + 30, `700 17px ${SANS}`, INK);
+        label(g, sub, r.x + 74, r.y + 52, `500 14px ${SANS}`, '#8e97a3');
+        label(g, price, r.x + r.w - 16, r.y + 42, `700 19px ${SANS}`, ACCOR, 'right');
+      });
+      g.fillStyle = ACCOR; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
+      label(g, T.cta, SW / 2, R.cta.y + 40, `700 21px ${SANS}`, '#fff', 'center');
+      tabBar(g, T.tabs, 2, ACCOR);
+    },
+    results(g, T) {   // the search results: filters, four hotels
+      accorTop(g); title(g, T.resultsTitle);
+      T.filters.forEach((f, i) => { const r = FILTER(i); g.fillStyle = i === 0 ? ACCOR : '#eef0f4'; rr(g, r.x, r.y, r.w, r.h, r.r); g.fill(); label(g, f, r.x + r.w / 2, r.y + 23, `600 15px ${SANS}`, i === 0 ? '#fff' : INK, 'center'); });
+      T.hotels.forEach(([name, sub, price], i) => {
+        const r = HOT(i); row(g, r); thumb(g, r.x + 12, r.y + 11, 52, PHOTOS[i]);
+        label(g, name, r.x + 78, r.y + 32, `700 17px ${SANS}`, INK);
+        label(g, sub, r.x + 78, r.y + 54, `500 14px ${SANS}`, '#8e97a3');
+        label(g, price, r.x + r.w - 16, r.y + 44, `700 19px ${SANS}`, ACCOR, 'right');
+      });
+      tabBar(g, T.tabs, 0, ACCOR);
+    },
+    confirm(g, T) {   // the booking confirmed, and the CI's Slack message that just came in over it
+      accorTop(g);
+      g.fillStyle = '#e3f6ea'; g.beginPath(); g.arc(240, 236, 52, 0, Math.PI * 2); g.fill();
+      g.strokeStyle = '#1f9d55'; g.lineWidth = 8; g.lineCap = 'round'; g.beginPath(); g.moveTo(216, 238); g.lineTo(234, 256); g.lineTo(266, 220); g.stroke(); g.lineCap = 'butt';
+      label(g, T.confirmed, SW / 2, 332, `700 26px ${SANS}`, INK, 'center');
+      label(g, T.confirmSub, SW / 2, 362, `500 16px ${SANS}`, '#4a5563', 'center');
+      const c = CONF_CARD; row(g, c);
+      T.confirmRows.forEach((t, i) => label(g, t, c.x + 20, c.y + 38 + i * 36, `${i ? 700 : 500} 17px ${SANS}`, i ? ACCOR : INK));
+      const b = CONF_BTN; g.strokeStyle = ACCOR; g.lineWidth = 2; rr(g, b.x, b.y, b.w, b.h, b.r); g.stroke();
+      label(g, T.calendar, SW / 2, b.y + 37, `700 18px ${SANS}`, ACCOR, 'center');
+      const n = NOTIF; g.fillStyle = 'rgba(22,27,34,.94)'; rr(g, n.x, n.y, n.w, n.h, n.r); g.fill();
+      [['#e01e5a', 0, 0], ['#36c5f0', 1, 0], ['#2eb67d', 0, 1], ['#ecb22e', 1, 1]].forEach(([col, dx, dy]) => { g.fillStyle = col; rr(g, n.x + 20 + dx * 17, n.y + 22 + dy * 17, 14, 14, 4); g.fill(); });
+      label(g, T.slack[0], n.x + 70, n.y + 36, `700 15px ${SANS}`, '#fff');
+      label(g, T.slack[1], n.x + 70, n.y + 60, `500 15px ${SANS}`, '#c3c9d2');
+      tabBar(g, T.tabs, 1, ACCOR);
+    },
+    status(g, T) {   // the loyalty status, a webview behind the company's WAF
+      accorTop(g);
+      const c = STATUS_CARD, gr = g.createLinearGradient(c.x, c.y, c.x + c.w, c.y + c.h);
+      gr.addColorStop(0, '#9aa3b0'); gr.addColorStop(1, '#e4e8ee'); g.fillStyle = gr; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
+      label(g, T.statusTitle, c.x + 24, c.y + 40, `600 16px ${SANS}`, 'rgba(5,0,51,.7)');
+      label(g, T.tier, c.x + 24, c.y + 86, `800 34px ${SANS}`, ACCOR);
+      g.fillStyle = 'rgba(255,255,255,.55)'; rr(g, c.x + 24, c.y + 116, 300, 10, 5); g.fill();
+      g.fillStyle = ACCOR; rr(g, c.x + 24, c.y + 116, 220, 10, 5); g.fill();
+      label(g, `${T.points} · ${T.toNext}`, c.x + 24, c.y + 150, `600 14px ${SANS}`, 'rgba(5,0,51,.75)');
+      g.fillStyle = 'rgba(5,0,51,.85)'; rr(g, c.x + c.w - 112, c.y + 20, 92, 26, 13); g.fill();
+      label(g, `🔒 ${T.webview}`, c.x + c.w - 66, c.y + 38, `600 12px ${MONO}`, '#fff', 'center');
+      T.benefits.forEach((t, i) => {
+        const r = BENEFIT(i); row(g, r);
+        g.fillStyle = tint(ACCOR, 0.88); g.beginPath(); g.arc(r.x + 28, r.y + r.h / 2, 11, 0, Math.PI * 2); g.fill();
+        label(g, t, r.x + 52, r.y + 32, `600 16px ${SANS}`, INK);
+      });
+      tabBar(g, T.tabs, 2, ACCOR);
+    },
+    detail(g, T) {   // a hotel: its photos, its amenities, the button to book
+      accorTop(g);
+      const p = PHOTO, gr = g.createLinearGradient(p.x, p.y, p.x + p.w, p.y + p.h);
+      gr.addColorStop(0, PHOTOS[0][0]); gr.addColorStop(1, PHOTOS[0][1]); g.fillStyle = gr; rr(g, p.x, p.y, p.w, p.h, p.r); g.fill();
+      [0, 1, 2, 3].forEach((i) => { g.fillStyle = i ? 'rgba(255,255,255,.55)' : '#fff'; g.beginPath(); g.arc(SW / 2 - 27 + i * 18, p.y + p.h - 18, 5, 0, Math.PI * 2); g.fill(); });
+      const [name, sub] = T.hotels[0];
+      label(g, name, 24, 370, `700 24px ${SANS}`, INK);
+      label(g, sub, 24, 396, `500 15px ${SANS}`, '#8e97a3');
+      T.amenities.forEach((a, i) => { const r = { x: 24 + i * 112, y: 414, w: 100, h: 32, r: 16 }; g.fillStyle = '#eef0f4'; rr(g, r.x, r.y, r.w, r.h, r.r); g.fill(); label(g, a, r.x + r.w / 2, r.y + 21, `600 14px ${SANS}`, INK, 'center'); });
+      label(g, T.night, 24, 488, `700 20px ${SANS}`, ACCOR);
+      g.fillStyle = ACCOR; rr(g, R.cta.x, R.cta.y, R.cta.w, R.cta.h, R.cta.r); g.fill();
+      label(g, T.cta, SW / 2, R.cta.y + 40, `700 21px ${SANS}`, '#fff', 'center');
+      tabBar(g, T.tabs, 0, ACCOR);
+    },
   },
 };
 
@@ -293,7 +441,7 @@ export function drawBase(sc = SCENARIOS.hero) {
   g.fillStyle = INK; g.font = `600 24px ${SANS}`; g.fillText('9:41', 44, 46);
   for (let i = 0; i < 4; i++) g.fillRect(352 + i * 9, 44 - (i + 1) * 5, 6, (i + 1) * 5);
   g.lineWidth = 2; g.strokeStyle = INK; rr(g, 396, 29, 38, 17, 5); g.stroke(); g.fillRect(400, 33, 26, 9); g.fillRect(436, 34, 3, 7);
-  APPS[sc.style](g, TEXT[sc.style]?.[lang()], sc);
+  APPS[sc.style][sc.screen ?? 'home'](g, TEXT[sc.style]?.[lang()]);
   // test log panel
   g.fillStyle = '#0e1116'; rr(g, 16, 598, 448, 336, 24); g.fill();
   g.font = `500 17px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText('▶ ' + sc.feature, 40, 640);
