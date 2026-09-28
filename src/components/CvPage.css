@@ -31,36 +31,39 @@
 .cv-portrait-img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; clip-path: inset(-60% 5px 5px 5px round 0 0 32px 32px); }
 .cv-name { font-size: 27px; font-weight: 700; line-height: 1.15; letter-spacing: -.3px; color: #1a202c; }
 .cv-last { font-weight: 300; }
-.cv-headline { margin-top: 3px; font-size: 11.5px; font-weight: 700; color: #374151; }
-.cv-place { margin-top: 5px; display: flex; align-items: center; gap: 5px; font-size: 10px; color: #6b7280; }
+.cv-headline { margin-top: 3px; font-size: 12px; font-weight: 700; color: #374151; }
+.cv-place { margin-top: 5px; display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #6b7280; }
 .cv-flag { display: inline-flex; width: 16px; height: 12px; border-radius: 2.5px; overflow: hidden; border: .8px solid #c5c8cc; }
 .cv-flag i { flex: 1; background: #0055a4; } .cv-flag i + i { background: #fff; } .cv-flag i + i + i { background: #ef4135; }
-.cv-contact { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; padding-top: 6px; font-size: 10.5px; color: #374151; }
+.cv-contact { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; padding-top: 6px; font-size: 11px; color: #374151; }
 .cv-linkedin { display: inline-flex; align-items: center; gap: 5px; font-weight: 500; }
 .cv-in { display: grid; place-items: center; width: 16px; height: 16px; border-radius: 3px; background: #0a66c2; }
 .cv-in svg { width: 12px; height: 12px; fill: #fff; }
 
 /* sections and experiences */
-.cv-section + .cv-section { margin-top: 14px; }
+.cv-section + .cv-section, .cv-duo { margin-top: 18px; }
+.cv-duo { display: grid; grid-template-columns: 2fr 1fr; column-gap: 32px; }   /* languages and interests side by side, the languages' line the longer */
+.cv-duo .cv-section { margin-top: 0; }
 /* a section: a mango mark, the title, a hairline to the right edge */
-.cv-section-title { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; font-size: 10.5px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #1a202c; }
+.cv-section-title { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; font-size: 11px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase; color: #1a202c; }
 .cv-section-title::before { content: ""; flex: none; width: 7px; height: 7px; border-radius: 1.5px; background: var(--accent); }
 .cv-section-title::after { content: ""; flex: 1; height: 1px; background: #e5e7eb; }
-.cv-job + .cv-job::before { content: ""; display: block; width: 28px; height: 2px; margin: 10px 0; border-radius: 1px; background: var(--accent); }   /* the short rule between two experiences */
+.cv-job + .cv-job::before { content: ""; display: block; width: 28px; height: 2px; margin: 13px 0; border-radius: 1px; background: var(--accent); }   /* the short rule between two experiences */
 .cv-job-line { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 12px; margin-bottom: 4px; }
 .cv-job-line .cv-job-date { margin-left: auto; font-variant-numeric: tabular-nums; }   /* the dates on the right: read down the edge */
-.cv-job-title { font-size: 15px; font-weight: 800; letter-spacing: -.2px; color: #1a202c; }
-.cv-job-date { font-size: 9.5px; font-weight: 500; color: #6b7280; }   /* the reference had #9ca3af: 2.5:1 on white, under the 4.5:1 of WCAG AA */
-.cv-text, .cv-bullets li, .cv-stack { font-size: 10px; line-height: 1.6; color: #374151; }
+.cv-job-title { font-size: 16px; font-weight: 800; letter-spacing: -.2px; color: #1a202c; }
+.cv-job-date { font-size: 10.5px; font-weight: 500; color: #6b7280; }   /* the reference had #9ca3af: 2.5:1 on white, under the 4.5:1 of WCAG AA */
+.cv-text, .cv-bullets li { font-size: 11.3px; line-height: 1.6; color: #374151; }   /* 8.5 pt on paper: at 9 pt the bullets no longer fit on one line */
 .cv-text { text-align: justify; }
 .cv-job > .cv-text { color: #4b5563; }
 .cv-text strong, .cv-bullets strong { font-weight: 700; color: #1a202c; }
-.cv-bullets { margin: 6px 0 6px; }
-.cv-bullets li { position: relative; margin-bottom: 2px; padding-left: 16px; text-align: justify; }
+.cv-bullets { margin: 8px 0; }
+.cv-bullets li { position: relative; margin-bottom: 5px; padding-left: 16px; text-align: justify; }
 .cv-bullets li::before { content: ""; position: absolute; left: 3px; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
-/* the stack: its name in small capitals, then the tools */
-.cv-stack { font-size: 9.5px; color: #4b5563; }
-.cv-stack-label { margin-right: 6px; font-size: 8px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6b7280; }
+/* the stack: its name in small capitals, then one grey tag per tool — told apart from the achievements at a glance */
+.cv-stack { margin-top: 8px; font-size: 9.5px; line-height: 1.8; color: #374151; }
+.cv-tag { display: inline-block; padding: 0 5px; border-radius: 4px; background: #f1f3f5; font-weight: 500; line-height: 1.7; white-space: nowrap; }
+.cv-stack-label { margin-right: 4px; font-size: 8.5px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6b7280; }
 
 /* a large screen: the sheet a fifth larger, easier to read (paper and PDF keep the true size) */
 @media screen and (min-width: 1100px) { .cv-sheet { zoom: 1.2; } .cv-bar { max-width: calc(210mm * 1.2); } }
@@ -69,11 +72,13 @@
   .cv-head { flex-direction: column; }
   .cv-contact { align-items: flex-start; padding-top: 0; }
   .cv-job-line { flex-direction: column; row-gap: 2px; }
+  .cv-duo { grid-template-columns: 1fr; row-gap: 18px; }
   .cv-text, .cv-bullets li { text-align: left; }   /* justified, a column this narrow opens holes between the words */
   /* a phone reads at arm's length, not on paper: sizes for the screen */
   .cv-name { font-size: 28px; } .cv-headline { font-size: 14px; } .cv-place, .cv-job-date { font-size: 13px; } .cv-contact { font-size: 14px; }
   .cv-section-title { font-size: 12.5px; } .cv-job-title { font-size: 18px; }
-  .cv-text, .cv-bullets li, .cv-stack { font-size: 14.5px; line-height: 1.55; }
+  .cv-text, .cv-bullets li { font-size: 14.5px; line-height: 1.55; }
+  .cv-stack { font-size: 13px; }
   .cv-stack-label { font-size: 12px; }
   .cv-bullets li { margin-bottom: 6px; }
 }

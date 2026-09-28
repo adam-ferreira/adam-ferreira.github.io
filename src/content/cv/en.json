@@ -79,39 +79,39 @@
       "demo": "betting",
       "date": "March 2026 - Present (Freelance)",
       "intro": "Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests of the gamification features: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.",
-      "lead": "Betclic is rebuilding its app in Flutter. I automate the tests of its gamification: missions, leaderboards, reward games and boosts.",
+      "lead": "Betclic (5 million players) is rebuilding its app in Flutter; I automate its gamification tests: missions, leaderboards, boosts.",
       "subtitle": "Building the automation alongside the app",
       "subintro": "When I joined, the app and its gamification features were still being built. The tests had to keep up with each release without slowing the developers down.",
       "bullets": [
         {
           "title": "Test IDs in the app code",
           "short": "Locators based on displayed text break with every translation. I add Flutter semantics to the app code myself.",
-          "text": "On mobile, a locator based on the displayed text breaks with each translation or design change. I add the Flutter semantics to the app code myself, following rules agreed with the tech leads."
+          "text": "Flutter semantics added to the app code myself, on rules agreed with the tech leads."
         },
         {
-          "title": "Test IDs in the animations",
-          "short": "The interactive animations were out of the tests' reach. I wrote a tool that puts test IDs inside the animation files.",
-          "text": "The motion design team's interactive animations were out of the tests' reach. I wrote a tool that adds test IDs to the animation files, checked against the Flutter runtime, in a version the designer opens in their own tool."
+          "title": "Test IDs in the Rive animations",
+          "short": "The Rive animations were out of the tests' reach. I wrote a tool that puts test IDs inside the .riv files.",
+          "text": "a tool that adds test IDs to the .riv files, checked against Rive's Flutter runtime."
         },
         {
           "title": "Test data created through APIs",
           "short": "Bets are placed and settled through APIs before each scenario. The UI only serves what the test checks.",
-          "text": "A betting mission needs bets placed, then settled: I create them through APIs before each scenario, on a dedicated test account. The UI only serves what the test checks, so tests stay short and independent."
+          "text": "bets placed and settled before each scenario; the UI only for what the test checks."
         },
         {
           "title": "A nightly run on five regulated markets",
           "short": "Every morning I sort the failures: product bug, environment or flaky test. Only product bugs become tickets.",
-          "text": "Each country has its own rules, content and accounts. Every morning I sort the failures into product bugs, environment issues and flaky tests. Only product bugs become tickets."
+          "text": "each morning's failures triaged; only product bugs become tickets."
         },
         {
           "title": "Failures investigated down to iOS, Android and Flutter",
           "short": "A button the test could not tap, a tab bar missing from the accessibility tree: fixed at the root, in the framework.",
-          "text": "A button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps: each cause traced to the platform or Flutter, and fixed in the framework."
+          "text": "root causes fixed in the framework, not worked around in the tests."
         },
         {
           "title": "Shared tooling with the squad",
           "short": "Test plans, a release suite, and Claude Code skills that generate page objects from Figma and Jira.",
-          "text": "A test plan per feature, a release test suite, and Claude Code skills that generate page objects from Figma designs and Jira tickets."
+          "text": "test plans, a release suite, Claude Code skills turning Figma designs into page objects."
         }
       ],
       "stack": [
@@ -132,34 +132,34 @@
       "mark": "accor",
       "demo": "booking",
       "date": "Nov. 2024 - March 2026 (Freelance)",
-      "intro": "Accor tests its ALL mobile apps (loyalty, booking, stay) with an automated test framework started four years earlier, with technical debt. I joined to run and maintain the tests, and became the technical reference for the framework.",
-      "lead": "Accor tests its ALL apps with a framework started four years earlier. I joined to run it and became its technical reference.",
+      "intro": "ALL is Accor's hotel booking and loyalty app (100 million members). I automated the tests of its member area (sign-in, status, rewards, deals) and, beyond my scope, kept improving the test framework shared by its three squads (loyalty, booking, stay).",
+      "lead": "ALL, Accor's hotel booking and loyalty app (100 million members): I automated its member area tests (sign-in, status, rewards).",
       "subtitle": "Modernizing an existing framework",
       "bullets": [
         {
-          "title": "Framework modernization",
+          "title": "The framework of all three squads",
           "short": "Java and Appium upgrades, dead code removed, readable logs. The framework is now half its previous size.",
-          "text": "Java and Appium client upgrades, dead code removed, logs rewritten to read scenario by scenario. The framework is now half its previous size."
+          "text": "Java and Appium upgrades, dead code removed, readable logs; half its former size."
         },
         {
           "title": "One device per scenario",
           "short": "Each scenario runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
-          "text": "Each scenario runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up and can be reproduced. App and device caching shortened session start-up."
+          "text": "each scenario on its own BrowserStack device, surfacing model and orientation bugs."
         },
         {
           "title": "A rewritten CI pipeline",
           "short": "The old pipeline stayed green whatever happened. The new one fails below a threshold and tells each team on Slack.",
-          "text": "The old pipeline stayed green whatever the results. The new one fails below a pass-rate threshold, publishes the results to Jira and Xray, and notifies each team on Slack of its own failures."
+          "text": "fails below a pass-rate threshold, reports to Jira and Xray, alerts each team on Slack."
         },
         {
           "title": "Wider test coverage",
           "short": "Feature flags, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.",
-          "text": "Features behind a feature flag, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF."
+          "text": "feature flags, store builds, TestFlight and Firebase distributions, webviews behind the WAF."
         },
         {
           "title": "A second framework in TypeScript",
           "short": "Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack.",
-          "text": "Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack."
+          "text": "built from scratch, cross-platform and multi-locale, with a documented Java comparison."
         }
       ],
       "stack": [
@@ -180,25 +180,49 @@
       "role": "Frontend Software Developer",
       "client": "Hexaly (Bouygues)",
       "date": "March 2024 - May 2024",
-      "intro": "Built features for Hexaly Studio, a low-code React SaaS for solving complex optimization problems (delivery planning, warehouse management).",
+      "intro": "Built features for Hexaly Studio, a low-code React SaaS for optimization problems (delivery planning, warehouse management).",
+      "bullets": [
+        {
+          "title": "Three features shipped",
+          "text": "a Highcharts pie chart widget, resizable widgets, clickable error links in the Xterm.js terminal."
+        }
+      ],
       "stack": [
         "React",
         "TypeScript",
-        "JavaScript"
+        "JavaScript",
+        "Highcharts",
+        "Xterm.js",
+        "react-resizable"
       ]
     },
     {
       "role": "Full Stack Developer",
-      "client": "JMD Technologies (Freelance)",
-      "date": "Apr. 2023 - Dec. 2023",
-      "intro": "Maintenance Industrie, an industrial cleaning specialist, commissioned a SaaS to manage its cleaning sites, along with a mobile time-clock app for its cleaning staff.",
+      "client": "JMD Technologies",
+      "date": "Apr. 2023 - Dec. 2023 (Internship, then freelance)",
+      "intro": "For Maintenance Industrie (industrial cleaning): a SaaS to manage its sites and a mobile time-clock app for its staff.",
+      "bullets": [
+        {
+          "title": "At the origin of JMD's product",
+          "text": "their field-service platform (planning, clock-in, proof of service) grew out of it."
+        },
+        {
+          "title": "First SaaS release",
+          "text": "delivered and validated by the client at the end of the internship; code review before every merge."
+        },
+        {
+          "title": "Kept on as a freelancer",
+          "text": "built the companion mobile app in Flutter, with Riverpod and Dio."
+        }
+      ],
       "stack": [
         "Angular",
         "Express.js",
         "Sequelize",
         "MySQL",
         "Flutter",
-        "Riverpod"
+        "Riverpod",
+        "Dio"
       ]
     }
   ],

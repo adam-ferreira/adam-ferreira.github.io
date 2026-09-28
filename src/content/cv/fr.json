@@ -79,39 +79,39 @@
       "demo": "betting",
       "date": "Mars 2026 - Aujourd'hui (Freelance)",
       "intro": "Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests des fonctionnalités de gamification : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.",
-      "lead": "Betclic reconstruit son app en Flutter. J'automatise les tests de sa gamification : missions, classements, jeux de récompense et boosts.",
+      "lead": "Betclic (5 millions de joueurs) reconstruit son app en Flutter ; j'automatise les tests de sa gamification.",
       "subtitle": "Construire l'automatisation en même temps que l'app",
       "subintro": "À mon arrivée, l'app et ses fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.",
       "bullets": [
         {
           "title": "Des test IDs dans le code de l'app",
           "short": "Un locator basé sur le texte affiché casse à chaque traduction. Je pose moi-même les semantics dans le code Flutter.",
-          "text": "Sur mobile, un locator basé sur le texte affiché casse à chaque traduction ou changement de maquette. Je pose moi-même les semantics dans le code Flutter, selon des règles définies avec les tech leads."
+          "text": "semantics Flutter posées dans le code, selon des règles fixées avec les tech leads."
         },
         {
-          "title": "Des test IDs dans les animations",
-          "short": "Les animations interactives échappaient aux tests. J'ai écrit un outil qui pose les test IDs dans les fichiers d'animation.",
-          "text": "Les animations interactives de l'équipe motion design échappaient aux tests. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié avec le runtime Flutter, dans une version que le designer ouvre dans son propre outil."
+          "title": "Des test IDs dans les animations Rive",
+          "short": "Les animations Rive échappaient aux tests. J'ai écrit un outil qui pose les test IDs dans les fichiers .riv.",
+          "text": "un outil qui ajoute les test IDs aux fichiers .riv, validé sur le runtime Flutter de Rive."
         },
         {
           "title": "Des données de test créées par API",
           "short": "Les paris sont placés puis réglés par API avant chaque scénario. L'UI ne sert qu'à ce que le test vérifie.",
-          "text": "Une mission de paris demande des paris placés puis réglés : je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie, les tests restent courts et indépendants."
+          "text": "paris placés puis réglés avant chaque scénario ; l'UI seulement pour ce qu'on vérifie."
         },
         {
           "title": "Une nightly sur cinq marchés réglementés",
           "short": "Chaque matin, je trie les échecs : bug produit, environnement ou test flaky. Seuls les bugs produit deviennent des tickets.",
-          "text": "Chaque pays a ses règles, ses contenus et ses comptes. Chaque matin, je trie les échecs : bug produit, environnement en panne ou test flaky. Seuls les bugs produit deviennent des tickets."
+          "text": "échecs triés chaque matin ; seuls les bugs produit deviennent des tickets."
         },
         {
           "title": "Des échecs analysés jusqu'à iOS, Android et Flutter",
           "short": "Un bouton que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité : corrigés à la racine, dans le framework.",
-          "text": "Un bouton que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité iOS, la barre de navigation Android qui interceptait les taps : chaque cause trouvée dans la plateforme ou Flutter, et corrigée dans le framework."
+          "text": "causes corrigées dans le framework, pas contournées dans les tests."
         },
         {
           "title": "Un outillage partagé avec la squad",
           "short": "Des test plans, une suite de release, et des skills Claude Code qui génèrent les page objects depuis Figma et Jira.",
-          "text": "Un test plan par feature, une suite de tests de release, et des skills Claude Code qui génèrent les page objects à partir des maquettes Figma et des tickets Jira."
+          "text": "test plans, suite de release, skills Claude Code : des maquettes Figma aux page objects."
         }
       ],
       "stack": [
@@ -132,34 +132,34 @@
       "mark": "accor",
       "demo": "booking",
       "date": "Nov. 2024 - Mars 2026 (Freelance)",
-      "intro": "Accor teste ses apps mobiles ALL (fidélité, réservation, séjour) avec un framework de tests automatisés lancé quatre ans plus tôt, en dette technique. Arrivé pour exécuter et maintenir les tests, j'en suis devenu le référent technique.",
-      "lead": "Accor teste ses apps ALL avec un framework lancé quatre ans plus tôt. Arrivé pour l'exécuter, j'en suis devenu le référent technique.",
+      "intro": "ALL est l'app de réservation et de fidélité d'Accor (100 millions de membres). J'automatisais les tests de l'espace membre (connexion, statut, points, offres) et, au-delà de mon périmètre, je faisais évoluer le framework de tests commun à ses trois squads (fidélité, réservation, séjour).",
+      "lead": "ALL, l'app de réservation et fidélité d'Accor (100 millions de membres) : tests de l'espace membre (connexion, statut, points).",
       "subtitle": "Moderniser un framework existant",
       "bullets": [
         {
-          "title": "Modernisation du framework",
+          "title": "Le framework des trois squads",
           "short": "Migrations Java et Appium, code mort retiré, logs lisibles. Le framework fait la moitié de sa taille d'origine.",
-          "text": "Migrations de Java et du client Appium, code mort retiré, logs réécrits pour se lire scénario par scénario. Le framework fait aujourd'hui la moitié de sa taille d'origine."
+          "text": "migrations Java et Appium, code mort retiré, logs lisibles ; moitié de sa taille d'origine."
         },
         {
           "title": "Un device par scénario",
           "short": "Chaque scénario tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
-          "text": "Chaque scénario tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions."
+          "text": "chaque scénario sur son device BrowserStack : les bugs de modèle et d'orientation remontent."
         },
         {
           "title": "Un pipeline CI réécrit",
           "short": "L'ancien pipeline restait vert quoi qu'il arrive. Le nouveau échoue sous un seuil et prévient chaque équipe sur Slack.",
-          "text": "L'ancien pipeline restait vert quel que soit le résultat. Le nouveau échoue sous un seuil de réussite, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs."
+          "text": "échoue sous un seuil de réussite, publie dans Jira et Xray, alerte chaque équipe sur Slack."
         },
         {
           "title": "Une couverture élargie",
           "short": "Feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF de l'entreprise.",
-          "text": "Feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF de l'entreprise."
+          "text": "feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF."
         },
         {
           "title": "Un second framework en TypeScript",
           "short": "Construit de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java.",
-          "text": "Construit de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java."
+          "text": "de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java."
         }
       ],
       "stack": [
@@ -181,24 +181,48 @@
       "client": "Hexaly (Bouygues)",
       "date": "Mars 2024 - Mai 2024",
       "intro": "Fonctionnalités pour Hexaly Studio, un SaaS low-code React d'optimisation (planification de livraisons, gestion d'entrepôts).",
+      "bullets": [
+        {
+          "title": "Trois fonctionnalités livrées",
+          "text": "widget camembert Highcharts, widgets redimensionnables, liens d'erreur cliquables (Xterm.js)."
+        }
+      ],
       "stack": [
         "React",
         "TypeScript",
-        "JavaScript"
+        "JavaScript",
+        "Highcharts",
+        "Xterm.js",
+        "react-resizable"
       ]
     },
     {
       "role": "Développeur Full Stack",
-      "client": "JMD Technologies (Freelance)",
-      "date": "Avr. 2023 - Déc. 2023",
-      "intro": "Maintenance Industrie, spécialiste du nettoyage industriel, a commandé un SaaS de gestion de chantiers ainsi qu'une application mobile de badgeuse pour ses agents de nettoyage.",
+      "client": "JMD Technologies",
+      "date": "Avr. 2023 - Déc. 2023 (Stage puis freelance)",
+      "intro": "Pour Maintenance Industrie (nettoyage industriel) : un SaaS de gestion de chantiers et une badgeuse mobile pour ses agents.",
+      "bullets": [
+        {
+          "title": "À l'origine du produit JMD",
+          "text": "leur plateforme d'interventions terrain (planning, pointage, preuve de passage) en découle."
+        },
+        {
+          "title": "Première version du SaaS",
+          "text": "livrée et validée par le client en fin de stage ; code review avant chaque merge."
+        },
+        {
+          "title": "Gardé en freelance",
+          "text": "l'app mobile compagnon en Flutter, avec Riverpod et Dio."
+        }
+      ],
       "stack": [
         "Angular",
         "Express.js",
         "Sequelize",
         "MySQL",
         "Flutter",
-        "Riverpod"
+        "Riverpod",
+        "Dio"
       ]
     }
   ],
@@ -216,7 +240,7 @@
     },
     {
       "name": "Anglais",
-      "level": "Professionnel avancé, niveau C1 (TOEIC 975)"
+      "level": "Professionnel avancé, C1 (TOEIC 975)"
     }
   ],
   "interests": [
