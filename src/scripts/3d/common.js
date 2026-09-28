@@ -6,9 +6,16 @@ import { CUBEMAP } from './env.js';
 export const desktop = () => matches(DESKTOP);
 export const reduced = () => matches(REDUCED_MOTION);
 
+/** Can the browser draw WebGL? Tested once per page, with a context let go at once: creating one is costly on an iPhone
+ *  (~40 ms, measured on the first touch), and every 3D script asks. */
+let webgl = null;
 export function webglOk() {
-  try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl2') || c.getContext('webgl'))); }
-  catch (e) { return false; }
+  if (webgl === null) try {
+    const c = document.createElement('canvas'), gl = c.getContext('webgl2') || c.getContext('webgl');
+    webgl = !!(window.WebGLRenderingContext && gl);
+    gl?.getExtension('WEBGL_lose_context')?.loseContext();
+  } catch (e) { webgl = false; }
+  return webgl;
 }
 
 /** The site's accent colour (--accent in the stylesheet): the page, the phones, the AF logo and the cursor share it. */
