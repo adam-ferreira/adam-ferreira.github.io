@@ -63,8 +63,6 @@ export const SCENARIOS = {
   ] },
 };
 
-// The reward game of the Betclic story (an interactive animation): a wheel, its prize, its button, inside the top card.
-const WHEEL = { x: 44, y: 170, w: 140, h: 140, r: 70 }, PRIZE = { x: 204, y: 204, w: 228, h: 34, r: 8 }, SPIN = { x: 204, y: 258, w: 150, h: 46, r: 23 };
 // The other screens of the stories: missions, leaderboard, bet slip (Betclic); results, confirmation, status, hotel (Accor)
 const MIS = (i) => ({ x: 24, y: 196 + i * 96, w: 432, h: 84, r: 16 }), MIS_CHIP = (i) => ({ x: 318, y: 210 + i * 96, w: 122, h: 28, r: 14 });
 const LB = (i) => ({ x: 24, y: 196 + i * 64, w: 432, h: 54, r: 14 });
@@ -88,11 +86,6 @@ export const STORIES = {
       { rect: R.row2, verb: 'id', loc: '~leaderboard_rank' },
       { rect: R.cta, verb: 'id', loc: '~place_bet' },
       { rect: tabRect(2), verb: 'id', loc: '~tab_missions' },
-    ] },
-    { feature: 'reward_game.riv', screen: 'reward', note: '· rive runtime', steps: [
-      { rect: WHEEL, verb: 'find', loc: '~reward_wheel' },
-      { rect: SPIN, verb: 'tap', loc: '~spin_button' },
-      { rect: PRIZE, verb: 'assert', loc: '~prize_label' },
     ] },
     { feature: 'missions.feature', screen: 'missions', note: '· data by API', steps: [
       { verb: 'api', loc: 'POST /bets', tone: 'info' },
@@ -164,13 +157,13 @@ const TEXT = {
   betting: {
     en: { mission: 'Mission of the day', missionSub: 'Place 3 bets · win a €5 freebet', match: 'PSG – OM', when: 'Tonight · 21:00',
       odds: ['1.85', '3.40', '4.10'], board: 'Weekly leaderboard', rank: '#12 · 1,250 pts', balance: '€25.00', cta: 'Place bet · €10',
-      tabs: ['Sports', 'Live', 'Missions', 'Account'], game: 'Reward game', prize: 'Freebet €5', spin: 'Spin',
+      tabs: ['Sports', 'Live', 'Missions', 'Account'],
       missionsTitle: 'Missions', missions: [['Place 3 bets', 2, 3, '€5 freebet'], ['Bet on 2 sports', 1, 2, 'Boost +10%'], ['Win a live bet', 0, 1, '50 pts'], ['Weekly challenge', 3, 5, 'Reward game']],
       ranks: ['1', '2', '3', '10', '11', '12'], pts: ['2,840', '2,610', '2,395', '1,330', '1,290', '1,250'], you: 'You',
       slip: 'Bet slip', pick: 'Paris SG to win', boost: 'Boost +10%', boosted: '1.85 → 2.04' },
     fr: { mission: 'Mission du jour', missionSub: 'Place 3 paris · 5 € de freebet', match: 'PSG – OM', when: 'Ce soir · 21:00',
       odds: ['1,85', '3,40', '4,10'], board: 'Classement de la semaine', rank: '12e · 1 250 pts', balance: '25,00 €', cta: 'Parier 10 €',
-      tabs: ['Sports', 'Live', 'Missions', 'Compte'], game: 'Jeu bonus', prize: 'Freebet 5 €', spin: 'Tourner',
+      tabs: ['Sports', 'Live', 'Missions', 'Compte'],
       missionsTitle: 'Missions', missions: [['Placer 3 paris', 2, 3, '5 € freebet'], ['Parier sur 2 sports', 1, 2, 'Boost +10 %'], ['Gagner un pari live', 0, 1, '50 pts'], ['Défi de la semaine', 3, 5, 'Jeu bonus']],
       ranks: ['1', '2', '3', '10', '11', '12'], pts: ['2 840', '2 610', '2 395', '1 330', '1 290', '1 250'], you: 'Vous',
       slip: 'Ticket', pick: 'Victoire du Paris SG', boost: 'Boost +10 %', boosted: '1,85 → 2,04' },
@@ -228,19 +221,6 @@ function missionCard(g, T) {
   label(g, '2 / 3', 432, 271, `700 16px ${SANS}`, '#fff', 'right');
   [0, 1, 2].forEach((i) => { g.fillStyle = i < 2 ? BETCLIC : '#34343d'; g.beginPath(); g.arc(58 + i * 30, 302, 9, 0, Math.PI * 2); g.fill(); });
 }
-function rewardGame(g, T) {   // the interactive animation: a wheel of eight segments under its pointer, the prize, the button
-  const cx = WHEEL.x + WHEEL.w / 2, cy = WHEEL.y + WHEEL.h / 2, r = WHEEL.w / 2 - 4, cols = [BETCLIC, '#2a2a33', '#f5c518', '#2a2a33'];
-  for (let i = 0; i < 8; i++) {
-    g.fillStyle = cols[i % 4]; g.beginPath(); g.moveTo(cx, cy); g.arc(cx, cy, r, (i - 0.5) * Math.PI / 4, (i + 0.5) * Math.PI / 4); g.closePath(); g.fill();
-  }
-  g.lineWidth = 3; g.strokeStyle = '#fff'; g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.stroke();
-  g.fillStyle = '#fff'; g.beginPath(); g.arc(cx, cy, 12, 0, Math.PI * 2); g.fill();
-  g.beginPath(); g.moveTo(cx - 10, WHEEL.y - 2); g.lineTo(cx + 10, WHEEL.y - 2); g.lineTo(cx, WHEEL.y + 16); g.closePath(); g.fill();
-  label(g, T.game, PRIZE.x + 4, 192, `500 16px ${SANS}`, '#a4abb6');
-  label(g, T.prize, PRIZE.x + 4, 230, `700 26px ${SANS}`, '#f5c518');
-  g.fillStyle = BETCLIC; rr(g, SPIN.x, SPIN.y, SPIN.w, SPIN.h, SPIN.r); g.fill();
-  label(g, T.spin, SPIN.x + SPIN.w / 2, SPIN.y + 30, `700 18px ${SANS}`, '#fff', 'center');
-}
 const thumb = (g, x, y, s, cols) => {   // a hotel photo: a two-tone gradient
   const gr = g.createLinearGradient(x, y, x + s, y + s); gr.addColorStop(0, cols[0]); gr.addColorStop(1, cols[1]);
   g.fillStyle = gr; rr(g, x, y, s, s, 10); g.fill();
@@ -290,11 +270,11 @@ const APPS = {
     },
   },
   betting: {   // a sports betting app
-    home(g, T, reward) {   // tonight's match and its odds, the mission of the day (or the reward game), the leaderboard
+    home(g, T) {   // tonight's match and its odds, the mission of the day, the leaderboard
       betclicTop(g, T);
       const c = R.card;
       g.fillStyle = '#16161c'; rr(g, c.x, c.y, c.w, c.h, c.r); g.fill();
-      if (reward) rewardGame(g, T); else missionCard(g, T);
+      missionCard(g, T);
       row(g, R.row1);
       label(g, T.match, 40, 375, `700 19px ${SANS}`, INK);
       label(g, T.when, 40, 400, `500 14px ${SANS}`, '#8e97a3');
@@ -307,7 +287,6 @@ const APPS = {
       label(g, T.cta, SW / 2, R.cta.y + 40, `700 21px ${SANS}`, '#fff', 'center');
       tabBar(g, T.tabs, 2, BETCLIC);
     },
-    reward(g, T) { APPS.betting.home(g, T, true); },
     missions(g, T) {   // the missions, their progress and their reward
       betclicTop(g, T); title(g, T.missionsTitle);
       T.missions.forEach(([name, done, of, reward], i) => {
