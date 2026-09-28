@@ -36,8 +36,9 @@ const cv = defineCollection({
       mark: z.string().optional(),   // a key of identity.marks: the client's logo, in 3D, instead of its name
       intro: z.string().optional(), subtitle: z.string().optional(), subintro: z.string().optional(),
       lead: z.string().optional(),   // the intro in one sentence, for the home page (the CV page keeps intro)
-      // an achievement: its title, one short sentence for the home page, the full text for the CV page
-      bullets: z.array(z.object({ title: text, short: text, text: text }).strict()).optional(), stack: z.array(text).optional(),
+      // an achievement: its title, one short sentence for the home page (experiences with a demo only), its text for the CV
+      // page; the other experiences stay short on the home page, their achievements are on the CV page alone
+      bullets: z.array(z.object({ title: text, short: text.optional(), text: text }).strict()).optional(), stack: z.array(text).optional(),
       demo: z.enum(['betting', 'booking']).optional(),   // the test the 3D phones play on this experience's screen
     }).strict()).min(1),
     education: z.array(z.object({ title: text, date: text, text: text }).strict()),
