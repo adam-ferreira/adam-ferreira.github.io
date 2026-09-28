@@ -1,7 +1,8 @@
 // The screen of the phones of the hero scene (hero.js): a mock-up of a mobile app, drawn once, over which the automated
-// test is redrawn on every frame. A selection frame moves from one element to the next as in an Appium inspector, taps,
-// asserts, and each passed step is appended to the test log at the bottom of the screen.
-// Nothing 3D here: a 2D canvas, used as the texture of both phones.
+// test plays. A selection frame moves from one element to the next as in an Appium inspector, taps, asserts, and each
+// passed step is appended to the test log at the bottom of the screen.
+// Nothing 3D here: the mock-up and the test's texts as 2D canvases, and what the test shows at each instant as a list
+// of shapes and texts, which screen-overlay.js draws over the mock-up.
 
 import { accent } from './common.js';
 import { DESKTOP, matches } from '../media.js';
@@ -9,13 +10,12 @@ import betclicLogo from '../../assets/marks/betclic.svg?url';
 import accorLogo from '../../assets/marks/accor.svg?url';
 const ACC = accent(), GREEN = '#3ddc84', RED = '#ff5d5d', AMBER = '#f5b841', INK = '#161b22';
 const rgbOf = (h) => { const m = h.replace('#', ''); const n = parseInt(m.length === 3 ? m.replace(/./g, '$&$&') : m, 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
-const rgba = (h, a) => `rgba(${rgbOf(h).join(',')},${a})`;
 const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t)).join(',')})`;   // towards white
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
 
-// 480 × 1040 mockup, texture drawn at 1.5× on a computer; at 1× on a phone, where the screen shows far smaller and
-// each repaint is a texture upload that Safari makes slow (2.25× fewer pixels)
+// 480 × 1040 mockup, drawn at 1.5× the resolution on a computer; at 1× on a phone, where the screen shows far smaller
+// (a new test is one texture upload, which Safari makes slow: 2.25× fewer pixels)
 export const SW = 480, SH = 1040, TS = matches(DESKTOP) ? 1.5 : 1;
 const R = {
   card: { x: 24, y: 150, w: 432, h: 180, r: 22 },
@@ -485,77 +485,89 @@ function phase(t, STEPS) {
 
 const MARKS = { pass: ['✓', GREEN], fail: ['✗', RED], warn: ['~', AMBER], info: ['→', ACC] };
 const toneOf = (sc, i) => sc.steps[i].tone ?? (i === sc.fail ? 'fail' : 'pass');
+const said = (st) => (st.say ?? st.verb).padEnd(7) + st.loc;
 
-// the selection frame on an element, with its locator above it
-function frameAt(g, r, loc, col, alpha) {
-  g.save(); g.globalAlpha = alpha;
-  rr(g, r.x - 6, r.y - 6, r.w + 12, r.h + 12, r.r + 6);
-  g.fillStyle = col === RED ? rgba(RED, 0.14) : col === GREEN ? rgba(GREEN, 0.12) : rgba(ACC, 0.1); g.fill();
-  g.lineWidth = 4; g.strokeStyle = col; g.stroke();
-  g.font = `600 19px ${MONO}`;
-  const lw = g.measureText(loc).width + 20, lx = Math.min(r.x - 6, SW - 8 - lw), ly = r.y - 6 - 34;
-  g.fillStyle = col; rr(g, lx, ly, lw, 28, 8); g.fill();
-  g.fillStyle = '#16100c'; g.fillText(loc, lx + 10, ly + 20);
-  g.restore();
+// The test is drawn by the GPU over the still mock-up (screen-overlay.js): the frames and the tap ripples as shapes, the
+// texts from an atlas drawn once per test. Nothing is uploaded while it plays (a repainted screen was one texture upload
+// per frame, which Safari makes slow).
+const ROW_X = 40, ROW_W = 436, ROW_H = 38, ROW_BASE = 28, LABEL_H = 28, GAP = 4;
+const COLOR = { acc: ACC, green: GREEN, red: RED };
+const FILL = { acc: 0.1, green: 0.12, red: 0.14 };   // the tint inside a frame
+const rgba01 = (h, a) => [...rgbOf(h).map((c) => c / 255), a];
+
+/** The texts of one test, drawn once: each step's log line (done, and current in grey), its locator's label in the
+ *  frame's three colours, the cursor, the result. `cells`: where each one sits in the atlas (mock-up pixels). */
+export function drawAtlas(sc = SCENARIOS.hero) {
+  const STEPS = sc.steps, n = STEPS.length, cells = {};
+  const m = document.createElement('canvas').getContext('2d'); m.font = `600 19px ${MONO}`;
+  let h = 0;
+  const cell = (id, w, ch) => { cells[id] = { x: 0, y: h, w, h: ch }; h += ch + GAP; };
+  STEPS.forEach((st, i) => {
+    cell(`done${i}`, ROW_W, ROW_H); cell(`cur${i}`, ROW_W, ROW_H);
+    if (st.rect) for (const k in COLOR) cell(`label${i}${k}`, Math.ceil(m.measureText(st.loc).width) + 20, LABEL_H);
+  });
+  cell('caret', 28, ROW_H); cell('summary', ROW_W, ROW_H);
+  const c = document.createElement('canvas'); c.width = Math.ceil(ROW_W * TS); c.height = Math.ceil(h * TS);
+  const g = c.getContext('2d'); g.scale(TS, TS);
+  const at = (id, draw) => { const { x, y } = cells[id]; g.save(); g.translate(x, y); draw(); g.restore(); };
+  STEPS.forEach((st, i) => {
+    const tone = toneOf(sc, i), [mark, col] = MARKS[tone];
+    g.font = `500 20px ${MONO}`;
+    at(`done${i}`, () => { g.fillStyle = col; g.fillText(mark, 44 - ROW_X, ROW_BASE); g.fillStyle = tone === 'fail' ? RED : '#d7dde6'; g.fillText(said(st), 74 - ROW_X, ROW_BASE); });
+    at(`cur${i}`, () => { g.fillStyle = '#6b7480'; g.fillText(said(st), 74 - ROW_X, ROW_BASE); });
+    if (st.rect) for (const k in COLOR) at(`label${i}${k}`, () => {
+      g.fillStyle = COLOR[k]; rr(g, 0, 0, cells[`label${i}${k}`].w, LABEL_H, 8); g.fill();
+      g.font = `600 19px ${MONO}`; g.fillStyle = '#16100c'; g.fillText(st.loc, 10, 20);
+    });
+  });
+  at('caret', () => { g.font = `500 20px ${MONO}`; g.fillStyle = '#fff'; g.fillText('▸', 46 - ROW_X, ROW_BASE); });   // white: tinted when drawn
+  at('summary', () => {
+    const broke = sc.fail !== undefined, red = broke || sc.resultTone === 'fail';
+    const result = sc.result ?? (broke ? 'FAILED · 404' : `PASSED ${n}/${n}`);
+    g.font = `700 22px ${MONO}`; g.fillStyle = red ? RED : GREEN; g.fillText(result, 44 - ROW_X, ROW_BASE);
+    const w = g.measureText(result).width;
+    g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText(sc.note ?? (broke ? '· page not found' : '· 2 devices · 7.8 s'), 44 - ROW_X + w + 14, ROW_BASE);
+  });
+  return { canvas: c, cells, w: ROW_W, h };
 }
 
-/** The screen at time t (s): the mock-up, then the test playing over it. */
-export function drawScreen(g, base, t, sc = SCENARIOS.hero) {
-  const STEPS = sc.steps, s = phase(t, STEPS), step = STEPS[s.k], n = STEPS.length;
-  g.setTransform(TS, 0, 0, TS, 0, 0);
-  g.drawImage(base, 0, 0, SW, SH);
-
+/** What the test shows at time t (s), in drawing order: shapes ({ box, fill, line, lineW, alpha }: a rounded rectangle,
+ *  colours as [r, g, b, a] from 0 to 1) and atlas cells ({ cell, x, y, alpha, tint }), in mock-up pixels. */
+export function screenList(t, sc, cells) {
+  const STEPS = sc.steps, s = phase(t, STEPS), step = STEPS[s.k], n = STEPS.length, list = [];
+  // the selection frame on an element, with its locator above it
+  const frame = (i, r, k, alpha) => {
+    list.push({ box: { x: r.x - 6, y: r.y - 6, w: r.w + 12, h: r.h + 12, r: r.r + 6 }, fill: rgba01(COLOR[k], FILL[k]), line: rgba01(COLOR[k], 1), lineW: 4, alpha });
+    const c = cells[`label${i}${k}`];
+    list.push({ cell: c, x: Math.min(r.x - 6, SW - 8 - c.w), y: r.y - 6 - 34, alpha });
+  };
   // `keep`: the elements already visited stay framed
-  if (sc.keep) for (let i = 0; i < (s.inSteps ? s.k : n); i++) if (STEPS[i].rect) frameAt(g, STEPS[i].rect, STEPS[i].loc, GREEN, 1);
+  if (sc.keep) for (let i = 0; i < (s.inSteps ? s.k : n); i++) if (STEPS[i].rect) frame(i, STEPS[i].rect, 'green', 1);
   // the selection frame slides to the target element (or fades in, after a step off screen), then taps or asserts
   if (s.frame > 0 && step.rect) {
     const prev = s.k > 0 ? STEPS[s.k - 1].rect : null;
     const r = mix(prev || step.rect, step.rect, s.slide);
     const alpha = !prev && s.inSteps ? Math.min(1, s.p / FADE_IN) : s.frame;
     const tap = TAPS.has(step.verb), failed = toneOf(sc, s.k) === 'fail' && (s.checked || (tap && s.p > CHECKED));
-    frameAt(g, r, step.loc, failed ? RED : s.checked ? GREEN : ACC, alpha);
+    frame(s.k, r, failed ? 'red' : s.checked ? 'green' : 'acc', alpha);
     if (s.ripple >= 0) {
       const q = s.ripple;
       const cx = step.verb === 'swipe' ? r.x + r.w * (0.78 - 0.5 * ease(q)) : r.x + r.w / 2, cy = r.y + r.h / 2;
-      g.fillStyle = rgba(ACC, 0.35 * (1 - q)); g.beginPath(); g.arc(cx, cy, 12 + q * 44, 0, Math.PI * 2); g.fill();
-      g.fillStyle = rgba(ACC, 0.9 * (1 - q * 0.6)); g.beginPath(); g.arc(cx, cy, 11, 0, Math.PI * 2); g.fill();
+      const dot = (rad, a) => list.push({ box: { x: cx - rad, y: cy - rad, w: 2 * rad, h: 2 * rad, r: rad }, fill: rgba01(ACC, a), alpha: 1 });
+      dot(12 + q * 44, 0.35 * (1 - q)); dot(11, 0.9 * (1 - q * 0.6));
     }
   }
-
   // the log: one line per step done, marked by its outcome; the current step in grey
-  const said = (st) => (st.say ?? st.verb).padEnd(7) + st.loc;
-  g.font = `500 20px ${MONO}`;
-  for (let i = 0; i < s.done; i++) {
-    g.globalAlpha = i === s.done - 1 ? s.lineIn : 1;
-    const y = LOG_Y + i * LOG_DY, tone = toneOf(sc, i), [mark, col] = MARKS[tone];
-    g.fillStyle = col; g.fillText(mark, 44, y);
-    g.fillStyle = tone === 'fail' ? RED : '#d7dde6'; g.fillText(said(STEPS[i]), 74, y);
-  }
-  g.globalAlpha = 1;
+  for (let i = 0; i < s.done; i++) list.push({ cell: cells[`done${i}`], x: ROW_X, y: LOG_Y + i * LOG_DY - ROW_BASE, alpha: i === s.done - 1 ? s.lineIn : 1 });
   if (s.cursor) {
-    const y = LOG_Y + s.k * LOG_DY;
-    g.fillStyle = s.blink ? ACC : '#6b7480'; g.fillText('▸', 46, y);
-    g.fillStyle = '#6b7480'; g.fillText(said(step), 74, y);
+    const y = LOG_Y + s.k * LOG_DY - ROW_BASE;
+    list.push({ cell: cells.caret, x: ROW_X, y, alpha: 1, tint: rgba01(s.blink ? ACC : '#6b7480', 1) });
+    list.push({ cell: cells[`cur${s.k}`], x: ROW_X, y, alpha: 1 });
   }
-  if (!s.inSteps) {
-    const broke = sc.fail !== undefined, red = broke || sc.resultTone === 'fail';
-    const result = sc.result ?? (broke ? 'FAILED · 404' : `PASSED ${n}/${n}`);
-    g.globalAlpha = s.summary;
-    g.font = `700 22px ${MONO}`; g.fillStyle = red ? RED : GREEN; g.fillText(result, 44, SUM_Y);
-    const w = g.measureText(result).width;
-    g.font = `500 18px ${MONO}`; g.fillStyle = '#8e97a3'; g.fillText(sc.note ?? (broke ? '· page not found' : '· 2 devices · 7.8 s'), 44 + w + 14, SUM_Y);
-    g.globalAlpha = 1;
-  }
+  if (!s.inSteps) list.push({ cell: cells.summary, x: ROW_X, y: SUM_Y - ROW_BASE, alpha: s.summary });
+  return list;
 }
 
 /** Progress of the tap on screen at time t (0 → 1), or -1 when nothing is being tapped: the sound of the taps. */
 export const rippleAt = (t, sc = SCENARIOS.hero) => phase(t, sc.steps).ripple;
-
-// What changes on screen at time t: null during a motion (sliding frame, tap ripple, a line appearing), otherwise a key
-// for the static state (step, assertion, blinking cursor). Same key ⇒ same image: no need to redraw it.
-export function screenKey(t, sc = SCENARIOS.hero) {
-  const s = phase(t, sc.steps);
-  if (s.moving) return null;
-  return s.inSteps ? s.k + '|' + s.checked + '|' + (s.done > s.k) + '|' + (s.cursor ? s.blink : '-') : 'summary';
-}
 

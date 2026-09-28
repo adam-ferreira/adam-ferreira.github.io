@@ -138,6 +138,8 @@ async function setup(mark, order, THREE, loader) {
   }
   // recalibrate whenever the mark changes size (late image, font loaded, window resized)
   const refit = () => { if (fit()) { renderer.render(scene, camera); mark.classList.add('is-3d'); } };
+  await renderer.compileAsync(scene, camera);   // shaders compiled off the main thread where the browser allows it
+  if (lost()) return;
   refit();
   if ('ResizeObserver' in window) new ResizeObserver(refit).observe(mark); else window.addEventListener('resize', refit);
   // the mark can move without changing size: end of the entrance animation, fonts loaded
