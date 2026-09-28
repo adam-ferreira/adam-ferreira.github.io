@@ -22,8 +22,6 @@ const idn = d.identity, ui = d.ui;
     <Availability text={ui.nav_available} />
     <span class="fs-sep" aria-hidden="true">&middot;</span>
     <a class="nocase" href={`mailto:${idn.contact.email}`}>{idn.contact.email}</a>
-    <span class="fs-sep" aria-hidden="true">&middot;</span>
-    <a href={`tel:${idn.contact.phone_href}`}>{idn.contact.phone}</a>
   </div>
   <a class="topbar-cv" href={cvPathOf(d.lang)} aria-label={ui.cv_page.link_title} title={ui.cv_page.link_title}>{ui.cv_page.link}</a>
   <Mark name="linkedin" mark={idn.marks.linkedin} href={idn.linkedin.url} class="topbar-linkedin" />

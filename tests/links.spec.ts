@@ -23,7 +23,6 @@ for (const { lang, path } of PAGES) {
     const external = urls.filter((u) => /^[a-z]+:/i.test(u) && !u.startsWith(baseURL!));
     for (const u of external) {
       if (u.startsWith('mailto:')) expect(u).toBe(`mailto:${d.identity.contact.email}`);
-      else if (u.startsWith('tel:')) expect(u).toBe(`tel:${d.identity.contact.phone_href}`);
       else expect(u, 'unexpected external link').toMatch(/^https:\/\/(adam-ferreira\.github\.io|(www\.)?linkedin\.com)\//);
     }
   });
