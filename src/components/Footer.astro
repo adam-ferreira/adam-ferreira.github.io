@@ -16,7 +16,6 @@ const skills = JSON.stringify(d.skills.flatMap((g) => g.items));
   <div class="footer-bottom label">
     <div class="footer-contact">   <!-- on a narrow screen only: elsewhere the top bar shows them -->
       <a class="nocase" href={`mailto:${c.email}`}>{c.email}</a>
-      <a href={`tel:${c.phone_href}`}>{c.phone}</a>
       <Availability text={ui.footer_availability} />
     </div>
     <p class="made-with" set:html={md(ui.made_with)} />
