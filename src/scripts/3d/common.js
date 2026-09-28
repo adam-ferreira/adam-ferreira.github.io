@@ -49,6 +49,19 @@ export function bootLazily(start, idleTimeout, fallbackDelay) {
   });
 }
 
+/** On a phone, the other scenes (AF logo, marks, the experiences' phones) wait until the hero's phones have finished
+ *  rising: started on the same frames, their shader compiles and texture uploads made the entrance stutter. */
+let heroSettled = false;
+export const heroDone = () => { if (!heroSettled) { heroSettled = true; window.dispatchEvent(new Event('cv:hero-settled')); } };
+export function afterHero(fn, delay = 0) {   // delay: staggered, so no two scenes are set up on the same frame
+  if (desktop() || !document.querySelector('.hero-stage canvas.hero3d')) return fn();
+  let done = false;
+  const go = () => { if (!done) { done = true; setTimeout(fn, delay); } };
+  if (heroSettled) return go();
+  window.addEventListener('cv:hero-settled', go, { once: true });
+  setTimeout(go, 4000);   // the hero never got going (WebGL context refused): the others start all the same
+}
+
 /** An angle brought back into [-π, π]: an object returns to its rest pose by the shortest path. */
 export const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 

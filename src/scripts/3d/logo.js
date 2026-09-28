@@ -3,7 +3,7 @@
 // page. It sways gently and follows the mouse a little; now and then it makes the same hint gesture as the marks (tilt +
 // shine), last in the series. You can grab it and throw it, it keeps going on its momentum.
 // Under "reduce motion": a static render, but it can still be moved by hand.
-import { accent, reduced, webglOk, onDprChange, bootLazily, whenLoaded, withShine, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
+import { accent, reduced, webglOk, onDprChange, bootLazily, afterHero, whenLoaded, withShine, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
 import LOGO_GLB from '../../assets/logo.glb?url';
 const canvas = document.querySelector('.brand canvas.logo3d');
 const ORDER = 3;   // in the series of hint gestures: after LinkedIn, Betclic and Accor
@@ -112,4 +112,4 @@ function mount(THREE, logo, shine) {
   })(performance.now());
 }
 
-whenLoaded(() => { if (canvas && webglOk()) bootLazily(go, 1500, 300); });
+whenLoaded(() => { if (canvas && webglOk()) bootLazily(() => afterHero(go), 1500, 300); });

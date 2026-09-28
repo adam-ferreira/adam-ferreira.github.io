@@ -7,7 +7,7 @@
 // next (.hero-stage, .device-anchor): the hero, then each experience with a demo, where they play that job's test (one
 // per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn when the app changes.
 // Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
-import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily } from './common.js';
+import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily, afterHero, heroDone, desktop } from './common.js';
 import { SW, SH, TS, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
@@ -83,6 +83,7 @@ async function start(canvas) {
 
   // a single screen for both phones: it is the same test, on iOS and Android, at the same moment
   let sc = SCENARIOS.hero, base = drawBase(sc), t0 = performance.now(), lastKey;
+  const m0 = t0, isHero = !!overlay || !canvas.closest('.job');   // m0: the clock of the sway, which never restarts
   const sc2d = document.createElement('canvas'); sc2d.width = SW * TS; sc2d.height = SH * TS;
   const sg = sc2d.getContext('2d');
   const tex = new THREE.CanvasTexture(sc2d);
@@ -150,7 +151,8 @@ async function start(canvas) {
     shown = !!a; holder.visible = shown;
     if (a) setScenario(a.dataset.demo || 'hero', stepOf(a));
   } else if (initial) setScenario(initial);
-  // entrance: the phones rise from below while turning into place, the first time the hero shows them
+  // entrance: the phones rise from below while turning into place, the first time the hero shows them; the screen
+  // holds its first frame meanwhile (a repaint is a texture upload, which made the entrance stutter on an iPhone)
   const INTRO_MS = 1600;
   let intro = !reduced() && freeze === null && (!overlay || slideIdx === 0) ? { start: 0 } : null;
   const easeOut = (u) => 1 - (1 - u) ** 3;
@@ -160,10 +162,11 @@ async function start(canvas) {
   renderer.render(scene, camera);
   canvas.classList.add('is-ready');
   heroStage?.classList.add('is-lit');
+  if (!intro && isHero) heroDone();
 
   // a screen change: the phones leave their anchor and reach the next one while the screens move
   function toSlide(n) {
-    if (intro) { intro = null; introPose(1); }   // a screen change during the entrance: the move takes over
+    if (intro) { intro = null; introPose(1); t0 = performance.now(); heroDone(); }   // a screen change during the entrance: the move takes over
     const forward = n > slideIdx; slideIdx = n;
     const a = anchorOf(n), name = a ? (a.dataset.demo || 'hero') : null;
     const dur = stageMs();
@@ -241,11 +244,11 @@ async function start(canvas) {
     else if (doc.classList.contains('stage') && doc.dataset.slide !== '0') return;
     if (!shouldRender(now, lastDraw, !!tw)) return;   // during a screen change the phones travel with it: every frame
     lastDraw = now;
-    const t = Math.max(0, (now - t0) / 1000);
+    const t = intro ? 0 : Math.max(0, (now - t0) / 1000), tm = (now - m0) / 1000;   // the test starts once the phones are in place
     const ripple = rippleAt(t % CYCLE, sc);
     if (ripple >= 0 && lastRipple < 0) window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'tap' } }));   // sound.js, if the sound is on
     lastRipple = ripple;
-    if (frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
+    if (!intro && frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
       const k = screenKey(t, sc);
       if (k === null || k !== lastKey) paint(t % CYCLE);
       lastKey = k;
@@ -254,26 +257,27 @@ async function start(canvas) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt() < 600) {
         phones.rotation.y += vel.x; phones.rotation.x = clampX(phones.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;
       } else {
-        const ry = REST_Y + Math.sin(t * 0.45) * 0.2 + target.x * 0.22, rx = REST_X + Math.sin(t * 0.33) * 0.05 + target.y * 0.1;
+        const ry = REST_Y + Math.sin(tm * 0.45) * 0.2 + target.x * 0.22, rx = REST_X + Math.sin(tm * 0.33) * 0.05 + target.y * 0.1;
         phones.rotation.y = norm(phones.rotation.y) + (ry - norm(phones.rotation.y)) * 0.035;
         phones.rotation.x += (rx - phones.rotation.x) * 0.035;
       }
     }
-    phones.position.y = Math.sin(t * 0.9) * 0.035;
+    phones.position.y = Math.sin(tm * 0.9) * 0.035;
     if (intro) {
       if (!intro.start) intro.start = now;
       const u = Math.min(1, (now - intro.start) / INTRO_MS);
       introPose(easeOut(u));
-      if (u >= 1) intro = null;
+      if (u >= 1) { intro = null; t0 = now; if (isHero) heroDone(); }
     }
     renderer.render(scene, camera);
   })(performance.now());
 }
 
-// the hero's scene (and the stills) start after load; an experience's only when it comes within a screen of the window
+// the hero's scene (and the stills) start after load; an experience's only when it comes near the window (a screen
+// away on a computer, half of one on a phone: setting a scene up freezes a frame, so not while the hero is in view)
 const whenNear = (el, fn) => {
   if (!('IntersectionObserver' in window)) return fn();
-  const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: '100% 0px' });
+  const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: desktop() ? '100% 0px' : '50% 0px' });
   io.observe(el);
 };
-if (webglOk()) scenes.forEach((c) => bootLazily(() => (c.closest('.job') ? whenNear(c, () => start(c)) : start(c)), 1200, 300));
+if (webglOk()) scenes.forEach((c) => bootLazily(() => (c.closest('.job') ? afterHero(() => whenNear(c, () => start(c)), 500) : start(c)), 1200, 300));
