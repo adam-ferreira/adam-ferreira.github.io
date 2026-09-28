@@ -87,11 +87,6 @@
           "text": "semantics Flutter posées dans le code, selon des règles fixées avec les tech leads."
         },
         {
-          "title": "Des test IDs dans les animations Rive",
-          "short": "Les animations Rive échappaient aux tests. J'ai écrit un outil qui pose les test IDs dans les fichiers .riv.",
-          "text": "un outil qui ajoute les test IDs aux fichiers .riv, validé sur le runtime Flutter de Rive."
-        },
-        {
           "title": "Des données de test créées par API",
           "short": "Les paris sont placés puis réglés par API avant chaque scénario. L'UI ne sert qu'à ce que le test vérifie.",
           "text": "paris placés puis réglés avant chaque scénario ; l'UI seulement pour ce qu'on vérifie."
