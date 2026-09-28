@@ -1,5 +1,5 @@
 // The marks in 3D: Betclic and Accor in the hero sentence, LinkedIn in the top bar. Three.js extrudes each SVG.
-// On a computer, after load; on a phone, on the first gesture (touch, scroll) or 5 s after the page, so it costs
+// On a computer, after load; on a phone, after the phones' entrance, one at a time and once near the screen, so it costs
 // nothing on arrival. At rest the 3D version is identical to the flat SVG: the switch from one to the other is invisible.
 // · At rest, the 3D version overlays the flat SVG to the pixel: one SVG unit = mark height / viewBox height.
 // · The canvas extends well beyond the mark (F times its size) and sits above the text: while rotating, the mark is
@@ -7,7 +7,7 @@
 // · You grab it on the mark itself, throw it, it spins on its momentum, then straightens up on its own.
 // · LinkedIn is a cube: the square becomes a real volume, with the "in" embossed on the front and the back,
 //   and it can be spun in every direction.
-import { desktop, reduced, webglOk, onDprChange, bootLazily, afterHero, whenLoaded, withShine, watchContextLoss, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
+import { desktop, reduced, webglOk, onDprChange, bootLazily, afterHero, whenLoaded, whenNear, withShine, watchContextLoss, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
 const F = 2.6;
 const marks = [...document.querySelectorAll('.mark[data-svg]')];
 const isDark = () => document.documentElement.dataset.theme === 'dark';
@@ -16,8 +16,12 @@ async function start() {
   if (!marks.length || !webglOk()) return;
   const THREE = await import('./three-lite.js');   // trimmed Three.js, loaders included
   const loader = new THREE.SVGLoader();
-  // on a phone, one mark at a time: each has its own WebGL context, and five set up together froze a frame
-  marks.forEach((mark, i) => setTimeout(() => setup(mark, i, THREE, loader), desktop() ? 0 : i * 250));
+  // on a phone, one mark at a time, and only once it is near the screen: each has its own WebGL context, and setting
+  // one up freezes a frame
+  marks.forEach((mark, i) => {
+    const go = () => setup(mark, i, THREE, loader);
+    if (desktop()) go(); else whenNear(mark, () => setTimeout(go, i * 250), '50% 0px');
+  });
 }
 
 async function setup(mark, order, THREE, loader) {

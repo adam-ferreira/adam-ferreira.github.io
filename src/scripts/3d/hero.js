@@ -7,7 +7,7 @@
 // next (.hero-stage, .device-anchor): the hero, then each experience with a demo, where they play that job's test (one
 // per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn when the app changes.
 // Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
-import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily, afterHero, heroDone, desktop } from './common.js';
+import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily, afterHero, heroDone, desktop, whenNear } from './common.js';
 import { SW, SH, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawAtlas, screenList, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 import { createOverlay } from './screen-overlay.js';   // the test playing over it
 const doc = document.documentElement;
@@ -277,9 +277,5 @@ async function start(canvas) {
 
 // the hero's scene (and the stills) start after load; an experience's only when it comes near the window (a screen
 // away on a computer, half of one on a phone: setting a scene up freezes a frame, so not while the hero is in view)
-const whenNear = (el, fn) => {
-  if (!('IntersectionObserver' in window)) return fn();
-  const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: desktop() ? '100% 0px' : '50% 0px' });
-  io.observe(el);
-};
-if (webglOk()) scenes.forEach((c) => bootLazily(() => (c.closest('.job') ? afterHero(() => whenNear(c, () => start(c)), 500) : start(c)), 1200, 300));
+const near = () => (desktop() ? '100% 0px' : '50% 0px');
+if (webglOk()) scenes.forEach((c) => bootLazily(() => (c.closest('.job') ? afterHero(() => whenNear(c, () => start(c), near()), 500) : start(c)), 1200, 300));
