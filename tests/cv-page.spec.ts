@@ -2,28 +2,23 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { CV_PAGES, PAGES, content, plain, watchErrors } from './helpers';
 
-// The detailed CV page (/cv/, /fr/cv/): the full texts that the home page only tells in short, a page that prints, and
-// its PDF, printed from it at the end of the build.
+// The CV page (/cv/, /fr/cv/): the CV on one A4 page, a page that prints, and its PDF,
+// printed from it at the end of the build.
 const norm = (s: string) => plain(s).replace(/\s+/g, ' ').trim();
 
 for (const { lang, path, home, pdf } of CV_PAGES) {
-  test.describe(`detailed CV ${lang} (${path})`, () => {
-    test('every text in full: intros, challenges, each achievement; never the short versions of the home page', async ({ page }) => {
+  test.describe(`CV page ${lang} (${path})`, () => {
+    test('each lead, each achievement\'s title and CV text, the stacks, education', async ({ page }) => {
       const errors = watchErrors(page);
       await page.goto(path);
-      const text = norm(await page.locator('main').textContent() ?? '');
+      const text = norm((await page.locator('main').textContent() ?? '').replace(/\u00a0/g, ' '));
       const d = content(lang);
-      const full: string[] = [];
       for (const j of d.experience) {
-        for (const t of [j.role, j.intro, j.subtitle, j.subintro, ...(j.stack ?? [])]) if (t) full.push(norm(t));
-        for (const b of j.bullets ?? []) full.push(norm(b.title), norm(b.text));
+        for (const t of [j.role, j.lead ?? j.intro, ...(j.stack ?? [])]) if (t) expect(text, t).toContain(norm(t));
+        for (const b of j.bullets ?? []) { expect(text).toContain(norm(b.title)); expect(text).toContain(norm(b.text)); }
       }
-      for (const t of full) expect(text, t).toContain(t);
-      for (const j of d.experience) {
-        const shorts = [j.lead, ...(j.bullets ?? []).map((b: { short: string }) => b.short)].filter(Boolean).map(norm);
-        for (const s of shorts) if (!full.some((f) => f.includes(s))) expect(text, s).not.toContain(s);
-      }
-      for (const s of d.skills) for (const i of s.items) expect(text).toContain(norm(i));
+      for (const e of d.education) expect(text).toContain(norm(e.text));
+      for (const l of d.languages) expect(text).toContain(norm(l.level));
       expect(text).toContain(d.identity.contact.email);
       expect(errors).toEqual([]);
     });
@@ -43,7 +38,7 @@ for (const { lang, path, home, pdf } of CV_PAGES) {
       expect(res.headers()['content-type']).toContain('application/pdf');
       const body = await res.body();
       expect(body.subarray(0, 5).toString()).toBe('%PDF-');
-      expect((body.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length, 'the PDF fits on two pages').toBeLessThanOrEqual(2);
+      expect((body.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length, 'the PDF fits on one page').toBe(1);
     });
 
     test('head: canonical URL and alternate versions', async ({ page }) => {
@@ -62,23 +57,21 @@ for (const { lang, path, home, pdf } of CV_PAGES) {
       }
     });
 
-    test('on paper: light, without the bar and its buttons, with the site address', async ({ page }) => {
+    test('on paper: white, without the bar and its buttons, with the site address', async ({ page }) => {
       await page.emulateMedia({ media: 'print', colorScheme: 'dark' });
       await page.goto(path);
       await expect(page.locator('.cv-bar')).toBeHidden();
-      await expect(page.locator('.theme-toggle')).toBeHidden();
       await expect(page.locator('.print-only')).toBeVisible();
       expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe('rgb(255, 255, 255)');
     });
   });
 }
 
-test('the theme switch, the page\'s only script, toggles light / dark', async ({ page }) => {
+test('the sheet stays paper white in the dark theme, and the page runs no script', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' });
   await page.goto('/cv/');
-  const t = page.locator('.theme-toggle');
-  const before = await page.evaluate(() => document.documentElement.dataset.theme);
-  await t.click();
-  expect(await page.evaluate(() => document.documentElement.dataset.theme)).not.toBe(before);
+  expect(await page.locator('.cv-sheet').evaluate((e) => getComputedStyle(e).backgroundColor)).toBe('rgb(255, 255, 255)');
+  await expect(page.locator('script[type="module"], script[src]')).toHaveCount(0);
 });
 
 test('iPhone: no horizontal overflow on the detailed CV', async ({ page }, info) => {

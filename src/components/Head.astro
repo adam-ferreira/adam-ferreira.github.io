@@ -27,7 +27,7 @@ const person = {
 };
 const ld = JSON.stringify(person).replace(/</g, '\\u003c');
 ---
-<BaseHead stage={home} />
+<BaseHead stage={home} paper={!home} />
 <title>{title}</title>
 <meta name="description" content={d.meta.description}>
 <meta property="og:type" content="profile">

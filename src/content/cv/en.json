@@ -91,12 +91,12 @@
         {
           "title": "Test IDs in the animations",
           "short": "The interactive animations were out of the tests' reach. I wrote a tool that puts test IDs inside the animation files.",
-          "text": "The interactive animations are made by the motion design team in a dedicated tool, and the tests could not reach their content. I wrote a tool that adds test IDs to the animation files, checked the result with the Flutter runtime, and produced a version the designer can open in their own tool to apply the change themselves."
+          "text": "The motion design team's interactive animations were out of the tests' reach. I wrote a tool that adds test IDs to the animation files, checked against the Flutter runtime, in a version the designer opens in their own tool."
         },
         {
           "title": "Test data created through APIs",
           "short": "Bets are placed and settled through APIs before each scenario. The UI only serves what the test checks.",
-          "text": "A betting mission needs bets that are placed and then settled. I create them through APIs before each scenario, on a dedicated test account. The UI is only used for what the test checks, so tests stay short and independent from each other."
+          "text": "A betting mission needs bets placed, then settled: I create them through APIs before each scenario, on a dedicated test account. The UI only serves what the test checks, so tests stay short and independent."
         },
         {
           "title": "A nightly run on five regulated markets",
@@ -106,7 +106,7 @@
         {
           "title": "Failures investigated down to iOS, Android and Flutter",
           "short": "A button the test could not tap, a tab bar missing from the accessibility tree: fixed at the root, in the framework.",
-          "text": "For example: a visible button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps. For each one, I found the cause in how the platform or Flutter behaves, and fixed it in the framework rather than working around it in the tests."
+          "text": "A button the test could not tap, a tab bar missing from the iOS accessibility tree, the Android navigation bar intercepting taps: each cause traced to the platform or Flutter, and fixed in the framework."
         },
         {
           "title": "Shared tooling with the squad",
@@ -144,12 +144,12 @@
         {
           "title": "One device per scenario",
           "short": "Each scenario runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
-          "text": "Each scenario runs on a different device of the BrowserStack device farm, so bugs specific to a model, a tablet or an orientation show up and can be reproduced. Caching apps and devices shortened session start-up."
+          "text": "Each scenario runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up and can be reproduced. App and device caching shortened session start-up."
         },
         {
           "title": "A rewritten CI pipeline",
           "short": "The old pipeline stayed green whatever happened. The new one fails below a threshold and tells each team on Slack.",
-          "text": "The previous pipeline stayed green whatever the results and depended on a template shared with other projects. The new one fails when the pass rate drops below a threshold, publishes the results to Jira and Xray, and notifies each team on Slack of its own failures."
+          "text": "The old pipeline stayed green whatever the results. The new one fails below a pass-rate threshold, publishes the results to Jira and Xray, and notifies each team on Slack of its own failures."
         },
         {
           "title": "Wider test coverage",

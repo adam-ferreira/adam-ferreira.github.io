@@ -91,12 +91,12 @@
         {
           "title": "Des test IDs dans les animations",
           "short": "Les animations interactives échappaient aux tests. J'ai écrit un outil qui pose les test IDs dans les fichiers d'animation.",
-          "text": "Les animations interactives sont produites par l'équipe motion design dans un outil dédié, et les tests n'avaient pas accès à leur contenu. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié le résultat avec le runtime Flutter, et produit une version que le designer ouvre dans son propre outil pour refaire la modification lui-même."
+          "text": "Les animations interactives de l'équipe motion design échappaient aux tests. J'ai écrit un outil qui ajoute les test IDs dans les fichiers d'animation, vérifié avec le runtime Flutter, dans une version que le designer ouvre dans son propre outil."
         },
         {
           "title": "Des données de test créées par API",
           "short": "Les paris sont placés puis réglés par API avant chaque scénario. L'UI ne sert qu'à ce que le test vérifie.",
-          "text": "Une mission de paris demande des paris placés puis réglés. Je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie : les tests restent courts et indépendants les uns des autres."
+          "text": "Une mission de paris demande des paris placés puis réglés : je les crée par API avant chaque scénario, sur un compte de test dédié. L'UI ne sert qu'à ce que le test vérifie, les tests restent courts et indépendants."
         },
         {
           "title": "Une nightly sur cinq marchés réglementés",
@@ -106,7 +106,7 @@
         {
           "title": "Des échecs analysés jusqu'à iOS, Android et Flutter",
           "short": "Un bouton que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité : corrigés à la racine, dans le framework.",
-          "text": "Par exemple : un bouton visible que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité iOS, la barre de navigation Android qui interceptait les taps. Pour chacun, j'ai trouvé la cause dans le comportement de la plateforme ou de Flutter, et corrigé le framework plutôt que de contourner dans les tests."
+          "text": "Un bouton que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité iOS, la barre de navigation Android qui interceptait les taps : chaque cause trouvée dans la plateforme ou Flutter, et corrigée dans le framework."
         },
         {
           "title": "Un outillage partagé avec la squad",
@@ -144,22 +144,22 @@
         {
           "title": "Un device par scénario",
           "short": "Chaque scénario tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
-          "text": "Chaque scénario tourne sur un device différent de la device farm BrowserStack : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions."
+          "text": "Chaque scénario tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent et se reproduisent. Un cache des apps et des devices a raccourci le démarrage des sessions."
         },
         {
           "title": "Un pipeline CI réécrit",
           "short": "L'ancien pipeline restait vert quoi qu'il arrive. Le nouveau échoue sous un seuil et prévient chaque équipe sur Slack.",
-          "text": "L'ancien restait vert quel que soit le résultat et dépendait d'un template partagé avec d'autres projets. Le nouveau échoue quand le taux de réussite passe sous un seuil, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs."
+          "text": "L'ancien pipeline restait vert quel que soit le résultat. Le nouveau échoue sous un seuil de réussite, publie les résultats dans Jira et Xray, et prévient chaque équipe sur Slack de ses propres échecs."
         },
         {
           "title": "Une couverture élargie",
-          "short": "Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise.",
-          "text": "Features derrière un feature flag, builds store, distributions TestFlight et Firebase, et webviews derrière le WAF de l'entreprise."
+          "short": "Feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF de l'entreprise.",
+          "text": "Feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF de l'entreprise."
         },
         {
           "title": "Un second framework en TypeScript",
-          "short": "Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java.",
-          "text": "Construit de zéro, multi-plateforme et multi-locale, avec une comparaison documentée face à la stack Java."
+          "short": "Construit de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java.",
+          "text": "Construit de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java."
         }
       ],
       "stack": [
@@ -180,7 +180,7 @@
       "role": "Frontend Software Developer",
       "client": "Hexaly (Bouygues)",
       "date": "Mars 2024 - Mai 2024",
-      "intro": "Développement de fonctionnalités sur Hexaly Studio, un SaaS low-code React pour résoudre des problèmes d'optimisation complexes (planification de livraisons, gestion d'entrepôts logistiques).",
+      "intro": "Fonctionnalités pour Hexaly Studio, un SaaS low-code React d'optimisation (planification de livraisons, gestion d'entrepôts).",
       "stack": [
         "React",
         "TypeScript",
