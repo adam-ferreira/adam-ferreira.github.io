@@ -87,11 +87,6 @@
           "text": "Flutter semantics added to the app code myself, on rules agreed with the tech leads."
         },
         {
-          "title": "Test IDs in the Rive animations",
-          "short": "The Rive animations were out of the tests' reach. I wrote a tool that puts test IDs inside the .riv files.",
-          "text": "a tool that adds test IDs to the .riv files, checked against Rive's Flutter runtime."
-        },
-        {
           "title": "Test data created through APIs",
           "short": "Bets are placed and settled through APIs before each scenario. The UI only serves what the test checks.",
           "text": "bets placed and settled before each scenario; the UI only for what the test checks."
