@@ -1,21 +1,27 @@
 ---
-// The head of the detailed CV (CvPage.astro): the name, giant, the headline and the tagline, then the contact details.
-// On paper the site's address joins them. Style: CvPage.css.
+// The head of the CV page (CvPage.astro): the portrait coming out of its mango disc, as on the home page, the name (first name bold, last name light), the headline and the
+// place on the left; LinkedIn, email and phone on the right, and on paper the site's address. Style: CvPage.css.
+import portrait from '../assets/portrait-280.webp';
 import { md } from '../lib/text';
 import type { Cv } from '../lib/types';
-interface Props { d: Cv; fullName: string; siteUrl: string }
-const { d, fullName, siteUrl } = Astro.props;
+interface Props { d: Cv; siteUrl: string }
+const { d, siteUrl } = Astro.props;
 const idn = d.identity;
+const handle = idn.linkedin.url.replace(/\/$/, '').split('/').pop();
 ---
-<header class="cv-identity">
-  <h1 class="cv-name">{fullName}</h1>
-  <p class="cv-headline" set:html={md(idn.headline)} />
-  <p class="cv-tagline" set:html={md(idn.tagline)} />
-  <ul class="cv-contact label">
-    <li set:html={md(idn.location)} />
-    <li><a class="nocase" href={`mailto:${idn.contact.email}`}>{idn.contact.email}</a></li>
+<header class="cv-head">
+  <div class="cv-head-left">
+    <span class="cv-portrait"><span class="cv-portrait-disc" aria-hidden="true"></span><img class="cv-portrait-img" src={portrait.src} width={portrait.width} height={portrait.height} alt="" decoding="async" /></span>
+    <div>
+      <h1 class="cv-name"><span class="cv-first">{idn.first_name}</span> <span class="cv-last">{idn.last_name}</span></h1>
+      <p class="cv-headline" set:html={md(idn.headline)} />
+      <p class="cv-place"><span class="cv-flag" aria-hidden="true"><i></i><i></i><i></i></span><span set:html={md(idn.location)} /></p>
+    </div>
+  </div>
+  <ul class="cv-contact">
+    <li><a class="cv-linkedin" href={idn.linkedin.url}><span class="cv-in" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></span>{handle}</a></li>
+    <li><a href={`mailto:${idn.contact.email}`}>{idn.contact.email}</a></li>
     <li><a href={`tel:${idn.contact.phone_href}`}>{idn.contact.phone}</a></li>
-    <li><a class="nocase" href={idn.linkedin.url}>{idn.linkedin.url.replace(/^https:\/\/(www\.)?/, '')}</a></li>
-    <li class="print-only"><a class="nocase" href={siteUrl}>{siteUrl.replace(/^https:\/\/|\/$/g, '')}</a></li>
+    <li class="print-only"><a href={siteUrl}>{siteUrl.replace(/^https:\/\/|\/$/g, '')}</a></li>
   </ul>
 </header>
