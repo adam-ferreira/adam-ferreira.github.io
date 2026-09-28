@@ -19,9 +19,9 @@ for (const { lang, path } of PAGES) {
       for (const j of d.experience) expect(html).toContain(withoutNote(j.role).replace(/&/g, '&amp;'));
       // the achievements: their title and short sentence here, the full text only on the CV page
       const esc = (t: string) => plain(t).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-      for (const b of d.experience.flatMap((j: { bullets?: { title: string; short: string; text: string }[] }) => j.bullets ?? [])) {
+      for (const b of d.experience.filter((j: { demo?: string }) => j.demo).flatMap((j: { bullets?: { title: string; short: string; text: string }[] }) => j.bullets ?? [])) {
         expect(html).toContain(esc(b.title)); expect(html).toContain(esc(b.short));
-        if (b.text !== b.short) expect(html).not.toContain(esc(b.text));
+        if (!b.short.includes(b.text)) expect(html).not.toContain(esc(b.text));   // the CV text may be the end of the short one
       }
       expect(html).toContain(d.identity.contact.email);
     });

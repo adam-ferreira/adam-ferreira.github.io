@@ -15,7 +15,7 @@ import { md, plain } from '../lib/text';
 import type { Job, MarkData } from '../lib/types';
 interface Props { j: Job; mark?: { name: string; data: MarkData }; next?: string; scrollHint: string; num: string; stackLabel: string; storyLabel: string; lang: 'en' | 'fr'; dragLabel: string }
 const { j, mark, next, scrollHint, num, stackLabel, storyLabel, lang, dragLabel } = Astro.props;
-const bullets = j.bullets ?? [];
+const bullets = j.demo ? (j.bullets ?? []) : [];   // an experience without a demo stays short here: its achievements are on the CV page
 const short = bullets.length === 0;
 const intro = j.lead ?? j.intro;
 const pad = (i: number) => String(i + 1).padStart(2, '0');
@@ -34,7 +34,7 @@ const pad = (i: number) => String(i + 1).padStart(2, '0');
           <li class="story-step" id={`job-${num}-step-${pad(i)}`}>
             <span class="story-num" aria-hidden="true">{i + 1}<small>/{bullets.length}</small></span>
             <h4 class="story-title" set:html={md(b.title)} />
-            <p class="story-text" set:html={md(b.short)} />
+            <p class="story-text" set:html={md(b.short ?? b.text)} />
           </li>
         ))}
       </ol>

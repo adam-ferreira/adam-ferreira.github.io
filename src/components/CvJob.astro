@@ -16,5 +16,7 @@ const intro = j.lead ?? j.intro;
       {j.bullets.map((b) => <li><strong set:html={md(`${b.title}${colon}`)} /> <span set:html={md(b.text)} /></li>)}
     </ul>
   )}
-  {j.stack && <p class="cv-stack"><span class="cv-stack-label" set:html={md(stackLabel.replace(/\s*:\s*$/, ''))} /><span set:html={md(j.stack.join(' · '))} /></p>}
+  {j.stack && (   /* one tag per tool; real spaces between them, so a PDF parser still reads the words apart */
+    <p class="cv-stack"><span class="cv-stack-label" set:html={md(stackLabel.replace(/\s*:\s*$/, ''))} /> <Fragment set:html={j.stack.map((t) => `<span class="cv-tag">${md(t)}</span>`).join(' ')} /></p>
+  )}
 </article>
