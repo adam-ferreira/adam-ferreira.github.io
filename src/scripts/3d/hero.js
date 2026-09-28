@@ -8,7 +8,8 @@
 // per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn when the app changes.
 // Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
 import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily, afterHero, heroDone, desktop } from './common.js';
-import { SW, SH, TS, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawScreen, screenKey, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
+import { SW, SH, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawAtlas, screenList, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
+import { createOverlay } from './screen-overlay.js';   // the test playing over it
 const doc = document.documentElement;
 const overlay = doc.classList.contains('stage') ? document.querySelector('canvas.devices3d') : null;
 // elsewhere: each canvas.hero3d is its own scene (the hero; each experience with a demo outside stage mode; the stills
@@ -44,6 +45,7 @@ function slab(THREE, w, h, r, d, bev, mat) {
 function buildPhone(THREE, { body, glass, black, screenMat, notch }) {
   const sw = 0.725, sh = sw * SH / SW, W = sw + 0.075, H = sh + 0.075, D = 0.085;
   const g = new THREE.Group();
+  g.userData.screen = { w: sw, h: sh, z: D / 2 + 0.002 };   // where the test is drawn (screen-overlay.js)
   g.add(slab(THREE, W, H, 0.125, D, 0.02, body));
   const front = flat(THREE, W - 0.028, H - 0.028, 0.11, glass); front.position.z = D / 2 + 0.001; g.add(front);
   const screen = flat(THREE, sw, sh, 0.085, screenMat); screen.position.z = D / 2 + 0.002; g.add(screen);
@@ -81,27 +83,28 @@ async function start(canvas) {
   const rim = new THREE.DirectionalLight(0xffd9cc, 1.0); rim.position.set(-4, -1, 2); scene.add(rim);
   const env = loadEnv(THREE);
 
-  // a single screen for both phones: it is the same test, on iOS and Android, at the same moment
-  let sc = SCENARIOS.hero, base = drawBase(sc), t0 = performance.now(), lastKey;
+  // a single screen for both phones: it is the same test, on iOS and Android, at the same moment. The app mock-up is a
+  // texture uploaded once per test; the test is drawn over it by the GPU (screen-overlay.js)
+  let sc = SCENARIOS.hero, atlas = drawAtlas(sc), t0 = performance.now();
   const m0 = t0, isHero = !!overlay || !canvas.closest('.job');   // m0: the clock of the sway, which never restarts
-  const sc2d = document.createElement('canvas'); sc2d.width = SW * TS; sc2d.height = SH * TS;
-  const sg = sc2d.getContext('2d');
-  const tex = new THREE.CanvasTexture(sc2d);
-  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  const paint = (t) => { drawScreen(sg, base, t, sc); tex.needsUpdate = true; };
-  let androidBody = null;   // set once the phones exist
+  const aniso = renderer.capabilities.getMaxAnisotropy();
+  const tex = new THREE.CanvasTexture(drawBase(sc));
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = aniso;
+  let androidBody = null, screen = null;   // set once the phones exist
   let demo = 'hero', shownStep = null;   // the app on screen (a new one: a full turn) and the step of its story
+  const show = (t) => screen?.show(screenList(t, sc, atlas.cells));
+  const still = () => (freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);   // the instant shown when the test does not play
   const setScenario = (name, stepNo = null) => {
     const next = scenarioFor(name, stepNo);
     demo = name; shownStep = stepNo;
     if (next === sc) return;
-    sc = next; base = drawBase(sc); t0 = performance.now(); lastKey = undefined;
-    paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
+    sc = next; t0 = performance.now();
+    tex.image = drawBase(sc); tex.needsUpdate = true; atlas = drawAtlas(sc); screen?.setAtlas(atlas);
+    show(still());
     androidBody?.color.set(sc.body || accentColor());   // the Android phone in the client's colour
   };
   // data-freeze="seconds": a still frame of the test at that moment, without a loop (LinkedIn banner export)
   const freeze = canvas.dataset.freeze !== undefined ? parseFloat(canvas.dataset.freeze) : null;
-  paint(freeze !== null ? freeze : reduced() ? CYCLE - 0.01 : 0);
 
   const graphite = new THREE.MeshStandardMaterial({ color: 0x2b3038, metalness: 0.8, roughness: 0.28, envMap: env, envMapIntensity: 1.2 });
   const accent = accentMaterial(THREE, env);
@@ -113,6 +116,7 @@ async function start(canvas) {
   const android = buildPhone(THREE, { body: accent, glass, black, screenMat, notch: 'hole' });
   ios.position.set(-0.36, -0.07, 0.32); ios.rotation.set(0, 0.06, -0.02);
   android.position.set(0.46, 0.14, -0.34); android.rotation.set(0, -0.05, 0.035);
+  screen = createOverlay(THREE, [ios, android], aniso); screen.setAtlas(atlas); show(still());
   const phones = new THREE.Group(); phones.add(android, ios);
   const spin = new THREE.Group(); spin.add(phones);          // the full turn when the app changes
   const holder = new THREE.Group(); holder.add(spin); scene.add(holder);   // size, in overlay mode
@@ -159,6 +163,8 @@ async function start(canvas) {
   const introPose = (e) => { spin.position.y = (1 - e) * -1.5; spin.rotation.y = (1 - e) * -2.4; spin.scale.setScalar(0.7 + 0.3 * e); };
   if (intro) introPose(0);
   fit();
+  await renderer.compileAsync(scene, camera);   // shaders compiled off the main thread where the browser allows it: no frozen frame
+  if (lost()) return;
   renderer.render(scene, camera);
   canvas.classList.add('is-ready');
   heroStage?.classList.add('is-lit');
@@ -235,7 +241,7 @@ async function start(canvas) {
   const visible = watchVisible(canvas);
 
   if (reduced() || freeze !== null) return;
-  let frame = 0, lastDraw = 0, lastRipple = -1;
+  let lastDraw = 0, lastRipple = -1;
   (function loop(now) {
     if (lost()) return;
     requestAnimationFrame(loop);
@@ -248,11 +254,7 @@ async function start(canvas) {
     const ripple = rippleAt(t % CYCLE, sc);
     if (ripple >= 0 && lastRipple < 0) window.dispatchEvent(new CustomEvent('cv:sound', { detail: { name: 'tap' } }));   // sound.js, if the sound is on
     lastRipple = ripple;
-    if (!intro && frame++ % 3 === 0) {   // the phone screen at 20 fps at most, and only when it changes: ~40 % fewer uploads to the GPU
-      const k = screenKey(t, sc);
-      if (k === null || k !== lastKey) paint(t % CYCLE);
-      lastKey = k;
-    }
+    show(t % CYCLE);   // the test on screen: a few uniforms, no upload
     if (!dragging()) {
       if (Math.abs(vel.x) > 0.002 || Math.abs(vel.y) > 0.002 || now - releasedAt() < 600) {
         phones.rotation.y += vel.x; phones.rotation.x = clampX(phones.rotation.x + vel.y); vel.x *= 0.95; vel.y *= 0.95;

@@ -31,7 +31,7 @@ async function go() {
   });
 }
 
-function mount(THREE, logo, shine) {
+async function mount(THREE, logo, shine) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'low-power' });
   const lost = watchContextLoss(canvas, () => canvas.classList.remove('is-ready'));   // GPU lost: the image logo comes back
   renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -51,6 +51,8 @@ function mount(THREE, logo, shine) {
     camera.updateProjectionMatrix();
   }
   fit();
+  await renderer.compileAsync(scene, camera);   // shaders compiled off the main thread where the browser allows it
+  if (lost()) return;
   renderer.render(scene, camera);
   canvas.classList.add('is-ready');
 
