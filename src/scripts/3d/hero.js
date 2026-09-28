@@ -7,7 +7,7 @@
 // next (.hero-stage, .device-anchor): the hero, then each experience with a demo, where they play that job's test (one
 // per achievement of its story, src/scripts/ui/story.js: a quick turn at each); a full turn when the app changes.
 // Elsewhere, and in the LinkedIn banner, they stay in the hero's own canvas.
-import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily, afterHero, heroDone, desktop, whenNear } from './common.js';
+import { accent as accentColor, reduced, webglOk, onDprChange, watchContextLoss, loadEnv, accentMaterial, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, bootLazily, afterHero, heroDone, desktop, whenNear, whenLoaded, nextTask } from './common.js';
 import { SW, SH, CYCLE, SCENARIOS, scenarioFor, loadLogos, drawBase, drawAtlas, screenList, rippleAt } from './hero-screen.js';   // the app mock-up drawn on the screens
 import { createOverlay } from './screen-overlay.js';   // the test playing over it
 const doc = document.documentElement;
@@ -70,6 +70,9 @@ async function start(canvas) {
   if (!webglOk()) return;
   const initial = canvas.dataset.scenario;   // a scene frozen on one client's test (still images)
   const [THREE] = await Promise.all([import('./three-lite.js'), overlay || initial ? loadLogos() : null]);   // Three.js trimmed to what the site uses, loaded on demand; the clients' logos for their screens
+  // the start runs as short tasks (nextTask between the steps): on a phone it happens on the first touch, and one long
+  // task froze the page for that long (~420 ms with a 4× slower CPU, measured)
+  await nextTask();
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: overlay ? 'high-performance' : 'default' });
   const heroStage = document.querySelector('.hero-stage');
   // GPU lost: the scene fades out (the rest of the page does not depend on it)
@@ -106,6 +109,7 @@ async function start(canvas) {
   // data-freeze="seconds": a still frame of the test at that moment, without a loop (LinkedIn banner export)
   const freeze = canvas.dataset.freeze !== undefined ? parseFloat(canvas.dataset.freeze) : null;
 
+  await nextTask();
   const graphite = new THREE.MeshStandardMaterial({ color: 0x2b3038, metalness: 0.8, roughness: 0.28, envMap: env, envMapIntensity: 1.2 });
   const accent = accentMaterial(THREE, env);
   androidBody = accent;
@@ -116,6 +120,7 @@ async function start(canvas) {
   const android = buildPhone(THREE, { body: accent, glass, black, screenMat, notch: 'hole' });
   ios.position.set(-0.36, -0.07, 0.32); ios.rotation.set(0, 0.06, -0.02);
   android.position.set(0.46, 0.14, -0.34); android.rotation.set(0, -0.05, 0.035);
+  await nextTask();
   screen = createOverlay(THREE, [ios, android], aniso); screen.setAtlas(atlas); show(still());
   const phones = new THREE.Group(); phones.add(android, ios);
   const spin = new THREE.Group(); spin.add(phones);          // the full turn when the app changes
@@ -164,6 +169,7 @@ async function start(canvas) {
   if (intro) introPose(0);
   fit();
   await renderer.compileAsync(scene, camera);   // shaders compiled off the main thread where the browser allows it: no frozen frame
+  renderer.initTexture(tex); await nextTask();   // the screen's upload on its own, before the first frame
   if (lost()) return;
   renderer.render(scene, camera);
   canvas.classList.add('is-ready');
@@ -278,4 +284,7 @@ async function start(canvas) {
 // the hero's scene (and the stills) start after load; an experience's only when it comes near the window (a screen
 // away on a computer, half of one on a phone: setting a scene up freezes a frame, so not while the hero is in view)
 const near = () => (desktop() ? '100% 0px' : '50% 0px');
+// on a phone the 3D waits for the first gesture, but Three.js is fetched and read beforehand, once the page and its
+// entrance animations are done: the first touch waits neither for its ~170 kB nor for their parsing
+if (webglOk() && !desktop()) whenLoaded(() => setTimeout(() => import('./three-lite.js'), 2000));
 if (webglOk()) scenes.forEach((c) => bootLazily(() => (c.closest('.job') ? afterHero(() => whenNear(c, () => start(c), near()), 500) : start(c)), 1200, 300));
