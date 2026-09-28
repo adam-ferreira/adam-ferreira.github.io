@@ -62,6 +62,21 @@ export function afterHero(fn, delay = 0) {   // delay: staggered, so no two scen
   setTimeout(go, 4000);   // the hero never got going (WebGL context refused): the others start all the same
 }
 
+/** Runs `fn` once `el` comes within `margin` of the window (an IntersectionObserver rootMargin). */
+export function whenNear(el, fn, margin) {
+  if (!('IntersectionObserver' in window)) return fn();
+  const io = new IntersectionObserver((en) => { if (en[0].isIntersecting) { io.disconnect(); fn(); } }, { rootMargin: margin });
+  io.observe(el);
+}
+
+/** Runs `fn` once the visitor has scrolled away from the hero (body.is-scrolled). */
+export function whenScrolled(fn) {
+  const is = () => document.body.classList.contains('is-scrolled');
+  if (is()) return fn();
+  const mo = new MutationObserver(() => { if (is()) { mo.disconnect(); fn(); } });
+  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+}
+
 /** An angle brought back into [-π, π]: an object returns to its rest pose by the shortest path. */
 export const norm = (a) => Math.atan2(Math.sin(a), Math.cos(a));
 
