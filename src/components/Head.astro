@@ -20,7 +20,7 @@ const title = home ? d.meta.title : `${d.ui.cv_page.title} — ${fullName}`;
 const person = {
   '@context': 'https://schema.org', '@type': 'Person',
   name: fullName, jobTitle: idn.headline, description: idn.tagline, url: site, image: photo,
-  email: `mailto:${idn.contact.email}`, telephone: idn.contact.phone_href,
+  email: `mailto:${idn.contact.email}`,
   address: { '@type': 'PostalAddress', addressLocality: idn.location.split(',')[0].trim(), addressCountry: 'FR' },
   knowsLanguage: d.languages.map((l) => l.name),
   sameAs: [idn.linkedin.url],

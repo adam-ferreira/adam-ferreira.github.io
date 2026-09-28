@@ -28,7 +28,7 @@ const cv = defineCollection({
       status_freelance: text, status_mode: text,
       hero: text,   // hero sentence: {{name}} inserts a mark, {{br}} a line break
       marks: z.record(z.string(), mark),
-      contact: z.object({ email: z.email(), phone: text, phone_href: z.string().regex(/^\+\d+$/) }).strict(),
+      contact: z.object({ email: z.email() }).strict(),
     }).strict(),
     skills: z.array(z.object({ label: text, items: z.array(text).min(1) }).strict()),
     experience: z.array(z.object({
