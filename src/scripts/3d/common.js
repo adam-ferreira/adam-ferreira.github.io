@@ -34,6 +34,9 @@ export const onDprChange = (cb) => {
   q.addEventListener('change', () => { cb(); onDprChange(cb); }, { once: true });
 };
 
+/** Hands the main thread back to the browser (input, painting) before going on: a long start split into short tasks. */
+export const nextTask = () => new Promise((resolve) => setTimeout(resolve, 0));
+
 export const whenLoaded = (fn) => { if (document.readyState === 'complete') fn(); else window.addEventListener('load', fn); };
 
 /** Deferred start, so the 3D costs nothing on arrival: on a computer, once the browser is idle after load; on a
