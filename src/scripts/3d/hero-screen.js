@@ -4,6 +4,7 @@
 // Nothing 3D here: a 2D canvas, used as the texture of both phones.
 
 import { accent } from './common.js';
+import { DESKTOP, matches } from '../media.js';
 import betclicLogo from '../../assets/marks/betclic.svg?url';
 import accorLogo from '../../assets/marks/accor.svg?url';
 const ACC = accent(), GREEN = '#3ddc84', RED = '#ff5d5d', AMBER = '#f5b841', INK = '#161b22';
@@ -13,7 +14,9 @@ const tint = (h, t) => `rgb(${rgbOf(h).map((c) => Math.round(c + (255 - c) * t))
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 const SANS = 'system-ui, -apple-system, "Segoe UI", sans-serif';
 
-export const SW = 480, SH = 1040, TS = 1.5;   // 480 × 1040 mockup, texture drawn at 1.5× the resolution
+// 480 × 1040 mockup, texture drawn at 1.5× on a computer; at 1× on a phone, where the screen shows far smaller and
+// each repaint is a texture upload that Safari makes slow (2.25× fewer pixels)
+export const SW = 480, SH = 1040, TS = matches(DESKTOP) ? 1.5 : 1;
 const R = {
   card: { x: 24, y: 150, w: 432, h: 180, r: 22 },
   row1: { x: 24, y: 346, w: 432, h: 68, r: 16 },

@@ -7,7 +7,7 @@
 // · You grab it on the mark itself, throw it, it spins on its momentum, then straightens up on its own.
 // · LinkedIn is a cube: the square becomes a real volume, with the "in" embossed on the front and the back,
 //   and it can be spun in every direction.
-import { reduced, webglOk, onDprChange, bootLazily, whenLoaded, withShine, watchContextLoss, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
+import { desktop, reduced, webglOk, onDprChange, bootLazily, afterHero, whenLoaded, withShine, watchContextLoss, setPixelRatio, norm, watchVisible, shouldRender, makeGrabbable, Hint } from './common.js';
 const F = 2.6;
 const marks = [...document.querySelectorAll('.mark[data-svg]')];
 const isDark = () => document.documentElement.dataset.theme === 'dark';
@@ -16,7 +16,8 @@ async function start() {
   if (!marks.length || !webglOk()) return;
   const THREE = await import('./three-lite.js');   // trimmed Three.js, loaders included
   const loader = new THREE.SVGLoader();
-  marks.forEach((mark, i) => setup(mark, i, THREE, loader));
+  // on a phone, one mark at a time: each has its own WebGL context, and five set up together froze a frame
+  marks.forEach((mark, i) => setTimeout(() => setup(mark, i, THREE, loader), desktop() ? 0 : i * 250));
 }
 
 async function setup(mark, order, THREE, loader) {
@@ -214,4 +215,4 @@ async function setup(mark, order, THREE, loader) {
   })(performance.now());
 }
 
-whenLoaded(() => { if (marks.length && webglOk()) bootLazily(start, 2000, 500); });
+whenLoaded(() => { if (marks.length && webglOk()) bootLazily(() => afterHero(start, 1000), 2000, 500); });
