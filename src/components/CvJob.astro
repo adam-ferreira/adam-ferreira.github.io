@@ -1,23 +1,20 @@
 ---
-// One experience on the detailed CV page: everything the home page tells in short, in full — the whole intro, the
-// challenge, each achievement's full text, the stack. Style: CvPage.css.
-import EntryHeader from './EntryHeader.astro';
-import Chips from './Chips.astro';
+// One experience on the CV page: role — client and dates, the home page's lead, each achievement as its bold title then
+// its CV text (a little more than the home page's short sentence), the stack. Style: CvPage.css.
 import { md } from '../lib/text';
 import type { Job } from '../lib/types';
-interface Props { j: Job; stackLabel: string }
-const { j, stackLabel } = Astro.props;
-const sentence = (t: string) => (/[.!?…]$/.test(t) ? t : `${t}.`);   // the title leads its text, as a sentence of its own
+interface Props { j: Job; lang: 'en' | 'fr'; stackLabel: string }
+const { j, lang, stackLabel } = Astro.props;
+const colon = lang === 'fr' ? ' :' : ':';   // md() ties the French one to its word
+const intro = j.lead ?? j.intro;
 ---
 <article class="cv-job">
-  <EntryHeader title={j.role} org={j.client} date={j.date} />
-  {j.intro && <p set:html={md(j.intro)} />}
-  {j.subtitle && <h4 class="cv-sub-title" set:html={md(j.subtitle)} />}
-  {j.subintro && <p class="cv-sub-intro" set:html={md(j.subintro)} />}
+  <h3 class="cv-job-line"><span class="cv-job-title" set:html={md(j.client ? `${j.role} — ${j.client}` : j.role)} /> <span class="cv-job-date" set:html={md(j.date)} /></h3>
+  {intro && <p class="cv-text" set:html={md(intro)} />}
   {j.bullets && (
     <ul class="cv-bullets">
-      {j.bullets.map((b) => <li><strong set:html={md(sentence(b.title))} /> <span set:html={md(b.text)} /></li>)}
+      {j.bullets.map((b) => <li><strong set:html={md(`${b.title}${colon}`)} /> <span set:html={md(b.text)} /></li>)}
     </ul>
   )}
-  {j.stack && <div class="cv-stack"><span class="cv-stack-label" set:html={md(stackLabel)} /> <Chips items={j.stack} /></div>}
+  {j.stack && <p class="cv-stack"><span class="cv-stack-label" set:html={md(stackLabel.replace(/\s*:\s*$/, ''))} /><span set:html={md(j.stack.join(' · '))} /></p>}
 </article>
