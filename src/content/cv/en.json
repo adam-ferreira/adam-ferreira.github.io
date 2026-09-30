@@ -140,9 +140,9 @@
           "text": "fixed pauses replaced by polling waits in the shared helper, to shorten runs."
         },
         {
-          "title": "Ten devices at once",
-          "short": "10 scenarios run in parallel instead of 4, each on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
-          "text": "10 scenarios in parallel instead of 4, each on its own device: model and orientation bugs surface."
+          "title": "Ten different devices at once",
+          "short": "The 10 parallel sessions all ran on the same device model. Now each runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
+          "text": "10 parallel sessions, now each on a different device: model and orientation bugs surface."
         },
         {
           "title": "A rewritten CI pipeline",
