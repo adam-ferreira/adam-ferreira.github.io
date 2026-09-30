@@ -131,18 +131,23 @@
       "bullets": [
         {
           "title": "The framework of all three squads",
-          "short": "Java and Appium upgrades, dead code removed, readable logs. The framework is now half its previous size.",
-          "text": "Java and Appium upgrades, dead code removed, readable logs; half its former size."
+          "short": "Java and Appium upgrades, readable logs, 206 files of dead code removed. Over 250 feature files reworked across the three squads.",
+          "text": "Java and Appium upgrades, readable logs, 206 dead files removed, 250+ feature files reworked."
         },
         {
-          "title": "One device per scenario",
-          "short": "Each scenario runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
-          "text": "each scenario on its own BrowserStack device, surfacing model and orientation bugs."
+          "title": "Smart waits, not pauses",
+          "short": "Fixed pauses replaced by waits that poll the screen, in the helper all three squads share. The goal: shorter runs.",
+          "text": "fixed pauses replaced by polling waits in the shared helper, to shorten runs."
+        },
+        {
+          "title": "Ten devices at once",
+          "short": "10 scenarios run in parallel instead of 4, each on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
+          "text": "10 scenarios in parallel instead of 4, each on its own device: model and orientation bugs surface."
         },
         {
           "title": "A rewritten CI pipeline",
-          "short": "The old pipeline stayed green whatever happened. The new one fails below a threshold and tells each team on Slack.",
-          "text": "fails below a pass-rate threshold, reports to Jira and Xray, alerts each team on Slack."
+          "short": "The old pipeline stayed green whatever happened. The new one fails below a 90% pass rate and tells each team on Slack.",
+          "text": "fails below a 90% pass rate, reports to Jira and Xray, alerts each team on Slack."
         },
         {
           "title": "Wider test coverage",
