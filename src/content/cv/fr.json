@@ -131,18 +131,23 @@
       "bullets": [
         {
           "title": "Le framework des trois squads",
-          "short": "Migrations Java et Appium, code mort retiré, logs lisibles. Le framework fait la moitié de sa taille d'origine.",
-          "text": "migrations Java et Appium, code mort retiré, logs lisibles ; moitié de sa taille d'origine."
+          "short": "Migrations Java et Appium, logs lisibles, 206 fichiers de code mort supprimés. Plus de 250 fichiers de scénarios retravaillés dans les trois squads.",
+          "text": "migrations Java et Appium, logs lisibles, 206 fichiers morts supprimés, 250+ fichiers de scénarios retravaillés."
         },
         {
-          "title": "Un device par scénario",
-          "short": "Chaque scénario tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
-          "text": "chaque scénario sur son device BrowserStack : les bugs de modèle et d'orientation remontent."
+          "title": "Des attentes, pas des pauses",
+          "short": "Les pauses fixes remplacées par des attentes qui interrogent l'écran, dans l'outil commun aux trois squads. Le but : des runs plus courts.",
+          "text": "pauses fixes remplacées par des attentes actives dans l'outil commun, pour raccourcir les runs."
+        },
+        {
+          "title": "Dix devices à la fois",
+          "short": "10 scénarios en parallèle au lieu de 4, chacun sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
+          "text": "10 scénarios en parallèle au lieu de 4, chacun sur son device : les bugs de modèle et d'orientation remontent."
         },
         {
           "title": "Un pipeline CI réécrit",
-          "short": "L'ancien pipeline restait vert quoi qu'il arrive. Le nouveau échoue sous un seuil et prévient chaque équipe sur Slack.",
-          "text": "échoue sous un seuil de réussite, publie dans Jira et Xray, alerte chaque équipe sur Slack."
+          "short": "L'ancien pipeline restait vert quoi qu'il arrive. Le nouveau échoue sous 90 % de réussite et prévient chaque équipe sur Slack.",
+          "text": "échoue sous 90 % de réussite, publie dans Jira et Xray, alerte chaque équipe sur Slack."
         },
         {
           "title": "Une couverture élargie",

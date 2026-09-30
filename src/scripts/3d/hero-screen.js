@@ -113,14 +113,20 @@ export const STORIES = {
     ] },
   ],
   booking: [
-    { feature: 'framework · upgrade', note: '· half the code', steps: [
+    { feature: 'framework · upgrade', note: '· 206 dead files', steps: [
       { verb: 'bump', loc: 'Java 25', tone: 'info' },
       { verb: 'bump', loc: 'Appium client', tone: 'info' },
       { verb: 'remove', loc: 'dead code', tone: 'info' },
       { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
       { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
     ] },
-    { feature: 'BrowserStack farm', screen: 'results', note: '· 4 devices', steps: [
+    { feature: 'ActionHelper · waits', note: '· shared by 3 squads', steps: [
+      { verb: 'remove', loc: 'Thread.sleep', tone: 'info' },
+      { verb: 'poll', loc: 'until visible', tone: 'info' },
+      { rect: SEARCH_BTN, verb: 'tap', loc: '~search_button' },
+      { rect: R.row1, verb: 'assert', loc: '~hotel_card_1' },
+    ] },
+    { feature: 'BrowserStack farm', screen: 'results', note: '· 10 in parallel', steps: [
       { rect: FILTER(0), verb: 'tap', say: 'iPhone', loc: 'price filter' },
       { rect: HOT(1), verb: 'swipe', say: 'Pixel', loc: 'hotel list' },
       { rect: HOT(2), verb: 'tap', say: 'tablet', loc: 'hotel card' },
@@ -128,7 +134,7 @@ export const STORIES = {
     ] },
     { feature: 'gitlab-ci · nightly', screen: 'confirm', result: 'PIPELINE RED', resultTone: 'fail', note: '· as it should', steps: [
       { verb: 'run', loc: 'booking suite', tone: 'info' },
-      { verb: 'gate', loc: 'below threshold', tone: 'fail' },
+      { verb: 'gate', loc: 'below 90%', tone: 'fail' },
       { verb: 'report', loc: 'Jira · Xray', tone: 'info' },
       { verb: 'notify', loc: 'Slack · its team', tone: 'info' },
     ] },
