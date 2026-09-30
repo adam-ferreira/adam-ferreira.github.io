@@ -140,9 +140,9 @@
           "text": "pauses fixes remplacées par des attentes actives dans l'outil commun, pour raccourcir les runs."
         },
         {
-          "title": "Dix devices à la fois",
-          "short": "10 scénarios en parallèle au lieu de 4, chacun sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
-          "text": "10 scénarios en parallèle au lieu de 4, chacun sur son device : les bugs de modèle et d'orientation remontent."
+          "title": "Dix devices différents à la fois",
+          "short": "Les 10 sessions parallèles tournaient toutes sur le même modèle. Désormais chacune tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
+          "text": "10 sessions parallèles, chacune sur un device différent : les bugs de modèle et d'orientation remontent."
         },
         {
           "title": "Un pipeline CI réécrit",
