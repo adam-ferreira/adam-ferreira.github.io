@@ -77,34 +77,34 @@
       "demo": "betting",
       "date": "Mars 2026 - Aujourd'hui (Freelance)",
       "intro": "Betclic reconstruit son app mobile iOS et Android en Flutter. J'y automatise les tests des fonctionnalités de gamification : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.",
-      "lead": "Betclic (5 millions de joueurs) reconstruit son app en Flutter ; j'automatise les tests de sa gamification.",
+      "lead": "Automatisation des tests mobiles de la gamification de la nouvelle app Flutter de Betclic, 5 millions de joueurs.",
       "subtitle": "Construire l'automatisation en même temps que l'app",
       "subintro": "À mon arrivée, l'app et ses fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.",
       "bullets": [
         {
-          "title": "Des test IDs dans le code de l'app",
-          "short": "Un locator basé sur le texte affiché casse à chaque traduction. Je pose moi-même les semantics dans le code Flutter.",
-          "text": "semantics Flutter posées dans le code, selon des règles fixées avec les tech leads."
+          "title": "La testabilité intégrée au code de l'app",
+          "short": "143 pull requests mergées en six mois, dont 44 dans l'app Flutter : des semantics qui rendent chaque écran testable, et des correctifs pour des bugs que j'ai trouvés.",
+          "text": "143 PR mergées en six mois, dont 44 dans l'app Flutter."
         },
         {
-          "title": "Des données de test créées par API",
+          "title": "Des données de test injectées par les API backend",
           "short": "Les paris sont placés puis réglés par API avant chaque scénario. L'UI ne sert qu'à ce que le test vérifie.",
-          "text": "paris placés puis réglés avant chaque scénario ; l'UI seulement pour ce qu'on vérifie."
+          "text": "paris placés et réglés avant chaque scénario."
         },
         {
-          "title": "Une nightly sur cinq marchés réglementés",
-          "short": "Chaque matin, je trie les échecs : bug produit, environnement ou test flaky. Seuls les bugs produit deviennent des tickets.",
-          "text": "échecs triés chaque matin ; seuls les bugs produit deviennent des tickets."
+          "title": "La suite E2E de la gamification, partie de zéro",
+          "short": "J'ai écrit le premier scénario de gamification et mis en place sa nightly. Six mois plus tard, 86 scénarios tournent sur Android et iOS : chacun vérifie un besoin du produit, aucun n'est là pour faire du chiffre.",
+          "text": "86 en six mois, joués chaque nuit, chacun lié à un besoin produit."
         },
         {
-          "title": "Des échecs analysés jusqu'à iOS, Android et Flutter",
-          "short": "Un bouton que le test ne pouvait pas taper, une tab bar absente de l'arbre d'accessibilité : corrigés à la racine, dans le framework.",
-          "text": "causes corrigées dans le framework, pas contournées dans les tests."
+          "title": "Des causes racines traquées jusqu'à iOS, Android et Flutter",
+          "short": "Quand un test échouait pour une mauvaise raison, je remontais la cause jusqu'à l'arbre d'accessibilité iOS, les barres système Android ou l'arbre de widgets Flutter, et je la corrigeais dans le framework plutôt que d'ajouter des relances.",
+          "text": "faux échecs corrigés dans le framework, jamais masqués."
         },
         {
-          "title": "Un outillage partagé avec la squad",
-          "short": "Des test plans, une suite de release, et des skills Claude Code qui génèrent les page objects depuis Figma et Jira.",
-          "text": "test plans, suite de release, skills Claude Code : des maquettes Figma aux page objects."
+          "title": "Des tests de non-régression au-delà de la gamification",
+          "short": "J'automatise aussi des tests de non-régression hors gamification, dont des tests social et betting. Ils tournent dans le release train, sur plusieurs marchés réglementés, avant chaque version.",
+          "text": "social et betting compris, joués dans le release train."
         }
       ],
       "stack": [
@@ -116,7 +116,8 @@
         "BrowserStack",
         "Rive",
         "Claude Code",
-        "MCP Atlassian / Figma"
+        "Jenkins",
+        "MCP Atlassian / Figma / Appium"
       ]
     },
     {
@@ -126,38 +127,38 @@
       "demo": "booking",
       "date": "Nov. 2024 - Mars 2026 (Freelance)",
       "intro": "ALL est l'app de réservation et de fidélité d'Accor (100 millions de membres). J'automatisais les tests de l'espace membre (connexion, statut, points, offres) et, au-delà de mon périmètre, je faisais évoluer le framework de tests commun à ses trois squads (fidélité, réservation, séjour).",
-      "lead": "ALL, l'app de réservation et fidélité d'Accor (100 millions de membres) : tests de l'espace membre (connexion, statut, points).",
+      "lead": "Automatisation des tests mobiles de l'espace membre d'ALL, l'app de réservation et de fidélité d'Accor, 100 millions de membres.",
       "subtitle": "Moderniser un framework existant",
       "bullets": [
         {
-          "title": "Le framework des trois squads",
-          "short": "Migrations Java et Appium, logs lisibles, 206 fichiers de code mort supprimés. Plus de 250 fichiers de scénarios retravaillés dans les trois squads.",
-          "text": "migrations Java et Appium, logs lisibles, 206 fichiers morts supprimés, 250+ fichiers de scénarios retravaillés."
+          "title": "Un framework de tests partagé par trois squads",
+          "short": "Migrations Java 25 et Appium, code mort supprimé, plus de 250 fichiers de scénarios retravaillés dans les trois squads, et des logs par scénario dans IntelliJ même en parallèle, un manque que JetBrains n'a toujours pas comblé.",
+          "text": "Java 25, logs par scénario en parallèle, 250+ features retravaillées."
         },
         {
-          "title": "Des attentes, pas des pauses",
-          "short": "Les pauses fixes remplacées par des attentes qui interrogent l'écran, dans l'outil commun aux trois squads. Le but : des runs plus courts.",
-          "text": "pauses fixes remplacées par des attentes actives dans l'outil commun, pour raccourcir les runs."
+          "title": "Des attentes explicites plutôt que des pauses fixes",
+          "short": "Des attentes qui interrogent l'écran, dans l'outil commun aux trois squads : le test avance dès que l'app est prête. Le but : des runs plus courts.",
+          "text": "dans l'outil commun aux trois squads, pour raccourcir les runs."
         },
         {
-          "title": "Dix devices différents à la fois",
+          "title": "Dix devices différents en parallèle",
           "short": "Les 10 sessions parallèles tournaient toutes sur le même modèle. Désormais chacune tourne sur un device BrowserStack différent : les bugs propres à un modèle, une tablette ou une orientation apparaissent.",
-          "text": "10 sessions parallèles, chacune sur un device différent : les bugs de modèle et d'orientation remontent."
+          "text": "10 sessions parallèles, une par device : bugs de modèle et d'orientation repérés."
         },
         {
-          "title": "Un pipeline CI réécrit",
+          "title": "Une CI réécrite, avec une quality gate à 90 %",
           "short": "L'ancien pipeline restait vert quoi qu'il arrive. Le nouveau échoue sous 90 % de réussite et prévient chaque équipe sur Slack.",
-          "text": "échoue sous 90 % de réussite, publie dans Jira et Xray, alerte chaque équipe sur Slack."
+          "text": "résultats publiés dans Jira et Xray, chaque équipe alertée sur Slack."
         },
         {
-          "title": "Une couverture élargie",
-          "short": "Feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF de l'entreprise.",
-          "text": "feature flags, builds store, distributions TestFlight et Firebase, webviews derrière le WAF."
+          "title": "Les parcours difficiles à atteindre, testés",
+          "short": "Des fonctionnalités derrière des flags, des builds store depuis TestFlight et Firebase, des webviews derrière le pare-feu de l'entreprise : les parcours qu'une suite de tests n'atteint d'habitude pas.",
+          "text": "flags, builds store, TestFlight et Firebase, webviews derrière le WAF."
         },
         {
-          "title": "Un second framework en TypeScript",
-          "short": "Construit de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java.",
-          "text": "de zéro, multi-plateforme et multi-locale, avec un comparatif documenté face à Java."
+          "title": "Une alternative TypeScript, prototypée de zéro",
+          "short": "WebdriverIO et Cucumber, une seule base de code pour iOS et Android, multi-locale, avec un comparatif documenté face à Java.",
+          "text": "WebdriverIO, multi-plateforme et multi-locale, comparé à Java."
         }
       ],
       "stack": [
