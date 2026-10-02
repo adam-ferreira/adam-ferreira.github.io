@@ -80,7 +80,7 @@ const PHOTO = { x: 24, y: 140, w: 432, h: 190, r: 20 };
  *  `result` / `note`: the summary line. At most five steps: a run always lasts CYCLE. */
 export const STORIES = {
   betting: [
-    { feature: 'semantics · inspector', keep: true, result: 'IDS 5/5', note: '· any locale', steps: [
+    { feature: 'semantics · inspector', keep: true, result: 'IDS 5/5', note: '· in the app code', steps: [
       { rect: ODDS(0), verb: 'id', loc: '~odds_home' },
       { rect: R.card, verb: 'id', loc: '~mission_progress' },
       { rect: R.row2, verb: 'id', loc: '~leaderboard_rank' },
@@ -93,8 +93,8 @@ export const STORIES = {
       { rect: MIS(0), verb: 'assert', loc: '~mission_progress' },
       { rect: MIS_CHIP(0), verb: 'assert', loc: '~mission_reward' },
     ] },
-    { feature: 'nightly · 5 markets', screen: 'leaderboard', result: 'TRIAGED', note: '· 1 bug → Jira', steps: [
-      { verb: 'run', loc: '5 markets', tone: 'info' },
+    { feature: 'nightly · 86 scenarios', screen: 'leaderboard', result: 'TRIAGED', note: '· 1 bug → Jira', steps: [
+      { verb: 'run', loc: 'Android + iOS', tone: 'info' },
       { verb: 'flaky', loc: 'rerun, no ticket', tone: 'warn' },
       { verb: 'env', loc: 'down, no ticket', tone: 'warn' },
       { verb: 'bug', loc: 'ticket in Jira', tone: 'fail' },
@@ -105,15 +105,15 @@ export const STORIES = {
       { verb: 'fix', loc: 'in the framework', tone: 'info' },
       { rect: SLIP_CTA, verb: 'tap', loc: '~place_bet' },
     ] },
-    { feature: 'figma → MissionsPage', screen: 'missions', keep: true, result: 'GENERATED', note: '· page object', steps: [
-      { rect: MIS(0), verb: 'map', loc: 'missionRow' },
-      { rect: MIS_CHIP(1), verb: 'map', loc: 'rewardChip' },
-      { rect: tabRect(2), verb: 'map', loc: 'missionsTab' },
-      { verb: 'write', loc: 'MissionsPage.ts', tone: 'info' },
+    { feature: 'release train', screen: 'betslip', note: '· several markets', steps: [
+      { verb: 'run', loc: 'FR · PT · PL · CI · CM', tone: 'info' },
+      { verb: 'check', loc: 'social feed', tone: 'info' },
+      { rect: SLIP_PICK, verb: 'assert', loc: '~bet_pick' },
+      { rect: SLIP_CTA, verb: 'tap', loc: '~place_bet' },
     ] },
   ],
   booking: [
-    { feature: 'framework · upgrade', note: '· 206 dead files', steps: [
+    { feature: 'framework · upgrade', note: '· 3 squads', steps: [
       { verb: 'bump', loc: 'Java 25', tone: 'info' },
       { verb: 'bump', loc: 'Appium client', tone: 'info' },
       { verb: 'remove', loc: 'dead code', tone: 'info' },

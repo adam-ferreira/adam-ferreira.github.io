@@ -77,34 +77,34 @@
       "demo": "betting",
       "date": "March 2026 - Present (Freelance)",
       "intro": "Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests of the gamification features: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.",
-      "lead": "Betclic (5 million players) is rebuilding its app in Flutter; I automate its gamification tests: missions, leaderboards, boosts.",
+      "lead": "Mobile test automation for the gamification of Betclic's new Flutter app, 5 million players.",
       "subtitle": "Building the automation alongside the app",
       "subintro": "When I joined, the app and its gamification features were still being built. The tests had to keep up with each release without slowing the developers down.",
       "bullets": [
         {
-          "title": "Test IDs in the app code",
-          "short": "Locators based on displayed text break with every translation. I add Flutter semantics to the app code myself.",
-          "text": "Flutter semantics added to the app code myself, on rules agreed with the tech leads."
+          "title": "Testability built into the app code",
+          "short": "143 pull requests merged in six months, 44 of them in the Flutter app: semantics that make each screen testable, and fixes for bugs I found.",
+          "text": "143 PRs merged in six months, 44 in the Flutter app: semantics and bug fixes."
         },
         {
-          "title": "Test data created through APIs",
+          "title": "Test data seeded through backend APIs",
           "short": "Bets are placed and settled through APIs before each scenario. The UI only serves what the test checks.",
           "text": "bets placed and settled before each scenario; the UI only for what the test checks."
         },
         {
-          "title": "A nightly run on five regulated markets",
-          "short": "Every morning I sort the failures: product bug, environment or flaky test. Only product bugs become tickets.",
-          "text": "each morning's failures triaged; only product bugs become tickets."
+          "title": "The gamification E2E suite, built from scratch",
+          "short": "I wrote the first gamification scenario and set up its nightly run. Six months later, 86 scenarios run on Android and iOS: each one checks something the product needs, none is there for the count.",
+          "text": "86 scenarios in six months, run nightly, each tied to a product need."
         },
         {
-          "title": "Failures investigated down to iOS, Android and Flutter",
-          "short": "A button the test could not tap, a tab bar missing from the accessibility tree: fixed at the root, in the framework.",
-          "text": "root causes fixed in the framework, not worked around in the tests."
+          "title": "Root causes traced down to iOS, Android and Flutter",
+          "short": "When a test failed for the wrong reason, I followed the cause into the iOS accessibility tree, Android's system bars or the Flutter widget tree, and fixed it in the framework instead of adding retries.",
+          "text": "false failures fixed in the framework, never hidden behind retries."
         },
         {
-          "title": "Shared tooling with the squad",
-          "short": "Test plans, a release suite, and Claude Code skills that generate page objects from Figma and Jira.",
-          "text": "test plans, a release suite, Claude Code skills turning Figma designs into page objects."
+          "title": "Regression tests beyond gamification",
+          "short": "I also automate regression tests outside gamification, social and betting among them. They run in the release train, on several regulated markets, before every version.",
+          "text": "social and betting included, run in the release train."
         }
       ],
       "stack": [
@@ -116,7 +116,8 @@
         "BrowserStack",
         "Rive",
         "Claude Code",
-        "MCP Atlassian / Figma"
+        "Jenkins",
+        "MCP Atlassian / Figma / Appium"
       ]
     },
     {
@@ -126,38 +127,38 @@
       "demo": "booking",
       "date": "Nov. 2024 - March 2026 (Freelance)",
       "intro": "ALL is Accor's hotel booking and loyalty app (100 million members). I automated the tests of its member area (sign-in, status, rewards, deals) and, beyond my scope, kept improving the test framework shared by its three squads (loyalty, booking, stay).",
-      "lead": "ALL, Accor's hotel booking and loyalty app (100 million members): I automated its member area tests (sign-in, status, rewards).",
+      "lead": "Mobile test automation for the member area of ALL, Accor's booking and loyalty app, 100 million members.",
       "subtitle": "Modernizing an existing framework",
       "bullets": [
         {
-          "title": "The framework of all three squads",
-          "short": "Java and Appium upgrades, readable logs, 206 files of dead code removed. Over 250 feature files reworked across the three squads.",
-          "text": "Java and Appium upgrades, readable logs, 206 dead files removed, 250+ feature files reworked."
+          "title": "A test framework shared by three squads",
+          "short": "Java 25 and Appium upgrades, dead code cleared out, over 250 feature files reworked across the three squads, and per-scenario logs in IntelliJ even in parallel runs, a gap JetBrains still hasn't closed.",
+          "text": "Java 25, per-scenario logs in parallel runs, 250+ feature files reworked."
         },
         {
-          "title": "Smart waits, not pauses",
-          "short": "Fixed pauses replaced by waits that poll the screen, in the helper all three squads share. The goal: shorter runs.",
-          "text": "fixed pauses replaced by polling waits in the shared helper, to shorten runs."
+          "title": "Explicit waits instead of fixed pauses",
+          "short": "Waits that poll the screen, in the helper all three squads share: a test moves on as soon as the app is ready. The goal: shorter runs.",
+          "text": "polling waits in the helper all squads share, to shorten runs."
         },
         {
-          "title": "Ten different devices at once",
+          "title": "Ten different devices in parallel",
           "short": "The 10 parallel sessions all ran on the same device model. Now each runs on a different BrowserStack device, so bugs specific to a model, a tablet or an orientation show up.",
           "text": "10 parallel sessions, now each on a different device: model and orientation bugs surface."
         },
         {
-          "title": "A rewritten CI pipeline",
+          "title": "A rewritten CI with a 90% quality gate",
           "short": "The old pipeline stayed green whatever happened. The new one fails below a 90% pass rate and tells each team on Slack.",
-          "text": "fails below a 90% pass rate, reports to Jira and Xray, alerts each team on Slack."
+          "text": "reports to Jira and Xray, alerts each team on Slack."
         },
         {
-          "title": "Wider test coverage",
-          "short": "Feature flags, store builds, TestFlight and Firebase distributions, and webviews behind the company WAF.",
+          "title": "Hard-to-reach paths under test",
+          "short": "Features behind flags, store builds from TestFlight and Firebase, webviews behind the company firewall: the paths a test suite usually can't reach.",
           "text": "feature flags, store builds, TestFlight and Firebase distributions, webviews behind the WAF."
         },
         {
-          "title": "A second framework in TypeScript",
-          "short": "Built from scratch, cross-platform and multi-locale, with a documented comparison against the Java stack.",
-          "text": "built from scratch, cross-platform and multi-locale, with a documented Java comparison."
+          "title": "A TypeScript alternative, prototyped from scratch",
+          "short": "WebdriverIO and Cucumber, one codebase for iOS and Android, multi-locale, with a documented comparison against the Java stack.",
+          "text": "WebdriverIO, cross-platform and multi-locale, compared with Java."
         }
       ],
       "stack": [
