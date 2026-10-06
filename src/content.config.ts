@@ -61,6 +61,9 @@ const cv = defineCollection({
       // the detailed CV page (CvPage.astro) and the top bar's link to it: its visible word, its full name, the way back,
       // the PDF, the title of the skills (the home page shows them without one)
       cv_page: z.object({ link: text, link_title: text, title: text, back: text, pdf: text, skills: text }).strict(),
+      // phone only: the contact bar at the bottom of the screen (PhoneBar.astro): its group name, the email button,
+      // the share button, and what the share button says once it has copied the address (no share sheet)
+      phone_bar: z.object({ aria: text, mail: text, share: text, copied: text }).strict(),
     }).strict(),
   }).strict().superRefine((d, ctx) => {
     // every {{mark}} in the hero sentence must be described in identity.marks
