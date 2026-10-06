@@ -28,3 +28,5 @@
 .footer-bottom a:hover, .footer-statement:hover { color: var(--accent); }
 .footer-bottom .nocase { text-transform: none; letter-spacing: .06em; }
 @media (max-width: 640px) { .site-footer { position: static; } }
+/* touch screen: the email, a line of small capitals, is hit over 44 px of height */
+@media (pointer: coarse) { .footer-contact .nocase { display: inline-block; padding: 13px 0; margin: -13px 0; } }

@@ -288,6 +288,12 @@
       "back": "Retour au site",
       "pdf": "Télécharger le PDF",
       "skills": "Compétences"
+    },
+    "phone_bar": {
+      "aria": "Contact",
+      "mail": "M'écrire",
+      "share": "Partager",
+      "copied": "Lien copié"
     }
   }
 }

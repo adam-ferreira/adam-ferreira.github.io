@@ -288,6 +288,12 @@
       "back": "Back to the site",
       "pdf": "Download the PDF",
       "skills": "Skills"
+    },
+    "phone_bar": {
+      "aria": "Contact",
+      "mail": "Write to me",
+      "share": "Share",
+      "copied": "Link copied"
     }
   }
 }
