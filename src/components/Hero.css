@@ -84,7 +84,8 @@ body.is-scrolled .scroll-hint { opacity: 0; }
   .portrait { width: 84px; height: 84px; margin-top: 28px; }
   .portrait-img { clip-path: inset(-60% 5px 5px 5px round 0 0 37px 37px); }
   .name { font-size: clamp(64px, 20vw, 96px); }
-  .hero-foot { position: static; margin-top: 40px; }
+  .hero-foot { position: static; margin-top: 24px; }
+  .header { padding-bottom: 36px; }   /* a tighter hero: the first experience comes sooner under the thumb */
 }
 
 /* ---------- motion: one choreography on arrival, nothing else ---------- */

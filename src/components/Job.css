@@ -27,6 +27,7 @@
 .job-stage .hero3d { inset: -18%; width: 136%; height: 136%; }   /* same framing as the still image */
 html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones play in the middle column */
 @media (max-width: 1099px) { .job > .spotlight { margin-top: 56px; padding-top: 28px; border-top: 1px solid var(--line); } }
+@media (max-width: 560px) { .job > .spotlight { margin-top: 40px; padding-top: 24px; } }
 
 .job { margin-bottom: 128px; }
 .job:last-child { margin-bottom: 8px; }
@@ -47,6 +48,30 @@ html.stage .job-stage { display: none; }   /* stage mode: the overlay's phones p
 .stack { margin: 36px 0 0; max-width: 62ch; font-size: 15px; line-height: 1.6; color: var(--muted); }
 .stack-label { margin-right: 8px; }
 @media (max-width: 640px) { .job { margin-bottom: 80px; } .story-steps { gap: 24px; } .job-intro { font-size: 16.5px; line-height: 1.6; } }
+
+/* ---------- phone, experience with a demo: the achievements become cards the thumb swipes through ----------
+   One card a screen wide, the next one peeking at the edge; the dots under them (built by phone.js) say which one is in
+   view and go to another. The stack of five or six paragraphs shrinks to one card's height. */
+.swipe-dots { display: none; }
+@media (max-width: 700px) {
+  html:not(.stage) .job-demo .story-steps {
+    display: flex; gap: 12px; margin: 0 calc(-1 * var(--gutter)); padding: 2px var(--gutter) 4px;
+    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--gutter);
+    scrollbar-width: none;
+  }
+  html:not(.stage) .job-demo .story-steps::-webkit-scrollbar { display: none; }
+  html:not(.stage) .job-demo .story-step {
+    flex: 0 0 86%; max-width: none; scroll-snap-align: start; scroll-snap-stop: always;
+    padding: 20px 20px 22px; border: 1px solid var(--line); border-radius: 18px;
+    background: color-mix(in srgb, var(--chip) 55%, transparent);
+  }
+  html:not(.stage) .job-demo .story-steps:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  html:not(.stage) .swipe-dots { display: flex; justify-content: center; margin-top: 10px; }
+}
+.swipe-dot { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; background: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }   /* 24 px: the minimum target */
+.swipe-dot::after { content: ""; width: 6px; height: 6px; border-radius: 3px; background: var(--muted); opacity: .35; transition: width .3s var(--ease-out), background .3s ease, opacity .3s ease; }
+.swipe-dot[aria-current="true"]::after { width: 18px; background: var(--accent); opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .swipe-dot::after { transition: none; } }
 
 /* ---------- stage mode, experience with a demo: one reading column on the left, the phones large on the right ---------- */
 .device-anchor { display: none; }

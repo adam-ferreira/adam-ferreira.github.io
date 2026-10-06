@@ -8,6 +8,7 @@ import Hero from '../components/Hero.astro';
 import Experience from '../components/Experience.astro';
 import Facts from '../components/Facts.astro';
 import Footer from '../components/Footer.astro';
+import PhoneBar from '../components/PhoneBar.astro';
 import { pathOf, type Lang } from '../lib/i18n';
 
 interface Props { lang: Lang }
@@ -37,6 +38,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
   </div>
 
   <Footer d={d} />
+  <PhoneBar d={d} />
   <canvas class="devices3d" aria-hidden="true"></canvas>
 
   <script>
@@ -47,6 +49,7 @@ const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
     import '../scripts/ui/pager.js';        // the page: the screens and their progress indicator
     import '../scripts/ui/stage.js';        // the page: stage mode (computer)
     import '../scripts/ui/scroll.js';       // the page: normal scrolling (everything else)
+    import '../scripts/ui/phone.js';        // phone: the swipeable achievements and the contact bar
     import '../components/Topbar.js';       // the top bar: the logo reloads the page
     import '../scripts/ui/cursor.js';       // the page: cursor
     import '../scripts/ui/magnetic.js';     // the page: buttons that lean towards the mouse
