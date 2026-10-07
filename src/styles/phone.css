@@ -1,0 +1,80 @@
+/* ============================================================
+   PHONE: FULL-SCREEN VIEWS (≤ 700 px wide, a touch screen, at least 620 px tall)
+   The page becomes a sequence of views, each one filling the screen under the top bar, and the scroll snaps from one to
+   the next: the visitor is guided one view at a time, as on a computer (stage mode) — but the native way: CSS snapping
+   on the page itself, no script in the way of the finger. The views: home · Betclic (logo, intro, phones, stack) ·
+   its achievements (the cards) · Accor, the same two · Hexaly · JMD · education, languages, interests · contact.
+   Every view fits a 393 × 659 screen (tests/mobile.spec.ts measures them): spacing and the posters shrink, nothing is
+   cut. Under 620 px of height (iPhone SE, a browser with its bars open) the content would no longer fit a screen, so
+   the page keeps its normal flow, exactly as before. Stage mode cannot occur at this width (it needs 1100 px).
+   Imported after the components' stylesheets (src/styles/index.css): these rules override theirs.
+   ============================================================ */
+@media (max-width: 700px) and (min-height: 620px) and (pointer: coarse) {
+  :root {
+    --view-h: calc(100svh - var(--topbar-h));   /* svh: the small viewport, so a view still fits when iOS Safari's bars are out */
+    --bar-room: calc(76px + env(safe-area-inset-bottom));   /* the contact bar floats over the bottom of the screen (PhoneBar.css): nothing is placed under it */
+  }
+  /* the page itself snaps (the document stays the scroller: window.scrollY, the observers and the 3D's lazy start all
+     depend on it); "always": one gesture lands on the next view, even a strong flick */
+  html { scroll-snap-type: y mandatory; scroll-padding-top: var(--topbar-h); }
+  .header, .job-demo > .spotlight, .job-demo > .job-main, .job-short, .facts, .site-footer { scroll-snap-align: start; scroll-snap-stop: always; }
+  /* min-height, never height: content that would not fit makes its view taller instead of spilling over the next one */
+  .header, .job-short, .facts, .site-footer { min-height: var(--view-h); }
+  main { padding-bottom: 0; }
+  .job, .job:last-child { margin-bottom: 0; }
+
+  /* ---------- home: the portrait and the phones side by side, the name under them, the foot pinned at the bottom ---------- */
+  .header {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 20px; row-gap: 12px;
+    align-content: center; align-items: center; padding: 16px var(--gutter) 58px;
+  }
+  .header-left { display: contents; }   /* its two blocks join the grid of the home screen */
+  .portrait { grid-area: 1 / 1; margin-top: 0; }   /* centred beside the phones: the row is taller than the disc, the head that overflows it has room */
+  .hero-stage { grid-area: 1 / 2; width: min(48vw, 24svh); margin: 0; }   /* grows with the screen: a tall phone gets bigger phones */
+  .header-name-block { grid-area: 2 / 1 / 3 / 3; }
+  .name { margin: -4px 0 8px; }
+  .subtitle { margin-top: 2px; font-size: 17px; }
+  .hero-line { margin-top: 10px; font-size: 18px; }
+  .location { margin-top: 14px; }
+  .contact { margin-top: 14px; }
+  .hero-foot { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 14px; margin: 0; }
+
+  /* ---------- an experience with a demo: two views ----------
+     1. the logo, the role and the dates at the top, the intro and the phones in the middle, the stack at the bottom;
+     2. the achievements, cards swiped sideways, with "Next: …" at the foot (the cue of stage mode, until now unused here).
+     The stack moves up in the first view (grid order, not DOM order): it is the only way, in CSS alone, to make both views
+     exactly one screen tall — the second view is a single block, the first takes the rest. */
+  .job-demo { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto minmax(var(--view-h), auto); min-height: calc(2 * var(--view-h)); }
+  .job-demo > .spotlight { grid-row: 1; margin-top: 0; padding-top: 16px; border-top: 0; }
+  .job-demo > .job-side { grid-row: 2; align-self: center; }
+  .job-demo > .stack { grid-row: 3; margin: 0 0 var(--bar-room); font-size: 14px; line-height: 1.5; }
+  .job-demo > .job-main { grid-row: 4; position: relative; display: grid; align-content: center; padding-bottom: calc(var(--bar-room) + 40px); }
+  .job-demo .job-intro { font-size: 16px; line-height: 1.5; }
+  .job-demo .story-text { font-size: 16px; line-height: 1.55; }
+  .job-stage { width: min(56vw, 27svh); margin: 14px auto 0; }
+  .job-demo .story-cue { display: block; position: absolute; left: 0; bottom: var(--bar-room); height: auto; margin: 0; }
+  .job-demo .story-cue > span { position: static; opacity: 1; }
+  .job-demo .story-cue-scroll { display: none; }
+
+  /* ---------- a short experience: one view, its content in the middle, its number as a watermark (as on a computer) ---------- */
+  .job-short { position: relative; display: grid; align-content: center; padding-bottom: var(--bar-room); }
+  .job-short::after { content: attr(data-num); position: absolute; right: -2%; top: 24px; z-index: -1; font-size: 34svh; letter-spacing: .02em; pointer-events: none; }
+
+  /* ---------- education, languages, interests: one view, no rule line (the snap separates the views) ---------- */
+  .facts { margin-top: 0; padding-top: 0; padding-bottom: var(--bar-room); border-top: 0; align-content: center; gap: 28px; }
+
+  /* ---------- contact: the last view — the sentence in the middle, the contact details at the bottom ---------- */
+  .site-footer {
+    position: static; display: flex; flex-direction: column; gap: 32px;
+    padding: 32px var(--gutter) calc(28px + env(safe-area-inset-bottom));
+  }
+  .footer-statement, .footer-bottom { margin-top: auto; }
+
+  /* ---------- the progress indicator: the ticks of the large screens, small, on the right edge ---------- */
+  .pager { display: flex; flex-direction: column; align-items: flex-end; position: fixed; right: 0; top: 50%; transform: translateY(-50%); z-index: 15; }
+  .pager-tick { width: 24px; justify-content: flex-end; padding-right: 4px; }   /* 24 px: the minimum target; the line sits in the gutter, never over the text */
+  .pager-tick::before { width: 8px; }
+  .pager-tick.is-current::before { width: 12px; }
+  .pager-tick::after { content: none; }   /* no name on hover: nothing hovers a touch screen */
+  .pager.is-inverted .pager-tick { color: var(--paper); }   /* on the inverted footer */
+}
