@@ -1,6 +1,6 @@
 // The media queries shared by the page's scripts, written once. They must match the stylesheet, which cannot read them:
 // CSS has no variables in media queries. The breakpoints used there are 1100 x 680 (stage.css, screens.css, Job.css),
-// 861/860 px (Hero.css, smooth scrolling), 640 px and 560 px (phones).
+// 861/860 px (Hero.css, smooth scrolling), 700 x 620 px (phone.css: the full-screen views), 640 px and 560 px (phones).
 // Only constants and pure functions here: BaseHead.astro imports STAGE at build time to write it into the boot script,
 // which runs before the first paint and cannot import anything.
 
