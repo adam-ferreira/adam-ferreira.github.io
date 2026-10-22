@@ -14,22 +14,26 @@ const pathFor = home ? pathOf : cvPathOf;
 const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
 const url = new URL(pathFor(lang), site).href;
 const photo = new URL(idn.photo, site).href;
-const title = home ? d.meta.title : `${d.ui.cv_page.title} — ${fullName}`;
+const title = home ? d.meta.title : `${fullName} — ${d.ui.cv_page.title}`;
+const description = home ? d.meta.description : d.meta.cv_description;
 
-// The "Person" card read by search engines (schema.org).
+// The card read by search engines (schema.org): both pages are a ProfilePage about the same Person.
 const person = {
-  '@context': 'https://schema.org', '@type': 'Person',
+  '@type': 'Person', '@id': `${site}#person`,
   name: fullName, jobTitle: idn.headline, description: idn.tagline, url: site, image: photo,
   email: `mailto:${idn.contact.email}`,
   address: { '@type': 'PostalAddress', addressLocality: idn.location.split(',')[0].trim(), addressCountry: 'FR' },
   knowsLanguage: d.languages.map((l) => l.name),
+  knowsAbout: d.skills.flatMap((s) => s.items),
+  alumniOf: d.education.map((e) => ({ '@type': 'EducationalOrganization', name: e.title.split(' — ')[0] })),
   sameAs: [idn.linkedin.url, 'https://github.com/adam-ferreira'],
 };
-const ld = JSON.stringify(person).replace(/</g, '\\u003c');
+const profile = { '@context': 'https://schema.org', '@type': 'ProfilePage', url, inLanguage: lang, mainEntity: person };
+const ld = JSON.stringify(profile).replace(/</g, '\\u003c');
 ---
 <BaseHead stage={home} paper={!home} />
 <title>{title}</title>
-<meta name="description" content={d.meta.description}>
+<meta name="description" content={description}>
 <meta property="og:type" content="profile">
 <meta property="og:title" content={`${fullName} — ${idn.headline}`}>
 <meta property="og:description" content={idn.tagline}>
