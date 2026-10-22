@@ -26,7 +26,8 @@ for (const { lang, path, home, pdf } of CV_PAGES) {
     test('its own page: no screens, no 3D, the way back and the PDF', async ({ page, request }) => {
       await page.goto(path);
       const d = content(lang);
-      await expect(page).toHaveTitle(`${d.ui.cv_page.title} — ${d.identity.first_name} ${d.identity.last_name}`);
+      await expect(page).toHaveTitle(`${d.identity.first_name} ${d.identity.last_name} — ${d.ui.cv_page.title}`);
+      await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', d.meta.cv_description);
       await expect(page.locator('html')).not.toHaveClass(/stage/);
       await expect(page.locator('canvas, .pager')).toHaveCount(0);
       await expect(page.getByRole('link', { name: d.ui.cv_page.back })).toHaveAttribute('href', home);
