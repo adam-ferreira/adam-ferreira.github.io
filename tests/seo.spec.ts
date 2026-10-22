@@ -12,7 +12,7 @@ for (const { lang, path } of PAGES) {
     const ld = JSON.parse(await page.locator('script[type="application/ld+json"]').textContent() ?? '{}');
     expect(ld['@type']).toBe('Person');
     expect(ld.name).toBe(`${d.identity.first_name} ${d.identity.last_name}`);
-    expect(ld.sameAs).toContain(d.identity.linkedin.url);
+    expect(ld.sameAs).toEqual([d.identity.linkedin.url, 'https://github.com/adam-ferreira']);
     const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content');
     expect(csp).toContain("script-src 'self' 'sha256-");   // the only script written in the page is allowed by its hash
     await expect(page.locator('.hero-foot .label').first()).not.toContainText('{date}');   // content date filled in
