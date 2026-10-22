@@ -20,7 +20,7 @@ const cv = defineCollection({
   loader: glob({ pattern: '*.json', base: './src/content/cv' }),
   schema: z.object({
     lang: z.enum(LANGS),
-    meta: z.object({ title: text, description: text }).strict(),
+    meta: z.object({ title: text, description: text, cv_description: text }).strict(),
     identity: z.object({
       first_name: text, last_name: text, headline: text, tagline: text, location: text,
       linkedin: z.object({ url: z.url() }).strict(),
