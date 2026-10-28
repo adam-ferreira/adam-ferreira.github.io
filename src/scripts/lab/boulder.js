@@ -13,8 +13,10 @@ const easeOutBack = (u) => 1 + 2.70158 * Math.pow(u - 1, 3) + 1.70158 * Math.pow
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
 /** Mounts the generator on `canvas`, showing problem `seed` (popping in if `pop`, else at once). `freeze`: a still image
- *  with no motion (posters, tests). `onProblem(problem)` runs each time a problem is shown. Returns { show(seed), dispose() }. */
-export async function mount(canvas, { seed, pop = false, freeze = false, onProblem } = {}) {
+ *  with no motion (posters, tests). `onProblem(problem)` runs each time a problem is shown. Returns { show(seed), dispose() }.
+ *  @param {HTMLCanvasElement} canvas
+ *  @param {{ seed: number, pop?: boolean, freeze?: boolean, onProblem?: (problem: ReturnType<typeof generate>) => void }} options */
+export async function mount(canvas, { seed, pop = false, freeze = false, onProblem }) {
   const THREE = await import('../3d/three-lite.js');
   const { MathUtils } = THREE;
   const still = freeze || reduced();   // no pop-in, no sway: the problem simply appears
