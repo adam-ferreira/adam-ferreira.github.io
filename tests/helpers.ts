@@ -15,6 +15,12 @@ export const CV_PAGES = [
   { lang: 'fr' as const, path: '/fr/cv/', home: '/fr/', pdf: '/fr/adam-ferreira-cv.pdf' },
 ];
 
+/** The Lab page of each language. */
+export const LAB_PAGES = [
+  { lang: 'en' as const, path: '/lab/', home: '/' },
+  { lang: 'fr' as const, path: '/fr/lab/', home: '/fr/' },
+];
+
 /** Displayed text, without the JSON **bold** markup. */
 export const plain = (s: string) => s.replace(/\*\*/g, '');
 

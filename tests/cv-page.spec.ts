@@ -95,7 +95,7 @@ test('top bar of the home page: a "CV" link to the detailed CV, in the page lang
   }
 });
 
-test('top bar at 1000 px: the contact line still fits before the CV link', async ({ page }, info) => {
+test('top bar at 1000 px: the contact line still fits before the Lab and CV links', async ({ page }, info) => {
   test.skip(info.project.name !== 'desktop', 'mouse, window 1000 px wide');
   await page.setViewportSize({ width: 1000, height: 760 });
   await page.goto('/');
@@ -103,8 +103,8 @@ test('top bar at 1000 px: the contact line still fits before the CV link', async
   await expect(page.locator('body')).toHaveClass(/name-away/);
   const status = page.locator('.frame-status');
   await expect(status).toBeVisible();
-  const [s, cv] = [await status.boundingBox(), await page.locator('.topbar-cv').boundingBox()];
-  expect(s!.x + s!.width).toBeLessThan(cv!.x);
+  const [s, links] = [await status.boundingBox(), await page.locator('.topbar-links').boundingBox()];
+  expect(s!.x + s!.width).toBeLessThan(links!.x);
   expect(await status.evaluate((e) => e.scrollWidth <= e.clientWidth)).toBe(true);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(1000);
 });

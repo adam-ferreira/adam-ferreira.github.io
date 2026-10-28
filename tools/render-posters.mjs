@@ -1,5 +1,6 @@
 // Renders the phone scenes of src/pages/tools/device-posters.astro to WebP stills (src/assets/devices/): the hero's,
-// each client's in English and in French, the 404's failed test; then the link preview image (public/og-image.jpg).
+// each client's in English and in French, the 404's failed test; then the link preview image (public/og-image.jpg);
+// then the Lab's posters (src/pages/tools/lab-posters.astro → src/assets/lab/), in the light and the dark theme.
 // Needs a build: npm run build && npm run posters (then build again).
 import { chromium } from '@playwright/test';
 import { spawn } from 'node:child_process';
@@ -47,6 +48,24 @@ try {
   const jpg = await og.screenshot({ type: 'jpeg', quality: 86 });
   writeFileSync(new URL('../public/og-image.jpg', import.meta.url), jpg);
   console.log(`og-image.jpg: ${(jpg.length / 1024).toFixed(1)} kB`);
+  // the Lab's posters (src/pages/tools/lab-posters.astro), in both themes: 1200 × 900, the stages' 4:3
+  const lab = await (await browser.newContext({ viewport: { width: 800, height: 1200 }, deviceScaleFactor: 1.5 })).newPage();
+  for (const theme of ['light', 'dark']) {
+    await lab.goto(`http://localhost:${PORT}/tools/lab-posters/?theme=${theme}`, { waitUntil: 'networkidle' });
+    await lab.waitForFunction(() => document.body.dataset.ready === '1', null, { timeout: 60_000 });
+    for (const name of ['boulder', 'ripples']) {
+      const png = await lab.locator(`canvas[data-name="${name}"]`).screenshot();
+      const webp = await lab.evaluate(async (b64) => {
+        const img = new Image(); img.src = `data:image/png;base64,${b64}`; await img.decode();
+        const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+        c.getContext('2d').drawImage(img, 0, 0);
+        return c.toDataURL('image/webp', 0.82).split(',')[1];
+      }, png.toString('base64'));
+      const file = `${name}-${theme}.webp`;
+      writeFileSync(new URL(`../src/assets/lab/${file}`, import.meta.url), Buffer.from(webp, 'base64'));
+      console.log(`${file}: ${(Buffer.from(webp, 'base64').length / 1024).toFixed(1)} kB`);
+    }
+  }
 } finally {
   await browser.close();
   server.kill();

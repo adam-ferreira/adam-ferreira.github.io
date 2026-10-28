@@ -47,15 +47,16 @@ export const nextTask = () => new Promise((resolve) => setTimeout(resolve, 0));
 export const whenLoaded = (fn) => { if (document.readyState === 'complete') fn(); else window.addEventListener('load', fn); };
 
 /** Deferred start, so the 3D costs nothing on arrival: on a computer, once the browser is idle after load; on a
- *  phone, on the first gesture (touch, scroll) or 5 s after the page. */
-export function bootLazily(start, idleTimeout, fallbackDelay) {
+ *  phone, on the first gesture (touch, scroll) or `phoneDelay` ms after the page (0: the gesture only, for a page whose
+ *  posters already show the first frame, the Lab). */
+export function bootLazily(start, idleTimeout, fallbackDelay, phoneDelay = 5000) {
   whenLoaded(() => {
     if (desktop()) return ('requestIdleCallback' in window) ? requestIdleCallback(start, { timeout: idleTimeout }) : setTimeout(start, fallbackDelay);
     let done = false;
     const EVENTS = ['touchstart', 'pointerdown', 'scroll'];
     const go = () => { if (done) return; done = true; EVENTS.forEach((e) => window.removeEventListener(e, go)); start(); };
     EVENTS.forEach((e) => window.addEventListener(e, go, { passive: true }));
-    setTimeout(go, 5000);
+    if (phoneDelay) setTimeout(go, phoneDelay);
   });
 }
 
