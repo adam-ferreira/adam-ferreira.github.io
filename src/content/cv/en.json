@@ -68,6 +68,15 @@
         "Claude Code",
         "MCP Atlassian / Figma"
       ]
+    },
+    {
+      "label": "Creative web",
+      "items": [
+        "Three.js / WebGL",
+        "GLSL shaders",
+        "Astro / TypeScript",
+        "matter-js"
+      ]
     }
   ],
   "experience": [
