@@ -1,23 +1,24 @@
 ---
-// The <head> of a CV page — the home page or the detailed CV: everything that is specific to it — title and description,
-// share preview (Open Graph), card for search engines (schema.org), languages (canonical, hreflang). What every page
-// shares is in BaseHead.astro.
+// The <head> of a page about Adam — the home page, the detailed CV or the Lab: everything that is specific to it — title
+// and description, share preview (Open Graph), card for search engines (schema.org), languages (canonical, hreflang).
+// What every page shares is in BaseHead.astro.
 import BaseHead from './BaseHead.astro';
-import { LANGS, pathOf, cvPathOf, LOCALE, type Lang } from '../lib/i18n';
+import { LANGS, pathOf, cvPathOf, labPathOf, LOCALE, type Lang } from '../lib/i18n';
 import type { Cv } from '../lib/types';
 import heroPoster from '../assets/devices/hero.webp?url';
-interface Props { lang: Lang; d: Cv; fullName: string; page?: 'home' | 'cv' }
+interface Props { lang: Lang; d: Cv; fullName: string; page?: 'home' | 'cv' | 'lab' }
 const { lang, d, fullName, page = 'home' } = Astro.props;
 const idn = d.identity;
-const home = page === 'home';
-const pathFor = home ? pathOf : cvPathOf;
+const home = page === 'home', lab = page === 'lab';
+const pathFor = home ? pathOf : lab ? labPathOf : cvPathOf;
 const site = Astro.site!.href;                       // https://adam-ferreira.github.io/
 const url = new URL(pathFor(lang), site).href;
 const photo = new URL(idn.photo, site).href;
-const title = home ? d.meta.title : `${fullName} — ${d.ui.cv_page.title}`;
-const description = home ? d.meta.description : d.meta.cv_description;
+const title = home ? d.meta.title : `${fullName} — ${lab ? d.lab.link : d.ui.cv_page.title}`;
+const description = home ? d.meta.description : lab ? d.lab.description : d.meta.cv_description;
 
-// The card read by search engines (schema.org): both pages are a ProfilePage about the same Person.
+// The card read by search engines (schema.org): the CV pages are a ProfilePage about the Person, the Lab a page of
+// their work (CollectionPage) whose author is that same Person.
 const person = {
   '@type': 'Person', '@id': `${site}#person`,
   name: fullName, jobTitle: idn.headline, description: idn.tagline, url: site, image: photo,
@@ -28,10 +29,12 @@ const person = {
   alumniOf: d.education.map((e) => ({ '@type': 'EducationalOrganization', name: e.title.split(' — ')[0] })),
   sameAs: [idn.linkedin.url, 'https://github.com/adam-ferreira'],
 };
-const profile = { '@context': 'https://schema.org', '@type': 'ProfilePage', url, inLanguage: lang, mainEntity: person };
+const profile = lab
+  ? { '@context': 'https://schema.org', '@type': 'CollectionPage', url, inLanguage: lang, name: title, description, author: person }
+  : { '@context': 'https://schema.org', '@type': 'ProfilePage', url, inLanguage: lang, mainEntity: person };
 const ld = JSON.stringify(profile).replace(/</g, '\\u003c');
 ---
-<BaseHead stage={home} paper={!home} />
+<BaseHead stage={home} paper={page === 'cv'} />
 <title>{title}</title>
 <meta name="description" content={description}>
 <meta property="og:type" content="profile">

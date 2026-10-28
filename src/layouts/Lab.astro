@@ -1,0 +1,89 @@
+---
+// The Lab, for one language: small interactive WebGL experiments, each on a stage (its poster, then its canvas over it)
+// next to what it is and what it is made with. English at /lab/, French at /fr/lab/. The experiments live in
+// src/scripts/lab/; their posters are drawn from the experiments themselves (npm run posters), in both themes.
+import { getEntry } from 'astro:content';
+import '../styles/base.css';
+import '../components/PillLink.css';
+import '../components/ThemeToggle.css';
+import '../styles/lab.css';
+import Head from '../components/Head.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { md } from '../lib/text';
+import { pathOf, type Lang } from '../lib/i18n';
+import { generate, formatSeed, POSTER_SEED } from '../scripts/lab/boulder-problem.js';
+import boulderLight from '../assets/lab/boulder-light.webp?url';
+import boulderDark from '../assets/lab/boulder-dark.webp?url';
+import ripplesLight from '../assets/lab/ripples-light.webp?url';
+import ripplesDark from '../assets/lab/ripples-dark.webp?url';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const entry = await getEntry('cv', lang);
+if (!entry) throw new Error(`Missing content: src/content/cv/${lang}.json`);
+const d = entry.data, lab = d.lab;
+const fullName = `${d.identity.first_name} ${d.identity.last_name}`;
+// the problem on the poster, described the way the page describes every other one (page.js)
+const first = generate(POSTER_SEED);
+const problemText = lab.boulder.problem.replace('{seed}', formatSeed(first.seed)).replace('{moves}', String(first.moves)).replace('{grade}', first.grade);
+const W = 1200, H = 900;   // the posters' size (4:3, like the stages)
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <Head lang={lang} d={d} fullName={fullName} page="lab" />
+</head>
+<body class="lab-page">
+  <nav class="lab-bar" aria-label={d.ui.nav_aria}>
+    <a class="lab-back" href={pathOf(lang)}><span aria-hidden="true">&larr;</span> {lab.back}</a>
+    <ThemeToggle ui={d.ui} />
+  </nav>
+
+  <main class="lab">
+    <header class="lab-head">
+      <p class="numeral lab-word" aria-hidden="true">Lab</p>
+      <h1 class="lab-heading" set:html={md(lab.heading)} />
+      <p class="lab-intro" set:html={md(lab.intro)} />
+    </header>
+
+    <section class="lab-exp" id="boulder" aria-labelledby="boulder-title">
+      <div class="lab-stage lab-boulder">
+        <picture>
+          <source srcset={boulderDark} media="(prefers-color-scheme: dark)">
+          <img src={boulderLight} alt="" width={W} height={H} decoding="async" fetchpriority="high">
+        </picture>
+        <canvas aria-hidden="true"></canvas>
+      </div>
+      <div class="lab-meta">
+        <p class="label">01</p>
+        <h2 class="lab-title" id="boulder-title" set:html={md(lab.boulder.title)} />
+        <p set:html={md(lab.boulder.text)} />
+        <p class="lab-problem" aria-live="polite" data-template={lab.boulder.problem}>{problemText}</p>
+        <button class="pill lab-new" type="button" hidden>{lab.boulder.new}</button>
+        <p class="label lab-stack">{lab.boulder.stack}</p>
+      </div>
+    </section>
+
+    <section class="lab-exp" id="ripples" aria-labelledby="ripples-title">
+      <div class="lab-stage lab-ripples">
+        <picture>
+          <source srcset={ripplesDark} media="(prefers-color-scheme: dark)">
+          <img src={ripplesLight} alt="" width={W} height={H} loading="lazy" decoding="async">
+        </picture>
+        <canvas aria-hidden="true"></canvas>
+      </div>
+      <div class="lab-meta">
+        <p class="label">02</p>
+        <h2 class="lab-title" id="ripples-title" set:html={md(lab.ripples.title)} />
+        <p set:html={md(lab.ripples.text)} />
+        <p class="label lab-stack">{lab.ripples.stack}</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    import '../components/ThemeToggle.js';   // the light / dark switch
+    import '../scripts/lab/page.js';          // the experiments (Three.js loaded on demand)
+  </script>
+</body>
+</html>

@@ -65,6 +65,17 @@ const cv = defineCollection({
       // the share button, and what the share button says once it has copied the address (no share sheet)
       phone_bar: z.object({ aria: text, mail: text, share: text, copied: text }).strict(),
     }).strict(),
+    // the Lab page (Lab.astro) and the top bar's link to it: its visible word, its full name, the page's description for
+    // search engines, its heading and intro, then one entry per experiment (title, text, the tools it shows off)
+    lab: z.object({
+      link: text, link_title: text, description: text, heading: text, intro: text, back: text,
+      boulder: z.object({
+        title: text, text: text, new: text, stack: text,
+        // the problem on show: {seed} its number, {moves} its hand moves, {grade} the estimated grade
+        problem: z.string().includes('{seed}').includes('{moves}').includes('{grade}'),
+      }).strict(),
+      ripples: z.object({ title: text, text: text, stack: text }).strict(),
+    }).strict(),
   }).strict().superRefine((d, ctx) => {
     // every {{mark}} in the hero sentence must be described in identity.marks
     for (const [, name] of d.identity.hero.matchAll(/\{\{(\w+)\}\}/g)) {
