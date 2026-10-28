@@ -1,12 +1,12 @@
-// The sitemap for search engines: the home page and the detailed CV, in both languages, each with its translation
-// (hreflang), and the date of the last content change. The tools (/tools/) are left out.
+// The sitemap for search engines: the home page, the detailed CV and the Lab, in both languages, each with its
+// translation (hreflang), and the date of the last content change. The tools (/tools/) are left out.
 import type { APIRoute } from 'astro';
-import { LANGS, pathOf, cvPathOf, type Lang } from '../lib/i18n';
+import { LANGS, pathOf, cvPathOf, labPathOf, type Lang } from '../lib/i18n';
 import { contentUpdatedAt } from '../lib/updated';
 
 export const GET: APIRoute = ({ site }) => {
   const lastmod = contentUpdatedAt().toISOString().slice(0, 10);
-  const urls = [pathOf, cvPathOf].flatMap((pathFor) => {
+  const urls = [pathOf, cvPathOf, labPathOf].flatMap((pathFor) => {
     const u = (l: Lang) => new URL(pathFor(l), site).href;
     const alt = LANGS.map((l) => `<xhtml:link rel="alternate" hreflang="${l}" href="${u(l)}"/>`).join('')
       + `<xhtml:link rel="alternate" hreflang="x-default" href="${u('en')}"/>`;

@@ -296,5 +296,25 @@
       "share": "Share",
       "copied": "Link copied"
     }
+  },
+  "lab": {
+    "link": "Lab",
+    "link_title": "Lab: interactive experiments",
+    "description": "Interactive WebGL experiments by Adam Ferreira: a generative boulder wall and a shader that ripples under the pointer, hand-written with Three.js.",
+    "heading": "Small interactive experiments.",
+    "intro": "WebGL toys, hand-written with Three.js. Each one runs on a phone, respects reduced motion and is covered by Playwright tests.",
+    "back": "Back to the site",
+    "boulder": {
+      "title": "Boulder generator",
+      "text": "Every number is a boulder problem on a 25° overhang: the mango holds, from the taped start to the top, laid out from a seed. Drag to look around the wall. The grade is a rough guess from the length of the moves and the holds.",
+      "new": "New problem",
+      "problem": "Problem #{seed} · {moves} moves · ≈ {grade}",
+      "stack": "Three.js · InstancedMesh · seeded random"
+    },
+    "ripples": {
+      "title": "Ripples",
+      "text": "A full-frame shader in the site's colours. Move the pointer, or touch the screen, and the surface answers: every ripple is a wave added up in the fragment shader, nothing is simulated.",
+      "stack": "GLSL · ShaderMaterial · one draw call"
+    }
   }
 }
