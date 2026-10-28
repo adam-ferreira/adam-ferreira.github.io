@@ -1,0 +1,31 @@
+---
+// The Lab's experiments as still images, the posters each stage shows until its 3D is ready (or for good, without
+// WebGL): the boulder wall with the poster's problem, the ripples at their still instant. ?theme=dark draws them in the
+// dark theme. Export: npm run build && npm run posters (tools/render-posters.mjs). The page is published but not indexed.
+import '../../styles/base.css';
+---
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Lab posters</title>
+<script is:inline>if (new URLSearchParams(location.search).get('theme') === 'dark') document.documentElement.dataset.theme = 'dark';</script>
+<style is:global>
+  body { margin: 0; }
+  canvas { display: block; width: 800px; height: 600px; }
+</style>
+</head>
+<body>
+  <canvas data-name="boulder"></canvas>
+  <canvas data-name="ripples"></canvas>
+  <script>
+    import { mount as boulder } from '../../scripts/lab/boulder.js';
+    import { mount as ripples } from '../../scripts/lab/ripples.js';
+    import { POSTER_SEED } from '../../scripts/lab/boulder-problem.js';
+    const canvas = (name: string) => document.querySelector<HTMLCanvasElement>(`canvas[data-name="${name}"]`)!;
+    Promise.all([boulder(canvas('boulder'), { seed: POSTER_SEED, freeze: true }), ripples(canvas('ripples'), { freeze: true })])
+      .then(() => { document.body.dataset.ready = '1'; });
+  </script>
+</body>
+</html>

@@ -296,5 +296,25 @@
       "share": "Partager",
       "copied": "Lien copié"
     }
+  },
+  "lab": {
+    "link": "Lab",
+    "link_title": "Lab : expériences interactives",
+    "description": "Expériences WebGL interactives d'Adam Ferreira : un mur de bloc génératif et un shader qui ondule sous le pointeur, écrits à la main avec Three.js.",
+    "heading": "Petites expériences interactives.",
+    "intro": "Des jouets WebGL écrits à la main avec Three.js. Chacun tourne sur un téléphone, respecte la réduction des animations et est couvert par des tests Playwright.",
+    "back": "Retour au site",
+    "boulder": {
+      "title": "Générateur de blocs",
+      "text": "Chaque numéro est un bloc sur un dévers de 25° : les prises mangue, du départ marqué au top, posées à partir d'une graine. Un glisser fait tourner autour du mur. La cotation est une estimation grossière, tirée de la longueur des mouvements et des prises.",
+      "new": "Nouveau bloc",
+      "problem": "Bloc n° {seed} · {moves} mouvements · ≈ {grade}",
+      "stack": "Three.js · InstancedMesh · hasard à graine"
+    },
+    "ripples": {
+      "title": "Ondes",
+      "text": "Un shader plein cadre aux couleurs du site. Sous le pointeur ou sous le doigt, la surface répond : chaque onde est une vague additionnée dans le fragment shader, rien n'est simulé.",
+      "stack": "GLSL · ShaderMaterial · un seul appel de dessin"
+    }
   }
 }

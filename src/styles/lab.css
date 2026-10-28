@@ -1,0 +1,50 @@
+/* The Lab page (src/layouts/Lab.astro): a bar, a heading, then one block per experiment: its stage (the poster, then the
+   canvas over it) beside what it is. Built on the site's base (base.css); the experiments alternate sides on a computer
+   and stack on a phone. */
+
+.lab-bar {
+  position: sticky; top: 0; z-index: 10; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  height: var(--topbar-h); padding: 0 var(--gutter);
+  background: var(--topbar); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+}
+.lab-back {
+  display: inline-flex; align-items: center; gap: 8px; min-height: 44px;   /* a 44 px target on a touch screen */
+  font-family: var(--mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); text-decoration: none;
+  transition: color .25s ease;
+}
+.lab-back:hover, .lab-back:focus-visible { color: var(--accent-ink); }
+
+.lab { max-width: 1240px; margin: 0 auto; padding: 8px var(--gutter) 120px; display: grid; gap: clamp(64px, 9vw, 128px); }
+.lab-head { display: grid; gap: 16px; }
+.lab-word { font-size: clamp(130px, 24vw, 300px); margin-bottom: -.1em; -webkit-text-stroke-color: var(--muted); }   /* outlined Humane, like the 404's numeral */
+.lab-heading { font-size: clamp(30px, 4.4vw, 58px); font-weight: 600; line-height: 1.04; letter-spacing: -.025em; color: var(--ink); max-width: 18ch; }
+.lab-intro { max-width: 60ch; }
+
+.lab-exp { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(28px, 4vw, 64px); align-items: center; }
+.lab-exp:nth-of-type(even) { grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); }
+.lab-exp:nth-of-type(even) .lab-stage { order: 2; }
+@media (max-width: 860px) {
+  .lab-exp, .lab-exp:nth-of-type(even) { grid-template-columns: minmax(0, 1fr); }
+  .lab-exp:nth-of-type(even) .lab-stage { order: 0; }
+}
+
+/* the stage: the poster until the 3D is ready (or for good, without WebGL), then the canvas fades in over it */
+.lab-stage { position: relative; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden; background: var(--paper); border: 1px solid var(--line); }
+.lab-stage img, .lab-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.lab-stage img { object-fit: cover; transition: opacity .6s ease; }
+.lab-stage canvas { opacity: 0; transition: opacity .6s ease; touch-action: pan-y; }   /* a finger still scrolls the page */
+.lab-stage.is-ready canvas { opacity: 1; }
+.lab-stage.is-ready img { opacity: 0; }
+.lab-boulder.is-ready canvas { cursor: grab; }
+.lab-boulder canvas.is-dragging { cursor: grabbing; }
+.lab-ripples.is-ready canvas { cursor: crosshair; }
+
+.lab-meta { display: grid; gap: 14px; justify-items: start; }
+.lab-title { font-size: clamp(26px, 2.8vw, 36px); font-weight: 600; line-height: 1.1; letter-spacing: -.02em; color: var(--ink); }
+.lab-meta p { max-width: 46ch; }
+.lab-problem { font-family: var(--mono); font-size: 13px; letter-spacing: .02em; color: var(--ink); }
+.lab-new { font: inherit; font-size: 15px; font-weight: 500; cursor: pointer; }
+.lab-new[hidden] { display: none; }
+.lab-stack { margin-top: 6px; }
+
+@media (prefers-reduced-motion: reduce) { .lab-stage img, .lab-stage canvas { transition: none; } }
