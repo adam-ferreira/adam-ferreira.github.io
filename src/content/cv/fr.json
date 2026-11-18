@@ -2,7 +2,7 @@
   "lang": "fr",
   "meta": {
     "title": "Adam Ferreira — Software Engineer · Dev & QA Automation",
-    "description": "Portfolio interactif et CV d'Adam Ferreira, ingénieur logiciel : développement et automatisation des tests mobiles (Flutter, Appium, iOS, Android).",
+    "description": "Portfolio interactif et CV d'Adam Ferreira, ingénieur logiciel : développement et automatisation des tests mobiles (Appium, iOS, Android).",
     "cv_description": "CV détaillé d'Adam Ferreira, ingénieur en automatisation des tests mobiles (iOS, Android) : missions chez Betclic et Accor, compétences et formation."
   },
   "identity": {
@@ -86,14 +86,14 @@
       "mark": "betclic",
       "demo": "betting",
       "date": "Mars 2026 - Aujourd'hui (Freelance)",
-      "intro": "Betclic. J'y automatise les tests des fonctionnalités de gamification : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.",
-      "lead": "Automatisation des tests mobiles de la gamification de la app de Betclic, 5 millions de joueurs.",
+      "intro": "Chez Betclic, j'automatise les tests des fonctionnalités de gamification de l'app mobile iOS et Android : missions et défis, classements, jeux de récompense et boosts proposés au moment du pari. Les tests vivent dans un repo partagé entre le mobile et le web.",
+      "lead": "Automatisation des tests mobiles de la gamification de l'app Betclic, 5 millions de joueurs.",
       "subtitle": "Construire l'automatisation en même temps que les fonctionnalités",
       "subintro": "À mon arrivée, les fonctionnalités de gamification étaient en construction. Les tests devaient suivre chaque livraison sans ralentir les devs.",
       "bullets": [
         {
           "title": "La testabilité intégrée au code de l'app",
-          "short": "143 pull requests mergées en six mois, dont 44 dans l'app : des semantics qui rendent chaque écran testable, et des correctifs pour des bugs que j'ai trouvés.",
+          "short": "143 pull requests mergées en six mois, dont 44 dans le code de l'app : des test IDs qui rendent chaque écran testable, et des correctifs pour des bugs que j'ai trouvés.",
           "text": "143 PR mergées en six mois, dont 44 dans l'app."
         },
         {
@@ -108,7 +108,7 @@
         },
         {
           "title": "Des causes racines traquées jusqu'à iOS et Android",
-          "short": "Quand un test échouait pour une mauvaise raison, je remontais la cause jusqu'à l'arbre d'accessibilité iOS, les barres système Android ou l'arbre de widgets, et je la corrigeais dans le framework plutôt que d'ajouter des relances.",
+          "short": "Quand un test échouait pour une mauvaise raison, je remontais la cause jusqu'à l'arbre d'accessibilité iOS ou les barres système Android, et je la corrigeais dans le framework plutôt que d'ajouter des relances.",
           "text": "faux échecs corrigés dans le framework, jamais masqués."
         },
         {

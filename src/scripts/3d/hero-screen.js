@@ -80,7 +80,7 @@ const PHOTO = { x: 24, y: 140, w: 432, h: 190, r: 20 };
  *  `result` / `note`: the summary line. At most five steps: a run always lasts CYCLE. */
 export const STORIES = {
   betting: [
-    { feature: 'semantics · inspector', keep: true, result: 'IDS 5/5', note: '· in the app code', steps: [
+    { feature: 'test IDs · inspector', keep: true, result: 'IDS 5/5', note: '· in the app code', steps: [
       { rect: ODDS(0), verb: 'id', loc: '~odds_home' },
       { rect: R.card, verb: 'id', loc: '~mission_progress' },
       { rect: R.row2, verb: 'id', loc: '~leaderboard_rank' },
