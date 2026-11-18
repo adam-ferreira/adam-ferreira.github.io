@@ -2,8 +2,8 @@
   "lang": "en",
   "meta": {
     "title": "Adam Ferreira — Software Engineer · Dev & QA Automation",
-    "description": "Interactive portfolio and CV of Adam Ferreira: software engineer, mobile development and test automation (Flutter, Appium, iOS, Android).",
-    "cv_description": "Adam Ferreira's detailed CV: QA automation engineer for mobile apps (Flutter, iOS, Android), experience at Betclic and Accor, skills and education."
+    "description": "Interactive portfolio and CV of Adam Ferreira: software engineer, mobile development and test automation (Appium, iOS, Android).",
+    "cv_description": "Adam Ferreira's detailed CV: QA automation engineer for mobile apps (iOS, Android), experience at Betclic and Accor, skills and education."
   },
   "identity": {
     "first_name": "Adam",
@@ -81,20 +81,20 @@
   ],
   "experience": [
     {
-      "role": "QA Automation Engineer (Flutter mobile)",
+      "role": "QA Automation Engineer (mobile)",
       "client": "BETCLIC",
       "mark": "betclic",
       "demo": "betting",
       "date": "March 2026 - Present (Freelance)",
-      "intro": "Betclic is rebuilding its iOS and Android app in Flutter. I automate the tests of the gamification features: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.",
-      "lead": "Mobile test automation for the gamification of Betclic's new Flutter app, 5 million players.",
-      "subtitle": "Building the automation alongside the app",
-      "subintro": "When I joined, the app and its gamification features were still being built. The tests had to keep up with each release without slowing the developers down.",
+      "intro": "At Betclic, I automate the tests of the mobile app's gamification features on iOS and Android: missions and challenges, leaderboards, reward games, and boosts offered when placing a bet. The tests live in a repo shared between mobile and web.",
+      "lead": "Mobile test automation for the gamification of Betclic's app, 5 million players.",
+      "subtitle": "Building the automation alongside the features",
+      "subintro": "When I joined, the gamification features were still being built. The tests had to keep up with each release without slowing the developers down.",
       "bullets": [
         {
           "title": "Testability built into the app code",
-          "short": "143 pull requests merged in six months, 44 of them in the Flutter app: semantics that make each screen testable, and fixes for bugs I found.",
-          "text": "143 PRs merged in six months, 44 in the Flutter app: semantics and bug fixes."
+          "short": "143 pull requests merged in six months, 44 of them in the app code: test IDs that make each screen testable, and fixes for bugs I found.",
+          "text": "143 PRs merged in six months, 44 in the app: test IDs and bug fixes."
         },
         {
           "title": "Test data seeded through backend APIs",
@@ -107,8 +107,8 @@
           "text": "86 scenarios in six months, run nightly, each tied to a product need."
         },
         {
-          "title": "Root causes traced down to iOS, Android and Flutter",
-          "short": "When a test failed for the wrong reason, I followed the cause into the iOS accessibility tree, Android's system bars or the Flutter widget tree, and fixed it in the framework instead of adding retries.",
+          "title": "Root causes traced down to iOS and Android",
+          "short": "When a test failed for the wrong reason, I followed the cause into the iOS accessibility tree or Android's system bars, and fixed it in the framework instead of adding retries.",
           "text": "false failures fixed in the framework, never hidden behind retries."
         },
         {
@@ -118,7 +118,6 @@
         }
       ],
       "stack": [
-        "Flutter",
         "CodeceptJS",
         "Appium",
         "Playwright",

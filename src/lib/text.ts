@@ -14,7 +14,7 @@ const typo = (s: string) => s
 /** Plain text → HTML: escaping, **bold** → <strong>, then the typography above. */
 export const md = (s: string) => typo(esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>'));
 
-/** A role or a client without its trailing parenthesis: "QA Automation Engineer (Flutter mobile)" → "QA Automation Engineer". */
+/** A role or a client without its trailing parenthesis: "QA Automation Engineer (mobile)" → "QA Automation Engineer". */
 export const withoutNote = (s: string) => s.replace(/\s*\(.*\)$/, '');
 
 /** "March 2026 - Present (Freelance)" → "Freelance · March 2026 – Present": the kind of contract first, then the dates. */
